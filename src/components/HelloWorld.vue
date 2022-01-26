@@ -29,7 +29,7 @@
     <h3>Playground</h3>
     <ul>
       <li>{{ helloMsg }}</li>
-      <li><button @click="testing">Testing</button></li>
+      <li><input type="text" v-model="name"><button @click="testing">Testing</button></li>
     </ul>
   </div>
 </template>
@@ -42,10 +42,11 @@ import { ProtoService } from '../services/proto.service';
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
   private helloMsg: string = '';
+  private name: string = '';
 
   private testing() {
     ProtoService.connect();
-    ProtoService.sayHello().then((value) => this.helloMsg = value);
+    ProtoService.sayHello(this.name).then((value) => this.helloMsg = value);
   }
 }
 </script>
