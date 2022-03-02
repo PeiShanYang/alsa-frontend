@@ -1,0 +1,45 @@
+<div>
+  <el-row>
+    <el-col style="padding: 2rem">
+      <router-link to="/">
+        <i class="el-icon-s-home"></i>
+        <span>Dashboard</span>
+      </router-link>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col style="padding: 2rem">
+      <i class="el-icon-plus"></i>
+      <span>Create Project</span>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col style="padding: 2rem">
+      <el-input placeholder="專案搜尋" suffix-icon="el-icon-search" v-model="searchProject">
+      </el-input>
+    </el-col>
+  </el-row>
+  <template v-for="project in projectMenu">
+    <el-row>
+      <el-col>
+        <el-menu style="width:100%; border-right: 0;" background-color="#0E5879" active-text-color="#D9DF90">
+          <el-submenu :index="project.projectName">
+            <template slot="title">
+              <i class="el-icon-star-off"></i>
+              <span>{{project.projectName}}</span>
+            </template>
+            <template v-for="item in project.content">
+              <!-- <el-menu-item @click="handleSelect(project.projectName)"> -->
+              <el-menu-item>
+                <router-link :to="item.link">
+                  <i class="el-icon-star-off"></i>
+                  <span>{{item.title}}</span>
+                </router-link>
+              </el-menu-item>
+            </template>
+          </el-submenu>
+        </el-menu>
+      </el-col>
+    </el-row>
+  </template>
+</div>

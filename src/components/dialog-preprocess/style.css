@@ -1,0 +1,75 @@
+.el-container span {
+  font-size: 1.5em;
+}
+
+.el-container i {
+  font-size: 1.5em;
+  margin-right: 5px;
+}
+
+.el-collapse {
+  border: 0px solid white;
+  box-shadow: 0px 3px 6px #00000029;
+}
+
+#projectCollapse ::v-deep .el-collapse-item__header {
+  background: #0e5879;
+  color: white;
+  padding: 1em;
+}
+
+#datasetCollapse ::v-deep .el-collapse-item__header {
+  background: #4a9abe;
+  color: white;
+  padding: 1em;
+}
+
+.preprocessCollapse ::v-deep .el-collapse-item__header {
+  background: #4a9abe;
+  color: white;
+  padding: 0 1em;
+}
+
+.preprocessCollapse span {
+  font-size: 1.1em;
+  color: #0E5879;
+}
+
+.preprocessCollapse ::v-deep .el-collapse-item__content {
+  padding-bottom: 0px
+}
+
+::v-deep .el-dialog__header,
+::v-deep .el-dialog__body {
+  padding: 1%;
+}
+
+.decorate-box {
+  box-shadow: 0px 3px 6px #00000029;
+}
+
+.dialog-custom-btn {
+  color: white;
+  background-color: #0e5879;
+  border-color: #0e5879;
+}
+
+
+#new-graph-block-btn {
+  border-width: medium;
+  border-style: dashed;
+  height: 4em;
+  width: 10em;
+  color: #b8babf;
+  margin-left: 10%;
+}
+
+#click-to-add-label-btn {
+  border-width: medium;
+  border-style: dashed;
+  border-color: #4a9abe;
+  height: 8em;
+  width: 100%;
+  color: #4a9abe;
+  background: #effbfd;
+}

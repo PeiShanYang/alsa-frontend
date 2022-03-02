@@ -1,0 +1,24 @@
+::v-deep .el-dialog__header{
+    padding: 0;
+}
+
+#cancel-btn {
+    height: 4rem;
+    width: 10rem;
+    font-size: 1.5rem;
+    color: #08648d;
+    border: 1px solid #08648d;
+    background-color: white;
+    margin: auto;
+    align-self: center;
+}
+
+#confirm-btn {
+    height: 4rem;
+    width: 10rem;
+    font-size: 1.5rem;
+    color: white;
+    background-color: #0E5879;
+    margin: auto;
+    align-self: center;
+}

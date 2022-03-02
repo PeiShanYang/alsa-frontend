@@ -1,0 +1,31 @@
+<el-row style="box-shadow: 0px 3px 6px hsla(0, 0%, 0%, 0.161);">
+    <el-col style="padding:2rem">
+
+        
+        <template v-if="projectName !== dashboard">
+            <el-breadcrumb separator="/">
+                <el-breadcrumb-item>
+                    <span>{{projectName}}</span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>
+                    <span>{{currentComponent}}</span>
+                </el-breadcrumb-item>
+            </el-breadcrumb>
+        </template>
+        <template v-else>
+            <el-breadcrumb separator="/"><span>Dashboard</span></el-breadcrumb>
+            
+        </template>
+        <!-- <el-breadcrumb-item>
+                <span v-if=" projectName === '' ">Dashboard</span>
+                <span v-else>{{projectName}}</span>
+            </el-breadcrumb-item>
+            <template v-for="bread in breadList">
+                <el-breadcrumb-item :to="{path : bread.link}">
+                    <span>{{bread.title}}</span>
+                </el-breadcrumb-item>
+            </template> -->
+
+    </el-col>
+    <el-col></el-col>
+</el-row>

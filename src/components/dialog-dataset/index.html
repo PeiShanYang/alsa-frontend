@@ -1,0 +1,69 @@
+<el-dialog :visible.sync="openDialogDataset" width="80%" :show-close="false">
+  <el-row slot="title" style="padding: 1% 2%" class="decorate-box">
+    <el-col :span="7" :offset="7">
+      <el-input v-model="datasetSearch" placeholder="所有資料" style="text-align: center"></el-input>
+    </el-col>
+    <el-col :span="2" style="margin-left: 2%">
+      <el-button icon="el-icon-search" class="dialog-custom-btn">搜尋</el-button>
+    </el-col>
+    <el-col :span="2" :offset="5">
+      <el-button class="dialog-custom-btn">上傳資料集</el-button>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col>
+      <el-collapse v-model="activeDatasetCollapse" accordion id="datasetCollapse">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <el-row style="width: 100%">
+              <el-col :span="3">
+                <i class="el-icon-collection-tag"></i>
+                <span>Dataset A </span>
+              </el-col>
+              <el-col :span="7" :offset="14">
+                <el-progress :text-inside="true" :percentage="progressPercentage" :color="progressColor" style="
+                        display: inline-block;
+                        width: 10em;
+                        margin-right: 1em;
+                      "></el-progress>
+                <span> {{ progressPercentage }} %上傳完成 </span>
+              </el-col>
+            </el-row>
+          </template>
+          <el-row style="background: #f0fafb; padding: 1%; margin: 1%">
+            <el-col :span="5">
+              <el-checkbox v-model="datasetCheckBox">
+                <span style="color: #4a9abe">已標記資料集AAA</span>
+              </el-checkbox>
+            </el-col>
+            <el-col :span="4" :offset="11">
+              <el-link icon="el-icon-s-data" :underline="false" style="font-size: 1.25em; color: #4a9abe">切分資料集
+              </el-link>
+            </el-col>
+            <el-col :span="4">
+              <el-link icon="el-icon-crop" :underline="false" style="font-size: 1.25em; color: #4a9abe">編輯資料集</el-link>
+            </el-col>
+          </el-row>
+          <el-row type="flex" justify="center">
+            <el-col :span="23">
+              <router-link to="/myProject/label">
+                <el-button id="click-to-add-label-btn">
+                  <i class="el-icon-circle-plus-outline"></i>
+                  <span>點擊此處新增標記資料集</span>
+                </el-button>
+              </router-link>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
+    </el-col>
+  </el-row>
+  <el-row slot="footer" type="flex" justify="center">
+    <el-col :span="2">
+      <el-button @click="closeDialogDataset">取消</el-button>
+    </el-col>
+    <el-col :span="2" :offset="1">
+      <el-button @click="closeDialogDataset" class="dialog-custom-btn">匯入</el-button>
+    </el-col>
+  </el-row>
+</el-dialog>

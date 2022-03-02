@@ -1,0 +1,45 @@
+<el-dialog :visible.sync="openDialogModelSelect" width="80%" top="1vh" :show-close="false">
+
+  <el-row>
+    <template v-for="item in modelSelectItem">
+      <el-col :span="6" style="padding: 1rem;">
+        <div style="box-shadow: 0px 1px 3px #00000033;border-radius: 4px;" @click="item.contentSetting = true">
+          <el-row style="background: #F5F5FD;padding-top: 1rem">
+            <el-col :span="22" style="display: flex;height: 15rem;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2400/2400721.png"
+                style="display: inline-block;width:10.8rem; height:10.2rem;margin: auto;" />
+            </el-col>
+            <el-col :span="2">
+              <i class="el-icon-edit-outline" style="font-size: 2rem;"></i>
+            </el-col>
+          </el-row>
+          <el-row style="padding: 1rem 2rem;">
+            <el-col style="display: flex;align-items: center;">
+              <img src="https://cdn-icons-png.flaticon.com/512/2400/2400721.png"
+                style="display: inline-block;width:2.8rem; height:2.8rem" />
+              <span style="font-size: 2rem;margin: 1rem;color: #0E5879;">{{ item.title}}</span>
+            </el-col>
+          </el-row>
+          <el-row style="padding:2rem;">
+            <el-col>
+              <span style="font-size: 1.4rem;color:#939393;display: inline-block;height: 3.5rem;">簡介 : {{item.describe}}
+              </span>
+            </el-col>
+          </el-row>
+        </div>
+      </el-col>
+
+      <el-dialog :visible.sync=item.contentSetting append-to-body width="80%" top="1vh" :show-close="false">
+      </el-dialog>
+
+    </template>
+  </el-row>
+  <el-row slot="footer" type="flex" justify="center">
+    <el-col :span="2" style="margin-right: 15rem;">
+      <el-button @click="closeDialogModelSelect" id="cancel-btn">取消</el-button>
+    </el-col>
+    <el-col :span="2">
+      <el-button @click="closeDialogModelSelect" id="confirm-btn">確認</el-button>
+    </el-col>
+  </el-row>
+</el-dialog>

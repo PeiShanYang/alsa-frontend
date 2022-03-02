@@ -1,0 +1,12 @@
+span, i {
+    font-size: 2rem;
+    color: #85AEC0;
+}
+
+i+span {
+    padding-left: 0.5rem;
+}
+
+.el-menu span, i, a {
+    color: white;
+}
