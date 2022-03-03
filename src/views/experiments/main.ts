@@ -9,6 +9,7 @@ import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import flowNode from "@/components/flow-node/FlowNode.vue";
+import Store from '@/services/store.service';
 
 @Component({
   components: {
@@ -21,7 +22,6 @@ import flowNode from "@/components/flow-node/FlowNode.vue";
   }
 })
 export default class Experiments extends Vue {
-
   // private projectName = "";
   // private currentComponent = "";
   private acitveProjectCollapse: string[] = ["1"];
@@ -181,6 +181,8 @@ export default class Experiments extends Vue {
     },
   ]
 
+  private activeDrawer = '0';
+
   created() {
     
     // this.currentComponent = this.$route.name!;
@@ -204,7 +206,6 @@ export default class Experiments extends Vue {
   }
 
   mounted() {
-
     const elCollapse = document.querySelector(".el-collapse")!;
     const elCollapseWidth: number = elCollapse.clientWidth;
     const nodeWidth: number = elCollapseWidth * 0.11;
@@ -318,5 +319,4 @@ export default class Experiments extends Vue {
   //   console.log("padd",value)
   //   this.projectName = value
   // }
-
 }

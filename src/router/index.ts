@@ -6,6 +6,10 @@ Vue.use(VueRouter)
 const routes: Array<RouteConfig> = [
     {
         path: '/',
+        redirect: { name: 'dashboard' }
+    },
+    {
+        path: '/dashboard',
         name: 'dashboard',
         component: () => import(/* webpackChunkName: "dashboard" */'@/views/dashboard/Dashboard.vue'),
     },
