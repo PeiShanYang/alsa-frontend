@@ -5,7 +5,6 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component
 export default class Sidebar extends Vue {
   private searchProject = '';
-  private nameSelect = '';
 
   created() {
     Api.getProjectList();
@@ -13,9 +12,5 @@ export default class Sidebar extends Vue {
 
   get projectList() {
     return Store.projectList;
-  }
-
-  private getIndex(i: number, j: number): string {
-    return `${i}-${j}`;
   }
 }

@@ -1,59 +1,41 @@
-<div>
-  <el-row>
-    <el-col style="padding: 2rem">
-      <router-link to="/">
-        <i class="el-icon-s-home"></i>
-        <span>Dashboard</span>
-      </router-link>
-    </el-col>
-  </el-row>
-  <el-row>
-    <el-col style="padding: 2rem">
-      <i class="el-icon-plus"></i>
-      <span>Create Project</span>
-    </el-col>
-  </el-row>
-  <el-row>
-    <el-col style="padding: 2rem">
-      <el-input placeholder="專案搜尋" suffix-icon="el-icon-search" v-model="searchProject">
-      </el-input>
-    </el-col>
-  </el-row>
-  <template v-for="(projectName, index) in projectList">
-    <el-row>
-      <el-col>
-        <el-menu
-          style="width:100%; border-right: 0;"
-          background-color="#0E5879"
-          active-text-color="#D9DF90"
-          default-active="0"
-        >
-          <el-submenu :index="index">
-            <template slot="title">
-              <i class="el-icon-star-off"></i>
-              <span>{{ projectName }}</span>
-            </template>
-            <el-menu-item :index="getIndex(index, 1)">
-              <router-link :to="{ name: 'dataset', params: { projectName } }">
-                <i class="el-icon-star-off"></i>
-                <span>Dataset</span>
-              </router-link>
-            </el-menu-item>
-            <el-menu-item :index="getIndex(index, 1)">
-              <router-link :to="{ name: 'experiments', params: { projectName } }">
-                <i class="el-icon-star-off"></i>
-                <span>Experiments</span>
-              </router-link>
-            </el-menu-item>
-            <el-menu-item :index="getIndex(index, 1)">
-              <router-link :to="{ name: 'models', params: { projectName } }">
-                <i class="el-icon-star-off"></i>
-                <span>Models</span>
-              </router-link>
-            </el-menu-item>
-          </el-submenu>
-        </el-menu>
-      </el-col>
-    </el-row>
+<el-menu style="width:100%; border-right: 0;" background-color="#0E5879" active-text-color="#D9DF90" :unique-opened=true>
+  <el-menu-item >
+    <router-link to="/">
+      <i class="el-icon-s-home"></i>
+      <span>Dashboard</span>
+    </router-link>
+  </el-menu-item>
+  <el-menu-item>
+    <i class="el-icon-plus"></i>
+    <span>Create Project</span>
+  </el-menu-item>
+  <el-menu-item>
+    <el-input placeholder="專案搜尋" suffix-icon="el-icon-search" v-model="searchProject" />
+  </el-menu-item>
+  <template v-for="projectName in projectList">
+    <el-submenu :index="projectName">
+      <template slot="title">
+        <i class="el-icon-star-off"></i>
+        <span>{{ projectName }}</span>
+      </template>
+      <el-menu-item >
+        <router-link :to="{ name: 'dataset', params: { projectName } }">
+          <i class="el-icon-star-off"></i>
+          <span>Dataset</span>
+        </router-link>
+      </el-menu-item>
+      <el-menu-item >
+        <router-link :to="{ name: 'experiments', params: { projectName } }">
+          <i class="el-icon-star-off"></i>
+          <span>Experiments</span>
+        </router-link>
+      </el-menu-item>
+      <el-menu-item >
+        <router-link :to="{ name: 'models', params: { projectName } }">
+          <i class="el-icon-star-off"></i>
+          <span>Models</span>
+        </router-link>
+      </el-menu-item>
+    </el-submenu>
   </template>
-</div>
+</el-menu>

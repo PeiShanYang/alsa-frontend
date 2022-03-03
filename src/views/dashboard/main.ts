@@ -2,18 +2,10 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 
-import Sidebar from "@/components/sidebar/Sidebar.vue";
-import Navbar from '@/components/navbar/Navbar.vue';
-import FooterInfo from '@/components/footer-info/FooterInfo.vue';
+
 import flowNode from "@/components/flow-node/FlowNode.vue";
 
-@Component({
-  components: {
-    "sidebar": Sidebar,
-    "navbar": Navbar,
-    "footer-info": FooterInfo,
-  }
-})
+@Component
 export default class Dashboard extends Vue {
 
   private projectExist = false;

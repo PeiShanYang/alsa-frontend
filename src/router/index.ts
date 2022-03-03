@@ -1,37 +1,43 @@
 import Vue from 'vue'
 import VueRouter, {RouteConfig} from 'vue-router'
+import Layout from './../components/layout/Layout.vue';
+import Dashboard from '@/views/dashboard/Dashboard.vue';
+import Dataset from '@/views/dataset/Dataset.vue';
+import Experiments from '@/views/experiments/Experiments.vue';
+import Models from '@/views/models/Models.vue';
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
     {
         path: '/',
-        redirect: { name: 'dashboard' }
+        component: Layout,
+        redirect: '/dashboard',
+        children: [{
+            path: 'dashboard',
+            component: Dashboard,
+        }]
     },
     {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: () => import(/* webpackChunkName: "dashboard" */'@/views/dashboard/Dashboard.vue'),
+        path: '/:projectName',
+        component: Layout,
+        children: [{
+            name: "dataset",
+            path: 'dataset',
+            component: Dataset,
+        },
+        {
+            name: "experiments",
+            path: 'experiments',
+            component: Experiments,
+        },
+        {
+            name:"models",
+            path: 'models',
+            component: Models,
+        },
+        ]
     },
-    {
-        path: '/:projectName/dataset',
-        name: 'dataset',
-        component: () => import(/* webpackChunkName: "dataset" */'@/views/dataset/Dataset.vue'),
-        props: true,
-    },
-    {
-        path: '/:projectName/experiments',
-        name: 'experiments',
-        component: () => import(/* webpackChunkName: "experiments" */'@/views/experiments/Experiments.vue'),
-        props: true,
-    },
-    {
-        path: '/:projectName/models',
-        name: 'models',
-        component: () => import(/* webpackChunkName: "models" */'@/views/models/Models.vue'),
-        props: true,
-    },
-
 ]
 
 const router = new VueRouter({

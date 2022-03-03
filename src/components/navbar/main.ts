@@ -8,6 +8,7 @@ export default class Navbar extends Vue {
   }
 
   get currentComponent() {
+    console.log("thsi",this.$route)
     return this.$route.name ?? '';
   }
 }

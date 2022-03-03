@@ -2,9 +2,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 
-import Sidebar from "@/components/sidebar/Sidebar.vue";
-import Navbar from '@/components/navbar/Navbar.vue';
-import FooterInfo from '@/components/footer-info/FooterInfo.vue';
+
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
@@ -13,9 +11,6 @@ import Store from '@/services/store.service';
 
 @Component({
   components: {
-    "sidebar": Sidebar,
-    "navbar": Navbar,
-    "footer-info": FooterInfo,
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
     "dialog-model-select": DialogModelSelect,

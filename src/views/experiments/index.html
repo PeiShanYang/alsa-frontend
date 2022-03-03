@@ -1,62 +1,52 @@
-<el-container style="height: 100%; width: 100%;">
-  <el-aside style="width:14.5% ;background-color: #08648D;">
-    <sidebar @project-name-pass="passProjectName"/>
-  </el-aside>
-  <el-container>
-    <el-header style="height:6.7%;padding: 0;">
-      <navbar :project-name="projectName" :current-component="currentComponent"/>
-    </el-header>
-    <el-main>
-      <el-collapse v-model="acitveProjectCollapse" accordion>
-        <el-collapse-item name="1">
-          <template slot="title">
-            <i class="el-icon-star-off"> </i>
-            <span> Project 2022</span>
-          </template>
-          <el-row type="flex" justify="center">
-            <el-col>
-              <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
-            </el-col>
-          </el-row>
-          <el-row type="flex" justify="space-between">
-            <el-col :span="4" style="display: flex;padding: 0 1rem;">
-              <el-button @click="output" id="new-graph-block-btn">
-                <i class="el-icon-circle-plus-outline"> </i>
-                <span> 新增區塊</span>
-              </el-button>
-            </el-col>
-            <el-col :span="2" style="display: flex;padding: 0 1rem;">
-              <el-button @click="openDialogRunProject=true" id="run-project-btn">
-                <span>執行</span>
-              </el-button>
-            </el-col>
-          </el-row>
-        </el-collapse-item>
-      </el-collapse>
-    </el-main>
-    <el-footer>
-      <footer-info />
-    </el-footer>
-    <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="closeDialogDataset" />
-    <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="closeDialogPreprocess" />
-    <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="closeDialogModelSelect" />
+<div>
+  <el-main>
+    <el-collapse v-model="acitveProjectCollapse" accordion>
+      <el-collapse-item name="1">
+        <template slot="title">
+          <i class="el-icon-star-off"> </i>
+          <span> Project 2022</span>
+        </template>
+        <el-row type="flex" justify="center">
+          <el-col>
+            <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
+          </el-col>
+        </el-row>
+        <el-row type="flex" justify="space-between">
+          <el-col :span="4" style="display: flex;padding: 0 1rem;">
+            <el-button @click="output" id="new-graph-block-btn">
+              <i class="el-icon-circle-plus-outline"> </i>
+              <span> 新增區塊</span>
+            </el-button>
+          </el-col>
+          <el-col :span="2" style="display: flex;padding: 0 1rem;">
+            <el-button @click="openDialogRunProject=true" id="run-project-btn">
+              <span>執行</span>
+            </el-button>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+    </el-collapse>
+  </el-main>
 
-    <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
-      <el-row type="flex" justify="center" style="margin:2rem 0;">
-        <el-col :span='22' style="text-align:center">
-          <span style="font-size: 2.4rem;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
-        </el-col>
-      </el-row>
-      <el-row slot="footer" type="flex" justify="center" style="margin:2rem 0;">
-        <el-col :span="5" style="margin-right: 2rem;">
-          <el-button @click="openDialogRunProject = false" id="later-btn">稍後再說</el-button>
-        </el-col>
-        <el-col :span="5">
-          <router-link to="/">
-            <el-button @click="openDialogRunProject = false" id="go-dashboard-btn">前往查看</el-button>
-          </router-link>
-        </el-col>
-      </el-row>
-    </el-dialog>
-  </el-container>
-</el-container>
+  <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="closeDialogDataset" />
+  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="closeDialogPreprocess" />
+  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="closeDialogModelSelect" />
+
+  <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
+    <el-row type="flex" justify="center" style="margin:2rem 0;">
+      <el-col :span='22' style="text-align:center">
+        <span style="font-size: 2.4rem;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
+      </el-col>
+    </el-row>
+    <el-row slot="footer" type="flex" justify="center" style="margin:2rem 0;">
+      <el-col :span="5" style="margin-right: 2rem;">
+        <el-button @click="openDialogRunProject = false" id="later-btn">稍後再說</el-button>
+      </el-col>
+      <el-col :span="5">
+        <router-link to="/">
+          <el-button @click="openDialogRunProject = false" id="go-dashboard-btn">前往查看</el-button>
+        </router-link>
+      </el-col>
+    </el-row>
+  </el-dialog>
+</div>
