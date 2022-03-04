@@ -1,0 +1,59 @@
+.el-input, ::v-deep .el-input__inner {
+  font-size: 1.5rem;
+}
+
+::v-deep .el-select-dropdown__item {
+  font-size: 2rem;
+}
+
+.el-collapse {
+  border: 0px solid white;
+  box-shadow: 0px 3px 6px #00000029;
+}
+
+
+::v-deep .el-collapse-item__header {
+  background: #4a9abe;
+  color: white;
+  padding: 1rem;
+}
+
+::v-deep .el-collapse-item__header i {
+  font-size: 2rem;
+}
+
+::v-deep .el-collapse-item__header span {
+  font-size: 2rem;
+}
+
+::v-deep .el-collapse-item__header i+span {
+  padding-left: 0.5rem;
+}
+
+#delete-btn {
+  height: 4.8rem;
+  width: 11.2rem;
+  font-size: 1.7rem;
+  color: #08648d;
+  border: 1px solid #08648d;
+  background-color: white;
+  margin: auto;
+  align-self: center;
+}
+
+#check-model-btn{
+
+  height: 4.8rem;
+  width: 11.2rem;
+  font-size: 1.7rem;
+  color: white;
+  background-color: #0E5879;
+  margin: auto;
+  align-self: center;
+}
+
+@keyframes antline{
+  to{
+    stroke-dashoffset: -1000
+  }
+}

@@ -1,0 +1,67 @@
+.el-collapse {
+  border: 0px solid white;
+  box-shadow: 0px 3px 6px #00000029;
+}
+
+::v-deep .el-collapse-item__header {
+  background: #0e5879;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px 8px 0px 0px;
+}
+
+::v-deep .el-collapse-item__header i {
+  font-size: 2rem;
+}
+
+::v-deep .el-collapse-item__header span {
+  font-size: 2.3rem;
+}
+
+::v-deep .el-collapse-item__header i+span {
+  padding-left: 0.5rem;
+}
+
+
+#new-graph-block-btn {
+  border-width: medium;
+  border-style: dashed;
+  border-color: #08648D;
+  height: 8rem;
+  width: 19rem;
+  margin: auto;
+  font-size: 2rem;
+  color: #0e5879;
+  background-color: #EFFBFD;
+}
+
+#run-project-btn {
+  height: 4rem;
+  font-size: 1.7rem;
+  color: white;
+  background-color: #0e5879;
+  margin: auto;
+  align-self: center;
+
+}
+
+#later-btn {
+  font-size: 2rem;
+  color: #08648D;
+  box-shadow: 0px 1px 3px #00000033;
+  border: 1px solid #08648D;
+  border-radius: 4px;
+}
+
+#go-dashboard-btn {
+  font-size: 2rem;
+  color: white;
+  background: #0E5879;
+  box-shadow: 0px 1px 3px #00000033;
+  border-radius: 4px;
+}
+
+
+.decorate-box {
+  box-shadow: 0px 3px 6px #00000029;
+}

@@ -1,0 +1,30 @@
+span, i {
+    font-size: 22px;
+}
+
+i+span {
+    padding: 0.5rem;
+    margin: auto;
+}
+
+.search-panel {
+    padding: 5px 15px;
+}
+
+.el-submenu__title i {
+    color: #FFFFFF;
+}
+
+.el-menu-item i {
+    color: #FFFFFF;
+}
+
+.el-divider--horizontal {
+    width: 90%;
+    margin: 5px auto;
+}
+
+img{
+    width: 2.5rem;
+    height: 2.5rem;
+}

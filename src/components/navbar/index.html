@@ -1,0 +1,13 @@
+<el-row style="box-shadow: 0px 3px 6px hsla(0, 0%, 0%, 0.161);">
+    <el-col style="padding:2rem">
+        <el-breadcrumb v-if="projectName === undefined" separator="/"><span>Dashboard</span></el-breadcrumb>
+        <el-breadcrumb v-else separator="/">
+            <el-breadcrumb-item>
+                <span>{{ projectName }}</span>
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>
+                <span>{{ currentComponent }}</span>
+            </el-breadcrumb-item>
+        </el-breadcrumb>
+    </el-col>
+</el-row>
