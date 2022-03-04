@@ -16,4 +16,8 @@ export default class Sidebar extends Vue {
 
     return Store.projectList.filter((value) => value.name?.toUpperCase().includes(this.searchProject.toUpperCase()));
   }
+  createProject() : void{
+    Store.clickCreateProject = true
+    console.log("create",Store.clickCreateProject)
+  }
 }

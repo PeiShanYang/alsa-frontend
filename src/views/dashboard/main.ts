@@ -2,13 +2,23 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 
-
+import DialogProjectCreate from '@/components/dialog-project-create/DialogProjectCreate.vue';
+import Store from '@/services/store.service';
 import flowNode from "@/components/flow-node/FlowNode.vue";
 
-@Component
+@Component({
+  components:{
+    "dialog-project-create": DialogProjectCreate,
+  }
+})
 export default class Dashboard extends Vue {
 
   private projectExist = false;
+
+  get openDialogProjectCreate(){
+    return Store.clickCreateProject
+  }
+
   private projectName = "";
   private currentComponent = "";
 
@@ -146,67 +156,65 @@ export default class Dashboard extends Vue {
     borderColor: string,
     icon: string,
   }> = [
-    {
-      name: "dataset-node",
-      title: "資料集",
-      content: "文字描述",
-      backgroundColor: "#EDEDED",
-      borderColor: "#2F4F4F",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "preprocess-node",
-      title: "前處理",
-      content: '文字敘述',
-      backgroundColor: "#F8F8F0",
-      borderColor: "#BCC733",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "data-argument-node",
-      title: "資料擴增",
-      content: "文字描述",
-      backgroundColor: "#FFF0F0",
-      borderColor: "#DD8282",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "model-select-node",
-      title: "模型訓練",
-      content: "文字描述",
-      backgroundColor: "#F5F5FD",
-      borderColor: "#8282DD",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "validation-select-node",
-      title: "驗證方法",
-      content: "文字描述",
-      backgroundColor: "#FCFCDF",
-      borderColor: "#DE9988",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "training-result-node",
-      title: "驗證結果",
-      content: "文字描述",
-      backgroundColor: "#FAECEC",
-      borderColor: "#BC6161",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "test-result-node",
-      title: "測試結果",
-      content: "文字描述",
-      backgroundColor: "#FAECEC",
-      borderColor: "#C69D16",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-  ]
+      {
+        name: "dataset-node",
+        title: "資料集",
+        content: "文字描述",
+        backgroundColor: "#EDEDED",
+        borderColor: "#2F4F4F",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "preprocess-node",
+        title: "前處理",
+        content: '文字敘述',
+        backgroundColor: "#F8F8F0",
+        borderColor: "#BCC733",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "data-argument-node",
+        title: "資料擴增",
+        content: "文字描述",
+        backgroundColor: "#FFF0F0",
+        borderColor: "#DD8282",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "model-select-node",
+        title: "模型訓練",
+        content: "文字描述",
+        backgroundColor: "#F5F5FD",
+        borderColor: "#8282DD",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "validation-select-node",
+        title: "驗證方法",
+        content: "文字描述",
+        backgroundColor: "#FCFCDF",
+        borderColor: "#DE9988",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "training-result-node",
+        title: "驗證結果",
+        content: "文字描述",
+        backgroundColor: "#FAECEC",
+        borderColor: "#BC6161",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "test-result-node",
+        title: "測試結果",
+        content: "文字描述",
+        backgroundColor: "#FAECEC",
+        borderColor: "#C69D16",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+    ]
 
-  created() {
-
-    this.currentComponent = this.$route.name!;
+  created(): void {
 
     this.defaultFlow.map((node) => {
       Graph.registerVueComponent(
@@ -226,19 +234,31 @@ export default class Dashboard extends Vue {
     });
   }
 
-  mounted() {
+  mounted(): void {
 
-    const elCollapse = document.querySelector(".el-collapse")!;
-    const elCollapseWidth: number = elCollapse.clientWidth;
-    const nodeWidth: number = elCollapseWidth * 0.11;
-    const nodeHeight: number = elCollapseWidth * 0.08;
-    const nodeBaseX: number = elCollapseWidth * 0.04;
-    const nodeBaseY: number = elCollapseWidth * 0.02;
-    const nodeBaseSpace: number = elCollapseWidth * 0.13;
+    console.log("store dashboard",Store.clickCreateProject)
+
+    const elCollapse = document.querySelector(".el-collapse");
+
+    let elCollapseWidth: number;
+    let nodeWidth: number
+    let nodeHeight: number
+    let nodeBaseX: number
+    let nodeBaseY: number
+    let nodeBaseSpace: number
+
+    if (elCollapse) {
+      elCollapseWidth = elCollapse.clientWidth;
+      nodeWidth = elCollapseWidth * 0.11;
+      nodeHeight = elCollapseWidth * 0.08;
+      nodeBaseX = elCollapseWidth * 0.04;
+      nodeBaseY = elCollapseWidth * 0.02;
+      nodeBaseSpace = elCollapseWidth * 0.13;
+    }
 
 
     // add default node and edge
-    this.defaultFlow.map((node, index, array) => {
+    this.defaultFlow.forEach((node, index) => {
       this.graph?.addNode({
         id: node.name,
         x: nodeBaseX + nodeBaseSpace * index,
@@ -322,21 +342,27 @@ export default class Dashboard extends Vue {
 
   private init(): void {
 
-    const elCollapse = document.querySelector(".el-collapse")!;
-    const elCollapseWidth: number = elCollapse.clientWidth;
+    const elCollapse = document.querySelector(".el-collapse");
+    const graphContainer = document.getElementById("graph-container");
 
-    const graphContainer = document.getElementById("graph-container")!;
-    const graphWidth: number = elCollapseWidth * 0.97;
-    const graphHeight: number = elCollapseWidth * 0.15;
+    let elCollapseWidth: number;
+    let graphWidth: number;
+    let graphHeight: number
 
+    if (elCollapse && graphContainer) {
 
-    this.graph = new Graph({
-      container: graphContainer,
-      width: graphWidth,
-      height: graphHeight,
-      // grid: true,
+      elCollapseWidth = elCollapse.clientWidth;
+      graphWidth = elCollapseWidth * 0.97;
+      graphHeight = elCollapseWidth * 0.15;
 
-    });
+      this.graph = new Graph({
+        container: graphContainer,
+        width: graphWidth,
+        height: graphHeight,
+        // grid: true,
+
+      });
+    }
 
 
     // 控制连接桩显示/隐藏

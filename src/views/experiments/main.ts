@@ -7,7 +7,7 @@ import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import flowNode from "@/components/flow-node/FlowNode.vue";
-import Store from '@/services/store.service';
+
 
 @Component({
   components: {
@@ -17,10 +17,9 @@ import Store from '@/services/store.service';
   }
 })
 export default class Experiments extends Vue {
-  // private projectName = "";
   // private currentComponent = "";
   private acitveProjectCollapse: string[] = ["1"];
-  private openDialogRunProject  = false;
+  private openDialogRunProject = false;
   private openDialogDataset = false;
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
@@ -118,68 +117,72 @@ export default class Experiments extends Vue {
     borderColor: string,
     icon: string,
   }> = [
-    {
-      name: "dataset-node",
-      title: "資料集",
-      content: "文字描述",
-      backgroundColor: "#EDEDED",
-      borderColor: "#2F4F4F",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "preprocess-node",
-      title: "前處理",
-      content: '文字敘述',
-      backgroundColor: "#F8F8F0",
-      borderColor: "#BCC733",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "data-argument-node",
-      title: "資料擴增",
-      content: "文字描述",
-      backgroundColor: "#FFF0F0",
-      borderColor: "#DD8282",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "model-select-node",
-      title: "模型訓練",
-      content: "文字描述",
-      backgroundColor: "#F5F5FD",
-      borderColor: "#8282DD",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "validation-select-node",
-      title: "驗證方法",
-      content: "文字描述",
-      backgroundColor: "#FCFCDF",
-      borderColor: "#DE9988",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "training-result-node",
-      title: "驗證結果",
-      content: "文字描述",
-      backgroundColor: "#FAECEC",
-      borderColor: "#BC6161",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-    {
-      name: "test-result-node",
-      title: "測試結果",
-      content: "文字描述",
-      backgroundColor: "#FAECEC",
-      borderColor: "#C69D16",
-      icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-    },
-  ]
+      {
+        name: "dataset-node",
+        title: "資料集",
+        content: "文字描述",
+        backgroundColor: "#EDEDED",
+        borderColor: "#2F4F4F",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "preprocess-node",
+        title: "前處理",
+        content: '文字敘述',
+        backgroundColor: "#F8F8F0",
+        borderColor: "#BCC733",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "data-argument-node",
+        title: "資料擴增",
+        content: "文字描述",
+        backgroundColor: "#FFF0F0",
+        borderColor: "#DD8282",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "model-select-node",
+        title: "模型訓練",
+        content: "文字描述",
+        backgroundColor: "#F5F5FD",
+        borderColor: "#8282DD",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "validation-select-node",
+        title: "驗證方法",
+        content: "文字描述",
+        backgroundColor: "#FCFCDF",
+        borderColor: "#DE9988",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "training-result-node",
+        title: "驗證結果",
+        content: "文字描述",
+        backgroundColor: "#FAECEC",
+        borderColor: "#BC6161",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+      {
+        name: "test-result-node",
+        title: "測試結果",
+        content: "文字描述",
+        backgroundColor: "#FAECEC",
+        borderColor: "#C69D16",
+        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
+      },
+    ]
 
   private activeDrawer = '0';
 
-  created() {
-    
+  get projectName(): string {
+    return this.$route.params.projectName
+  }
+
+  created(): void {
+
     // this.currentComponent = this.$route.name!;
 
     this.defaultFlow.map((node) => {
@@ -200,17 +203,27 @@ export default class Experiments extends Vue {
     });
   }
 
-  mounted() {
-    const elCollapse = document.querySelector(".el-collapse")!;
-    const elCollapseWidth: number = elCollapse.clientWidth;
-    const nodeWidth: number = elCollapseWidth * 0.11;
-    const nodeHeight: number = elCollapseWidth * 0.08;
-    const nodeBaseX: number = elCollapseWidth * 0.04;
-    const nodeBaseY: number = elCollapseWidth * 0.02;
-    const nodeBaseSpace: number = elCollapseWidth * 0.13;
-
-    // console.log("test route", this.$route)
+  mounted(): void {
     
+
+    const elCollapse = document.querySelector(".el-collapse");
+
+    let elCollapseWidth: number;
+    let nodeWidth: number
+    let nodeHeight: number
+    let nodeBaseX: number
+    let nodeBaseY: number
+    let nodeBaseSpace: number
+
+    if (elCollapse) {
+      elCollapseWidth = elCollapse.clientWidth;
+      nodeWidth = elCollapseWidth * 0.11;
+      nodeHeight = elCollapseWidth * 0.08;
+      nodeBaseX = elCollapseWidth * 0.04;
+      nodeBaseY = elCollapseWidth * 0.02;
+      nodeBaseSpace = elCollapseWidth * 0.13;
+    }
+
     this.init();
 
     // add default node and edge
@@ -236,7 +249,7 @@ export default class Experiments extends Vue {
 
 
     this.graph?.on("node:click", (nodeInfo: any) => {
-      console.log("node id", nodeInfo.node.id);
+      console.log("node id", nodeInfo.node.id, nodeInfo);
 
       const targetDialog = nodeInfo.node.component;
       switch (targetDialog) {
@@ -259,21 +272,34 @@ export default class Experiments extends Vue {
 
   private init(): void {
 
-    const elCollapse = document.querySelector(".el-collapse")!;
-    const elCollapseWidth: number = elCollapse.clientWidth;
+    const elCollapse = document.querySelector(".el-collapse");
+    const graphContainer = document.getElementById("graph-container");
 
-    const graphContainer = document.getElementById("graph-container")!;
-    const graphWidth: number = elCollapseWidth * 0.97;
-    const graphHeight: number = elCollapseWidth * 0.15;
+    let elCollapseWidth: number;
+    let graphWidth: number;
+    let graphHeight: number
+
+    if (elCollapse && graphContainer) {
+
+      elCollapseWidth = elCollapse.clientWidth;
+      graphWidth = elCollapseWidth * 0.97;
+      graphHeight = elCollapseWidth * 0.15;
+
+      this.graph = new Graph({
+        container: graphContainer,
+        width: graphWidth,
+        height: graphHeight,
+        // grid: true,
+
+      });
+    }
 
 
-    this.graph = new Graph({
-      container: graphContainer,
-      width: graphWidth,
-      height: graphHeight,
-      // grid: true,
 
-    });
+
+
+
+
 
 
     // 控制连接桩显示/隐藏

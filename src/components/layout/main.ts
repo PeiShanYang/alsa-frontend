@@ -1,5 +1,4 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
-
+import { Component, Vue } from 'vue-property-decorator';
 import Sidebar from "@/components/sidebar/Sidebar.vue";
 import Navbar from '@/components/navbar/Navbar.vue';
 
@@ -11,11 +10,9 @@ import Navbar from '@/components/navbar/Navbar.vue';
   }
 })
 
-
 export default class Layout extends Vue {
 
-  get routeName(){
-    console.log("this.$route.path",this.$route.path)
+  get routeName() :string{
     return this.$route.path;
   }
 

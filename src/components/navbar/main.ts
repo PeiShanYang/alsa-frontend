@@ -3,12 +3,11 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Navbar extends Vue {
-  get projectName() {
+  get projectName(): string {
     return this.$route.params.projectName;
   }
 
-  get currentComponent() {
-    console.log("thsi",this.$route)
+  get currentComponent(): string {
     return this.$route.name ?? '';
   }
 }

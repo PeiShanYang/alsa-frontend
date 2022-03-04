@@ -1,9 +1,10 @@
 span, i {
-    font-size: 2rem;
+    font-size: 22px;
 }
 
 i+span {
-    padding-left: 0.5rem;
+    padding: 0.5rem;
+    margin: auto;
 }
 
 .search-panel {
@@ -21,4 +22,9 @@ i+span {
 .el-divider--horizontal {
     width: 90%;
     margin: 5px auto;
+}
+
+img{
+    width: 2.5rem;
+    height: 2.5rem;
 }
