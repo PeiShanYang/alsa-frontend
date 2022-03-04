@@ -1,0 +1,30 @@
+<div style="display: flex;height: 100%;width: 100%;">
+  <el-card style="margin:auto;width: 70%;height: 60%;">
+    <el-row style="margin: 2rem;">
+      <el-col style="display: flex;justify-content: center;align-items: center;">
+        <span style="font-size: 3.2rem;">請選擇新增專案方式</span>
+      </el-col>
+    </el-row>
+    <el-row style="margin: 3rem 0;">
+      <el-col :span=8>
+        <div class="chosen-box">
+          <i class="el-icon-circle-plus-outline"></i>
+          <span>新手指引</span>
+        </div>
+      </el-col>
+      <el-col :span=8>
+        <div class="chosen-box" @click="openDialogImportKey = true">
+          <i class="el-icon-key"></i>
+          <span>匯入解決方案金鑰</span>
+        </div>
+      </el-col>
+      <el-col :span=8>
+        <div class="chosen-box">
+          <i class="el-icon-circle-plus-outline"></i>
+          <span>空白頁面</span>
+        </div>
+      </el-col>
+    </el-row>
+  </el-card>
+  <dialog-import-key :dialog-open="openDialogImportKey" @dialog-close="closeDialogImportKey"/>
+</div>
