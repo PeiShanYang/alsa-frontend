@@ -14,4 +14,7 @@ export default class Api {
       },
     ];
   }
+  static async createProject(): Promise<void>{
+    Store.projectList = [...Store.projectList,]
+  }
 }

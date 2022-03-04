@@ -9,17 +9,20 @@ export default class DialogImportKey extends Vue {
   get openDialogImportKey() {
     return this.dialogOpen
   }
-  set openDialogDataset(value: boolean) {
+  set openDialogImportKey(value: boolean) {
     this.closeDialogImportKey()
   }
   @Emit("dialog-close")
   closeDialogImportKey() {
     return false;
   }
-
-
+  
   private inputProjectName = '';
   private inputSolutionKey = '';
+
+  private test():void{
+    console.log("testtt")
+}
 
 
 }
