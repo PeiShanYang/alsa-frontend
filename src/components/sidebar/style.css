@@ -1,12 +1,24 @@
 span, i {
     font-size: 2rem;
-    color: #85AEC0;
 }
 
 i+span {
     padding-left: 0.5rem;
 }
 
-.el-menu span, i, a {
-    color: white;
+.search-panel {
+    padding: 5px 15px;
+}
+
+.el-submenu__title i {
+    color: #FFFFFF;
+}
+
+.el-menu-item i {
+    color: #FFFFFF;
+}
+
+.el-divider--horizontal {
+    width: 90%;
+    margin: 5px auto;
 }

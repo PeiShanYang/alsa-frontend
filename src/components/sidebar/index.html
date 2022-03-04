@@ -1,5 +1,4 @@
-<el-menu style="width:100%; border-right: 0;" background-color="#0E5879" active-text-color="#D9DF90" unique-opened
-  router>
+<el-menu style="height: 100%" background-color="#08648D" text-color="#FFFFFF" active-text-color="#D9DF90" unique-opened router>
   <el-menu-item index="/">
     <i class="el-icon-s-home"></i>
     <span>Dashboard</span>
@@ -8,14 +7,14 @@
     <i class="el-icon-plus"></i>
     <span>Create Project</span>
   </el-menu-item>
-  <el-menu-item>
-    <el-input placeholder="Search Project" suffix-icon="el-icon-search" v-model="searchProject" />
-  </el-menu-item>
+  <div class="search-panel">
+    <el-input placeholder="Search Project" suffix-icon="el-icon-search" v-model="searchProject" clearable />
+  </div>
+  <el-divider></el-divider>
   <template v-for="project in projectList">
     <el-submenu :index="project.name">
       <template slot="title">
-        <i v-if="project.fav" class="el-icon-star-on"></i>
-        <i v-else class="el-icon-star-off"></i>
+        <i class="el-icon-star-off"></i>
         <span>{{ project.name }}</span>
       </template>
       <el-menu-item :index="`/${project.name}/dataset`">
