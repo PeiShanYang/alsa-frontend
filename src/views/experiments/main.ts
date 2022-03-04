@@ -204,6 +204,7 @@ export default class Experiments extends Vue {
   }
 
   mounted(): void {
+    
 
     const elCollapse = document.querySelector(".el-collapse");
 

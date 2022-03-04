@@ -2,13 +2,23 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 
-
+import DialogProjectCreate from '@/components/dialog-project-create/DialogProjectCreate.vue';
+import Store from '@/services/store.service';
 import flowNode from "@/components/flow-node/FlowNode.vue";
 
-@Component
+@Component({
+  components:{
+    "dialog-project-create": DialogProjectCreate,
+  }
+})
 export default class Dashboard extends Vue {
 
   private projectExist = false;
+
+  get openDialogProjectCreate(){
+    return Store.clickCreateProject
+  }
+
   private projectName = "";
   private currentComponent = "";
 
@@ -225,6 +235,8 @@ export default class Dashboard extends Vue {
   }
 
   mounted(): void {
+
+    console.log("store dashboard",Store.clickCreateProject)
 
     const elCollapse = document.querySelector(".el-collapse");
 

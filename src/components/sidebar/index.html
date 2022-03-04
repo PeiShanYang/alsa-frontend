@@ -1,11 +1,11 @@
 <el-menu style="width:100%; border-right: 0;" background-color="#0E5879" active-text-color="#D9DF90" unique-opened
   router>
   <el-menu-item index="/">
-    <i class="el-icon-s-home"></i>
+    <i><img :src="require('@/assets/Forallvision_icon0304/bar_dashboard.svg')" /></i>
     <span>Dashboard</span>
   </el-menu-item>
-  <el-menu-item>
-    <i class="el-icon-plus"></i>
+  <el-menu-item @click="createProject">
+    <i><img :src="require('@/assets/Forallvision_icon0304/bar_Create_Project.svg')" /></i>
     <span>Create Project</span>
   </el-menu-item>
   <el-menu-item>
@@ -19,15 +19,15 @@
         <span>{{ project.name }}</span>
       </template>
       <el-menu-item :index="`/${project.name}/dataset`">
-        <i class="el-icon-star-off"></i>
+        <i><img :src="require('@/assets/Forallvision_icon0304/bar_Dataset.svg')" /></i>
         <span>Dataset</span>
       </el-menu-item>
       <el-menu-item :index="`/${project.name}/experiments`">
-        <i class="el-icon-star-off"></i>
+        <i><img :src="require('@/assets/Forallvision_icon0304/bar_Experiments.svg')" /></i>
         <span>Experiments</span>
       </el-menu-item>
       <el-menu-item :index="`/${project.name}/models`">
-        <i class="el-icon-star-off"></i>
+        <i><img :src="require('@/assets/Forallvision_icon0304/bar_Models.svg')" /></i>
         <span>Models</span>
       </el-menu-item>
     </el-submenu>
