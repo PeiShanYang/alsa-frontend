@@ -6,11 +6,11 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class Sidebar extends Vue {
   private searchProject = '';
 
-  created() {
+  created(): void {
     Api.getProjectList();
   }
 
-  get projectList() {
+  get projectList(): Array<string> {
     return Store.projectList;
   }
 }

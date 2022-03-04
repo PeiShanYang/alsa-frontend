@@ -1,10 +1,9 @@
 <div>
-  <el-main>
     <el-collapse v-model="acitveProjectCollapse" accordion>
       <el-collapse-item name="1">
         <template slot="title">
           <i class="el-icon-star-off"> </i>
-          <span> Project 2022</span>
+          <span>{{projectName}}</span>
         </template>
         <el-row type="flex" justify="center">
           <el-col>
@@ -26,7 +25,6 @@
         </el-row>
       </el-collapse-item>
     </el-collapse>
-  </el-main>
 
   <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="closeDialogDataset" />
   <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="closeDialogPreprocess" />
