@@ -1,3 +1,5 @@
+import { Project } from "@/io/project";
+
 export default class Store {
-    static projectList: string[] = [];
+    static projectList: Project[] = [];
 }
