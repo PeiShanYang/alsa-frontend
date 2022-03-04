@@ -9,11 +9,9 @@ import DialogImportKey from '@/components/dialog-import-key/DialogImportKey.vue'
     }
 })
 export default class HelloWorld extends Vue {
-
     private openDialogImportKey = false;
 
-
-    private closeDialogImportKey(value: boolean): void {
-        this.openDialogImportKey = value;
-      }
+    private closeDialogImportKey(): void {
+        this.openDialogImportKey = false;
+    }
 }
