@@ -15,19 +15,26 @@ export default class DialogImportKey extends Vue {
   }
 
   @Emit("import-confirm")
-  createProjectByKey() {
+  async createProjectByKey() {
+
+    const firstChr = new RegExp("^[A-Za-z]")
+    const otherpattern = new RegExp("[`~!@#$^&*()=|{}':;'\\[\\]<>/?~！@#￥……&*（）——|{}【】‘；：”“'% - \\s \\.]");
+
+    if (this.inputProjectName.match(firstChr) === null) alert("error with first input char")
+    if (this.inputProjectName.match(otherpattern) !== null) alert("error with illegal char")
+
 
     if (this.inputProjectName !== "" && this.inputSolutionKey !== "") {
-      Api.createProject(this.inputProjectName, this.inputSolutionKey)
 
-      console.log("test", Store.projectList)
-      this.$forceUpdate();
-      this.$router.push({ name: 'experiments', params: { projectName: "Default Project" } })
+      await Api.createProject(this.inputProjectName, this.inputSolutionKey)
+
+      console.log("Store", Store.projectList)
+
+      this.$router.push({ name: 'experiments', params: { projectName: this.inputProjectName } })
     }
 
     this.inputProjectName = '';
     this.inputSolutionKey = '';
-
 
     return
   }

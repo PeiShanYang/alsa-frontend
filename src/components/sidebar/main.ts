@@ -6,15 +6,16 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component
 export default class Sidebar extends Vue {
   private searchProject = '';
-
-  created(): void {
-    Api.getProjectList();
-  }
+  private store = Store;
+  // created(): void {
+  //   Api.createProject();
+  // }
 
   get projectList(): Project[] {
+    console.log("projectlist",Store.projectList);
     if (this.searchProject === '') return Store.projectList;
 
-    return Store.projectList.filter((value) => value.name?.toUpperCase().includes(this.searchProject.toUpperCase()));
+    return this.store.projectList.filter((value) => value.name?.toUpperCase().includes(this.searchProject.toUpperCase()));
   }
 
 }
