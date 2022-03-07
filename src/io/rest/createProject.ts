@@ -1,4 +1,4 @@
-export class CreateProjectByKey {
+export class CreateProjectByKeyReq {
   name!: string;
   key!: string;
 }
