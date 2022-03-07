@@ -21,10 +21,13 @@ export default class DialogImportKey extends Vue {
       Api.createProject(this.inputProjectName, this.inputSolutionKey)
 
       console.log("test", Store.projectList)
+      this.$forceUpdate();
+      this.$router.push({ name: 'experiments', params: { projectName: "Default Project" } })
     }
 
     this.inputProjectName = '';
     this.inputSolutionKey = '';
+
 
     return
   }
