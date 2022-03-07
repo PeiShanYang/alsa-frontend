@@ -14,4 +14,7 @@ export default class HelloWorld extends Vue {
     private closeDialogImportKey(): void {
         this.openDialogImportKey = false;
     }
+    private createProjectByKey(): void{
+        this.openDialogImportKey = false;
+    }
 }

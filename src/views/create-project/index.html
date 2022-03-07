@@ -2,7 +2,7 @@
   <el-card style="margin:auto;width: 70%;height: 60%;">
     <el-row style="margin: 2rem;">
       <el-col style="display: flex;justify-content: center;align-items: center;">
-        <span style="font-size: 3.2rem;">請選擇新增專案方式</span>
+        <span style="font-size: 3.2rem;font-weight: bold;">請選擇新增專案方式</span>
       </el-col>
     </el-row>
     <el-row style="margin: 3rem 0;">
@@ -26,5 +26,5 @@
       </el-col>
     </el-row>
   </el-card>
-  <dialog-import-key :dialog-open="openDialogImportKey" @dialog-close="closeDialogImportKey"/>
+  <dialog-import-key :dialog-open="openDialogImportKey" @import-cancel="closeDialogImportKey" @import-confirm="createProjectByKey" />
 </div>
