@@ -1,5 +1,10 @@
+import Vue from 'vue';
 import { Project } from "@/io/project";
 
-export default class Store {
-    static projectList: Project[] = [];
+class Store {
+  projectList: Project[] = [];
 }
+
+export default Vue.observable<Store>({
+  projectList: [],
+});

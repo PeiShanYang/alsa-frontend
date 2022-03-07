@@ -26,9 +26,7 @@ export default class DialogImportKey extends Vue {
 
     if (this.inputProjectName !== "" && this.inputSolutionKey !== "") {
 
-      await Api.createProject(this.inputProjectName, this.inputSolutionKey)
-
-      console.log("Store", Store.projectList)
+      await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey)
 
       this.$router.push({ name: 'experiments', params: { projectName: this.inputProjectName } })
     }
