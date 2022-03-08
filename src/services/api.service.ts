@@ -1,5 +1,6 @@
 import { CreateProjectByKeyReq } from "@/io/rest/createProject";
 import { GetProjectRes } from "@/io/rest/getProject";
+import { GetExperimentReq, GetExperimentRes } from "@/io/rest/getExperiment";
 import axios, { AxiosResponse } from "axios";
 import store from "./store.service";
 
@@ -21,7 +22,7 @@ export default class Api {
 
     if (res.data) {
       store.projectList = res.data.projects.map((projectName: string) => {
-        return {name: projectName};
+        return { name: projectName };
       });
     }
   }
@@ -47,8 +48,31 @@ export default class Api {
     if (res.data) {
       console.log(res.data)
       store.projectList = res.data.projects.map((projectName: string) => {
-        return {name: projectName};
+        return { name: projectName };
       });
+    }
+  }
+
+  static async getExperiments(name: string): Promise<void> {
+    const reqData: GetExperimentReq = {
+      "projectName": name,
+    };
+    const response: AxiosResponse<GetExperimentRes> = await axios.post(
+      host + 'get-experiments',
+      reqData,
+    );
+
+    if (response.status !== 200) return;
+
+    const res: GetExperimentRes = response.data;
+    if (res.code !== 0) {
+      console.log(res.message);
+      return;
+    }
+
+    if (res.data){
+      console.log(res.data)
+      
     }
   }
 }
