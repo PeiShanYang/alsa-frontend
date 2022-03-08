@@ -5,6 +5,7 @@ import Dashboard from '@/views/dashboard/Dashboard.vue';
 import Dataset from '@/views/dataset/Dataset.vue';
 import Experiments from '@/views/experiments/Experiments.vue';
 import Models from '@/views/models/Models.vue';
+import CreateProject from '@/views/create-project/CreateProject.vue';
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,15 @@ const routes: Array<RouteConfig> = [
             name: 'dashboard',
             path: 'dashboard',
             component: Dashboard,
+        }]
+    },
+    {
+        path:'/createProject',
+        component: Layout,
+        children:[{
+            name: 'createProject',
+            path: '',
+            component: CreateProject,
         }]
     },
     {
