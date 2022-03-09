@@ -9,6 +9,7 @@ import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelec
 import flowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
 import store from "@/services/store.service";
+import Dataset from '../dataset/main';
 
 
 @Component({
@@ -121,7 +122,7 @@ export default class Experiments extends Vue {
   private defaultFlow: Array<{
     name: string,
     title: string,
-    content: string,
+    content: {type:string,info:any},
     backgroundColor: string,
     borderColor: string,
     icon: string,
@@ -129,7 +130,10 @@ export default class Experiments extends Vue {
       {
         name: "dataset-node",
         title: "資料集",
-        content: "文字描述",
+        content: {
+          "type": "object",
+          "info": Dataset
+        },
         backgroundColor: "#EDEDED",
         borderColor: "#2F4F4F",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -137,7 +141,10 @@ export default class Experiments extends Vue {
       {
         name: "preprocess-node",
         title: "前處理",
-        content: '文字敘述',
+        content: {
+          "type": "array",
+          "info": [],
+        },
         backgroundColor: "#F8F8F0",
         borderColor: "#BCC733",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -145,7 +152,10 @@ export default class Experiments extends Vue {
       {
         name: "data-argument-node",
         title: "資料擴增",
-        content: "文字描述",
+        content: {
+          "type": "array",
+          "info": [],
+        },
         backgroundColor: "#FFF0F0",
         borderColor: "#DD8282",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -153,7 +163,10 @@ export default class Experiments extends Vue {
       {
         name: "model-select-node",
         title: "模型訓練",
-        content: "文字描述",
+        content: {
+          "type": "string",
+          "info": '',
+        },
         backgroundColor: "#F5F5FD",
         borderColor: "#8282DD",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -161,7 +174,10 @@ export default class Experiments extends Vue {
       {
         name: "validation-select-node",
         title: "驗證方法",
-        content: "文字描述",
+        content: {
+          "type": "array",
+          "info": [],
+        },
         backgroundColor: "#FCFCDF",
         borderColor: "#DE9988",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -169,7 +185,10 @@ export default class Experiments extends Vue {
       {
         name: "training-result-node",
         title: "驗證結果",
-        content: "文字描述",
+        content: {
+          "type": "array",
+          "info": [],
+        },
         backgroundColor: "#FAECEC",
         borderColor: "#BC6161",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -177,7 +196,10 @@ export default class Experiments extends Vue {
       {
         name: "test-result-node",
         title: "測試結果",
-        content: "文字描述",
+        content: {
+          "type": "array",
+          "info": [],
+        },
         backgroundColor: "#FAECEC",
         borderColor: "#C69D16",
         icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
@@ -191,15 +213,17 @@ export default class Experiments extends Vue {
 
     const experiment = store.projectList.find(project => project.name === this.projectName)?.experiments
     // const test = Object.values(experiment!)
-    if (experiment){
+    if (experiment) {
       this.allFlowContent = Object.values(experiment)[0]
-      
+
     }
 
-    console.log("all flow",this.allFlowContent)
+    console.log("all flow", this.allFlowContent)
 
     window.addEventListener("resize", this.resizeHandler)
-    
+
+
+    // node-content=${node.content}
 
     this.defaultFlow.map((node) => {
       Graph.registerVueComponent(
@@ -208,7 +232,7 @@ export default class Experiments extends Vue {
           template: `<flow-node 
             node-icon= ${node.icon} 
             node-title=${node.title} 
-            node-content=${node.content}
+            node-content=${JSON.stringify(node.content)}
             node-background-color = ${node.backgroundColor}
             node-border-color = ${node.borderColor}
              />`,
@@ -221,7 +245,8 @@ export default class Experiments extends Vue {
 
   mounted(): void {
 
-    this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph, this.defaultFlow)
+    this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
+    console.log("graph",this.graph)
   }
 
   destroy(): void {
@@ -232,11 +257,11 @@ export default class Experiments extends Vue {
   private resizeHandler(): void {
 
     this.graph?.clearCells()
-    this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph, this.defaultFlow)
+    this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
   }
 
 
-  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph | null, flow: any): void {
+  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph , flow: any): Graph {
 
     const containerWidth = screanWidth * 0.8;
     const containerHeight = screanWidth * 0.15;
@@ -244,7 +269,7 @@ export default class Experiments extends Vue {
     const nodeHeight = screanWidth * 0.07;
 
     let nodeBaseX = 0
-    if (screanWidth > 1200) nodeBaseX = screanWidth*0.02
+    if (screanWidth > 1200) nodeBaseX = screanWidth * 0.02
 
     const nodeBaseY = screanWidth * 0.03;
     const nodeBaseSpace = screanWidth * 0.1;
@@ -270,6 +295,9 @@ export default class Experiments extends Vue {
           shape: "vue-shape",
           component: node.name,
           ports: { ...this.port },
+          data:{
+            num: 0,
+          },
         })
 
         if (0 < index && index < array.length) {
@@ -283,7 +311,7 @@ export default class Experiments extends Vue {
 
       graph.on("node:click", (nodeInfo: any) => {
         console.log("node id", nodeInfo.node.id, nodeInfo);
-  
+
         const targetDialog = nodeInfo.node.component;
         switch (targetDialog) {
           case "dataset-node":
@@ -302,16 +330,38 @@ export default class Experiments extends Vue {
       });
 
     }
+    return graph
 
   }
 
   private output(): void {
-    console.log("get node", this.graph?.toJSON());
+
+    const nodes = this.graph?.getNodes()
+
+    if (nodes!.length) {
+      nodes!.forEach((node) => {
+        const { num } = node.getData();
+        console.log("number",num)
+        node.setData({
+          num: num + 1,
+        }
+        
+        );
+        console.log("number",num)
+      });
+    }
+
+    console.log("getNode",nodes)
+    console.log("get node list", this.graph?.toJSON());
   }
 
 
-  private closeDialogDataset(value: boolean): void {
-    this.openDialogDataset = value;
+  private closeDialogDataset(): void {
+    this.openDialogDataset = false;
+  }
+
+  private checkDataset(): void {
+    this.openDialogDataset = false;
   }
 
   private closeDialogPreprocess(value: boolean): void {

@@ -1,6 +1,7 @@
 import { CreateProjectByKeyReq } from "@/io/rest/createProject";
 import { GetProjectRes } from "@/io/rest/getProject";
 import { GetExperimentReq, GetExperimentRes } from "@/io/rest/getExperiment";
+import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 
@@ -71,13 +72,32 @@ export default class Api {
     }
 
     if (res.data) {
-
-      console.log("res data",res.data)
-
-      const project = store.projectList.findIndex( project => project.name === name)
+      console.log("res data", res.data)
+      const project = store.projectList.findIndex(project => project.name === name)
       store.projectList[project].experiments = res.data;
-
       console.log(store.projectList)
     }
+  }
+
+  static async checkDataset(datasetPath: string): Promise<void> {
+    const reqData: CheckDatasetReq = {
+      datasetPath,
+    }
+    const response: AxiosResponse<CheckDatasetRes> = await axios.post(
+      host + 'check-dataset',
+      reqData,
+    )
+
+    if (response.status !== 200) return;
+
+    const res: CheckDatasetRes = response.data;
+    if (res.code !==0){
+      console.log(res.message)
+    }
+
+    if(res.data){
+      console.log("res.data",res.data)
+    }
+
   }
 }

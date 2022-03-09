@@ -1,27 +1,36 @@
+import Api from '@/services/api.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 
 @Component
 export default class DialogDataset extends Vue {
   @Prop() private dialogOpen!: boolean;
 
-  get openDialogDataset() {
-    return this.dialogOpen
-  }
-  set openDialogDataset(value: boolean) {
-    this.closeDialogDataset()
-  }
+
   @Emit("dialog-close")
   closeDialogDataset() {
-    return false;
+    return ;
   }
 
-  private activeDatasetCollapse: string[] = ["1"];
-  private datasetSearch = '';
-  private progressColor = "#fff";
-  private progressPercentage = 88;
-  private datasetCheckBox = false;
-  
+  @Emit("check-dataset")
+  checkDataset(){
 
+    if (this.inputDatasetPath !== ''){
+      Api.checkDataset(this.inputDatasetPath)
+    }
+
+    this.inputDatasetPath = ''
+
+    return
+  }
+
+  private inputDatasetPath = '';
+
+  // private activeDatasetCollapse: string[] = ["1"];
+  // private datasetSearch = '';
+  // private progressColor = "#fff";
+  // private progressPercentage = 88;
+  // private datasetCheckBox = false;
+  
 }
 
 

@@ -1,4 +1,4 @@
-.el-container span {
+/* .el-container span {
   font-size: 1.5em;
 }
 .el-container i {
@@ -55,4 +55,50 @@
   width: 100%;
   color: #4a9abe;
   background: #effbfd;
+} */
+i,span {
+  color: #08648D;
+}
+
+::v-deep .el-dialog__headerbtn {
+  font-size: 3.5rem;
+}
+::v-deep .el-dialog__close {
+  color: #0e5879!important;
+}
+
+.dialogInput{
+  width: 50%;
+  display: flex;
+  margin: auto;
+}
+
+.dialogInputTitle{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: bold;
+  padding: 2rem;
+}
+
+#cancel-btn {
+  height: 4rem;
+  width: 10rem;
+  font-size: 1.5rem;
+  color: #08648d;
+  border: 1px solid #08648d;
+  background-color: white;
+  margin: auto;
+  align-self: center;
+}
+
+#confirm-btn {
+  height: 4rem;
+  width: 10rem;
+  font-size: 1.5rem;
+  color: white;
+  background-color: #0E5879;
+  margin: auto;
+  align-self: center;
 }
