@@ -7,6 +7,8 @@ import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import flowNode from "@/components/flow-node/FlowNode.vue";
+import Api from '@/services/api.service';
+import store from "@/services/store.service";
 
 
 @Component({
@@ -18,6 +20,7 @@ import flowNode from "@/components/flow-node/FlowNode.vue";
 })
 export default class Experiments extends Vue {
 
+
   get projectName(): string {
     return this.$route.params.projectName
   }
@@ -28,9 +31,7 @@ export default class Experiments extends Vue {
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
 
-
-  private flowChartHeight = 0;
-  private flowChartWidth = 0;
+  private allFlowContent = null;
 
   private graph: Graph | null = null;
   private port: any = {
@@ -185,8 +186,20 @@ export default class Experiments extends Vue {
 
 
   created(): void {
+    Api.getExperiments(this.projectName)
+
+
+    const experiment = store.projectList.find(project => project.name === this.projectName)?.experiments
+    // const test = Object.values(experiment!)
+    if (experiment){
+      this.allFlowContent = Object.values(experiment)[0]
+      
+    }
+
+    console.log("all flow",this.allFlowContent)
 
     window.addEventListener("resize", this.resizeHandler)
+    
 
     this.defaultFlow.map((node) => {
       Graph.registerVueComponent(

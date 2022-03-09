@@ -7,9 +7,6 @@ export class GetExperimentReq {
 export class GetExperimentRes {
     code: number = 0;
     message: string = '';
-    data?: GetExperimentResData;
+    data?: Experiment;
 }
 
-export class GetExperimentResData {
-    experiments: Map<string, Experiment> = new Map<string, Experiment>();
-}

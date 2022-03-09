@@ -2,7 +2,7 @@ import { CreateProjectByKeyReq } from "@/io/rest/createProject";
 import { GetProjectRes } from "@/io/rest/getProject";
 import { GetExperimentReq, GetExperimentRes } from "@/io/rest/getExperiment";
 import axios, { AxiosResponse } from "axios";
-import store from "./store.service";
+import store from "@/services/store.service";
 
 const host = 'http://tw100104318:57510/';
 
@@ -71,7 +71,13 @@ export default class Api {
     }
 
     if (res.data) {
-      console.log(res.data)
+
+      console.log("res data",res.data)
+
+      const project = store.projectList.findIndex( project => project.name === name)
+      store.projectList[project].experiments = res.data;
+
+      console.log(store.projectList)
     }
   }
 }
