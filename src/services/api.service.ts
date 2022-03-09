@@ -70,9 +70,8 @@ export default class Api {
       return;
     }
 
-    if (res.data){
+    if (res.data) {
       console.log(res.data)
-      
     }
   }
 }
