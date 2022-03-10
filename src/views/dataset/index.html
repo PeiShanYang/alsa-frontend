@@ -13,7 +13,7 @@
     </el-col>
     <el-col :span="3" :offset="4">
       <el-button class="decorate-btn">
-        <span>上傳資料集</span>
+        <span>新增資料集</span>
       </el-button>
     </el-col>
   </el-row>
@@ -25,15 +25,15 @@
           <span>{{ projectName }}</span>
         </template>
         <el-row type="flex" justify="space-around">
-          <el-col :span=10 class="datasetStatus">
-            <span>資料夾路徑 : </span>
+          <el-col :span=12 style="padding: 1em;font-size: 1.5em;">
+            <span style="padding-left: 1.3em;">資料集路徑 : </span>
             <span> /test</span>
           </el-col>
-          <el-col :span=10 class="datasetStatus">
-            <el-checkbox-group v-model="checkList" style="margin: auto;">
-              <el-checkbox label="uploaded"></el-checkbox>
-              <el-checkbox label="labeled"></el-checkbox>
-              <el-checkbox label="split"></el-checkbox>
+          <el-col :span=12 style="display: flex;justify-content: flex-end;padding: 1em 2em;font-size: 1.5em;">
+            <el-checkbox-group v-model="checkList">
+              <el-checkbox label="uploaded" disabled></el-checkbox>
+              <el-checkbox label="labeled" disabled></el-checkbox>
+              <el-checkbox label="split" disabled></el-checkbox>
             </el-checkbox-group>
           </el-col>
         </el-row>

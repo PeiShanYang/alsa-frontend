@@ -38,6 +38,6 @@ export default class Dataset extends Vue {
     return this.$route.params.projectName
   }
 
-  private checkList = ["uploaded","labeled","split"]
+  private checkList = ["uploaded","split"]
 
 }
