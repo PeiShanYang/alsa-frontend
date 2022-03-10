@@ -7,6 +7,8 @@ import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import flowNode from "@/components/flow-node/FlowNode.vue";
+import Api from '@/services/api.service';
+import store from "@/services/store.service";
 
 
 @Component({
@@ -17,12 +19,19 @@ import flowNode from "@/components/flow-node/FlowNode.vue";
   }
 })
 export default class Experiments extends Vue {
-  // private currentComponent = "";
+
+
+  get projectName(): string {
+    return this.$route.params.projectName
+  }
+
   private acitveProjectCollapse: string[] = ["1"];
   private openDialogRunProject = false;
   private openDialogDataset = false;
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
+
+  private allFlowContent = null;
 
   private graph: Graph | null = null;
   private port: any = {
@@ -175,15 +184,22 @@ export default class Experiments extends Vue {
       },
     ]
 
-  private activeDrawer = '0';
-
-  get projectName(): string {
-    return this.$route.params.projectName
-  }
 
   created(): void {
+    Api.getExperiments(this.projectName)
 
-    // this.currentComponent = this.$route.name!;
+
+    const experiment = store.projectList.find(project => project.name === this.projectName)?.experiments
+    // const test = Object.values(experiment!)
+    if (experiment){
+      this.allFlowContent = Object.values(experiment)[0]
+      
+    }
+
+    console.log("all flow",this.allFlowContent)
+
+    window.addEventListener("resize", this.resizeHandler)
+    
 
     this.defaultFlow.map((node) => {
       Graph.registerVueComponent(
@@ -204,125 +220,95 @@ export default class Experiments extends Vue {
   }
 
   mounted(): void {
-    
 
-    const elCollapse = document.querySelector(".el-collapse");
-
-    let elCollapseWidth: number;
-    let nodeWidth: number
-    let nodeHeight: number
-    let nodeBaseX: number
-    let nodeBaseY: number
-    let nodeBaseSpace: number
-
-    if (elCollapse) {
-      elCollapseWidth = elCollapse.clientWidth;
-      nodeWidth = elCollapseWidth * 0.11;
-      nodeHeight = elCollapseWidth * 0.08;
-      nodeBaseX = elCollapseWidth * 0.04;
-      nodeBaseY = elCollapseWidth * 0.02;
-      nodeBaseSpace = elCollapseWidth * 0.13;
-    }
-
-    this.init();
-
-    // add default node and edge
-    this.defaultFlow.map((node, index, array) => {
-      this.graph?.addNode({
-        id: node.name,
-        x: nodeBaseX + nodeBaseSpace * index,
-        y: nodeBaseY,
-        width: nodeWidth,
-        height: nodeHeight,
-        shape: "vue-shape",
-        component: node.name,
-        ports: { ...this.port },
-      });
-
-      if (0 < index && index < array.length) {
-        this.graph?.addEdge({
-          source: { cell: array[index - 1].name, port: "portRight" },
-          target: { cell: array[index].name, port: "portLeft" },
-        });
-      }
-    });
-
-
-    this.graph?.on("node:click", (nodeInfo: any) => {
-      console.log("node id", nodeInfo.node.id, nodeInfo);
-
-      const targetDialog = nodeInfo.node.component;
-      switch (targetDialog) {
-        case "dataset-node":
-          this.openDialogDataset = true;
-          break;
-        case "preprocess-node":
-          this.openDialogPreprocess = true;
-          break;
-        case "model-select-node":
-          this.openDialogModelSelect = true;
-          break;
-        default:
-          console.log("out of case");
-      }
-
-
-    });
+    this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph, this.defaultFlow)
   }
 
-  private init(): void {
+  destroy(): void {
 
-    const elCollapse = document.querySelector(".el-collapse");
-    const graphContainer = document.getElementById("graph-container");
+    window.removeEventListener("resize", this.resizeHandler)
+  }
 
-    let elCollapseWidth: number;
-    let graphWidth: number;
-    let graphHeight: number
+  private resizeHandler(): void {
 
-    if (elCollapse && graphContainer) {
+    this.graph?.clearCells()
+    this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph, this.defaultFlow)
+  }
 
-      elCollapseWidth = elCollapse.clientWidth;
-      graphWidth = elCollapseWidth * 0.97;
-      graphHeight = elCollapseWidth * 0.15;
 
-      this.graph = new Graph({
-        container: graphContainer,
-        width: graphWidth,
-        height: graphHeight,
+  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph | null, flow: any): void {
+
+    const containerWidth = screanWidth * 0.8;
+    const containerHeight = screanWidth * 0.15;
+    const nodeWidth = screanWidth * 0.08;
+    const nodeHeight = screanWidth * 0.07;
+
+    let nodeBaseX = 0
+    if (screanWidth > 1200) nodeBaseX = screanWidth*0.02
+
+    const nodeBaseY = screanWidth * 0.03;
+    const nodeBaseSpace = screanWidth * 0.1;
+
+    if (container) {
+
+      graph = new Graph({
+        container: container,
+        width: containerWidth,
+        height: containerHeight,
         // grid: true,
+        panning: true,
+      })
+
+      // add default node and edge
+      flow.forEach((node: any, index: any, array: any) => {
+        graph?.addNode({
+          id: node.name,
+          x: nodeBaseX + nodeBaseSpace * index,
+          y: nodeBaseY,
+          width: nodeWidth,
+          height: nodeHeight,
+          shape: "vue-shape",
+          component: node.name,
+          ports: { ...this.port },
+        })
+
+        if (0 < index && index < array.length) {
+          graph?.addEdge({
+            source: { cell: array[index - 1].name, port: "portRight" },
+            target: { cell: array[index].name, port: "portLeft" },
+          });
+        }
 
       });
+
+      graph.on("node:click", (nodeInfo: any) => {
+        console.log("node id", nodeInfo.node.id, nodeInfo);
+  
+        const targetDialog = nodeInfo.node.component;
+        switch (targetDialog) {
+          case "dataset-node":
+            this.openDialogDataset = true;
+            break;
+          case "preprocess-node":
+            this.openDialogPreprocess = true;
+            break;
+          case "model-select-node":
+            this.openDialogModelSelect = true;
+            break;
+          default:
+            console.log("out of case");
+        }
+
+      });
+
     }
-
-
-
-
-
-
-
-
-
-    // 控制连接桩显示/隐藏
-    // const showPorts = (ports: any, show: boolean): void => {
-    //   for (let i = 0, len = ports.length; i < len; i = i + 1) {
-    //     ports[i].style.visibility = show ? "visible" : "hidden";
-    //   }
-    // };
-
-    // this.graph.on("node:mouseenter", () => {
-    //   const ports = graphContainer.querySelectorAll(".x6-port-body");
-    //   showPorts(ports, true);
-    // });
-    // this.graph.on("node:mouseleave", () => {
-    //   const ports = graphContainer.querySelectorAll(".x6-port-body");
-    //   showPorts(ports, false);
-    // });
 
   }
 
   private output(): void {
     console.log("get node", this.graph?.toJSON());
   }
+
 
   private closeDialogDataset(value: boolean): void {
     this.openDialogDataset = value;
@@ -335,9 +321,4 @@ export default class Experiments extends Vue {
   private closeDialogModelSelect(value: boolean): void {
     this.openDialogModelSelect = value;
   }
-
-  // private passProjectName(value: string): void{
-  //   console.log("padd",value)
-  //   this.projectName = value
-  // }
 }

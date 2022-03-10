@@ -6,13 +6,13 @@ export default class flowNode extends Vue {
   // @Inject() getGraph: any;
   // @Inject() getNode: any;
 
-  @Prop(String) private nodeIcon!: string;
+  @Prop(String) private nodeIcon!: any;
   @Prop(String) private nodeTitle!: string;
   @Prop(String) private nodeContent!: string;
   @Prop(String) private nodeBackgroundColor!: string;
   @Prop(String) private nodeBorderColor!: string;
 
-  private imgSrc: string = this.nodeIcon;
+  private imgSrc = this.nodeIcon;
   private title: string = this.nodeTitle;
   private content: string = this.nodeContent;
   private backgroundColor =`background: ${this.nodeBackgroundColor}`;
