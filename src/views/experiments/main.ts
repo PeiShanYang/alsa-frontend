@@ -213,6 +213,7 @@ export default class Experiments extends Vue {
         width: containerWidth,
         height: containerHeight,
         // grid: true,
+        interacting: false,
         panning: true,
       });
 
