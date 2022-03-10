@@ -1,13 +1,5 @@
 import { Options } from "@antv/x6/lib/graph/options";
-
-export class NodeSettings {
-  name!: string;
-  title!: string;
-  content!: { type: string, info: any };
-  backgroundColor!: string;
-  borderColor!: string;
-  icon!: string;
-}
+import { PortManager } from "@antv/x6/lib/model/port";
 
 export default class GraphService {
   static readonly ports = {
@@ -103,7 +95,14 @@ export default class GraphService {
     }
   }
 
-  static getNodeSettings(screenWidth: number, index: number) {
+  static getNodeSettings(screenWidth: number, index: number): {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    shape: string;
+    ports: Partial<PortManager.Metadata>;
+  } {
     const nodeWidth = screenWidth * 0.08;
     const nodeHeight = screenWidth * 0.07;
 
