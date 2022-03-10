@@ -35,7 +35,7 @@ export default class Experiments extends Vue {
   private defaultFlow: Array<{
     name: string,
     title: string,
-    content: {type:string,info:any},
+    content: { type: string, info: any },
     backgroundColor: string,
     borderColor: string,
     icon: string,
@@ -157,7 +157,27 @@ export default class Experiments extends Vue {
   mounted(): void {
 
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
-    console.log("graph",this.graph)
+    console.log("graph", this.graph)
+
+    this.graph.on("node:click", (nodeInfo: any) => {
+      console.log("node id", nodeInfo.node.id, nodeInfo);
+
+      const targetDialog = nodeInfo.node.component;
+      switch (targetDialog) {
+        case "dataset-node":
+          this.openDialogDataset = true;
+          break;
+        case "preprocess-node":
+          this.openDialogPreprocess = true;
+          break;
+        case "model-select-node":
+          this.openDialogModelSelect = true;
+          break;
+        default:
+          console.log("out of case");
+      }
+
+    });
   }
 
   destroy(): void {
@@ -175,7 +195,7 @@ export default class Experiments extends Vue {
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
   }
 
-  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph , flow: any): Graph {
+  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph, flow: any): Graph {
 
     const containerWidth = screanWidth * 0.8;
     const containerHeight = screanWidth * 0.15;
@@ -217,25 +237,6 @@ export default class Experiments extends Vue {
             source: { cell: array[index - 1].name, port: "portRight" },
             target: { cell: array[index].name, port: "portLeft" },
           });
-        }
-      });
-
-      graph.on("node:click", (nodeInfo: any) => {
-        console.log("node id", nodeInfo.node.id, nodeInfo);
-
-        const targetDialog = nodeInfo.node.component;
-        switch (targetDialog) {
-          case "dataset-node":
-            this.openDialogDataset = true;
-            break;
-          case "preprocess-node":
-            this.openDialogPreprocess = true;
-            break;
-          case "model-select-node":
-            this.openDialogModelSelect = true;
-            break;
-          default:
-            console.log("out of case");
         }
       });
     }

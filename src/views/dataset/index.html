@@ -1,3 +1,43 @@
 <div>
-  <el-row>dataset</el-row>
+  <el-row class="decorate-box">
+    <el-col :span="5" :offset="8">
+      <el-select
+        v-model="selectedDatasetValue"
+        clearable
+        :placeholder="datasetOptions[0].label"
+        style="display: flex; margin: 0 auto"
+      >
+        <el-option
+          v-for="item in datasetOptions"
+          :key="item.value"
+          :value="item.value"
+          :label="item.label"
+        >
+        </el-option>
+      </el-select>
+    </el-col>
+    <el-col :span="2">
+      <el-button
+        icon="el-icon-search"
+        style="
+          background: #0e5879;
+          color: white;
+          display: flex;
+          margin: 0 auto;
+        "
+        >搜尋</el-button
+      >
+    </el-col>
+    <el-col :span="3" :offset="6">
+      <el-button
+        style="
+          background: #0e5879;
+          color: white;
+          display: flex;
+          margin: 0 auto;
+        "
+        >上傳資料集</el-button
+      >
+    </el-col>
+  </el-row>
 </div>
