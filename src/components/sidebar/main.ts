@@ -12,7 +12,6 @@ export default class Sidebar extends Vue {
   }
 
   get projectList(): Map<string, Project> {
-    console.log("projectlist", store.projectList);
     if (this.searchProject === '') return store.projectList;
 
     return new Map<string, Project>(

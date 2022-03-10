@@ -3,12 +3,10 @@
       <el-collapse-item name="1">
         <template slot="title">
           <i class="el-icon-star-off"> </i>
-          <span>{{projectName}}</span>
+          <span>{{ projectName }}</span>
         </template>
         <el-row type="flex" justify="center">
-          <el-col>
-            <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
-          </el-col>
+          <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
         </el-row>
         <el-row type="flex" justify="space-between">
           <el-col :span="4" style="display: flex;padding: 0 1rem;">

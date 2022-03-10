@@ -6,10 +6,10 @@ import "@antv/x6-vue-shape";
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
-import flowNode from "@/components/flow-node/FlowNode.vue";
+import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
-import store from "@/services/store.service";
 import Dataset from '../dataset/main';
+import GraphService from "@/services/graph.service";
 
 
 @Component({
@@ -17,14 +17,10 @@ import Dataset from '../dataset/main';
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
     "dialog-model-select": DialogModelSelect,
+    "flow-node": FlowNode,
   }
 })
 export default class Experiments extends Vue {
-
-
-  get projectName(): string {
-    return this.$route.params.projectName
-  }
 
   private acitveProjectCollapse: string[] = ["1"];
   private openDialogRunProject = false;
@@ -35,89 +31,6 @@ export default class Experiments extends Vue {
   private allFlowContent = null;
 
   private graph: Graph | null = null;
-  private port: any = {
-    groups: {
-      top: {
-        position: "top",
-        attrs: {
-          circle: {
-            r: 4,
-            magnet: true,
-            stroke: "#5F95FF",
-            strokeWidth: 1,
-            fill: "#fff",
-            style: {
-              visibility: "hidden",
-            },
-          },
-        },
-      },
-      right: {
-        position: "right",
-        attrs: {
-          circle: {
-            r: 4,
-            magnet: true,
-            stroke: "#5F95FF",
-            strokeWidth: 1,
-            fill: "#fff",
-            style: {
-              visibility: "hidden",
-            },
-          },
-        },
-      },
-      bottom: {
-        position: "bottom",
-        attrs: {
-          circle: {
-            r: 4,
-            magnet: true,
-            stroke: "#5F95FF",
-            strokeWidth: 1,
-            fill: "#fff",
-            style: {
-              visibility: "hidden",
-            },
-          },
-        },
-      },
-      left: {
-        position: "left",
-        attrs: {
-          circle: {
-            r: 4,
-            magnet: true,
-            stroke: "#5F95FF",
-            strokeWidth: 1,
-            fill: "#fff",
-            style: {
-              visibility: "hidden",
-            },
-          },
-        },
-      },
-    },
-    items: [
-      {
-        id: "portTop",
-        group: "top",
-      },
-      {
-        id: "portRight",
-        group: "right",
-      },
-      {
-        id: "portBottom",
-        group: "bottom",
-      },
-      {
-        id: "portLeft",
-        group: "left",
-      },
-    ],
-  }
-
 
   private defaultFlow: Array<{
     name: string,
@@ -234,7 +147,7 @@ export default class Experiments extends Vue {
             node-background-color = ${node.backgroundColor}
             node-border-color = ${node.borderColor}
              />`,
-          components: { flowNode },
+          components: { FlowNode },
         },
         true
       );
@@ -252,12 +165,15 @@ export default class Experiments extends Vue {
     window.removeEventListener("resize", this.resizeHandler)
   }
 
+  get projectName(): string {
+    return this.$route.params.projectName
+  }
+
   private resizeHandler(): void {
 
     this.graph?.clearCells()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
   }
-
 
   private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph , flow: any): Graph {
 
@@ -280,7 +196,7 @@ export default class Experiments extends Vue {
         height: containerHeight,
         // grid: true,
         panning: true,
-      })
+      });
 
       // add default node and edge
       flow.forEach((node: any, index: any, array: any) => {
@@ -292,10 +208,8 @@ export default class Experiments extends Vue {
           height: nodeHeight,
           shape: "vue-shape",
           component: node.name,
-          ports: { ...this.port },
-          data:{
-            num: 0,
-          },
+          ports: { ...GraphService.ports },
+          data: { num: 0 },
         })
 
         if (0 < index && index < array.length) {
@@ -304,7 +218,6 @@ export default class Experiments extends Vue {
             target: { cell: array[index].name, port: "portLeft" },
           });
         }
-
       });
 
       graph.on("node:click", (nodeInfo: any) => {
@@ -324,12 +237,9 @@ export default class Experiments extends Vue {
           default:
             console.log("out of case");
         }
-
       });
-
     }
     return graph
-
   }
 
   private output(): void {
@@ -339,17 +249,11 @@ export default class Experiments extends Vue {
     if (nodes!.length) {
       nodes!.forEach((node) => {
         const { num } = node.getData();
-        console.log("number",num)
-        node.setData({
-          num: num + 1,
-        }
-        
-        );
-        console.log("number",num)
+        node.setData({ num: num + 1 });
       });
     }
 
-    console.log("getNode",nodes)
+    console.log("getNode", nodes)
     console.log("get node list", this.graph?.toJSON());
   }
 
