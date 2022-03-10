@@ -6,6 +6,7 @@ import Dataset from '@/views/dataset/Dataset.vue';
 import Experiments from '@/views/experiments/Experiments.vue';
 import Models from '@/views/models/Models.vue';
 import CreateProject from '@/views/create-project/CreateProject.vue';
+import store from '@/services/store.service';
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,14 @@ const router = new VueRouter({
     mode:'history',
     base: process.env.Base_URL,
     routes
+})
+
+router.beforeEach((to, from, next) => {
+    if (['dataset', 'experiments', 'models'].includes(to.name ?? '')) {
+        if (to.params.projectName) store.currentProject = to.params.projectName;
+        next();
+    }
+    else next();
 })
 
 export default router
