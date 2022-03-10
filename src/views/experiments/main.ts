@@ -9,7 +9,7 @@ import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelec
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
 import Dataset from '../dataset/main';
-import GraphService from "@/services/graph.service";
+import GraphService, { NodeSettings } from "@/services/graph.service";
 
 
 @Component({
@@ -121,18 +121,7 @@ export default class Experiments extends Vue {
   created(): void {
     Api.getExperiments();
 
-    // const experiment = store.projectList.find(project => project.name === this.projectName)?.experiments
-    // const test = Object.values(experiment!)
-    // if (experiment) {
-    //   this.allFlowContent = Object.values(experiment)[0]
-    // }
-
-    // console.log("all flow", this.allFlowContent)
-
     window.addEventListener("resize", this.resizeHandler)
-
-
-    // node-content=${node.content}
 
     this.defaultFlow.map((node) => {
       Graph.registerVueComponent(
@@ -155,27 +144,6 @@ export default class Experiments extends Vue {
   mounted(): void {
 
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
-    // console.log("graph", this.graph)
-
-    this.graph.on("node:click", (nodeInfo: any) => {
-      console.log("node id", nodeInfo.node.id, nodeInfo);
-
-      const targetDialog = nodeInfo.node.component;
-      switch (targetDialog) {
-        case "dataset-node":
-          this.openDialogDataset = true;
-          break;
-        case "preprocess-node":
-          this.openDialogPreprocess = true;
-          break;
-        case "model-select-node":
-          this.openDialogModelSelect = true;
-          break;
-        default:
-          console.log("out of case");
-      }
-
-    });
   }
 
   destroy(): void {
@@ -193,41 +161,21 @@ export default class Experiments extends Vue {
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
   }
 
-  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph, flow: any): Graph {
-
-    const containerWidth = screanWidth * 0.8;
-    const containerHeight = screanWidth * 0.15;
-    const nodeWidth = screanWidth * 0.08;
-    const nodeHeight = screanWidth * 0.07;
-
-    let nodeBaseX = 0
-    if (screanWidth > 1200) nodeBaseX = screanWidth * 0.02
-
-    const nodeBaseY = screanWidth * 0.03;
-    const nodeBaseSpace = screanWidth * 0.1;
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, graph: Graph, flow: any): Graph {
 
     if (container) {
 
-      graph = new Graph({
-        container: container,
-        width: containerWidth,
-        height: containerHeight,
-        // grid: true,
-        panning: true,
-      });
+      graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
       // add default node and edge
-      flow.forEach((node: any, index: any, array: any) => {
+      flow.forEach((node: NodeSettings, index: number, array: any) => {
         graph?.addNode({
+          ...GraphService.getNodeSettings(screenWidth, index),
           id: node.name,
-          x: nodeBaseX + nodeBaseSpace * index,
-          y: nodeBaseY,
-          width: nodeWidth,
-          height: nodeHeight,
-          shape: "vue-shape",
-          component: node.name,
-          ports: { ...GraphService.ports },
-          data: { num: 0 },
+          data: {
+            component: node.name,
+            num: 0,
+          },
         })
 
         if (0 < index && index < array.length) {
@@ -237,8 +185,31 @@ export default class Experiments extends Vue {
           });
         }
       });
-    }
+    };
+
+    this.listenOnNodeClick();
     return graph
+  }
+
+  private listenOnNodeClick() {
+    this.graph!.on("node:click", (nodeInfo: any) => {
+      console.log("node id", nodeInfo.node.id, nodeInfo);
+
+      const targetDialog = nodeInfo.node.component;
+      switch (targetDialog) {
+        case "dataset-node":
+          this.openDialogDataset = true;
+          break;
+        case "preprocess-node":
+          this.openDialogPreprocess = true;
+          break;
+        case "model-select-node":
+          this.openDialogModelSelect = true;
+          break;
+        default:
+          console.log("out of case");
+      }
+    });
   }
 
   private output(): void {
