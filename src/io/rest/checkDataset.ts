@@ -1,10 +1,12 @@
-import Dataset from "@/views/dataset/main";
+import { DatasetStatus } from "@/io/dataset";
 
 export class CheckDatasetReq {
-    datasetPath! : string;
+    projectName!: string;
+    datasetPath!: string;
 }
+
 export class CheckDatasetRes {
     code: number = 0;
     message: string = '';
-    data?: Dataset;
+    data?: DatasetStatus;
 }

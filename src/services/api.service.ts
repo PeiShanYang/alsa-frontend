@@ -6,7 +6,7 @@ import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 import { Project } from "@/io/project";
 
-const host = 'http://tw100104318:57510/';
+const host = 'http://tw100104318:37510/';
 
 export default class Api {
   static async getProjects(): Promise<void> {
@@ -78,16 +78,19 @@ export default class Api {
 
     if (!res.data) return;
 
-    console.log("res data", res.data)
+    console.log("res data", res.data);
     const project = store.projectList.get(store.currentProject);
     if (!project) return;
 
     project.experiments = res.data;
-    console.log(store.projectList)
+    console.log(store.projectList);
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {
+    if (!store.currentProject) return;
+
     const reqData: CheckDatasetReq = {
+      projectName: store.currentProject,
       datasetPath,
     }
     const response: AxiosResponse<CheckDatasetRes> = await axios.post(
@@ -98,13 +101,8 @@ export default class Api {
     if (response.status !== 200) return;
 
     const res: CheckDatasetRes = response.data;
-    if (res.code !==0){
-      console.log(res.message)
-    }
+    if (res.code !==0) console.log(res.message);
 
-    if(res.data){
-      console.log("res.data",res.data)
-    }
-
+    if(res.data) console.log("res.data",res.data);
   }
 }
