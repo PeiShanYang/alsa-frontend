@@ -1,9 +1,10 @@
 import { CreateProjectByKeyReq } from "@/io/rest/createProject";
 import { GetProjectRes } from "@/io/rest/getProject";
-import { GetExperimentReq, GetExperimentRes } from "@/io/rest/getExperiment";
+import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
+import { Project } from "@/io/project";
 
 const host = 'http://tw100104318:57510/';
 
@@ -22,9 +23,9 @@ export default class Api {
     }
 
     if (res.data) {
-      store.projectList = res.data.projects.map((projectName: string) => {
-        return { name: projectName };
-      });
+      store.projectList = new Map<string, Project>(
+        res.data.projects.map((v) => [v, new Project()])
+      );
     }
   }
 
@@ -47,36 +48,42 @@ export default class Api {
     }
 
     if (res.data) {
-      console.log(res.data)
-      store.projectList = res.data.projects.map((projectName: string) => {
-        return { name: projectName };
-      });
+      store.projectList = new Map<string, Project>(
+        res.data.projects.map((v) => [v, new Project()])
+      );
     }
   }
 
-  static async getExperiments(name: string): Promise<void> {
-    const reqData: GetExperimentReq = {
-      "projectName": name,
+  static async getExperiments(): Promise<void> {
+    if (!store.currentProject) {
+      console.error('no project selected');
+      return;
+    }
+
+    const reqData: GetExperimentsReq = {
+      "projectName": store.currentProject,
     };
-    const response: AxiosResponse<GetExperimentRes> = await axios.post(
+    const response: AxiosResponse<GetExperimentsRes> = await axios.post(
       host + 'get-experiments',
       reqData,
     );
 
     if (response.status !== 200) return;
 
-    const res: GetExperimentRes = response.data;
+    const res: GetExperimentsRes = response.data;
     if (res.code !== 0) {
       console.log(res.message);
       return;
     }
 
-    if (res.data) {
-      console.log("res data", res.data)
-      const project = store.projectList.findIndex(project => project.name === name)
-      store.projectList[project].experiments = res.data;
-      console.log(store.projectList)
-    }
+    if (!res.data) return;
+
+    console.log("res data", res.data)
+    const project = store.projectList.get(store.currentProject);
+    if (!project) return;
+
+    project.experiments = res.data;
+    console.log(store.projectList)
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {

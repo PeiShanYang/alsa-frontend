@@ -208,15 +208,13 @@ export default class Experiments extends Vue {
 
 
   created(): void {
-    Api.getExperiments(this.projectName)
+    Api.getExperiments();
 
-
-    const experiment = store.projectList.find(project => project.name === this.projectName)?.experiments
+    // const experiment = store.projectList.find(project => project.name === this.projectName)?.experiments
     // const test = Object.values(experiment!)
-    if (experiment) {
-      this.allFlowContent = Object.values(experiment)[0]
-
-    }
+    // if (experiment) {
+    //   this.allFlowContent = Object.values(experiment)[0]
+    // }
 
     console.log("all flow", this.allFlowContent)
 

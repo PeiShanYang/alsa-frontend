@@ -3,7 +3,7 @@
     <i><img :src="require('@/assets/Forallvision_icon0304/bar_dashboard.svg')" /></i>
     <span>Dashboard</span>
   </el-menu-item>
-  <el-menu-item :index="`/createProject`">
+  <el-menu-item index="/createProject">
     <i><img :src="require('@/assets/Forallvision_icon0304/bar_Create_Project.svg')" /></i>
     <span>Create Project</span>
   </el-menu-item>
@@ -11,21 +11,21 @@
     <el-input placeholder="Search Project" suffix-icon="el-icon-search" v-model="searchProject" clearable />
   </div>
   <el-divider></el-divider>
-  <template v-for="project in projectList">
-    <el-submenu :index="project.name">
+  <template v-for="[name, project] in projectList">
+    <el-submenu :index="name">
       <template slot="title">
         <i class="el-icon-star-off"></i>
-        <span>{{ project.name }}</span>
+        <span>{{ name }}</span>
       </template>
-      <el-menu-item :index="`/${project.name}/dataset`">
+      <el-menu-item :index="`/${name}/dataset`">
         <i><img :src="require('@/assets/Forallvision_icon0304/bar_Dataset.svg')" /></i>
         <span>Dataset</span>
       </el-menu-item>
-      <el-menu-item :index="`/${project.name}/experiments`">
+      <el-menu-item :index="`/${name}/experiments`">
         <i><img :src="require('@/assets/Forallvision_icon0304/bar_Experiments.svg')" /></i>
         <span>Experiments</span>
       </el-menu-item>
-      <el-menu-item :index="`/${project.name}/models`">
+      <el-menu-item :index="`/${name}/models`">
         <i><img :src="require('@/assets/Forallvision_icon0304/bar_Models.svg')" /></i>
         <span>Models</span>
       </el-menu-item>

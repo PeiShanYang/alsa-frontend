@@ -1,8 +1,8 @@
-
 import { Experiment } from "@/io/experiment";
 
 export class Project {
-    name?: string;
+    name!: string;
     fav?: boolean;
-    experiments?: Experiment;
+
+    experiments?: Map<string, Experiment>;
 }

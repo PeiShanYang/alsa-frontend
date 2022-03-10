@@ -2,9 +2,10 @@ import Vue from 'vue';
 import { Project } from "@/io/project";
 
 class Store {
-  projectList: Project[] = [];
+  currentProject?: string;
+  projectList: Map<string, Project> = new Map<string, Project>();
 }
 
 export default Vue.observable<Store>({
-  projectList: [],
+  projectList: new Map<string, Project>(),
 });

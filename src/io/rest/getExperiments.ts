@@ -1,12 +1,11 @@
 import { Experiment } from "@/io/experiment";
 
-export class GetExperimentReq {
+export class GetExperimentsReq {
     projectName! : string;
 }
 
-export class GetExperimentRes {
+export class GetExperimentsRes {
     code: number = 0;
     message: string = '';
-    data?: Experiment;
+    data?: Map<string, Experiment>;
 }
-
