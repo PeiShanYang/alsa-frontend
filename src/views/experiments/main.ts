@@ -28,8 +28,6 @@ export default class Experiments extends Vue {
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
 
-  private allFlowContent = null;
-
   private graph: Graph | null = null;
 
   private defaultFlow: Array<{
@@ -129,7 +127,7 @@ export default class Experiments extends Vue {
     //   this.allFlowContent = Object.values(experiment)[0]
     // }
 
-    console.log("all flow", this.allFlowContent)
+    // console.log("all flow", this.allFlowContent)
 
     window.addEventListener("resize", this.resizeHandler)
 
@@ -157,7 +155,7 @@ export default class Experiments extends Vue {
   mounted(): void {
 
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
-    console.log("graph", this.graph)
+    // console.log("graph", this.graph)
 
     this.graph.on("node:click", (nodeInfo: any) => {
       console.log("node id", nodeInfo.node.id, nodeInfo);
@@ -254,8 +252,8 @@ export default class Experiments extends Vue {
       });
     }
 
-    console.log("getNode", nodes)
-    console.log("get node list", this.graph?.toJSON());
+    // console.log("getNode", nodes)
+    // console.log("get node list", this.graph?.toJSON());
   }
 
 

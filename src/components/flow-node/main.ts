@@ -1,3 +1,6 @@
+import ProcessCell from '@/io/processCell';
+import { VueShape } from '@antv/x6-vue-shape';
+import { Cell } from '@antv/x6/lib/model/cell';
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
 
 @Component
@@ -12,7 +15,7 @@ export default class flowNode extends Vue {
   @Prop(String) private nodeBackgroundColor!: string;
   @Prop(String) private nodeBorderColor!: string;
 
-  @Inject("getNode") private node: any;
+  @Inject("getNode") private node!: () => VueShape;
 
   
   private imgSrc = this.nodeIcon;
@@ -30,10 +33,11 @@ export default class flowNode extends Vue {
     const testnode = this.node()
     // console.log("inject",testnode.on)
 
-    testnode.on("change:data",(info:any)=>{
-      console.log("info",info.current.num)
+    testnode.on("change:data",(info: Cell.ChangeArgs<ProcessCell>)=>{
+      
+      // console.log("info",info.current.num)
 
-      this.num = info.current.num
+      this.num = info.current?.num ?? 0;
     })
 
   }
