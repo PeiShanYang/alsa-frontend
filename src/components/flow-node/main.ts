@@ -14,20 +14,28 @@ export default class flowNode extends Vue {
 
   @Inject("getNode") private node: any;
 
+  
   private imgSrc = this.nodeIcon;
   private title: string = this.nodeTitle;
   // private content: string = this.nodeContent;
+
   private backgroundColor = `background: ${this.nodeBackgroundColor}`;
   private borderColor = `border-color:${this.nodeBorderColor}`;
 
   private num = 0;
 
   mounted(): void {
-    console.log("node inject",this.node)
-    // console.log("content",this.nodeContent)
-    this.node("change:data", (info: any) => {
-      console.log("change info", info)
+    // console.log("node inject",this.node())
+
+    const testnode = this.node()
+    // console.log("inject",testnode.on)
+
+    testnode.on("change:data",(info:any)=>{
+      console.log("info",info.current.num)
+
+      this.num = info.current.num
     })
+
   }
 
 }

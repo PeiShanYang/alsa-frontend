@@ -122,7 +122,7 @@ export default class Experiments extends Vue {
   private defaultFlow: Array<{
     name: string,
     title: string,
-    content: {type:string,info:any},
+    content: { type: string, info: any },
     backgroundColor: string,
     borderColor: string,
     icon: string,
@@ -246,7 +246,27 @@ export default class Experiments extends Vue {
   mounted(): void {
 
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.graph!, this.defaultFlow)
-    console.log("graph",this.graph)
+    console.log("graph", this.graph)
+
+    this.graph.on("node:click", (nodeInfo: any) => {
+      console.log("node id", nodeInfo.node.id, nodeInfo);
+
+      const targetDialog = nodeInfo.node.component;
+      switch (targetDialog) {
+        case "dataset-node":
+          this.openDialogDataset = true;
+          break;
+        case "preprocess-node":
+          this.openDialogPreprocess = true;
+          break;
+        case "model-select-node":
+          this.openDialogModelSelect = true;
+          break;
+        default:
+          console.log("out of case");
+      }
+
+    });
   }
 
   destroy(): void {
@@ -261,7 +281,7 @@ export default class Experiments extends Vue {
   }
 
 
-  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph , flow: any): Graph {
+  private drawFlowChart(screanWidth: number, container: HTMLElement | null, graph: Graph, flow: any): Graph {
 
     const containerWidth = screanWidth * 0.8;
     const containerHeight = screanWidth * 0.15;
@@ -295,7 +315,7 @@ export default class Experiments extends Vue {
           shape: "vue-shape",
           component: node.name,
           ports: { ...this.port },
-          data:{
+          data: {
             num: 0,
           },
         })
@@ -308,30 +328,8 @@ export default class Experiments extends Vue {
         }
 
       });
-
-      graph.on("node:click", (nodeInfo: any) => {
-        console.log("node id", nodeInfo.node.id, nodeInfo);
-
-        const targetDialog = nodeInfo.node.component;
-        switch (targetDialog) {
-          case "dataset-node":
-            this.openDialogDataset = true;
-            break;
-          case "preprocess-node":
-            this.openDialogPreprocess = true;
-            break;
-          case "model-select-node":
-            this.openDialogModelSelect = true;
-            break;
-          default:
-            console.log("out of case");
-        }
-
-      });
-
     }
     return graph
-
   }
 
   private output(): void {
@@ -341,17 +339,13 @@ export default class Experiments extends Vue {
     if (nodes!.length) {
       nodes!.forEach((node) => {
         const { num } = node.getData();
-        console.log("number",num)
-        node.setData({
-          num: num + 1,
-        }
-        
-        );
-        console.log("number",num)
+        // console.log("number",node.id)
+        node.setData({ num: num + 1, });
+        // console.log("number",num)
       });
     }
 
-    console.log("getNode",nodes)
+    console.log("getNode", nodes)
     console.log("get node list", this.graph?.toJSON());
   }
 
