@@ -28,15 +28,10 @@ export default class flowNode extends Vue {
   private num = 0;
 
   mounted(): void {
-    // console.log("node inject",this.node())
 
     const testnode = this.node()
-    // console.log("inject",testnode.on)
 
     testnode.on("change:data",(info: Cell.ChangeArgs<ProcessCell>)=>{
-      
-      // console.log("info",info.current.num)
-
       this.num = info.current?.num ?? 0;
     })
 
