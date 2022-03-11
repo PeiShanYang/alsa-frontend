@@ -58,3 +58,7 @@
   font-size: 1.6em;
   margin-top: 0.4em;
 }
+
+::v-deep .el-checkbox__input.is-disabled+span.el-checkbox__label{
+  color: #0e5879;
+}
