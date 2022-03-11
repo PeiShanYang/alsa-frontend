@@ -14,3 +14,8 @@
   height: 2vw;
   margin: auto;
 }
+
+li span{
+  position: relative;
+  left: -10px;
+}

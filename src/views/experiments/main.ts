@@ -155,7 +155,7 @@ export default class Experiments extends Vue {
 
       const nodeData: ProcessCellData = {
         component: node.name,
-        content: ["test","tes1"]
+        content: ["test","tes1","test232"]
       }
 
 
@@ -163,7 +163,9 @@ export default class Experiments extends Vue {
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,
         component: node.name,
-        data: nodeData,
+        data: {
+          content:"",
+        },
       });
 
       if (0 < index && index < array.length) {
@@ -172,6 +174,13 @@ export default class Experiments extends Vue {
           target: { cell: array[index].name, port: "portLeft" },
         });
       }
+
+      const nodes = graph.getNodes()
+      const currentNode = nodes.find( element=> element.id === node.name)
+      // console.log("nodes",nodes,currentNode)
+      currentNode?.setData({content:nodeData.content})
+
+
     });
 
     return graph

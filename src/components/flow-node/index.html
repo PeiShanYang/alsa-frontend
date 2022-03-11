@@ -4,12 +4,14 @@
   </el-col>
   <el-col :span="15" :style="nodeBorderColor">
     <el-row type="flex" justify="center">
-      <el-col :span="18" style="padding-top: 2vh;">
+      <el-col :span="20" style="padding-top: 1vh;">
         <span style="font-size: 0.85vw; font-weight: bold;">{{ title }}</span>
         <br />
-          <span>。{{nodeContent}}</span>
+          <template v-for="content in nodeContent">
+            <li><span>{{content}}</span></li>
+          </template>
       </el-col>
-      <el-col :span="2">
+      <el-col :span="3">
         <i class="el-icon-edit-outline" style="font-size: 0.75vw;"></i>
       </el-col>
     </el-row>
