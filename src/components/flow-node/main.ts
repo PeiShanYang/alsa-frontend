@@ -14,7 +14,7 @@ export default class flowNode extends Vue {
   @Inject("getNode") private getNode!: () => VueShape;
 
   private nodeBackgroundColor = `background: ${this.backgroundColor}`;
-  private nodeBorderColor = `border-color: ${this.borderColor}`;
+  private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};`;
 
   mounted(): void {
     const node = this.getNode();

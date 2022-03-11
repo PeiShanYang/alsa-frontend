@@ -10,6 +10,15 @@ import GraphService from "@/services/graph.service";
 import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 
+import DatasetICON from '@/assets/Forallvision_icon0304/pipe_dataset.svg'
+import PreprocessICON from '@/assets/Forallvision_icon0304/pipe_preprocess.svg'
+import DataArgumentICON from '@/assets/Forallvision_icon0304/pipe_data_argument.svg'
+import ModelSelectICON from '@/assets/Forallvision_icon0304/pipe_model_select.svg'
+import ValidationSelectICON from '@/assets/Forallvision_icon0304/pipe_validation_select.svg'
+import TrainedResultICON from '@/assets/Forallvision_icon0304/pipe_trained_result.svg'
+import TestedResultICON from '@/assets/Forallvision_icon0304/pipe_tested_result.svg'
+
+
 
 @Component({
   components: {
@@ -30,56 +39,56 @@ export default class Experiments extends Vue {
   private graph: Graph | null = null;
 
   private defaultFlow: FlowNodeSettings[] = [
-      {
-        name: "dataset-node",
-        title: "資料集",
-        backgroundColor: "#EDEDED",
-        borderColor: "#2F4F4F",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-      {
-        name: "preprocess-node",
-        title: "前處理",
-        backgroundColor: "#F8F8F0",
-        borderColor: "#BCC733",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-      {
-        name: "data-argument-node",
-        title: "資料擴增",
-        backgroundColor: "#FFF0F0",
-        borderColor: "#DD8282",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-      {
-        name: "model-select-node",
-        title: "模型訓練",
-        backgroundColor: "#F5F5FD",
-        borderColor: "#8282DD",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-      {
-        name: "validation-select-node",
-        title: "驗證方法",
-        backgroundColor: "#FCFCDF",
-        borderColor: "#DE9988",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-      {
-        name: "training-result-node",
-        title: "驗證結果",
-        backgroundColor: "#FAECEC",
-        borderColor: "#BC6161",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-      {
-        name: "test-result-node",
-        title: "測試結果",
-        backgroundColor: "#FAECEC",
-        borderColor: "#C69D16",
-        icon: "https://cdn-icons-png.flaticon.com/512/2400/2400721.png",
-      },
-    ]
+    {
+      name: "dataset-node",
+      title: "資料集",
+      backgroundColor: "#FCEFFD",
+      borderColor: "#B811CE",
+      icon: DatasetICON,
+    },
+    {
+      name: "preprocess-node",
+      title: "前處理",
+      backgroundColor: "#F8F8F0",
+      borderColor: "#BCC733",
+      icon: PreprocessICON,
+    },
+    {
+      name: "data-argument-node",
+      title: "資料擴增",
+      backgroundColor: "#FFF0F0",
+      borderColor: "#DD8282",
+      icon: DataArgumentICON,
+    },
+    {
+      name: "model-select-node",
+      title: "模型訓練",
+      backgroundColor: "#F5F5FD",
+      borderColor: "#8282DD",
+      icon: ModelSelectICON,
+    },
+    {
+      name: "validation-select-node",
+      title: "驗證方法",
+      backgroundColor: "#FCFCDF",
+      borderColor: "#DE9988",
+      icon: ValidationSelectICON,
+    },
+    {
+      name: "trained-result-node",
+      title: "訓練結果",
+      backgroundColor: "#FAECEC",
+      borderColor: "#BC6161",
+      icon: TrainedResultICON,
+    },
+    {
+      name: "test-result-node",
+      title: "測試結果",
+      backgroundColor: "#FAECEC",
+      borderColor: "#C69D16",
+      icon: TestedResultICON,
+    },
+  ]
 
 
   created(): void {
