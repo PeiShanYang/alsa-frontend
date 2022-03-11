@@ -137,6 +137,7 @@ export default class Experiments extends Vue {
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,
+        component: node.name,
         data: nodeData,
       });
 
