@@ -1,14 +1,12 @@
-<el-row id="node-row" :style="borderColor">
-  <el-col :span="9" :style="backgroundColor" style="display: flex;">
-    <img :src="imgSrc" />
+<el-row id="node-row" :style="nodeBorderColor">
+  <el-col :span="9" :style="nodeBackgroundColor" style="display: flex;">
+    <img :src="icon" />
   </el-col>
   <el-col :span="15" :style="borderColor" style="border-left: 2px solid;">
     <el-row type="flex" justify="center">
       <el-col :span="18" style="padding-top: 2vh;">
-        <span style="font-size: 0.85vw;font-weight: bold;">{{ title }}</span>
+        <span style="font-size: 0.85vw; font-weight: bold;">{{ title }}</span>
         <br />
-        <!-- <span style="font-size: 0.8vw;">{{content}}</span> -->
-        <span>{{num}}</span>
       </el-col>
       <el-col :span="2">
         <i class="el-icon-edit-outline" style="font-size: 0.75vw;"></i>

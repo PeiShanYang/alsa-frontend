@@ -4,26 +4,26 @@ export class Experiment {
     };
     ConfigPreprocess!: {
         PreprocessPara: {
-            imageSize: number[],
-            normalize: {
+            imageSize?: number[],
+            normalize?: {
                 switch: number,
                 mode: number,
                 mean: number[],
                 std: number[],
             },
-            brightness: number,
-            blur: number,
-            cutmix: number,
-            mosaic: number,
+            brightness?: number,
+            blur?: number,
+            cutmix?: number,
+            mosaic?: number,
         }
     };
     ConfigAugmentation!: {
         AugmentationPara: {
-            randomHorizontalFlip: {
+            randomHorizontalFlip?: {
                 switch: number,
                 probability: number,
             }
-            randomVerticalFlip: {
+            randomVerticalFlip?: {
                 switch: number,
                 probability: number,
             }
@@ -37,34 +37,34 @@ export class Experiment {
             learningRate: number,
         },
         OptimizerPara: {
-            SGD: {
+            SGD?: {
                 switch: number,
                 momentum: number,
                 dampening: number,
                 weightDecay: number,
                 nesterov: number,
             },
-            Adam: {
+            Adam?: {
                 switch: number,
                 betas: number[],
                 eps: number,
                 weightDecay: number,
                 amsgrad: number,
             },
-            Adadelta: {
+            Adadelta?: {
                 switch: number,
                 rho: number,
                 eps: number,
                 weightDecay: number,
             },
-            AdamW: {
+            AdamW?: {
                 switch: number,
                 betas: number[],
                 eps: number,
                 weightDecay: number,
                 amsgrad: number,
             },
-            NAdam: {
+            NAdam?: {
                 switch: number,
                 betas: number[],
                 eps: number,
@@ -73,12 +73,12 @@ export class Experiment {
             },
         }
         SchedulerPara: {
-            stepLR: {
+            stepLR?: {
                 switch: number,
                 step_size: number,
                 gamma: number
             },
-            cosineAnnealingLR: {
+            cosineAnnealingLR?: {
                 switch: number,
                 eta_min: number,
             }
@@ -91,7 +91,7 @@ export class Experiment {
                 pretrained: string,
             }
         },
-        ClsModelPara: {
+        ClsModelPara?: {
             cudaDevice: number,
             batchSize: number,
             epochs: number,
@@ -99,7 +99,7 @@ export class Experiment {
     };
     ConfigPostprocess!: {
         PostProcessPara: {
-            confidenceFilter: {
+            confidenceFilter?: {
                 switch: number,
                 threshold: number,
                 selectLabel: number,
@@ -109,26 +109,26 @@ export class Experiment {
     };
     ConfigEvaluation!: {
         EvaluationPara: {
-            showAcc: number,
-            showClassAcc: number,
-            showNumOfClasses: number,
-            showRate: {
+            showAcc?: number,
+            showClassAcc?: number,
+            showNumOfClasses?: number,
+            showRate?: {
                 switch: number,
                 targetIndex: string,
             },
-            showWrongFile: number,
+            showWrongFile?: number,
         }
     };
     ConfigResultStorage!: {
         ResultStorage: {
-            saveFinalWeight: number,
-            saveCheckpoint: {
+            saveFinalWeight?: number,
+            saveCheckpoint?: {
                 switch: number,
                 saveIter: number,
             },
-            saveAccTxt: number,
-            drawAccCurve: number,
-            drawConfusionMatrix: number,
+            saveAccTxt?: number,
+            drawAccCurve?: number,
+            drawConfusionMatrix?: number,
         }
     };
 }
