@@ -106,6 +106,7 @@ export default class Experiments extends Vue {
 
   mounted(): void {
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
+    this.listenOnNodeClick();
   }
 
   destroy(): void {
@@ -121,6 +122,7 @@ export default class Experiments extends Vue {
 
     this.graph?.clearCells()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
+    this.listenOnNodeClick();
   }
 
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
@@ -149,7 +151,6 @@ export default class Experiments extends Vue {
       }
     });
 
-    this.listenOnNodeClick();
     return graph
   }
 
