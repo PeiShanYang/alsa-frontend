@@ -1,134 +1,148 @@
 export class Experiment {
     Config!: {
-        datasetPath: string,
-    };
-    ConfigPreprocess!: {
-        PreprocessPara: {
-            imageSize?: number[],
-            normalize?: {
-                switch: number,
-                mode: number,
-                mean: number[],
-                std: number[],
-            },
-            brightness?: number,
-            blur?: number,
-            cutmix?: number,
-            mosaic?: number,
+        BasicSetting: {
+            projectName?: "",
+            experimentId?: "",
+            task?: "",
+        },
+        PrivateSetting: {
+            datasetPath?: "",
+            outputPath?: string,
         }
     };
     ConfigAugmentation!: {
         AugmentationPara: {
             randomHorizontalFlip?: {
-                switch: number,
-                probability: number,
+                switch: 1,
+                probability: 0.5,
             }
             randomVerticalFlip?: {
-                switch: number,
-                probability: number,
-            }
-        }
-    };
-    ConfigModelService!: {
-        LossFunctionPara: {
-            lossFunction: string,
-        },
-        LearningRate: {
-            learningRate: number,
-        },
-        OptimizerPara: {
-            SGD?: {
-                switch: number,
-                momentum: number,
-                dampening: number,
-                weightDecay: number,
-                nesterov: number,
-            },
-            Adam?: {
-                switch: number,
-                betas: number[],
-                eps: number,
-                weightDecay: number,
-                amsgrad: number,
-            },
-            Adadelta?: {
-                switch: number,
-                rho: number,
-                eps: number,
-                weightDecay: number,
-            },
-            AdamW?: {
-                switch: number,
-                betas: number[],
-                eps: number,
-                weightDecay: number,
-                amsgrad: number,
-            },
-            NAdam?: {
-                switch: number,
-                betas: number[],
-                eps: number,
-                weightDecay: number,
-                momentumDecay: number,
-            },
-        }
-        SchedulerPara: {
-            stepLR?: {
-                switch: number,
-                step_size: number,
-                gamma: number
-            },
-            cosineAnnealingLR?: {
-                switch: number,
-                eta_min: number,
-            }
-        }
-    };
-    ConfigPytorchModel!: {
-        SelectedModel: {
-            model: {
-                structure: string,
-                pretrained: string,
-            }
-        },
-        ClsModelPara?: {
-            cudaDevice: number,
-            batchSize: number,
-            epochs: number,
-        }
-    };
-    ConfigPostprocess!: {
-        PostProcessPara: {
-            confidenceFilter?: {
-                switch: number,
-                threshold: number,
-                selectLabel: number,
-                classList: string[]
+                switch: 0,
+                probability: 0.5,
             }
         }
     };
     ConfigEvaluation!: {
         EvaluationPara: {
-            showAcc?: number,
-            showClassAcc?: number,
-            showNumOfClasses?: number,
+            showAcc?: 1,
+            showClassAcc?: 1,
+            showNumOfClasses?: 0,
             showRate?: {
-                switch: number,
-                targetIndex: string,
+                switch: 0,
+                targetIndex: "OK",
             },
-            showWrongFile?: number,
+            showWrongFile?: 0,
+        }
+    };
+    ConfigModelService!: {
+        LossFunctionPara: {
+            lossFunction?: "CrossEntropyLoss",
+        },
+        LearningRate: {
+            learningRate?: 0.001,
+        },
+        OptimizerPara: {
+            SGD?: {
+                switch: 0,
+                momentum: 0.9,
+                dampening: 0,
+                weightDecay: 5e-4,
+                nesterov: 0,
+            },
+            Adam?: {
+                switch: 1,
+                betas: [0.9, 0.999],
+                eps: 1e-8,
+                weightDecay: 5e-4,
+                amsgrad: 0,
+            },
+            Adadelta?: {
+                switch: 0,
+                rho: 0.9,
+                eps: 1e-6,
+                weightDecay: 0,
+            },
+            AdamW?: {
+                switch: 0,
+                betas: [0.9, 0.999],
+                eps: 1e-8,
+                weightDecay: 0.01,
+                amsgrad: 0,
+            },
+            NAdam?: {
+                switch: 0,
+                betas: [0.9, 0.999],
+                eps: 1e-8,
+                weightDecay: 0,
+                momentumDecay: 0.004,
+            },
+        }
+        SchedulerPara: {
+            stepLR?: {
+                switch: 1,
+                step_size: 10,
+                gamma: 0.1
+            },
+            cosineAnnealingLR?: {
+                switch: 0,
+                tMax: string,
+                etaMin: 0,
+            }
+        }
+    };
+    ConfigPostprocess!: {
+        PostProcessPara: {
+            confidenceFilter?: {
+                switch: 1,
+                threshold: 0.75,
+                selectLabel: "OK",
+                classList: ["NG","OK"]
+            }
+        }
+    };
+    ConfigPreprocess!: {
+        PreprocessPara: {
+            normalize?: {
+                switch: 1,
+                mode: 0,
+                mean: number[],
+                std: number[],
+            },
+            imageSize?: [224,224],
+        }
+    };
+    ConfigPytorchModel!: {
+        SelectedModel: {
+            model?: {
+                structure: "auo_mmfa_model",
+                pretrained: 1,
+            }
+        },
+        ClsModelPara: {
+            cudaDevice?: 0,
+            batchSize?: 16,
+            epochs?: 2,
+        },
+        ClsPath:{
+            trainPath?:string,
+            validPath?:string,
+            testPath?:string,
+            inferencePath?:string,
+            pretrainedWeight?:string,
+            weigthPath?:string,
+            saveFinalWeight?:0,
         }
     };
     ConfigResultStorage!: {
         ResultStorage: {
-            saveFinalWeight?: number,
+            saveFinalWeight?: 0,
             saveCheckpoint?: {
-                switch: number,
-                saveIter: number,
+                switch: 0,
+                saveIter: 1,
             },
-            saveAccTxt?: number,
-            drawAccCurve?: number,
-            drawConfusionMatrix?: number,
+            saveAccTxt?: 0,
+            drawAccCurve?: 0,
+            drawConfusionMatrix?: 0,
         }
     };
 }

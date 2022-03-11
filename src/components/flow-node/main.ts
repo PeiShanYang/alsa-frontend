@@ -15,6 +15,7 @@ export default class flowNode extends Vue {
 
   private nodeBackgroundColor = `background: ${this.backgroundColor}`;
   private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};`;
+  private nodeContent = "暫無資料"
 
   mounted(): void {
     const node = this.getNode();

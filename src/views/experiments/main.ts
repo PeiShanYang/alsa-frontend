@@ -17,6 +17,7 @@ import ModelSelectICON from '@/assets/Forallvision_icon0304/pipe_model_select.sv
 import ValidationSelectICON from '@/assets/Forallvision_icon0304/pipe_validation_select.svg'
 import TrainedResultICON from '@/assets/Forallvision_icon0304/pipe_trained_result.svg'
 import TestedResultICON from '@/assets/Forallvision_icon0304/pipe_tested_result.svg'
+import store from '@/services/store.service';
 
 
 
@@ -91,12 +92,10 @@ export default class Experiments extends Vue {
   ]
 
 
-  created(): void {
-    Api.getExperiments();
+  async created(): Promise<void> {
 
-    window.addEventListener("resize", this.resizeHandler)
-
-    this.defaultFlow.map((node) => {
+    // register node on Graph
+    this.defaultFlow.forEach((node) => {
       Graph.registerVueComponent(
         node.name,
         {
@@ -111,11 +110,22 @@ export default class Experiments extends Vue {
         true
       );
     });
+
+    // call api
+    await Api.getExperiments();
+
+    const expData = store.projectList.get(store.currentProject!)?.experiments
+
+    console.log("expData",Object.values(expData!)[0])
+
+    window.addEventListener("resize", this.resizeHandler)
+    
   }
 
   mounted(): void {
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
+
   }
 
   destroy(): void {
@@ -141,9 +151,13 @@ export default class Experiments extends Vue {
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
+
+
       const nodeData: ProcessCellData = {
         component: node.name,
+        content: ["test","tes1"]
       }
+
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
