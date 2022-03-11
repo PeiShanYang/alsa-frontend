@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-
+import store from "@/services/store.service";
 
 @Component
 export default class Dataset extends Vue {
@@ -34,10 +34,26 @@ export default class Dataset extends Vue {
   ];
   private acitveDatasetCollapse: string[] = ["1"];
 
+ 
   get projectName(): string {
     return this.$route.params.projectName
   }
 
-  private checkList = ["uploaded","split"]
+  get datasetPath(): string{
+    return store.currentDatasetURLInput ?? '/'
+  }
+
+  get checkList(): string[]{
+
+    const returnList : string[] = []
+
+    if (store.currentDatasetStatus){
+      Object.entries(store.currentDatasetStatus).forEach( element=>{
+        if (element[1] === true) returnList.push(element[0])
+      })
+    }
+    return returnList
+  } 
+
 
 }

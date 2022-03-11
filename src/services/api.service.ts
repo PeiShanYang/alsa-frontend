@@ -80,6 +80,7 @@ export default class Api {
 
     console.log("res data", res.data);
     const project = store.projectList.get(store.currentProject);
+
     if (!project) return;
 
     project.experiments = res.data;
@@ -101,8 +102,14 @@ export default class Api {
     if (response.status !== 200) return;
 
     const res: CheckDatasetRes = response.data;
-    if (res.code !==0) console.log(res.message);
+    if (res.code !== 0) {
+      console.log(res.message);
+      return;
+    }
+    if (!res.data) return;
 
-    if(res.data) console.log("res.data",res.data);
+    console.log("res.data", res.data);
+    store.currentDatasetStatus = res.data
+    store.currentDatasetURLInput = datasetPath
   }
 }
