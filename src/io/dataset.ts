@@ -1,5 +1,5 @@
 export class DatasetStatus {
-    uploaded: boolean = false;
-    labeled : boolean = false;
-    split : boolean = false;
+    uploaded = false;
+    labeled = false;
+    split = false;
 }

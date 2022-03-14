@@ -5,6 +5,7 @@ import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 import { Project } from "@/io/project";
+import { Experiment } from "@/io/experiment";
 
 const host = 'http://tw100104318:37510/';
 
@@ -77,11 +78,10 @@ export default class Api {
 
     if (!res.data) return;
 
-    console.log("get experiment - res data", res.data);
     const project = store.projectList.get(store.currentProject);
-    if (!project) return;
+    if (project === undefined) return;
 
-    project.experiments = res.data;
+    project.experiments = new Map<string, Experiment>(Object.entries(res.data));
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {
@@ -101,6 +101,6 @@ export default class Api {
     const res: CheckDatasetRes = response.data;
     if (res.code !==0) console.log(res.message);
 
-    if (res.data) console.log("res.data",res.data);
+    if (res.data) console.log("res.data", res.data);
   }
 }
