@@ -5,6 +5,7 @@ export default class ProcessCellData {
     content!: string[];
 
     static cellDataContent(experiment: Experiment): Map<string, ProcessCellData> {
+        experiment;
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',

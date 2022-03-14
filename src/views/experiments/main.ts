@@ -133,7 +133,7 @@ export default class Experiments extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
     if (!container) return null;
 
-    const experiments = store.projectList.get(store.currentProject!)?.experiments;
+    const experiments = store.projectList.get(store.currentProject ?? '')?.experiments;
     if (!experiments) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
@@ -143,7 +143,8 @@ export default class Experiments extends Vue {
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
-      const nodeData = cellData.get(node.name)!;
+      const nodeData = cellData.get(node.name);
+      if (!nodeData) return;
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
