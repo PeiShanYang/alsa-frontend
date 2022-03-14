@@ -1,4 +1,4 @@
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
@@ -63,7 +63,7 @@ export default class Experiments extends Vue {
     },
     {
       name: "model-select-node",
-      title: "模型訓練",
+      title: "模型選擇",
       backgroundColor: "#F5F5FD",
       borderColor: "#8282DD",
       icon: ModelSelectICON,
@@ -92,7 +92,8 @@ export default class Experiments extends Vue {
   ]
 
 
-  async created(): Promise<void> {
+
+  created(): void {
 
     // register node on Graph
     this.defaultFlow.forEach((node) => {
@@ -111,18 +112,12 @@ export default class Experiments extends Vue {
       );
     });
 
-    // call api
-    await Api.getExperiments();
-
-    const expData = store.projectList.get(store.currentProject!)?.experiments
-
-    console.log("expData",Object.values(expData!)[0])
-
     window.addEventListener("resize", this.resizeHandler)
-    
+
   }
 
-  mounted(): void {
+  async mounted(): Promise<void> {
+    await Api.getExperiments()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
 
@@ -147,16 +142,20 @@ export default class Experiments extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
     if (!container) return null;
 
+    const experimentsObj = store.projectList.get(store.currentProject!)?.experiments
+    const experimentsData = Object.values(experimentsObj!)[0]
+
+    console.log("expData", experimentsData)
+
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
 
 
-      const nodeData: ProcessCellData = {
-        component: node.name,
-        content: ["test","tes1","test232"]
-      }
+      
+      // console.log(ProcessCellData.cellDataContent(node.name,experimentsData))
+      const nodeData: ProcessCellData = ProcessCellData.cellDataContent(node.name,experimentsData)
 
 
       graph?.addNode({
@@ -164,7 +163,7 @@ export default class Experiments extends Vue {
         id: node.name,
         component: node.name,
         data: {
-          content:"",
+          content: "",
         },
       });
 
@@ -176,9 +175,9 @@ export default class Experiments extends Vue {
       }
 
       const nodes = graph.getNodes()
-      const currentNode = nodes.find( element=> element.id === node.name)
+      const currentNode = nodes.find(element => element.id === node.name)
       // console.log("nodes",nodes,currentNode)
-      currentNode?.setData({content:nodeData.content})
+      currentNode?.setData({ content: nodeData.content })
 
 
     });

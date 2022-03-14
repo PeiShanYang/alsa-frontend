@@ -19,7 +19,7 @@ export default class flowNode extends Vue {
 
   mounted(): void {
     const node = this.getNode();
-    console.log("node flow",node.getData())
+    // console.log("node flow",node.getData())
     this.nodeContent = node.getData().content
 
     // node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>)=>{
