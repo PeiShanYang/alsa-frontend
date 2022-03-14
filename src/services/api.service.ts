@@ -77,12 +77,10 @@ export default class Api {
 
     if (!res.data) return;
 
-    console.log("res data", res.data);
     const project = store.projectList.get(store.currentProject);
     if (!project) return;
 
     project.experiments = res.data;
-    console.log(store.projectList);
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {
@@ -95,13 +93,13 @@ export default class Api {
     const response: AxiosResponse<CheckDatasetRes> = await axios.post(
       host + 'check-dataset',
       reqData,
-    )
+    );
 
     if (response.status !== 200) return;
 
     const res: CheckDatasetRes = response.data;
     if (res.code !==0) console.log(res.message);
 
-    if(res.data) console.log("res.data",res.data);
+    if (res.data) console.log("res.data",res.data);
   }
 }
