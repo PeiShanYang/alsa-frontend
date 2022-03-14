@@ -1,4 +1,4 @@
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
@@ -120,7 +120,6 @@ export default class Experiments extends Vue {
     await Api.getExperiments()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
-
   }
 
   destroy(): void {
@@ -178,8 +177,6 @@ export default class Experiments extends Vue {
       const currentNode = nodes.find(element => element.id === node.name)
       // console.log("nodes",nodes,currentNode)
       currentNode?.setData({ content: nodeData.content })
-
-
     });
 
     return graph
