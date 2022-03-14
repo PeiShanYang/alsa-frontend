@@ -6,6 +6,8 @@ import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 import { Project } from "@/io/project";
 import { Experiment } from "@/io/experiment";
+import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
+import { DatasetStatus } from "@/io/dataset";
 
 const host = 'http://tw100104318:37510/';
 
@@ -103,5 +105,31 @@ export default class Api {
     if (res.code !==0) console.log(res.message);
 
     if (res.data) console.log("res.data", res.data);
+  }
+
+  static async getDatasets(): Promise<void> {
+    if (!store.currentProject) return;
+
+    const reqData: GetDatasetsReq = {
+      projectName: store.currentProject,
+    }
+    const response: AxiosResponse<GetDatasetsRes> = await axios.post(
+      host + 'get-datasets',
+      reqData,
+    );
+
+    console.log(response);
+
+    if (response.status !== 200) return;
+
+    const res: GetDatasetsRes = response.data;
+    if (res.code !== 0) console.log(res.message);
+
+    if (!res.data) return;
+
+    const project = store.projectList.get(store.currentProject);
+    if (project === undefined) return;
+
+    project.datasets = new Map<string, DatasetStatus>(Object.entries(res.data));
   }
 }

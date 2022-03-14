@@ -1,4 +1,4 @@
-/* .el-container span {
+.el-container span {
   font-size: 1.5em;
 }
 .el-container i {
@@ -55,8 +55,15 @@
   width: 100%;
   color: #4a9abe;
   background: #effbfd;
-} */
-i,span {
+}
+
+.align-progress {
+  display: inline-block;
+  width: 10em;
+  margin-right: 1em;
+}
+
+/* i,span {
   color: #08648D;
 }
 
@@ -101,4 +108,4 @@ i,span {
   background-color: #0E5879;
   margin: auto;
   align-self: center;
-}
+} */
