@@ -9,7 +9,7 @@ export default class ProcessCellData {
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
-                content: [],
+                content: ["dataset:'/'"],
             }],
             ['preprocess-node', {
                 component: 'preprocess-node',

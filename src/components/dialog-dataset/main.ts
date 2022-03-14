@@ -13,14 +13,12 @@ export default class DialogDataset extends Vue {
   }
 
   @Emit("check-dataset")
-  async checkDataset(){
-
+  async checkDataset() {
     if (this.inputDatasetPath !== ''){
       await Api.checkDataset(this.inputDatasetPath)
 
       this.$router.push({ name: 'dataset', params: { projectName: store.currentProject! } })
     }
-
     this.inputDatasetPath = ''
 
     return

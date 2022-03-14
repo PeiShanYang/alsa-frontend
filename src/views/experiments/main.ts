@@ -23,7 +23,6 @@ import { Experiment } from '@/io/experiment';
   }
 })
 export default class Experiments extends Vue {
-
   private acitveProjectCollapse: string[] = ["1"];
   private openDialogRunProject = false;
   private openDialogDataset = false;
@@ -85,7 +84,6 @@ export default class Experiments extends Vue {
   ]
 
   created(): void {
-
     // register node on Graph
     this.defaultFlow.forEach((node) => {
       Graph.registerVueComponent(
@@ -124,7 +122,6 @@ export default class Experiments extends Vue {
   }
 
   private drawGraph(): void {
-
     this.graph?.clearCells()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
@@ -150,9 +147,7 @@ export default class Experiments extends Vue {
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,
         component: node.name,
-        data: {
-          content: "",
-        },
+        data: nodeData,
       });
 
       if (0 < index && index < array.length) {
@@ -161,11 +156,6 @@ export default class Experiments extends Vue {
           target: { cell: array[index].name, port: "portLeft" },
         });
       }
-
-      const nodes = graph.getNodes()
-      const currentNode = nodes.find(element => element.id === node.name)
-      // console.log("nodes",nodes,currentNode)
-      currentNode?.setData({ content: nodeData.content })
     });
 
     return graph
@@ -173,8 +163,6 @@ export default class Experiments extends Vue {
 
   private listenOnNodeClick() {
     this.graph?.on("node:click", (nodeInfo) => {
-      console.log("node data component", nodeInfo.node.data.component);
-
       const targetDialog: ProcessCellData = nodeInfo.node.data;
       switch (targetDialog.component) {
         case "dataset-node":
@@ -193,7 +181,6 @@ export default class Experiments extends Vue {
   }
 
   private output(): void {
-
     const nodes = this.graph?.getNodes()
 
     if (nodes?.length) {
@@ -203,21 +190,5 @@ export default class Experiments extends Vue {
         // node.setData({ num: num + 1 });
       });
     }
-  }
-
-  private closeDialogDataset(): void {
-    this.openDialogDataset = false;
-  }
-
-  private checkDataset(): void {
-    this.openDialogDataset = false;
-  }
-
-  private closeDialogPreprocess(): void {
-    this.openDialogPreprocess = false;
-  }
-
-  private closeDialogModelSelect(): void {
-    this.openDialogModelSelect = false;
   }
 }
