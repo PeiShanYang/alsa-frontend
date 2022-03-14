@@ -21,17 +21,17 @@ export default class ProcessCellData {
                 contentData.push(experiment.ConfigPytorchModel.SelectedModel.model?.structure ?? '')
                 break;
             case "validation-select-node":
+                contentData = Object.keys(experiment.ConfigEvaluation.EvaluationPara)
                 break;
             case "trained-result-node":
+                contentData.push("尚未訓練")
                 break;
             case "test-result-node":
+                contentData.push("尚未訓練")
                 break;
             default:
                 break;
         }
-
-
-        // console.log("experiment",experiment)
         return {
             component,
             content: contentData,
