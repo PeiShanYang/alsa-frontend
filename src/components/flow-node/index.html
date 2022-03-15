@@ -7,9 +7,11 @@
       <el-col :span="20" style="padding-top: 1vh;">
         <span style="font-size: 0.85vw; font-weight: bold;">{{ title }}</span>
         <br />
+        <ul>
           <template v-for="content in nodeContent">
             <li><span>{{content}}</span></li>
           </template>
+        </ul>
       </el-col>
       <el-col :span="3">
         <i class="el-icon-edit-outline" style="font-size: 0.75vw;"></i>

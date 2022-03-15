@@ -10,6 +10,7 @@ export default class ProcessCellData {
 
         switch (component) {
             case "dataset-node":
+                contentData = ["未上傳","未標記","未切分"]
                 break;
             case "preprocess-node":
                 contentData = Object.keys(experiment.ConfigPreprocess.PreprocessPara)

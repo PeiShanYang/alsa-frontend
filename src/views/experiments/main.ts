@@ -158,6 +158,13 @@ export default class Experiments extends Vue {
       const nodeData: ProcessCellData = ProcessCellData.cellDataContent(node.name,experimentsData)
 
 
+      if( node.name ==="dataset-node" && store.currentDatasetStatus){
+        if( store.currentDatasetStatus.uploaded) nodeData.content[0] = "已上傳"
+        if( store.currentDatasetStatus.labeled) nodeData.content[1] = "已標記"
+        if(store.currentDatasetStatus.split) nodeData.content[2] = "已切分"
+      }
+
+      
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,
@@ -190,7 +197,7 @@ export default class Experiments extends Vue {
       console.log("node id", nodeInfo.node.id, nodeInfo);
 
       const targetDialog: ProcessCellData = nodeInfo.node.data;
-      switch (targetDialog.component) {
+      switch (nodeInfo.node.id) {
         case "dataset-node":
           this.openDialogDataset = true;
           break;

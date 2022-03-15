@@ -5,17 +5,28 @@
   height: 100%;
   width: 100%;
 }
+
 .el-col {
   height: 100%;
 }
 
-.el-col img{
+.el-col img {
   width: 2vw;
   height: 2vw;
   margin: auto;
 }
 
-li span{
+ul {
+  padding: 0px 25%;
+  margin: 0;
+  height: 5vw;
+  width: 4.3vw;
+  word-break: break-all;
+  overflow: hidden;
+}
+
+li span {
   position: relative;
   left: -10px;
+  font-size: 0.2vw;
 }
