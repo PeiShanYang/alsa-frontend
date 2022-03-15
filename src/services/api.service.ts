@@ -5,6 +5,9 @@ import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 import { Project } from "@/io/project";
+import { Experiment } from "@/io/experiment";
+import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
+import { DatasetStatus } from "@/io/dataset";
 
 const host = 'http://tw100104318:37510/';
 
@@ -78,13 +81,10 @@ export default class Api {
 
     if (!res.data) return;
 
-
-    console.log("get experiment - res data", res.data);
     const project = store.projectList.get(store.currentProject);
-    if (!project) return;
+    if (project === undefined) return;
 
-    project.experiments = res.data;
-    console.log(store.projectList);
+    project.experiments = new Map<string, Experiment>(Object.entries(res.data));
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {
@@ -97,7 +97,7 @@ export default class Api {
     const response: AxiosResponse<CheckDatasetRes> = await axios.post(
       host + 'check-dataset',
       reqData,
-    )
+    );
 
     if (response.status !== 200) return;
 

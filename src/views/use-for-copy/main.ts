@@ -1,4 +1,4 @@
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
 import Sidebar from "@/components/sidebar/Sidebar.vue";
 import Navbar from '@/components/navbar/Navbar.vue';

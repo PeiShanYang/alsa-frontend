@@ -1,4 +1,4 @@
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
@@ -10,16 +10,9 @@ import GraphService from "@/services/graph.service";
 import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 
-import DatasetICON from '@/assets/Forallvision_icon0304/pipe_dataset.svg'
-import PreprocessICON from '@/assets/Forallvision_icon0304/pipe_preprocess.svg'
-import DataArgumentICON from '@/assets/Forallvision_icon0304/pipe_data_argument.svg'
-import ModelSelectICON from '@/assets/Forallvision_icon0304/pipe_model_select.svg'
-import ValidationSelectICON from '@/assets/Forallvision_icon0304/pipe_validation_select.svg'
-import TrainedResultICON from '@/assets/Forallvision_icon0304/pipe_trained_result.svg'
-import TestedResultICON from '@/assets/Forallvision_icon0304/pipe_tested_result.svg'
 import store from '@/services/store.service';
-
-
+import Icons from '@/constant/icon';
+import { Experiment } from '@/io/experiment';
 
 @Component({
   components: {
@@ -30,7 +23,6 @@ import store from '@/services/store.service';
   }
 })
 export default class Experiments extends Vue {
-
   private acitveProjectCollapse: string[] = ["1"];
   private openDialogRunProject = false;
   private openDialogDataset = false;
@@ -45,56 +37,53 @@ export default class Experiments extends Vue {
       title: "資料集",
       backgroundColor: "#FCEFFD",
       borderColor: "#B811CE",
-      icon: DatasetICON,
+      icon: Icons.dataset,
     },
     {
       name: "preprocess-node",
       title: "前處理",
       backgroundColor: "#F8F8F0",
       borderColor: "#BCC733",
-      icon: PreprocessICON,
+      icon: Icons.preprocess,
     },
     {
       name: "data-argument-node",
       title: "資料擴增",
       backgroundColor: "#FFF0F0",
       borderColor: "#DD8282",
-      icon: DataArgumentICON,
+      icon: Icons.dataAugmentation,
     },
     {
       name: "model-select-node",
       title: "模型選擇",
       backgroundColor: "#F5F5FD",
       borderColor: "#8282DD",
-      icon: ModelSelectICON,
+      icon: Icons.modelSelect,
     },
     {
       name: "validation-select-node",
       title: "驗證方法",
       backgroundColor: "#FCFCDF",
       borderColor: "#DE9988",
-      icon: ValidationSelectICON,
+      icon: Icons.validationSelect,
     },
     {
       name: "trained-result-node",
       title: "訓練結果",
       backgroundColor: "#FAECEC",
       borderColor: "#BC6161",
-      icon: TrainedResultICON,
+      icon: Icons.trainedResult,
     },
     {
       name: "test-result-node",
       title: "測試結果",
       backgroundColor: "#FAECEC",
       borderColor: "#C69D16",
-      icon: TestedResultICON,
+      icon: Icons.testedResult,
     },
   ]
 
-
-
   created(): void {
-
     // register node on Graph
     this.defaultFlow.forEach((node) => {
       Graph.registerVueComponent(
@@ -112,28 +101,27 @@ export default class Experiments extends Vue {
       );
     });
 
-    window.addEventListener("resize", this.resizeHandler)
-
+    window.addEventListener("resize", this.drawGraph)
   }
 
-  async mounted(): Promise<void> {
-    await Api.getExperiments()
-    this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
-    this.listenOnNodeClick();
-
+  mounted(): void {
+    this.waitGetExperiments();
   }
 
   destroy(): void {
-
-    window.removeEventListener("resize", this.resizeHandler)
+    window.removeEventListener("resize", this.drawGraph)
   }
 
   get projectName(): string {
     return this.$route.params.projectName
   }
 
-  private resizeHandler(): void {
+  private async waitGetExperiments(): Promise<void> {
+    await Api.getExperiments();
+    this.drawGraph();
+  }
 
+  private drawGraph(): void {
     this.graph?.clearCells()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
@@ -142,21 +130,18 @@ export default class Experiments extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
     if (!container) return null;
 
-    const experimentsObj = store.projectList.get(store.currentProject!)?.experiments
-    const experimentsData = Object.values(experimentsObj!)[0]
-
-    console.log("expData", experimentsData)
+    const experiments = store.projectList.get(store.currentProject ?? '')?.experiments;
+    if (!experiments) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
+    const experiment: Experiment = experiments.values().next().value;
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment);
+
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
-
-
-      
-      // console.log(ProcessCellData.cellDataContent(node.name,experimentsData))
-      const nodeData: ProcessCellData = ProcessCellData.cellDataContent(node.name,experimentsData)
-
+      const nodeData = cellData.get(node.name);
+      if (!nodeData) return;
 
       if( node.name ==="dataset-node" && store.currentDatasetStatus){
         if( store.currentDatasetStatus.uploaded) nodeData.content[0] = "已上傳"
@@ -169,9 +154,7 @@ export default class Experiments extends Vue {
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,
         component: node.name,
-        data: {
-          content: "",
-        },
+        data: nodeData,
       });
 
       if (0 < index && index < array.length) {
@@ -180,13 +163,6 @@ export default class Experiments extends Vue {
           target: { cell: array[index].name, port: "portLeft" },
         });
       }
-
-      const nodes = graph.getNodes()
-      const currentNode = nodes.find(element => element.id === node.name)
-      // console.log("nodes",nodes,currentNode)
-      currentNode?.setData({ content: nodeData.content })
-
-
     });
 
     return graph
@@ -194,8 +170,6 @@ export default class Experiments extends Vue {
 
   private listenOnNodeClick() {
     this.graph?.on("node:click", (nodeInfo) => {
-      console.log("node id", nodeInfo.node.id, nodeInfo);
-
       const targetDialog: ProcessCellData = nodeInfo.node.data;
       switch (nodeInfo.node.id) {
         case "dataset-node":
@@ -214,7 +188,6 @@ export default class Experiments extends Vue {
   }
 
   private output(): void {
-
     const nodes = this.graph?.getNodes()
 
     if (nodes?.length) {
@@ -224,22 +197,5 @@ export default class Experiments extends Vue {
         // node.setData({ num: num + 1 });
       });
     }
-  }
-
-
-  private closeDialogDataset(): void {
-    this.openDialogDataset = false;
-  }
-
-  private checkDataset(): void {
-    this.openDialogDataset = false;
-  }
-
-  private closeDialogPreprocess(): void {
-    this.openDialogPreprocess = false;
-  }
-
-  private closeDialogModelSelect(): void {
-    this.openDialogModelSelect = false;
   }
 }

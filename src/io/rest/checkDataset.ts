@@ -6,7 +6,7 @@ export class CheckDatasetReq {
 }
 
 export class CheckDatasetRes {
-    code: number = 0;
-    message: string = '';
+    code = 0;
+    message = '';
     data?: DatasetStatus;
 }

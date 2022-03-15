@@ -5,7 +5,7 @@ export class GetExperimentsReq {
 }
 
 export class GetExperimentsRes {
-    code: number = 0;
-    message: string = '';
+    code = 0;
+    message = '';
     data?: Map<string, Experiment>;
 }

@@ -1,5 +1,5 @@
 <el-row id="node-row" :style="nodeBorderColor">
-  <el-col :span="9" :style="nodeBackgroundColor" style="display: flex;">
+  <el-col :span="6" :style="nodeBackgroundColor" style="display: flex;">
     <img :src="icon" />
   </el-col>
   <el-col :span="15" :style="nodeBorderColor">
@@ -7,14 +7,9 @@
       <el-col :span="20" style="padding-top: 1vh;">
         <span style="font-size: 0.85vw; font-weight: bold;">{{ title }}</span>
         <br />
-        <ul>
-          <template v-for="content in nodeContent">
-            <li><span>{{content}}</span></li>
-          </template>
-        </ul>
-      </el-col>
-      <el-col :span="3">
-        <i class="el-icon-edit-outline" style="font-size: 0.75vw;"></i>
+        <template v-for="content in nodeContent">
+          <li>{{ content }}</li>
+        </template>
       </el-col>
     </el-row>
   </el-col>
