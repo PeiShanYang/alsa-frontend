@@ -106,10 +106,32 @@ export default class Api {
 
     if (res.data) {
       console.log("res.data", res.data);
-      store.currentDatasetStatus = res.data
-      store.currentDatasetURLInput = datasetPath
     }
 
 
+  }
+
+  static async getDatasets(projectName: string): Promise<void> {
+    if (!store.currentProject) return;
+
+    const reqData: GetDatasetsReq = {
+      projectName,
+    }
+    const response :AxiosResponse<GetDatasetsRes> =await axios.post(
+      host + 'get-datasets',
+      reqData,
+    )
+
+    if (response.status !== 200) return;
+
+    const res: GetDatasetsRes = response.data;
+    if (res.code !==0) console.log(res.message);
+
+    if (res.data){
+      console.log("res.data",res.data)
+    }
+
+
+    
   }
 }

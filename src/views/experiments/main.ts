@@ -141,15 +141,7 @@ export default class Experiments extends Vue {
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
-      if (!nodeData) return;
-
-      if( node.name ==="dataset-node" && store.currentDatasetStatus){
-        if( store.currentDatasetStatus.uploaded) nodeData.content[0] = "已上傳"
-        if( store.currentDatasetStatus.labeled) nodeData.content[1] = "已標記"
-        if(store.currentDatasetStatus.split) nodeData.content[2] = "已切分"
-      }
-
-      
+            
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,

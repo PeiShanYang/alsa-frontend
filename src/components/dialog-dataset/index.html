@@ -1,7 +1,9 @@
 <el-dialog :visible.sync="dialogOpen" width="80%" :show-close="false">
   <el-row slot="title" type="flex" justify="center" class="decorate-box">
-    <el-input v-model="searchPattern" placeholder="所有資料" style="width: 300px;" suffix-icon="el-icon-search">
-    </el-input>
+    <el-col :span="6" style="padding:1%">
+      <el-input v-model="searchPattern" placeholder="所有資料" suffix-icon="el-icon-search" width="100%">
+      </el-input>
+    </el-col>
   </el-row>
   <el-row>
     <el-collapse v-model="activeDatasetCollapse" accordion id="datasetCollapse">
@@ -10,12 +12,13 @@
           <el-row style="width: 100%" type="flex" justify="space-between">
             <el-col :span="4">
               <i class="el-icon-collection-tag"></i>
-              <span>Dataset A</span>
+              <span>Dataset</span>
             </el-col>
-            <el-col :span="8">
-              <el-progress class="align-progress" :text-inside="true" :percentage="progressPercent" color="#fff"></el-progress>
+            <!-- <el-col :span="8">
+              <el-progress class="align-progress" :text-inside="true" :percentage="progressPercent" color="#fff">
+              </el-progress>
               <span> {{ progressPercent }} %上傳完成 </span>
-            </el-col>
+            </el-col> -->
           </el-row>
         </template>
         <template v-if="datasets">

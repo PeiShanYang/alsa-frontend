@@ -196,16 +196,16 @@ export default class Dashboard extends Vue {
 
 
       // console.log(ProcessCellData.cellDataContent(node.name,experimentsData))
-      const nodeData: ProcessCellData = ProcessCellData.cellDataContent(node.name, experimentsData)
+      // const nodeData: ProcessCellData = ProcessCellData.cellDataContent(node.name, experimentsData)
 
 
-      if (node.name === "dataset-node" && store.currentDatasetStatus) {
+      // if (node.name === "dataset-node" && store.currentDatasetStatus) {
 
 
-        if (store.currentDatasetStatus.uploaded) nodeData.content[0] = "已上傳"
-        if (store.currentDatasetStatus.labeled) nodeData.content[1] = "已標記"
-        if (store.currentDatasetStatus.split) nodeData.content[2] = "已切分"
-      }
+      //   if (store.currentDatasetStatus.uploaded) nodeData.content[0] = "已上傳"
+      //   if (store.currentDatasetStatus.labeled) nodeData.content[1] = "已標記"
+      //   if (store.currentDatasetStatus.split) nodeData.content[2] = "已切分"
+      // }
 
 
 
@@ -229,7 +229,7 @@ export default class Dashboard extends Vue {
       const nodes = graph.getNodes()
       const currentNode = nodes.find(element => element.id === node.name)
       // console.log("nodes",nodes,currentNode)
-      currentNode?.setData({ content: nodeData.content })
+      // currentNode?.setData({ content: nodeData.content })
 
 
     });

@@ -37,7 +37,7 @@ export default class DialogDataset extends Vue {
   @Watch('dialogOpen')
   onDialogChange(value: boolean): void {
     if (value) {
-      Api.getDatasets();
+      Api.getDatasets(store.currentProject ?? '');
     }
   }
 
