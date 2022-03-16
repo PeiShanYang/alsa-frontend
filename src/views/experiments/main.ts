@@ -190,4 +190,16 @@ export default class Experiments extends Vue {
       });
     }
   }
+
+  private setDatasetContent(val:any):void{
+    this.openDialogDataset = false;
+    const nodes = this.graph?.getNodes()
+    const datasetnode = nodes?.find(node => node.id === "dataset-node")
+    console.log("node",datasetnode)
+    datasetnode?.setData({conponent:"datset-node",content: ["test"]})
+    console.log("node",datasetnode)
+
+    console.log("val",val)
+  }
+
 }

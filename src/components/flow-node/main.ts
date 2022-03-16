@@ -15,12 +15,17 @@ export default class flowNode extends Vue {
 
   private nodeBackgroundColor = `background: ${this.backgroundColor}`;
   private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};`;
-  private nodeContent = "暫無資料"
+  // private nodeContent = "暫無資料"
+
+  get nodeContent(){
+    const node = this.getNode();
+    return node.getData().content
+  }
 
   mounted(): void {
-    const node = this.getNode();
+    // const node = this.getNode();
     // console.log("node flow",node.getData())
-    this.nodeContent = node.getData().content
+    // this.nodeContent = node.getData().content
 
     // node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>)=>{
     //   console.log("changed",info);

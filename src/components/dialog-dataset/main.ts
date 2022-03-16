@@ -27,7 +27,10 @@ export default class DialogDataset extends Vue {
       await Api.setExperimentDataset(store.currentProject, experimentId, this.checkedPath)
     }
 
-    return;
+    // this.datasets.filter( item => item.path === this.checkedPath)
+    // console.log("this datasets",this.datasets.filter( item => item.path === this.checkedPath))
+
+    return this.datasets.filter( item => item.path === this.checkedPath)[0];
   }
 
 
@@ -35,7 +38,7 @@ export default class DialogDataset extends Vue {
   // get datasets(): Map<string, DatasetStatus> | null {
   //   return store.projectList.get(store.currentProject ?? '')?.datasets ?? null;
   // }
-  private datasets = [{}];
+  private datasets : {path:string,labeled:string,split:string,uploaded:string}[] = [];
   private checkedPathList = [];
   private checkedPath = "";
 

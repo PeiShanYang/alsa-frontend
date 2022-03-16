@@ -24,7 +24,7 @@
       </el-collapse-item>
     </el-collapse>
 
-  <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="openDialogDataset=false" @set-dataset="openDialogDataset=false" />
+  <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="openDialogDataset=false" @set-dataset="setDatasetContent" />
   <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false" />
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
