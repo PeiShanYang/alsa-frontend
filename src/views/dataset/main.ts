@@ -49,7 +49,7 @@ export default class Dataset extends Vue {
   }
 
   private async waitGetDatasets(): Promise<void> {
-    const res = await Api.getDatasets(store.currentProject!)
+    const res = await Api.getDatasets(store.currentProject ?? '')
     if (res?.message !== "success") this.openDialogCheckDataset = true
     if (res?.data) {
       console.log("res data", Object.entries(res.data))

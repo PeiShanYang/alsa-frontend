@@ -1,4 +1,4 @@
-<el-dialog :visible.sync="dialogOpen" width="80%" :show-close="false">
+<el-dialog :visible.sync="dialogOpen" width="60%" :show-close="false">
   <el-row slot="title" type="flex" justify="center" class="decorate-box">
     <el-col :span="6" style="padding:1%">
       <el-input v-model="searchPattern" placeholder="所有資料" suffix-icon="el-icon-search" width="100%">
@@ -22,13 +22,34 @@
           </el-row>
         </template>
         <template v-if="datasets">
-          <el-row v-for="[name, dataset] in datasets" :key="name" style="background: #f0fafb; padding: 1%; margin: 1%">
-            <el-col :span="5">
-              <el-checkbox>
-                <span style="color: #4a9abe">資料集路徑：{{ name }}</span>
+          <el-checkbox-group v-model="checkedPathList" :max="1" @change="handleCheckPath">
+            <el-row v-for="item in datasets" :key="item.path" style="background: #f0fafb; padding: 1%; margin: 1%">
+              <el-checkbox :label="item.path" style="width: 100%;">
+                <el-row type="flex" justify="space-between" >
+                  <el-col :span="12" style="padding-top: 1%;">
+                    <span style="color: #4a9abe">資料集路徑：{{ item.path }}</span>
+                  </el-col>
+                  <el-col :span=12 style="display: flex;justify-content: flex-end;padding-top: 1%;">
+                    <div class="status-box">
+                      <span>上傳</span>
+                      <i v-if=item.uploaded class="el-icon-check"></i>
+                      <i v-else class="el-icon-close"></i>
+                    </div>
+                    <div class="status-box">
+                      <span>標記</span>
+                      <i v-if=item.labeled class="el-icon-check"></i>
+                      <i v-else class="el-icon-close"></i>
+                    </div>
+                    <div class="status-box">
+                      <span>切分</span>
+                      <i v-if=item.split class="el-icon-check"></i>
+                      <i v-else class="el-icon-close"></i>
+                    </div>
+                  </el-col>
+                </el-row>
               </el-checkbox>
-            </el-col>
-          </el-row>
+            </el-row>
+          </el-checkbox-group>
         </template>
         <el-row type="flex" justify="center">
           <el-col :span="23">
@@ -48,7 +69,7 @@
       <el-button @click="closeDialogDataset">取消</el-button>
     </el-col>
     <el-col :span="2" :offset="1">
-      <el-button @click="closeDialogDataset" class="dialog-custom-btn">匯入</el-button>
+      <el-button @click="setExperimentDataset" class="dialog-custom-btn">匯入</el-button>
     </el-col>
   </el-row>
 </el-dialog>

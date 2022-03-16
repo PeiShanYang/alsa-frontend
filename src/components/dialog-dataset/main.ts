@@ -18,30 +18,49 @@ export default class DialogDataset extends Vue {
     return;
   }
 
-  @Emit("check-dataset")
-  async checkDataset(): Promise<void> {
-    if (this.inputDatasetPath !== ''){
-      await Api.checkDataset(this.inputDatasetPath)
-
-      this.$router.push({ name: 'dataset', params: { projectName: store.currentProject ?? '' } })
-    }
-    this.inputDatasetPath = ''
-
-    return
+  @Emit("set-dataset")
+  setExperimentDataset(): void{
+    return;
   }
 
-  get datasets(): Map<string, DatasetStatus> | null {
-    return store.projectList.get(store.currentProject ?? '')?.datasets ?? null;
-  }
+ 
+
+  // get datasets(): Map<string, DatasetStatus> | null {
+  //   return store.projectList.get(store.currentProject ?? '')?.datasets ?? null;
+  // }
+  private datasets = [{}];
+  private checkedPathList = [];
+  private checkedPath = "";
 
   @Watch('dialogOpen')
   onDialogChange(value: boolean): void {
     if (value) {
-      Api.getDatasets(store.currentProject ?? '');
+      // Api.getDatasets(store.currentProject ?? '');
+      this.waitGetDatasets()
     }
   }
 
   addDataset(): void {
     console.log('to add dataset');
+  }
+
+
+  private async waitGetDatasets(): Promise<void> {
+    const res = await Api.getDatasets(store.currentProject ?? '')
+    if (res?.data) {
+      this.datasets = Object.entries(res.data).map(element => {
+        return {
+          path: element[0],
+          labeled: element[1].labeled,
+          split: element[1].split,
+          uploaded: element[1].uploaded
+        }
+      })
+
+    }
+  }
+
+  private handleCheckPath(val:any){
+    console.log("any",typeof val,val[0],this.checkedPathList,"df")
   }
 }

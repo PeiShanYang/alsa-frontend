@@ -63,6 +63,20 @@
   margin-right: 1em;
 }
 
+.status-box{
+  margin: 0 1em;
+  /* color: #4a9abe; */
+}
+
+.status-box i {
+  margin: 0 10px;
+  color: #4a9abe;
+}
+
+::v-deep  .el-checkbox__label{
+  width: 98%;
+}
+
 /* i,span {
   color: #08648D;
 }

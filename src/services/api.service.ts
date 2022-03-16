@@ -126,15 +126,10 @@ export default class Api {
     if (response.status !== 200) return;
 
     const res: GetDatasetsRes = response.data;
-     
     return res
-    if (res.code !== 0) console.log(res.message);
+  }
 
-    if (res.data) {
-      console.log("res.data", res.data)
-    }
-
-
-
+  static async setExperimentDataset(projectName: string, experimentId: string, datasetPath: string): Promise<void> {
+    if (!store.currentProject) return;
   }
 }
