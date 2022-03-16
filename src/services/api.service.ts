@@ -111,13 +111,14 @@ export default class Api {
 
   }
 
-  static async getDatasets(projectName: string): Promise<void> {
+
+  static async getDatasets(projectName: string): Promise<GetDatasetsRes | undefined> {
     if (!store.currentProject) return;
 
     const reqData: GetDatasetsReq = {
       projectName,
     }
-    const response :AxiosResponse<GetDatasetsRes> =await axios.post(
+    const response: AxiosResponse<GetDatasetsRes> = await axios.post(
       host + 'get-datasets',
       reqData,
     )
@@ -125,13 +126,15 @@ export default class Api {
     if (response.status !== 200) return;
 
     const res: GetDatasetsRes = response.data;
-    if (res.code !==0) console.log(res.message);
+     
+    return res
+    if (res.code !== 0) console.log(res.message);
 
-    if (res.data){
-      console.log("res.data",res.data)
+    if (res.data) {
+      console.log("res.data", res.data)
     }
 
 
-    
+
   }
 }

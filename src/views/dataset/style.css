@@ -62,3 +62,12 @@
 ::v-deep .el-checkbox__input.is-disabled+span.el-checkbox__label{
   color: #0e5879;
 }
+
+.status-box{
+  margin: 0 1em;
+}
+
+.status-box i {
+  margin: 0 10px;
+  color: rgb(8, 100, 141);
+}

@@ -12,6 +12,10 @@ export default class DialogImportKey extends Vue {
 
   @Emit("import-cancel")
   closeDialogImportKey() {
+
+    this.inputProjectName = '';
+    this.inputSolutionKey = '';
+
     return;
   }
 
