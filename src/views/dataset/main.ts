@@ -1,4 +1,4 @@
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import store from "@/services/store.service";
 import DialogCheckDataset from '@/components/dialog-check-dataset/DialogCheckDataset.vue';
 import Api from '@/services/api.service';
@@ -43,16 +43,20 @@ export default class Dataset extends Vue {
     this.waitGetDatasets()
   }
 
+  @Watch('openDialogCheckDataset')
+  onDialogChange():void{
+    this.waitGetDatasets()
+  }
+
   private async waitGetDatasets(): Promise<void> {
     const res = await Api.getDatasets(store.currentProject!)
     if (res?.message !== "success") this.openDialogCheckDataset = true
     if (res?.data) {
-      // this.datatsets = res?.data
       console.log("res data", Object.entries(res.data))
 
-      this.datatsets = Object.entries(res.data).map( element=>{
+      this.datatsets = Object.entries(res.data).map(element => {
         return {
-          path : element[0],
+          path: element[0],
           labeled: element[1].labeled,
           split: element[1].split,
           uploaded: element[1].uploaded
