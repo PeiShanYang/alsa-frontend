@@ -8,6 +8,7 @@ import { Project } from "@/io/project";
 import { Experiment } from "@/io/experiment";
 import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { DatasetStatus } from "@/io/dataset";
+import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
 
 const host = 'http://tw100104318:37510/';
 
@@ -131,5 +132,26 @@ export default class Api {
 
   static async setExperimentDataset(projectName: string, experimentId: string, datasetPath: string): Promise<void> {
     if (!store.currentProject) return;
+
+    const reqData: SetExprimentDatasetReq = {
+      projectName,experimentId,datasetPath
+    }
+
+    const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
+      host + 'set-experiment-dataset',
+      reqData,
+    )
+    
+    if (response.status !== 200) return;
+    const res:SetExprimentDatasetRes = response.data
+    if (res.code !== 0) console.log(res.message);
+
+    if (!res.data) return;
+
+    const project = store.projectList.get(store.currentProject);
+    if (project === undefined) return;
+
+    project.experiments = new Map<string, Experiment>(Object.entries(res.data));
+
   }
 }

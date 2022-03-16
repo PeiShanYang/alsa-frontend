@@ -19,11 +19,18 @@ export default class DialogDataset extends Vue {
   }
 
   @Emit("set-dataset")
-  setExperimentDataset(): void{
+  async setExperimentDataset() {
+
+    const experimentId = store.projectList.get(store.currentProject ?? '')?.experiments?.keys().next().value
+
+    if (store.currentProject && this.checkedPath !== "") {
+      await Api.setExperimentDataset(store.currentProject, experimentId, this.checkedPath)
+    }
+
     return;
   }
 
- 
+
 
   // get datasets(): Map<string, DatasetStatus> | null {
   //   return store.projectList.get(store.currentProject ?? '')?.datasets ?? null;
@@ -60,7 +67,11 @@ export default class DialogDataset extends Vue {
     }
   }
 
-  private handleCheckPath(val:any){
-    console.log("any",typeof val,val[0],this.checkedPathList,"df")
+  private handleCheckPath(checkItem: string[]) {
+
+    if (checkItem[0]) {
+      this.checkedPath = checkItem[0]
+    }
+
   }
 }
