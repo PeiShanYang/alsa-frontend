@@ -88,6 +88,53 @@ export default class Api {
     project.experiments = new Map<string, Experiment>(Object.entries(res.data));
   }
 
+  static async setExperimentDataset(projectName: string, experimentId: string, datasetPath: string): Promise<void> {
+    if (!store.currentProject) return;
+
+    const reqData: SetExprimentDatasetReq = {
+      projectName,experimentId,datasetPath
+    }
+
+    const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
+      host + 'set-experiment-dataset',
+      reqData,
+    )
+    
+    if (response.status !== 200) return;
+    const res:SetExprimentDatasetRes = response.data
+    if (res.code !== 0) console.log(res.message);
+
+    if (!res.data) return;
+
+    const project = store.projectList.get(store.currentProject);
+    if (project === undefined) return;
+
+    project.experiments = new Map<string, Experiment>([[experimentId,res.data]]);
+  
+  }
+
+  static async getDatasets(projectName: string): Promise< Map<string,DatasetStatus> | undefined> {
+    if (!store.currentProject) return;
+
+    const reqData: GetDatasetsReq = {
+      projectName,
+    }
+    const response: AxiosResponse<GetDatasetsRes> = await axios.post(
+      host + 'get-datasets',
+      reqData,
+    )
+
+    if (response.status !== 200) return;
+    const res: GetDatasetsRes = response.data;
+    if(res.code !==0) console.log(res.message)
+
+    if(!res.data) return;
+
+    const datasetList = new Map<string,DatasetStatus>(Object.entries(res.data))
+
+    return datasetList
+  }
+
   static async checkDataset(datasetPath: string): Promise<void> {
     if (!store.currentProject) return;
 
@@ -112,51 +159,5 @@ export default class Api {
 
   }
 
-
-  static async getDatasets(projectName: string): Promise< Map<string,DatasetStatus> | undefined> {
-    if (!store.currentProject) return;
-
-    const reqData: GetDatasetsReq = {
-      projectName,
-    }
-    const response: AxiosResponse<GetDatasetsRes> = await axios.post(
-      host + 'get-datasets',
-      reqData,
-    )
-
-    if (response.status !== 200) return;
-    const res: GetDatasetsRes = response.data;
-    if(res.code !==0) console.log(res.message)
-
-    if(!res.data) return;
-
-    const datasetList = new Map<string,DatasetStatus>(Object.entries(res.data))
-
-    return datasetList
-  }
-
-  static async setExperimentDataset(projectName: string, experimentId: string, datasetPath: string): Promise<void> {
-    if (!store.currentProject) return;
-
-    const reqData: SetExprimentDatasetReq = {
-      projectName,experimentId,datasetPath
-    }
-
-    const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
-      host + 'set-experiment-dataset',
-      reqData,
-    )
-    
-    if (response.status !== 200) return;
-    const res:SetExprimentDatasetRes = response.data
-    if (res.code !== 0) console.log(res.message);
-
-    if (!res.data) return;
-
-    const project = store.projectList.get(store.currentProject);
-    if (project === undefined) return;
-
-    project.experiments = new Map<string, Experiment>(Object.entries(res.data));
-
-  }
+  
 }

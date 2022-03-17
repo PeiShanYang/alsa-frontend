@@ -21,9 +21,9 @@
             </el-col> -->
           </el-row>
         </template>
-        <template v-if="datasets">
+        <template v-if="datasetList">
           <el-checkbox-group v-model="checkedPathList" :max="1" @change="handleCheckPath">
-            <el-row v-for="[path,status] in datasets" :key="path" style="background: #f0fafb; padding: 1%; margin: 1%">
+            <el-row v-for="[path,status] in datasetList" :key="path" style="background: #f0fafb; padding: 1%; margin: 1%">
               <el-checkbox :label="path" style="width: 100%;">
                 <el-row type="flex" justify="space-between">
                   <el-col :span="12" style="padding-top: 1%;">

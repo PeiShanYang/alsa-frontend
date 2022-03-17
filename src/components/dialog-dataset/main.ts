@@ -7,6 +7,7 @@ import { DatasetStatus } from '@/io/dataset';
 export default class DialogDataset extends Vue {
   @Prop() private dialogOpen!: boolean;
   @Prop() private experimentId!: string;
+  @Prop() private datasetList!:Map<string, DatasetStatus>;
 
   private searchPattern = '';
   private activeDatasetCollapse: string[] = ["1"];
@@ -21,45 +22,15 @@ export default class DialogDataset extends Vue {
   @Emit("set-dataset")
   async setExperimentDataset() {
 
-    const experimentId = store.projectList.get(store.currentProject ?? '')?.experiments?.keys().next().value
+    if (this.checkedPath == "") return
 
-    if (store.currentProject && this.checkedPath !== "") {
-      await Api.setExperimentDataset(store.currentProject, experimentId, this.checkedPath)
-      return this.datasets.get(this.checkedPath)
-    }
-
-    return
-
+    return this.checkedPath
   }
 
-
-  private datasets: Map<string, DatasetStatus> = new Map<string, DatasetStatus>();
   private checkedPathList = [];
   private checkedPath = "";
-
-  @Watch('dialogOpen')
-  onDialogChange(value: boolean): void {
-    if (value) {
-      // Api.getDatasets(store.currentProject ?? '');
-      this.waitGetDatasets()
-    }
-  }
-
-  addDataset(): void {
-    console.log('to add dataset');
-  }
-
-
-  private async waitGetDatasets(): Promise<void> {
-    const res = await Api.getDatasets(store.currentProject ?? '')
-    if (res) this.datasets = res
-  }
-
+  
   private handleCheckPath(checkItem: string[]) {
-
-    if (checkItem[0]) {
-      this.checkedPath = checkItem[0]
-    }
-
+    if (checkItem[0]) this.checkedPath = checkItem[0]
   }
 }

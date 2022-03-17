@@ -21,12 +21,13 @@ ul {
   margin: 0;
   height: 5vw;
   width: 4.3vw;
-  word-break: break-all;
-  overflow: hidden;
+  /* word-break: break-all; */
+  /* overflow: hidden; */
 }
 
 li span {
   position: relative;
   left: -2px;
   font-size: 0.2vw;
+  word-break: break-all;
 }

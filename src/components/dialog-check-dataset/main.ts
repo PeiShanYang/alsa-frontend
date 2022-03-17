@@ -13,7 +13,6 @@ export default class DialogCheckDataset extends Vue {
   cancelCheckDataset(): void {
 
     this.inputDatasetPath = ""
-
     return;
   }
 
@@ -25,11 +24,6 @@ export default class DialogCheckDataset extends Vue {
     await Api.checkDataset(this.inputDatasetPath)
     
     this.inputDatasetPath = ""
-
     return 
-
   }
-
-
-
 }

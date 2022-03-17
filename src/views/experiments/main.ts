@@ -30,6 +30,8 @@ export default class Experiments extends Vue {
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
 
+  private datasets: Map<string, DatasetStatus> = new Map<string, DatasetStatus>();
+
   private graph: Graph | null = null;
 
   private defaultFlow: FlowNodeSettings[] = [
@@ -118,7 +120,29 @@ export default class Experiments extends Vue {
   }
 
   private async waitGetExperiments(): Promise<void> {
+
+    if (!store.currentProject) return
+
     await Api.getExperiments();
+
+    const project = store.projectList.get(store.currentProject)
+    if (!project) return
+    const experiments = project.experiments;
+    if (!experiments) return
+
+    const experiment: Experiment = experiments.values().next().value;
+    const experimentPath = experiment.Config.PrivateSetting.datasetPath
+
+    const datasetList = await Api.getDatasets(store.currentProject)
+    if (datasetList) {
+
+      this.datasets = datasetList
+
+      if (experimentPath != "") {
+        project.datasets = new Map<string,DatasetStatus>([...datasetList.entries()].filter( status => status[0]=== experimentPath))
+      }
+    }
+
     this.drawGraph();
   }
 
@@ -131,6 +155,7 @@ export default class Experiments extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
     if (!container) return null;
 
+    
     const experiments = store.projectList.get(store.currentProject ?? '')?.experiments;
     if (!experiments) return null;
 
@@ -192,27 +217,25 @@ export default class Experiments extends Vue {
     }
   }
 
-  private setDatasetContent(val: DatasetStatus): void {
+  private async setDatasetContent(path: string): Promise<void> {
+
     this.openDialogDataset = false;
     const nodes = this.graph?.getNodes()
     const datasetnode = nodes?.find(node => node.id === "dataset-node")
 
-    const sendDatasetStatus = []
-    if (val.labeled) {
-      sendDatasetStatus.push("已標記")
-    } else { sendDatasetStatus.push("未標記") }
-    if (val.split) {
-      sendDatasetStatus.push("已切分")
-    } else { sendDatasetStatus.push("未切分") }
-    if (val.uploaded) {
-      sendDatasetStatus.push("已上傳")
-    } else { sendDatasetStatus.push("未上傳") }
+    if (!store.currentProject) return
+    const project = store.projectList.get(store.currentProject)
+    if (!project) return
+    
+    if (!project.experiments) return
+    const experimentId = [...project.experiments.entries()][0][0]
+    await Api.setExperimentDataset(store.currentProject, experimentId, path)
+    project.datasets = new Map<string,DatasetStatus>([...this.datasets].filter( status => status[0] === path))
 
-    console.log("node", datasetnode)
-    datasetnode?.setData({ component: "dataset-node", content: sendDatasetStatus }, { overwrite: true })
-    console.log("node", datasetnode)
+    const experiment = project.experiments.values().next().value
+    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment).get("dataset-node")
+    datasetnode?.setData( sendDatasetStatus , { overwrite: true })
 
-    console.log("val", val)
   }
 
 }

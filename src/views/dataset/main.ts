@@ -13,14 +13,10 @@ export default class Dataset extends Vue {
 
 
   private selectedDatasetValue = '';
-  private datasetOptions = [
+  private datasetOptions: { value: string, label: string }[] = [
     {
       value: "all data",
       label: "所有資料集",
-    },
-    {
-      value: "dataset 001",
-      label: "001 dataset",
     },
   ];
   private acitveDatasetCollapse: string[] = ["1"];
@@ -40,13 +36,21 @@ export default class Dataset extends Vue {
   }
 
   @Watch('openDialogCheckDataset')
-  onDialogChange():void{
+  onDialogChange(): void {
     this.waitGetDatasets()
   }
 
   private async waitGetDatasets(): Promise<void> {
     const res = await Api.getDatasets(store.currentProject ?? '')
     if (res) this.datasets = res
+
+    this.datasets.forEach((status, path) => {
+      this.datasetOptions.push({
+        value: path,
+        label: path,
+      })
+    })
+
   }
 
 }
