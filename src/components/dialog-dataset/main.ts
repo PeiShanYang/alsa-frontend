@@ -25,20 +25,15 @@ export default class DialogDataset extends Vue {
 
     if (store.currentProject && this.checkedPath !== "") {
       await Api.setExperimentDataset(store.currentProject, experimentId, this.checkedPath)
+      return this.datasets.get(this.checkedPath)
     }
 
-    // this.datasets.filter( item => item.path === this.checkedPath)
-    // console.log("this datasets",this.datasets.filter( item => item.path === this.checkedPath))
+    return
 
-    return this.datasets.filter( item => item.path === this.checkedPath)[0];
   }
 
 
-
-  // get datasets(): Map<string, DatasetStatus> | null {
-  //   return store.projectList.get(store.currentProject ?? '')?.datasets ?? null;
-  // }
-  private datasets : {path:string,labeled:string,split:string,uploaded:string}[] = [];
+  private datasets: Map<string, DatasetStatus> = new Map<string, DatasetStatus>();
   private checkedPathList = [];
   private checkedPath = "";
 
@@ -57,17 +52,7 @@ export default class DialogDataset extends Vue {
 
   private async waitGetDatasets(): Promise<void> {
     const res = await Api.getDatasets(store.currentProject ?? '')
-    if (res?.data) {
-      this.datasets = Object.entries(res.data).map(element => {
-        return {
-          path: element[0],
-          labeled: element[1].labeled,
-          split: element[1].split,
-          uploaded: element[1].uploaded
-        }
-      })
-
-    }
+    if (res) this.datasets = res
   }
 
   private handleCheckPath(checkItem: string[]) {

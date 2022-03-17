@@ -23,26 +23,26 @@
         </template>
         <template v-if="datasets">
           <el-checkbox-group v-model="checkedPathList" :max="1" @change="handleCheckPath">
-            <el-row v-for="item in datasets" :key="item.path" style="background: #f0fafb; padding: 1%; margin: 1%">
-              <el-checkbox :label="item.path" style="width: 100%;">
-                <el-row type="flex" justify="space-between" >
+            <el-row v-for="[path,status] in datasets" :key="path" style="background: #f0fafb; padding: 1%; margin: 1%">
+              <el-checkbox :label="path" style="width: 100%;">
+                <el-row type="flex" justify="space-between">
                   <el-col :span="12" style="padding-top: 1%;">
-                    <span style="color: #4a9abe">資料集路徑：{{ item.path }}</span>
+                    <span style="color: #4a9abe">資料集路徑：{{ path }}</span>
                   </el-col>
                   <el-col :span=12 style="display: flex;justify-content: flex-end;padding-top: 1%;">
                     <div class="status-box">
                       <span>上傳</span>
-                      <i v-if=item.uploaded class="el-icon-check"></i>
+                      <i v-if=status.uploaded class="el-icon-check"></i>
                       <i v-else class="el-icon-close"></i>
                     </div>
                     <div class="status-box">
                       <span>標記</span>
-                      <i v-if=item.labeled class="el-icon-check"></i>
+                      <i v-if=status.labeled class="el-icon-check"></i>
                       <i v-else class="el-icon-close"></i>
                     </div>
                     <div class="status-box">
                       <span>切分</span>
-                      <i v-if=item.split class="el-icon-check"></i>
+                      <i v-if=status.split class="el-icon-check"></i>
                       <i v-else class="el-icon-close"></i>
                     </div>
                   </el-col>

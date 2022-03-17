@@ -1,4 +1,4 @@
-import { DatasetStatus } from "../dataset";
+import { DatasetStatus } from "@/io/dataset";
 
 export class GetDatasetsReq {
     projectName!: string;

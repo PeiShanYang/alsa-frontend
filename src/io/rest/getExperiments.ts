@@ -1,7 +1,7 @@
 import { Experiment } from "@/io/experiment";
 
 export class GetExperimentsReq {
-    projectName! : string;
+    projectName!: string;
 }
 
 export class GetExperimentsRes {

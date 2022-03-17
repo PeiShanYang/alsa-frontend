@@ -13,6 +13,7 @@ import ProcessCellData from '@/io/processCellData';
 import store from '@/services/store.service';
 import Icons from '@/constant/icon';
 import { Experiment } from '@/io/experiment';
+import { DatasetStatus } from '@/io/dataset';
 
 @Component({
   components: {
@@ -141,7 +142,7 @@ export default class Experiments extends Vue {
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
-            
+
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
         id: node.name,
@@ -191,15 +192,27 @@ export default class Experiments extends Vue {
     }
   }
 
-  private setDatasetContent(val:any):void{
+  private setDatasetContent(val: DatasetStatus): void {
     this.openDialogDataset = false;
     const nodes = this.graph?.getNodes()
     const datasetnode = nodes?.find(node => node.id === "dataset-node")
-    console.log("node",datasetnode)
-    datasetnode?.setData({conponent:"datset-node",content: ["test"]})
-    console.log("node",datasetnode)
 
-    console.log("val",val)
+    const sendDatasetStatus = []
+    if (val.labeled) {
+      sendDatasetStatus.push("已標記")
+    } else { sendDatasetStatus.push("未標記") }
+    if (val.split) {
+      sendDatasetStatus.push("已切分")
+    } else { sendDatasetStatus.push("未切分") }
+    if (val.uploaded) {
+      sendDatasetStatus.push("已上傳")
+    } else { sendDatasetStatus.push("未上傳") }
+
+    console.log("node", datasetnode)
+    datasetnode?.setData({ component: "dataset-node", content: sendDatasetStatus }, { overwrite: true })
+    console.log("node", datasetnode)
+
+    console.log("val", val)
   }
 
 }

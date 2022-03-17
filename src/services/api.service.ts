@@ -113,7 +113,7 @@ export default class Api {
   }
 
 
-  static async getDatasets(projectName: string): Promise<GetDatasetsRes | undefined> {
+  static async getDatasets(projectName: string): Promise< Map<string,DatasetStatus> | undefined> {
     if (!store.currentProject) return;
 
     const reqData: GetDatasetsReq = {
@@ -125,9 +125,14 @@ export default class Api {
     )
 
     if (response.status !== 200) return;
-
     const res: GetDatasetsRes = response.data;
-    return res
+    if(res.code !==0) console.log(res.message)
+
+    if(!res.data) return;
+
+    const datasetList = new Map<string,DatasetStatus>(Object.entries(res.data))
+
+    return datasetList
   }
 
   static async setExperimentDataset(projectName: string, experimentId: string, datasetPath: string): Promise<void> {

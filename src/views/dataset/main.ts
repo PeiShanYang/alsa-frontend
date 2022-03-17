@@ -30,12 +30,8 @@ export default class Dataset extends Vue {
     return this.$route.params.projectName
   }
 
-  // get datasets(): Map<string,DatasetStatus> |null {
-  //   return 
-  // }
 
-  private datatsets = [{}];
-
+  private datasets: Map<string, DatasetStatus> = new Map<string, DatasetStatus>();
   private openDialogCheckDataset = false;
 
 
@@ -50,20 +46,7 @@ export default class Dataset extends Vue {
 
   private async waitGetDatasets(): Promise<void> {
     const res = await Api.getDatasets(store.currentProject ?? '')
-    if (res?.message !== "success") this.openDialogCheckDataset = true
-    if (res?.data) {
-      console.log("res data", Object.entries(res.data))
-
-      this.datatsets = Object.entries(res.data).map(element => {
-        return {
-          path: element[0],
-          labeled: element[1].labeled,
-          split: element[1].split,
-          uploaded: element[1].uploaded
-        }
-      })
-
-    }
+    if (res) this.datasets = res
   }
 
 }
