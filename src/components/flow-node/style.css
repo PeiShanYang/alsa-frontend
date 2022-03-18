@@ -20,14 +20,15 @@ ul {
   padding: 0px 25%;
   margin: 0;
   height: 5vw;
-  width: 4.3vw;
-  /* word-break: break-all; */
-  /* overflow: hidden; */
+  width: 100%;
+  text-overflow:ellipsis;
+  word-break: break-all;
+  overflow: hidden;
 }
 
 li span {
   position: relative;
   left: -2px;
   font-size: 0.2vw;
-  word-break: break-all;
+  /* word-break: break-all; */
 }

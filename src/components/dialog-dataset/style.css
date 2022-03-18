@@ -73,8 +73,8 @@
   color: #4a9abe;
 }
 
-::v-deep  .el-checkbox__label{
-  width: 98%;
+::v-deep  .el-radio__label{
+  width: 96%;
 }
 
 /* i,span {

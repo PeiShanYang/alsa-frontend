@@ -27,10 +27,10 @@ export default class DialogDataset extends Vue {
     return this.checkedPath
   }
 
-  private checkedPathList = [];
+  private defaultPath = "";
   private checkedPath = "";
   
-  private handleCheckPath(checkItem: string[]) {
-    if (checkItem[0]) this.checkedPath = checkItem[0]
+  private handleCheckPath(checkItem: string) {
+    if (checkItem) this.checkedPath = checkItem
   }
 }

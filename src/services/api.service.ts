@@ -80,11 +80,10 @@ export default class Api {
       return;
     }
 
-    if (!res.data) return;
-
     const project = store.projectList.get(store.currentProject);
     if (project === undefined) return;
 
+    if (!res.data) return;
     project.experiments = new Map<string, Experiment>(Object.entries(res.data));
   }
 
@@ -92,29 +91,29 @@ export default class Api {
     if (!store.currentProject) return;
 
     const reqData: SetExprimentDatasetReq = {
-      projectName,experimentId,datasetPath
+      projectName, experimentId, datasetPath
     }
 
     const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
       host + 'set-experiment-dataset',
       reqData,
     )
-    
-    if (response.status !== 200) return;
-    const res:SetExprimentDatasetRes = response.data
-    if (res.code !== 0) console.log(res.message);
 
-    if (!res.data) return;
+    if (response.status !== 200) return;
+    const res: SetExprimentDatasetRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message);
+      return;
+    }
 
     const project = store.projectList.get(store.currentProject);
     if (project === undefined) return;
 
-    project.experiments = new Map<string, Experiment>([[experimentId,res.data]]);
-  
+    if (!res.data) return;
+    project.experiments?.set(experimentId,res.data)
   }
 
-  static async getDatasets(projectName: string): Promise< Map<string,DatasetStatus> | undefined> {
-    if (!store.currentProject) return;
+  static async getDatasets(projectName: string): Promise<void> {
 
     const reqData: GetDatasetsReq = {
       projectName,
@@ -125,14 +124,18 @@ export default class Api {
     )
 
     if (response.status !== 200) return;
+
     const res: GetDatasetsRes = response.data;
-    if(res.code !==0) console.log(res.message)
+    if (res.code !== 0) {
+      console.log(res.message);
+      return;
+    }
 
-    if(!res.data) return;
+    const project = store.projectList.get(projectName)
+    if (project === undefined) return;
 
-    const datasetList = new Map<string,DatasetStatus>(Object.entries(res.data))
-
-    return datasetList
+    if (!res.data) return;
+    project.datasets = new Map<string,DatasetStatus>(Object.entries(res.data))
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {
@@ -159,5 +162,5 @@ export default class Api {
 
   }
 
-  
+
 }

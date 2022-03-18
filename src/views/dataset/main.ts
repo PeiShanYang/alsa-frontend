@@ -27,11 +27,12 @@ export default class Dataset extends Vue {
   }
 
 
-  private datasets: Map<string, DatasetStatus> = new Map<string, DatasetStatus>();
+  private datasets: Map<string, DatasetStatus> | undefined= new Map<string, DatasetStatus>();
   private openDialogCheckDataset = false;
 
 
   mounted(): void {
+    if(this.$route.params.settingPath) setTimeout(()=>{this.openDialogCheckDataset = true},500)
     this.waitGetDatasets()
   }
 
@@ -41,15 +42,11 @@ export default class Dataset extends Vue {
   }
 
   private async waitGetDatasets(): Promise<void> {
-    const res = await Api.getDatasets(store.currentProject ?? '')
-    if (res) this.datasets = res
 
-    this.datasets.forEach((status, path) => {
-      this.datasetOptions.push({
-        value: path,
-        label: path,
-      })
-    })
+    if(!store.currentProject) return
+
+    await Api.getDatasets(store.currentProject)
+    this.datasets = store.projectList.get(store.currentProject)?.datasets
 
   }
 

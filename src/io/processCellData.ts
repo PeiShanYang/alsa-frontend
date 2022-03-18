@@ -1,38 +1,15 @@
 import { Experiment } from "@/io/experiment";
-import store from '@/services/store.service';
+import ProjectSevice from "@/services/project.service";
 
 export default class ProcessCellData {
     component!: string;
     content!: string[];
 
     static cellDataContent(experiment: Experiment): Map<string, ProcessCellData> {
-
-        const projectDataset = store.projectList.get(store.currentProject ?? "")?.datasets
-        const datasetNodeContent: string[] = []
-        if (!projectDataset) {
-            datasetNodeContent.push("未上傳", "未標記", "未切分")
-        } else {
-            const getStatus = projectDataset.get(experiment.Config.PrivateSetting.datasetPath ?? "")
-            if (getStatus && getStatus.uploaded) {
-                datasetNodeContent.push("已上傳")
-            } else { datasetNodeContent.push("未上傳") }
-            if (getStatus && getStatus.labeled) {
-                datasetNodeContent.push("已標記")
-            } else { datasetNodeContent.push("未標記") }
-            if (getStatus && getStatus.split) {
-                datasetNodeContent.push("已切分")
-            } else { datasetNodeContent.push("未切分") }
-            
-        }
-
-        const modelNameArr = []
-        modelNameArr.push(experiment.ConfigPytorchModel.SelectedModel.model?.structure ?? '')
-
-
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
-                content: datasetNodeContent,
+                content: ProjectSevice.getDatasetNodeContent(experiment),
             }],
             ['preprocess-node', {
                 component: 'preprocess-node',
@@ -44,7 +21,7 @@ export default class ProcessCellData {
             }],
             ['model-select-node', {
                 component: 'model-select-node',
-                content: modelNameArr,
+                content: ProjectSevice.getModelNodeContent(experiment),
             }],
             ['validation-select-node', {
                 component: 'validation-select-node',

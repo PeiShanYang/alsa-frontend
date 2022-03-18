@@ -30,7 +30,7 @@ export default class Experiments extends Vue {
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
 
-  private datasets: Map<string, DatasetStatus> = new Map<string, DatasetStatus>();
+  private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
   private graph: Graph | null = null;
 
@@ -121,27 +121,14 @@ export default class Experiments extends Vue {
 
   private async waitGetExperiments(): Promise<void> {
 
-    if (!store.currentProject) return
-
     await Api.getExperiments();
 
+    if (!store.currentProject) return
     const project = store.projectList.get(store.currentProject)
     if (!project) return
-    const experiments = project.experiments;
-    if (!experiments) return
-
-    const experiment: Experiment = experiments.values().next().value;
-    const experimentPath = experiment.Config.PrivateSetting.datasetPath
-
-    const datasetList = await Api.getDatasets(store.currentProject)
-    if (datasetList) {
-
-      this.datasets = datasetList
-
-      if (experimentPath != "") {
-        project.datasets = new Map<string,DatasetStatus>([...datasetList.entries()].filter( status => status[0]=== experimentPath))
-      }
-    }
+ 
+    await Api.getDatasets(store.currentProject)
+    this.datasets = project.datasets
 
     this.drawGraph();
   }
@@ -205,18 +192,6 @@ export default class Experiments extends Vue {
     });
   }
 
-  private output(): void {
-    const nodes = this.graph?.getNodes()
-
-    if (nodes?.length) {
-      nodes?.forEach((node) => {
-        node;
-        // const { num } = node.getData();
-        // node.setData({ num: num + 1 });
-      });
-    }
-  }
-
   private async setDatasetContent(path: string): Promise<void> {
 
     this.openDialogDataset = false;
@@ -227,13 +202,15 @@ export default class Experiments extends Vue {
     const project = store.projectList.get(store.currentProject)
     if (!project) return
     
+
     if (!project.experiments) return
     const experimentId = [...project.experiments.entries()][0][0]
+
     await Api.setExperimentDataset(store.currentProject, experimentId, path)
-    project.datasets = new Map<string,DatasetStatus>([...this.datasets].filter( status => status[0] === path))
 
     const experiment = project.experiments.values().next().value
     const sendDatasetStatus = ProcessCellData.cellDataContent(experiment).get("dataset-node")
+
     datasetnode?.setData( sendDatasetStatus , { overwrite: true })
 
   }

@@ -22,14 +22,13 @@
           </el-row>
         </template>
         <template v-if="datasetList">
-          <el-checkbox-group v-model="checkedPathList" :max="1" @change="handleCheckPath">
-            <el-row v-for="[path,status] in datasetList" :key="path" style="background: #f0fafb; padding: 1%; margin: 1%">
-              <el-checkbox :label="path" style="width: 100%;">
-                <el-row type="flex" justify="space-between">
-                  <el-col :span="12" style="padding-top: 1%;">
+          <el-radio-group v-model="defaultPath" @change="handleCheckPath" style="width:95%;" >
+              <el-radio v-for="[path,status] in datasetList" :key="path" :label="path" style="width: 100%;display: flex;justify-content: space-around;background:#f0fafb;margin: 1%;padding: 1%;">
+                <el-row>
+                  <el-col :span="12">
                     <span style="color: #4a9abe">資料集路徑：{{ path }}</span>
                   </el-col>
-                  <el-col :span=12 style="display: flex;justify-content: flex-end;padding-top: 1%;">
+                  <el-col :span="12" style="display: flex;justify-content: flex-end;">
                     <div class="status-box">
                       <span>上傳</span>
                       <i v-if=status.uploaded class="el-icon-check"></i>
@@ -47,13 +46,12 @@
                     </div>
                   </el-col>
                 </el-row>
-              </el-checkbox>
-            </el-row>
-          </el-checkbox-group>
+              </el-radio>
+          </el-radio-group>
         </template>
         <el-row type="flex" justify="center">
           <el-col :span="23">
-            <router-link :to="{ name: 'dataset', params: { projectName: $route.params.projectName } }">
+            <router-link :to="{ name: 'dataset', params: { projectName: $route.params.projectName,settingPath:true} }">
               <el-button id="click-to-add-label-btn">
                 <i class="el-icon-circle-plus-outline"></i>
                 <span>點擊此處新增標記資料集</span>
