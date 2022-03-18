@@ -32,7 +32,7 @@ export default class Dataset extends Vue {
 
 
   mounted(): void {
-    if(this.$route.params.settingPath) setTimeout(()=>{this.openDialogCheckDataset = true},500)
+    if(this.$route.params.settingPath) setTimeout(() => {this.openDialogCheckDataset = true}, 500);
     this.waitGetDatasets()
   }
 

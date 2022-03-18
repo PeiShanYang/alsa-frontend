@@ -5,26 +5,23 @@ export default class ProjectSevice {
 
     static getDatasetNodeContent(experiment: Experiment): string[] {
 
-        let datasetNodeContent: string[] = []
+        const datasetStatus = store.projectList
+            .get(store.currentProject ?? "")
+            ?.datasets
+            ?.get(experiment.Config.PrivateSetting.datasetPath ?? "");
 
-        const projectDataset = store.projectList.get(store.currentProject ?? "")?.datasets
-        if (!projectDataset) {
-            datasetNodeContent = ["未上傳", "未標記", "未切分"]
-        } else {
-            const getStatus = projectDataset.get(experiment.Config.PrivateSetting.datasetPath ?? "")
+        if (!datasetStatus) return ["未上傳", "未標記", "未切分"];
 
-            getStatus && getStatus.uploaded ? datasetNodeContent.push("已上傳") : datasetNodeContent.push("未上傳")
-            getStatus && getStatus.labeled ? datasetNodeContent.push("已標記") : datasetNodeContent.push("未標記")
-            getStatus && getStatus.split ? datasetNodeContent.push("已切分") : datasetNodeContent.push("未切分")
-        }
-        return datasetNodeContent
+        return [
+            datasetStatus.uploaded ? "已上傳" : "未上傳",
+            datasetStatus.labeled ? "已標記" : "未標記",
+            datasetStatus.split ? "已切分" : "未切分",
+        ];
     }
 
     static getModelNodeContent(experiment: Experiment): string[] {
 
-        const modelNodeContent: string[] = []
-        modelNodeContent.push(experiment.ConfigPytorchModel.SelectedModel.model?.structure ?? '')
-        return modelNodeContent
+        return [experiment.ConfigPytorchModel.SelectedModel.model?.structure ?? 'Model not set'];
     }
 
 }

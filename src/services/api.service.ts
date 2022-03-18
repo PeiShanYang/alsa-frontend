@@ -110,7 +110,7 @@ export default class Api {
     if (project === undefined) return;
 
     if (!res.data) return;
-    project.experiments?.set(experimentId,res.data)
+    project.experiments?.set(experimentId, res.data)
   }
 
   static async getDatasets(projectName: string): Promise<void> {
