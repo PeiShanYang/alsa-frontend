@@ -3,14 +3,12 @@
     <img :src="icon" />
   </el-col>
   <el-col :span="15" :style="nodeBorderColor">
-    <el-row type="flex" justify="center">
-      <el-col :span="23" style="padding-top: 1vh;">
-        <span style="font-size: 0.85vw; font-weight: bold;">{{ title }}</span>
-        <br />
-        <template v-for="content in nodeContent">
-          <li><span>{{ content }}</span></li>
-        </template>
-      </el-col>
-    </el-row>
+    <span style="font-size: 0.85vw; font-weight: bold;">{{ title }}</span>
+    <br />
+    <ul>
+      <template v-for="content in nodeContent">
+        <li><span>{{ content }}</span></li>
+      </template>
+    </ul>
   </el-col>
 </el-row>
