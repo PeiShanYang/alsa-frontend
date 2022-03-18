@@ -9,7 +9,7 @@ export default class ProcessCellData {
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
-                content: ProjectSevice.getDatasetNodeContent(experiment),
+                content: ProjectSevice.getDatasetNodeContent(experiment.Config.PrivateSetting.datasetPath ?? ""),
             }],
             ['preprocess-node', {
                 component: 'preprocess-node',
@@ -21,7 +21,7 @@ export default class ProcessCellData {
             }],
             ['model-select-node', {
                 component: 'model-select-node',
-                content: ProjectSevice.getModelNodeContent(experiment),
+                content: ProjectSevice.getModelNodeContent(experiment.ConfigPytorchModel.SelectedModel.model),
             }],
             ['validation-select-node', {
                 component: 'validation-select-node',

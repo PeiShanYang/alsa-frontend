@@ -176,7 +176,7 @@ export default class Experiments extends Vue {
   private listenOnNodeClick() {
     this.graph?.on("node:click", (nodeInfo) => {
       const targetDialog: ProcessCellData = nodeInfo.node.data;
-      switch (nodeInfo.node.id) {
+      switch (targetDialog.component) {
         case "dataset-node":
           this.openDialogDataset = true;
           break;

@@ -1,6 +1,4 @@
-import Api from '@/services/api.service';
-import { Component, Prop, Vue, Emit, Watch } from 'vue-property-decorator';
-import store from "@/services/store.service";
+import { Component, Prop, Vue, Emit} from 'vue-property-decorator';
 import { DatasetStatus } from '@/io/dataset';
 
 @Component
@@ -20,7 +18,7 @@ export default class DialogDataset extends Vue {
   }
 
   @Emit("set-dataset")
-  async setExperimentDataset() {
+  async setExperimentDataset():Promise<string | undefined>{
 
     if (this.checkedPath == "") return
 
