@@ -1,6 +1,7 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import Api from '@/services/api.service';
 import Store from '@/services/store.service';
+import { Value } from 'sass';
 
 @Component
 export default class DialogImportKey extends Vue {
@@ -11,6 +12,10 @@ export default class DialogImportKey extends Vue {
 
   @Emit("import-cancel")
   closeDialogImportKey() {
+
+    this.inputProjectName = '';
+    this.inputSolutionKey = '';
+
     return;
   }
 
@@ -34,8 +39,10 @@ export default class DialogImportKey extends Vue {
 
       await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey)
 
-      Store.projectList.forEach( project =>{
-        if( Object.values(project).includes(this.inputProjectName)){
+      Array.from(
+        Store.projectList.entries()
+      ).forEach((project) => {
+        if (project[0].includes(this.inputProjectName)) {
           this.$router.push({ name: 'experiments', params: { projectName: this.inputProjectName } })
         }
       })

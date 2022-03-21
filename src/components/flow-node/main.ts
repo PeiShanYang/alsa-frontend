@@ -1,21 +1,30 @@
+import ProcessCellData from '@/io/processCellData';
+import { VueShape } from '@antv/x6-vue-shape';
+import { Cell } from '@antv/x6/lib/model/cell';
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
 
 @Component
 export default class flowNode extends Vue {
 
-  // @Inject() getGraph: any;
-  // @Inject() getNode: any;
+  @Prop(String) private icon!: string;
+  @Prop(String) private title!: string;
+  @Prop(String) private backgroundColor!: string;
+  @Prop(String) private borderColor!: string;
 
-  @Prop(String) private nodeIcon!: any;
-  @Prop(String) private nodeTitle!: string;
-  @Prop(String) private nodeContent!: string;
-  @Prop(String) private nodeBackgroundColor!: string;
-  @Prop(String) private nodeBorderColor!: string;
+  @Inject("getNode") private getNode!: () => VueShape;
 
-  private imgSrc = this.nodeIcon;
-  private title: string = this.nodeTitle;
-  private content: string = this.nodeContent;
-  private backgroundColor =`background: ${this.nodeBackgroundColor}`;
-  private borderColor = `border-color:${this.nodeBorderColor}`;
+  private nodeBackgroundColor = `background: ${this.backgroundColor}`;
+  private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};`;
+  private nodeContent = ["暫無資料"]
 
+
+  mounted(): void {
+    const node = this.getNode();
+
+    this.nodeContent = node.getData().content
+
+    node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>)=>{
+      if(info.current) this.nodeContent = info.current.content
+    });
+  }
 }

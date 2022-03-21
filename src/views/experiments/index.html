@@ -3,21 +3,19 @@
       <el-collapse-item name="1">
         <template slot="title">
           <i class="el-icon-star-off"> </i>
-          <span>{{projectName}}</span>
+          <span>{{ projectName }}</span>
         </template>
         <el-row type="flex" justify="center">
-          <el-col>
-            <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
-          </el-col>
+          <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
         </el-row>
         <el-row type="flex" justify="space-between">
           <el-col :span="4" style="display: flex;padding: 0 1rem;">
-            <el-button @click="output" id="new-graph-block-btn">
+            <!-- <el-button @click="output" id="new-graph-block-btn">
               <i class="el-icon-circle-plus-outline"> </i>
               <span> 新增區塊</span>
-            </el-button>
+            </el-button> -->
           </el-col>
-          <el-col :span="2" style="display: flex;padding: 0 1rem;">
+          <el-col :span="3">
             <el-button @click="openDialogRunProject=true" id="run-project-btn">
               <span>執行</span>
             </el-button>
@@ -26,9 +24,9 @@
       </el-collapse-item>
     </el-collapse>
 
-  <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="closeDialogDataset" />
-  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="closeDialogPreprocess" />
-  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="closeDialogModelSelect" />
+  <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false" @set-dataset="setDatasetContent" />
+  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false" />
+  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
   <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
     <el-row type="flex" justify="center" style="margin:2rem 0;">
@@ -38,11 +36,11 @@
     </el-row>
     <el-row slot="footer" type="flex" justify="center" style="margin:2rem 0;">
       <el-col :span="5" style="margin-right: 2rem;">
-        <el-button @click="openDialogRunProject = false" id="later-btn">稍後再說</el-button>
+        <el-button @click="openDialogRunProject=false" id="later-btn">稍後再說</el-button>
       </el-col>
       <el-col :span="5">
         <router-link to="/">
-          <el-button @click="openDialogRunProject = false" id="go-dashboard-btn">前往查看</el-button>
+          <el-button @click="openDialogRunProject=false" id="go-dashboard-btn">前往查看</el-button>
         </router-link>
       </el-col>
     </el-row>

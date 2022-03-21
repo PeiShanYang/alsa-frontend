@@ -22,6 +22,9 @@
   padding-left: 0.5rem;
 }
 
+::v-deep .el-collapse-item__content {
+  padding: 10px;
+}
 
 #new-graph-block-btn {
   border-width: medium;
@@ -36,13 +39,11 @@
 }
 
 #run-project-btn {
-  height: 4rem;
-  font-size: 1.7rem;
+  height: 2.5em;
+  width: 80%;
+  font-size: 1.5em;
   color: white;
   background-color: #0e5879;
-  margin: auto;
-  align-self: center;
-
 }
 
 #later-btn {
@@ -64,4 +65,8 @@
 
 .decorate-box {
   box-shadow: 0px 3px 6px #00000029;
+}
+
+::v-deep .x6-node {
+  cursor: pointer;
 }

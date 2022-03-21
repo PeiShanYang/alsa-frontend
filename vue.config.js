@@ -3,5 +3,16 @@ module.exports = {
     proxy: "http://joejhhaung:Auo20221@auhqwsg.corpnet.auo.com:8080",
     disableHostCheck: true
   },
+
   runtimeCompiler:true,
+
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enableInSFC: false,
+      enableBridge: false
+    }
+  }
 };

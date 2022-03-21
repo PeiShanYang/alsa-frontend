@@ -11,10 +11,17 @@ export default class Sidebar extends Vue {
     Api.getProjects();
   }
 
-  get projectList(): Project[] {
-    console.log("projectlist", store.projectList);
+  get projectList(): Map<string, Project> {
     if (this.searchProject === '') return store.projectList;
 
-    return store.projectList.filter((value) => value.name?.toUpperCase().includes(this.searchProject.toUpperCase()));
+    return new Map<string, Project>(
+      Array.from(
+        store.projectList.entries()
+      ).filter(
+        (value) => value[0].toUpperCase().includes(
+          this.searchProject.toUpperCase()
+        )
+      )
+    );
   }
 }

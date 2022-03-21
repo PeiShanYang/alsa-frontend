@@ -1,5 +1,4 @@
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
-import testImg from "@/assets/10data/20210919-102013_L7B_LSR100_M24T1.jpg"
 
 
 @Component
@@ -64,8 +63,6 @@ export default class DialogPreprocess extends Vue {
     { title: "單通道增強" },
     { title: "Cutmix" },
   ]
-
-  private imgBeforeProcess: string = testImg;
 
   private currentPage = 1;
   private pageSize = 12;

@@ -1,8 +1,10 @@
-
 import { Experiment } from "@/io/experiment";
+import { DatasetStatus } from "./dataset";
 
 export class Project {
-    name?: string;
+    name!: string;
     fav?: boolean;
-    experiments?: Experiment;
+
+    experiments?: Map<string, Experiment>;
+    datasets?: Map<string, DatasetStatus>;
 }

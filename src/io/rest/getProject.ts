@@ -1,6 +1,6 @@
 export class GetProjectRes {
-  code: number = 0;
-  message: string = '';
+  code = 0;
+  message = '';
   data?: GetProjectResData;
 }
 
