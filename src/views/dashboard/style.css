@@ -1,9 +1,9 @@
 .el-input, ::v-deep .el-input__inner {
-  font-size: 1.5rem;
+  font-size: 1em;
 }
 
 ::v-deep .el-select-dropdown__item {
-  font-size: 2rem;
+  font-size: 1.2em;
 }
 
 .el-collapse {
@@ -15,25 +15,25 @@
 ::v-deep .el-collapse-item__header {
   background: #4a9abe;
   color: white;
-  padding: 1rem;
+  padding: 0.5em;
 }
 
 ::v-deep .el-collapse-item__header i {
-  font-size: 2rem;
+  font-size: 2.2em;
 }
 
 ::v-deep .el-collapse-item__header span {
-  font-size: 2rem;
+  font-size: 2.2em;
 }
 
 ::v-deep .el-collapse-item__header i+span {
-  padding-left: 0.5rem;
+  padding-left: 0.2em;
 }
 
 #delete-btn {
-  height: 4.8rem;
-  width: 11.2rem;
-  font-size: 1.7rem;
+  height: 2.5em;
+  width: 6em;
+  font-size: 1.5em;
   color: #08648d;
   border: 1px solid #08648d;
   background-color: white;
@@ -42,10 +42,9 @@
 }
 
 #check-model-btn{
-
-  height: 4.8rem;
-  width: 11.2rem;
-  font-size: 1.7rem;
+  height: 2.5em;
+  width: 6em;
+  font-size: 1.5em;
   color: white;
   background-color: #0E5879;
   margin: auto;

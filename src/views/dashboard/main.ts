@@ -26,14 +26,6 @@ export default class Dashboard extends Vue {
 
   private projectExist = false;
 
-
-
-  private currentComponent = "";
-
-
-  private newProjectDialogVisible = false;
-  private inputKeyVisible = false;
-  private keyInput = "";
   private selectedDatasetValue = "";
   private datasetOptions: Array<{ value: string, label: string }> = [
     {
@@ -48,24 +40,9 @@ export default class Dashboard extends Vue {
       value: "dataset 002",
       label: "002 dataset",
     },
-    {
-      value: "dataset 003",
-      label: "003 dataset",
-    },
-    {
-      value: "dataset 004",
-      label: "004 dataset",
-    },
-    {
-      value: "dataset 005",
-      label: "005 dataset",
-    },
   ]
   private inputModelName = "";
   private activeName = "1";
-  private progressColor = "#fff";
-  private progressPercentage = 88;
-  private projectBuildTime = `${new Date().getFullYear()}.${new Date().getMonth() + 1}.${new Date().getDate()} `;
 
   private acitveProjectCollapse: string[] = ["1"];
   private dialogTableVisible = false;

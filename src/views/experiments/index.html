@@ -6,10 +6,10 @@
           <span>{{ projectName }}</span>
         </template>
         <el-row type="flex" justify="center">
-          <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
+          <div id="graph-container" style="flex: 1;margin: 2em;"></div>
         </el-row>
         <el-row type="flex" justify="space-between">
-          <el-col :span="4" style="display: flex;padding: 0 1rem;">
+          <el-col :span="4" style="display: flex;padding: 0 1em;">
             <!-- <el-button @click="output" id="new-graph-block-btn">
               <i class="el-icon-circle-plus-outline"> </i>
               <span> 新增區塊</span>
@@ -29,13 +29,13 @@
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
   <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
-    <el-row type="flex" justify="center" style="margin:2rem 0;">
+    <el-row type="flex" justify="center" style="margin:1.2em 0;">
       <el-col :span='22' style="text-align:center">
-        <span style="font-size: 2.4rem;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
+        <span style="font-size: 2em;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
       </el-col>
     </el-row>
-    <el-row slot="footer" type="flex" justify="center" style="margin:2rem 0;">
-      <el-col :span="5" style="margin-right: 2rem;">
+    <el-row slot="footer" type="flex" justify="center" style="margin:1em 0;">
+      <el-col :span="5" style="margin-right: 2em;">
         <el-button @click="openDialogRunProject=false" id="later-btn">稍後再說</el-button>
       </el-col>
       <el-col :span="5">

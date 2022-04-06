@@ -29,9 +29,9 @@ html,body,#app {
 }
 
 /* 用於 rem 排版 */
-html {
+/* html {
   font-size: 10px !important;
-}
+} */
 
 a {
   text-decoration:none;

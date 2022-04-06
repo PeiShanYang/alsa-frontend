@@ -1,4 +1,8 @@
 .el-breadcrumb span{
-    font-size: 2rem;
+    font-size: 1.5em;
+    color: #08648D;
+}
+::v-deep .el-breadcrumb__item span{
+    font-size: 1em;
     color: #08648D;
 }

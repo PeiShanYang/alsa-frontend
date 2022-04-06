@@ -3,10 +3,10 @@
     <sidebar />
   </el-aside>
   <el-container>
-    <el-header style="height:6.7%;padding: 0;margin-bottom: 1em;">
+    <el-header style="height:6.7%;padding: 0;">
       <navbar />
     </el-header>
-    <el-main style="padding:0 1em">
+    <el-main style="padding:1em">
       <transition name="fade-transform" mode="out-in">
         <router-view :key="routeName" />
       </transition>

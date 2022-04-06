@@ -181,10 +181,10 @@ export default class Experiments extends Vue {
           this.openDialogDataset = true;
           break;
         case "preprocess-node":
-          this.openDialogPreprocess = true;
+          // this.openDialogPreprocess = true;
           break;
         case "model-select-node":
-          this.openDialogModelSelect = true;
+          // this.openDialogModelSelect = true;
           break;
         default:
           console.log("out of case");
