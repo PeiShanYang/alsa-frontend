@@ -7,11 +7,11 @@
       <el-input clearable v-model="inputDatasetPath" class="dialogInput"></el-input>
     </el-col>
   </el-row>
-  <el-row slot="footer" type="flex" justify="center" style="margin: 2rem;">
-    <el-col :span="4" style="margin-right: 15rem;">
+  <el-row slot="footer" type="flex" justify="space-around" style="margin: 1em;">
+    <el-col :span="5">
       <el-button @click="cancelCheckDataset" id="cancel-btn">取消</el-button>
     </el-col>
-    <el-col :span="4">
+    <el-col :span="5">
       <el-button @click="confrimCheckDataset" id="confirm-btn">確認</el-button>
     </el-col>
   </el-row>

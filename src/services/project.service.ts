@@ -2,10 +2,10 @@ import store from '@/services/store.service';
 
 export default class ProjectSevice {
 
-    static getDatasetNodeContent(datasetPath: string): string[] {
+    static getDatasetNodeContent(datasetPath: string,projectName:string): string[] {
 
         const datasetStatus = store.projectList
-            .get(store.currentProject ?? "")
+            .get(projectName)
             ?.datasets
             ?.get(datasetPath);
 

@@ -30,6 +30,11 @@ export default class Api {
       store.projectList = new Map<string, Project>(
         res.data.projects.map((v) => [v, new Project()])
       );
+
+      store.projectList.forEach((project, name) => {
+        project.name = name
+      })
+
     }
   }
 
@@ -58,14 +63,10 @@ export default class Api {
     }
   }
 
-  static async getExperiments(): Promise<void> {
-    if (!store.currentProject) {
-      console.error('no project selected');
-      return;
-    }
+  static async getExperiments(projectName: string): Promise<void> {
 
     const reqData: GetExperimentsReq = {
-      "projectName": store.currentProject,
+      projectName,
     };
     const response: AxiosResponse<GetExperimentsRes> = await axios.post(
       host + 'get-experiments',
@@ -80,7 +81,7 @@ export default class Api {
       return;
     }
 
-    const project = store.projectList.get(store.currentProject);
+    const project = store.projectList.get(projectName);
     if (project === undefined) return;
 
     if (!res.data) return;
@@ -135,7 +136,7 @@ export default class Api {
     if (project === undefined) return;
 
     if (!res.data) return;
-    project.datasets = new Map<string,DatasetStatus>(Object.entries(res.data))
+    project.datasets = new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {

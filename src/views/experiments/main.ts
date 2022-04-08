@@ -103,6 +103,7 @@ export default class Experiments extends Vue {
         true
       );
     });
+    
 
     window.addEventListener("resize", this.drawGraph)
   }
@@ -121,9 +122,10 @@ export default class Experiments extends Vue {
 
   private async waitGetExperiments(): Promise<void> {
 
-    await Api.getExperiments();
-
     if (!store.currentProject) return
+
+    await Api.getExperiments(store.currentProject);
+
     const project = store.projectList.get(store.currentProject)
     if (!project) return
  
@@ -134,6 +136,7 @@ export default class Experiments extends Vue {
   }
 
   private drawGraph(): void {
+    
     this.graph?.clearCells()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
@@ -149,7 +152,9 @@ export default class Experiments extends Vue {
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
     const experiment: Experiment = experiments.values().next().value;
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment);
+
+    if (!store.currentProject) return null;
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment,store.currentProject);
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
@@ -209,7 +214,7 @@ export default class Experiments extends Vue {
     await Api.setExperimentDataset(store.currentProject, experimentId, path)
 
     const experiment = project.experiments.values().next().value
-    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment).get("dataset-node")
+    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment,store.currentProject).get("dataset-node")
 
     datasetnode?.setData( sendDatasetStatus , { overwrite: true })
 

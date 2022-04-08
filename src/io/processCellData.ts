@@ -5,11 +5,11 @@ export default class ProcessCellData {
     component!: string;
     content!: string[];
 
-    static cellDataContent(experiment: Experiment): Map<string, ProcessCellData> {
+    static cellDataContent(experiment: Experiment,projectName:string): Map<string, ProcessCellData> {
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
-                content: ProjectSevice.getDatasetNodeContent(experiment.Config.PrivateSetting.datasetPath ?? ""),
+                content: ProjectSevice.getDatasetNodeContent(experiment.Config.PrivateSetting.datasetPath ?? "",projectName),
             }],
             ['preprocess-node', {
                 component: 'preprocess-node',
