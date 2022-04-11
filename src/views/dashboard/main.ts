@@ -6,6 +6,8 @@ import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
 import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
+import graphData from '@/io/graphData';
+
 
 import store from '@/services/store.service';
 import Icons from '@/constant/icon';
@@ -45,9 +47,7 @@ export default class Dashboard extends Vue {
 
   private acitveProjectCollapse: string[] = [];
 
-  // private graphs: Map<string, Graph | null> = new Map<string, Graph | null>();
-  private graphs: Array<{ graph: Graph | null, projectName: string, experimentId: string, experiment: Experiment }> = [];
-  // private graph: Graph | null = null;
+  private graphs: Array<graphData> = [];
 
   private defaultFlow: FlowNodeSettings[] = [
     {
@@ -193,8 +193,6 @@ export default class Dashboard extends Vue {
       item.graph?.clearCells()
       item.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.projectName), this.defaultFlow, item.experiment, item.projectName)
     })
-    console.log("draw graph")
-
   }
 
 
