@@ -14,6 +14,7 @@ import store from '@/services/store.service';
 import Icons from '@/constant/icon';
 import { Experiment } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
+import graphData from '@/io/graphData';
 
 @Component({
   components: {
@@ -32,7 +33,7 @@ export default class Experiments extends Vue {
 
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
-  private graph: Graph | null = null;
+  private graph = new graphData;
 
   private defaultFlow: FlowNodeSettings[] = [
     {
@@ -103,8 +104,6 @@ export default class Experiments extends Vue {
         true
       );
     });
-
-
     window.addEventListener("resize", this.drawGraph)
   }
 
@@ -124,37 +123,40 @@ export default class Experiments extends Vue {
 
     if (!store.currentProject) return
 
+    this.graph.projectName = store.currentProject
+
     await Api.getExperiments(store.currentProject);
+    await Api.getDatasets(store.currentProject)
 
     const project = store.projectList.get(store.currentProject)
     if (!project) return
-
-    await Api.getDatasets(store.currentProject)
     this.datasets = project.datasets
+
+    const experiments = project.experiments
+    if (!experiments) return
+    experiments.forEach((experiment, experimentId)=>{
+      this.graph.experimentId = experimentId
+      this.graph.experiment = experiment
+    })
 
     this.drawGraph();
   }
 
   private drawGraph(): void {
 
-    this.graph?.clearCells()
-    this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
+    this.graph.graph?.clearCells()
+    if (!this.graph.experiment) return
+    this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow,this.graph.experiment,this.graph.projectName)
     this.listenOnNodeClick();
   }
 
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[],experiment: Experiment, projectName: string): Graph | null {
+    
     if (!container) return null;
-
-
-    const experiments = store.projectList.get(store.currentProject ?? '')?.experiments;
-    if (!experiments) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    const experiment: Experiment = experiments.values().next().value;
-
-    if (!store.currentProject) return null;
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, store.currentProject);
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
@@ -162,15 +164,16 @@ export default class Experiments extends Vue {
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
-        id: node.name,
+        id: `${node.name}_${projectName}`,
         component: node.name,
         data: nodeData,
       });
 
+
       if (0 < index && index < array.length) {
         graph?.addEdge({
-          source: { cell: array[index - 1].name, port: "portRight" },
-          target: { cell: array[index].name, port: "portLeft" },
+          source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
+          target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
         });
       }
     });
@@ -179,7 +182,7 @@ export default class Experiments extends Vue {
   }
 
   private listenOnNodeClick() {
-    this.graph?.on("node:click", (nodeInfo) => {
+    this.graph.graph?.on("node:click", (nodeInfo) => {
       const targetDialog: ProcessCellData = nodeInfo.node.data;
       switch (targetDialog.component) {
         case "dataset-node":
@@ -200,36 +203,23 @@ export default class Experiments extends Vue {
   private async setDatasetContent(path: string): Promise<void> {
 
     this.openDialogDataset = false;
-    const nodes = this.graph?.getNodes()
-    const datasetnode = nodes?.find(node => node.id === "dataset-node")
+    const nodes = this.graph.graph?.getNodes()
+    const datasetnode = nodes?.find(node => node.id === `dataset-node_${this.graph.projectName}`)
+ 
+    await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
 
-    if (!store.currentProject) return
-    const project = store.projectList.get(store.currentProject)
-    if (!project) return
+    this.graph.experiment = store.projectList.get(this.graph.projectName)?.experiments?.get(this.graph.experimentId)
 
-    if (!project.experiments) return
-    const experimentId = [...project.experiments.entries()][0][0]
-
-    await Api.setExperimentDataset(store.currentProject, experimentId, path)
-
-    const experiment = project.experiments.values().next().value
-    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment, store.currentProject).get("dataset-node")
-
+    if(!this.graph.experiment) return
+    const sendDatasetStatus = ProcessCellData.cellDataContent(this.graph.experiment, this.graph.projectName).get("dataset-node")
     datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
   }
 
   private async runExperimentTrain(): Promise<void> {
     this.openDialogRunProject = false
-    
-    if (!store.currentProject) return
-    const project = store.projectList.get(store.currentProject)
-    if (!project) return
 
-    if (!project.experiments) return
-    const experimentId = [...project.experiments.entries()][0][0]
-
-    const response = await Api.runExperimentTrain(store.currentProject, experimentId)
+    const response = await Api.runExperimentTrain(this.graph.projectName,  this.graph.experimentId)
     if (response === 'success') this.$router.push('/')
   }
 

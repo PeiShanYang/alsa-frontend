@@ -110,6 +110,7 @@ export default class Dashboard extends Vue {
     this.$nextTick(() => {
       if (!repaintGraph) return
       repaintGraph.graph?.clearCells()
+      if (!repaintGraph.experiment) return
       repaintGraph.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.projectName), this.defaultFlow, repaintGraph.experiment, repaintGraph.projectName)
     })
 
@@ -191,6 +192,7 @@ export default class Dashboard extends Vue {
 
     this.graphs.forEach((item) => {
       item.graph?.clearCells()
+      if (!item.experiment) return
       item.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.projectName), this.defaultFlow, item.experiment, item.projectName)
     })
   }

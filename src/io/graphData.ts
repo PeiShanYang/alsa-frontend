@@ -5,5 +5,5 @@ export default class graphData{
     graph! : Graph | null;
     projectName = '';
     experimentId = '';
-    experiment! : Experiment;
+    experiment? : Experiment;
 }
