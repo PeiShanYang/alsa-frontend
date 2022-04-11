@@ -1,4 +1,4 @@
-import { Component, Vue,Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import FlowNode from "@/components/flow-node/FlowNode.vue";
@@ -10,7 +10,6 @@ import ProcessCellData from '@/io/processCellData';
 import store from '@/services/store.service';
 import Icons from '@/constant/icon';
 import { Experiment } from '@/io/experiment';
-import { DatasetStatus } from '@/io/dataset';
 import { Project } from "@/io/project";
 
 @Component({
@@ -103,17 +102,17 @@ export default class Dashboard extends Vue {
   ]
 
   @Watch('acitveProjectCollapse')
-  onCollapse(newActive:string[],oldActive:string[]){
+  onCollapse(newActive: string[], oldActive: string[]): void {
 
-    const diffProject = newActive.filter(x=> !oldActive.includes(x))[0]
-    const repaintGraph = this.graphs.find( x => x.projectName === diffProject)
-    
-    this.$nextTick(()=>{
+    const diffProject = newActive.filter(x => !oldActive.includes(x))[0]
+    const repaintGraph = this.graphs.find(x => x.projectName === diffProject)
+
+    this.$nextTick(() => {
       if (!repaintGraph) return
       repaintGraph.graph?.clearCells()
-      repaintGraph.graph = this.drawFlowChart(window.innerWidth,document.getElementById(repaintGraph.projectName),this.defaultFlow,repaintGraph.experiment,repaintGraph.projectName)
+      repaintGraph.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.projectName), this.defaultFlow, repaintGraph.experiment, repaintGraph.projectName)
     })
-    
+
 
   }
 
@@ -164,21 +163,21 @@ export default class Dashboard extends Vue {
       await Api.getExperiments(projectKeys[index]);
       await Api.getDatasets(projectKeys[index]);
     }
-    
+
     this.graphInitSetting()
-    
+
     this.drawGraph();
 
   }
 
   private graphInitSetting(): void {
-    this.projectList.forEach((project,projectName)=>{
+    this.projectList.forEach((project, projectName) => {
 
-      if(!project.experiments) return
-      project.experiments.forEach((experiment,experimentId)=>{
+      if (!project.experiments) return
+      project.experiments.forEach((experiment, experimentId) => {
         this.graphs.push({
-          graph:null,
-          projectName,experimentId,experiment
+          graph: null,
+          projectName, experimentId, experiment
         })
 
       })
@@ -190,22 +189,22 @@ export default class Dashboard extends Vue {
 
     if (this.graphs.length === 0) return
 
-    this.graphs.forEach((item)=>{
+    this.graphs.forEach((item) => {
       item.graph?.clearCells()
-      item.graph = this.drawFlowChart(window.innerWidth,document.getElementById(item.projectName),this.defaultFlow,item.experiment,item.projectName)
+      item.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.projectName), this.defaultFlow, item.experiment, item.projectName)
     })
     console.log("draw graph")
 
   }
 
 
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment:Experiment,projectName:string): Graph | null {
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string): Graph | null {
 
     if (!container) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment,projectName);
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
 
     // add default node and edge
@@ -219,7 +218,7 @@ export default class Dashboard extends Vue {
         data: nodeData,
       });
 
-      
+
       if (0 < index && index < array.length) {
         graph?.addEdge({
           source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },

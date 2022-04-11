@@ -1,14 +1,16 @@
-import { CreateProjectByKeyReq } from "@/io/rest/createProject";
-import { GetProjectRes } from "@/io/rest/getProject";
-import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
-import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 import { Project } from "@/io/project";
 import { Experiment } from "@/io/experiment";
-import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { DatasetStatus } from "@/io/dataset";
+import { GetProjectRes } from "@/io/rest/getProject";
+import { CreateProjectByKeyReq } from "@/io/rest/createProject";
+import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
+import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
+import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
+import { runExperimentTrainReq, runExperimentTrainRes } from "@/io/rest/runExperimentTrain";
+
 
 const host = 'http://tw100104318:37510/';
 
@@ -37,7 +39,6 @@ export default class Api {
 
     }
   }
-
   static async createProjectByKey(name: string, key: string): Promise<void> {
     const reqData: CreateProjectByKeyReq = {
       name,
@@ -159,9 +160,26 @@ export default class Api {
     if (res.data) {
       console.log("res.data", res.data);
     }
-
-
   }
 
+  static async runExperimentTrain(projectName: string, experimentId: string): Promise<string> {
+
+    const reqData: runExperimentTrainReq = {
+      projectName, experimentId
+    }
+
+    const response: AxiosResponse<runExperimentTrainRes> = await axios.post(
+      host + 'run-experiment-train',
+      reqData,
+    )
+
+    if (response.status !== 200) return "fail";
+
+    const res: runExperimentTrainRes = response.data;
+    if (res.code !== 0) console.log(res.message)
+    
+    return res.message
+
+  }
 
 }

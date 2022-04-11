@@ -39,9 +39,7 @@
         <el-button @click="openDialogRunProject=false" id="later-btn">稍後再說</el-button>
       </el-col>
       <el-col :span="5">
-        <router-link to="/">
-          <el-button @click="openDialogRunProject=false" id="go-dashboard-btn">前往查看</el-button>
-        </router-link>
+          <el-button @click="runExperimentTrain" id="go-dashboard-btn">前往查看</el-button>
       </el-col>
     </el-row>
   </el-dialog>

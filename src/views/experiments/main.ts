@@ -103,7 +103,7 @@ export default class Experiments extends Vue {
         true
       );
     });
-    
+
 
     window.addEventListener("resize", this.drawGraph)
   }
@@ -128,7 +128,7 @@ export default class Experiments extends Vue {
 
     const project = store.projectList.get(store.currentProject)
     if (!project) return
- 
+
     await Api.getDatasets(store.currentProject)
     this.datasets = project.datasets
 
@@ -136,7 +136,7 @@ export default class Experiments extends Vue {
   }
 
   private drawGraph(): void {
-    
+
     this.graph?.clearCells()
     this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
     this.listenOnNodeClick();
@@ -145,7 +145,7 @@ export default class Experiments extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
     if (!container) return null;
 
-    
+
     const experiments = store.projectList.get(store.currentProject ?? '')?.experiments;
     if (!experiments) return null;
 
@@ -154,7 +154,7 @@ export default class Experiments extends Vue {
     const experiment: Experiment = experiments.values().next().value;
 
     if (!store.currentProject) return null;
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment,store.currentProject);
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, store.currentProject);
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
@@ -206,7 +206,6 @@ export default class Experiments extends Vue {
     if (!store.currentProject) return
     const project = store.projectList.get(store.currentProject)
     if (!project) return
-    
 
     if (!project.experiments) return
     const experimentId = [...project.experiments.entries()][0][0]
@@ -214,10 +213,24 @@ export default class Experiments extends Vue {
     await Api.setExperimentDataset(store.currentProject, experimentId, path)
 
     const experiment = project.experiments.values().next().value
-    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment,store.currentProject).get("dataset-node")
+    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment, store.currentProject).get("dataset-node")
 
-    datasetnode?.setData( sendDatasetStatus , { overwrite: true })
+    datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
+  }
+
+  private async runExperimentTrain(): Promise<void> {
+    this.openDialogRunProject = false
+    
+    if (!store.currentProject) return
+    const project = store.projectList.get(store.currentProject)
+    if (!project) return
+
+    if (!project.experiments) return
+    const experimentId = [...project.experiments.entries()][0][0]
+
+    const response = await Api.runExperimentTrain(store.currentProject, experimentId)
+    if (response === 'success') this.$router.push('/')
   }
 
 }
