@@ -1,4 +1,4 @@
-<div>
+<div id="mainSection">
   <div v-show="projectExist">
     <el-row type="flex" justify="center" style="padding: 0.5vw 0;">
       <el-col :span="5" style="padding: 0 2em">
@@ -29,7 +29,7 @@
         <el-row>
           <el-col>
             <el-collapse v-model="acitveProjectCollapse">
-              <template v-for="[name,project] in projectList">
+              <template v-for="[name,project] in projectList" >
                 <el-collapse-item :name=name>
                   <template slot="title">
                     <el-row type="flex" justify="space-between" style="width: 100%;">

@@ -8,6 +8,8 @@ import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import graphData from '@/io/graphData';
 
+import { Loading } from 'element-ui';
+
 
 import store from '@/services/store.service';
 import Icons from '@/constant/icon';
@@ -44,6 +46,7 @@ export default class Dashboard extends Vue {
   private inputModelName = "";
 
   // collapse related 
+
 
   private acitveProjectCollapse: string[] = [];
 
@@ -155,11 +158,14 @@ export default class Dashboard extends Vue {
 
   private async waitGetAllProjectInfo(): Promise<void> {
 
+    const loadingInstance = this.$loading({target:document.getElementById("mainSection")??""})
+
     await Api.getProjects();
     if (this.projectList.size === 0) return
     this.projectExist = true
 
     const projectKeys = [...this.projectList.keys()]
+    this.acitveProjectCollapse = projectKeys
     for (let index = 0; index < this.projectList.size; index++) {
       await Api.getExperiments(projectKeys[index]);
       await Api.getDatasets(projectKeys[index]);
@@ -167,7 +173,16 @@ export default class Dashboard extends Vue {
 
     this.graphInitSetting()
 
+    
+    // if (store.currentProject){
+    //   this.acitveProjectCollapse = [store.currentProject]
+    // } else{
+    //   this.acitveProjectCollapse = [projectKeys[0]]
+    // }
+
     this.drawGraph();
+
+    loadingInstance.close()
 
   }
 

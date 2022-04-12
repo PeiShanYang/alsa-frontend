@@ -207,7 +207,6 @@ export default class Experiments extends Vue {
     const datasetnode = nodes?.find(node => node.id === `dataset-node_${this.graph.projectName}`)
  
     await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
-
     this.graph.experiment = store.projectList.get(this.graph.projectName)?.experiments?.get(this.graph.experimentId)
 
     if(!this.graph.experiment) return
