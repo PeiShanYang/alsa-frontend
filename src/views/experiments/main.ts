@@ -216,19 +216,34 @@ export default class Experiments extends Vue {
   }
 
   private async runExperimentTrain(): Promise<void> {
-    this.openDialogRunProject = false
 
     const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
     if (!datasetPath) return
 
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
     if (!datasetStatus) return
-    
-    if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) return
+
+    if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
+
+      const h = this.$createElement;
+      this.$msgbox({
+        type: "error",
+        confirmButtonText:'確定',
+        closeOnClickModal:false,
+        message:h('h2',{style:'color:rgb(8, 100, 141)'},"當前資料集狀態無法執行實驗")
+      })
+
+      return
+    }
 
     const response = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
-    if (response === 'success') this.$router.push('/')
-    
+    if (response === 'success') this.openDialogRunProject = true
+
+  }
+
+  private goDashBoard(): void {
+    this.openDialogRunProject = false
+    this.$router.push('/')
   }
 
 }

@@ -16,7 +16,7 @@
             </el-button> -->
           </el-col>
           <el-col :span="3">
-            <el-button @click="openDialogRunProject=true" id="run-project-btn">
+            <el-button @click="runExperimentTrain" id="run-project-btn">
               <span>執行</span>
             </el-button>
           </el-col>
@@ -39,7 +39,7 @@
         <el-button @click="openDialogRunProject=false" id="later-btn">稍後再說</el-button>
       </el-col>
       <el-col :span="5">
-          <el-button @click="runExperimentTrain" id="go-dashboard-btn">前往查看</el-button>
+          <el-button @click="goDashBoard" id="go-dashboard-btn">前往查看</el-button>
       </el-col>
     </el-row>
   </el-dialog>

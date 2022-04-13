@@ -33,9 +33,15 @@
                 <el-collapse-item :name=name>
                   <template slot="title">
                     <el-row type="flex" justify="space-between" style="width: 100%;">
-                      <el-col :span=6>
+                      <el-col :span="6">
                         <i class="el-icon-star-off"></i>
                         <span>{{name}}</span>
+                      </el-col>
+                      <el-col :span="6">
+                        <div >
+                          <el-progress :percentage="20" style="display: inline-block;width: 100%;"></el-progress>
+                        </div>
+                        
                       </el-col>
                     </el-row>
                   </template>
