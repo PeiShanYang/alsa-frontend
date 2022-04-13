@@ -8,7 +8,7 @@ import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import graphData from '@/io/graphData';
 
-import { Loading } from 'element-ui';
+
 
 
 import store from '@/services/store.service';
@@ -120,7 +120,6 @@ export default class Dashboard extends Vue {
 
   }
 
-
   created(): void {
 
     // register node on Graph
@@ -161,7 +160,10 @@ export default class Dashboard extends Vue {
     const loadingInstance = this.$loading({target:document.getElementById("mainSection")??""})
 
     await Api.getProjects();
-    if (this.projectList.size === 0) return
+    if (this.projectList.size === 0){
+      loadingInstance.close()
+      return
+    } 
     this.projectExist = true
 
     const projectKeys = [...this.projectList.keys()]
@@ -169,6 +171,7 @@ export default class Dashboard extends Vue {
     for (let index = 0; index < this.projectList.size; index++) {
       await Api.getExperiments(projectKeys[index]);
       await Api.getDatasets(projectKeys[index]);
+      await Api.getInformationTrain()
     }
 
     this.graphInitSetting()
@@ -181,6 +184,8 @@ export default class Dashboard extends Vue {
     // }
 
     this.drawGraph();
+
+    
 
     loadingInstance.close()
 

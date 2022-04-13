@@ -9,7 +9,8 @@ import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
 import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
-import { runExperimentTrainReq, runExperimentTrainRes } from "@/io/rest/runExperimentTrain";
+import { runExperimentTrainReq, runExperimentTrainRes} from "@/io/rest/runExperimentTrain";
+import { getInformationTrainRes} from "@/io/rest/getInformationTrain";
 
 
 const host = 'http://tw100104318:37510/';
@@ -158,7 +159,7 @@ export default class Api {
     if (res.code !== 0) console.log(res.message);
 
     if (res.data) {
-      console.log("res.data", res.data);
+      console.log("res data", res.data);
     }
   }
 
@@ -177,8 +178,25 @@ export default class Api {
 
     const res: runExperimentTrainRes = response.data;
     if (res.code !== 0) console.log(res.message)
-    
+
     return res.message
+
+  }
+
+  static async getInformationTrain(): Promise<void> {
+
+    const response: AxiosResponse<getInformationTrainRes> = await axios.post(
+      host + 'get-information-train',
+    );
+
+    if (response.status !== 200) return;
+  
+    const res: getInformationTrainRes = response.data;
+    if (res.code !== 0) console.log(res.message)
+
+    if (res.data) {
+      console.log("res data", res.data);
+    }
 
   }
 

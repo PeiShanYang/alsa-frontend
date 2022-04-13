@@ -134,7 +134,7 @@ export default class Experiments extends Vue {
 
     const experiments = project.experiments
     if (!experiments) return
-    experiments.forEach((experiment, experimentId)=>{
+    experiments.forEach((experiment, experimentId) => {
       this.graph.experimentId = experimentId
       this.graph.experiment = experiment
     })
@@ -146,12 +146,12 @@ export default class Experiments extends Vue {
 
     this.graph.graph?.clearCells()
     if (!this.graph.experiment) return
-    this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow,this.graph.experiment,this.graph.projectName)
+    this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow, this.graph.experiment, this.graph.projectName)
     this.listenOnNodeClick();
   }
 
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[],experiment: Experiment, projectName: string): Graph | null {
-    
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string): Graph | null {
+
     if (!container) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
@@ -205,11 +205,11 @@ export default class Experiments extends Vue {
     this.openDialogDataset = false;
     const nodes = this.graph.graph?.getNodes()
     const datasetnode = nodes?.find(node => node.id === `dataset-node_${this.graph.projectName}`)
- 
+
     await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
     this.graph.experiment = store.projectList.get(this.graph.projectName)?.experiments?.get(this.graph.experimentId)
 
-    if(!this.graph.experiment) return
+    if (!this.graph.experiment) return
     const sendDatasetStatus = ProcessCellData.cellDataContent(this.graph.experiment, this.graph.projectName).get("dataset-node")
     datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
@@ -218,8 +218,17 @@ export default class Experiments extends Vue {
   private async runExperimentTrain(): Promise<void> {
     this.openDialogRunProject = false
 
-    const response = await Api.runExperimentTrain(this.graph.projectName,  this.graph.experimentId)
+    const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
+    if (!datasetPath) return
+
+    const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
+    if (!datasetStatus) return
+    
+    if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) return
+
+    const response = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
     if (response === 'success') this.$router.push('/')
+    
   }
 
 }
