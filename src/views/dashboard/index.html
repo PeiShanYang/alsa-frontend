@@ -38,10 +38,7 @@
                         <span>{{name}}</span>
                       </el-col>
                       <el-col :span="6">
-                        <div >
-                          <el-progress :percentage="10" :format="progressFormat" :color="progressColor" style="width: 100%;display: inline-table;"></el-progress>
-                        </div>
-                        
+                        <el-progress :percentage="10" :format="progressFormat" :color="progressColor" class="custom-progress"></el-progress>
                       </el-col>
                     </el-row>
                   </template>

@@ -30,8 +30,21 @@
   padding-left: 0.2em;
 }
 
-::v-deep .el-progress__text{
+.custom-progress {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 3% 0;
+}
+
+::v-deep .el-progress__text {
   color: #fff;
+  font-size: 20px !important;
+}
+
+::v-deep .el-progress-bar {
+  width: 70%;
 }
 
 #delete-btn {
@@ -45,7 +58,7 @@
   align-self: center;
 }
 
-#check-model-btn{
+#check-model-btn {
   height: 2.5em;
   width: 6em;
   font-size: 1.5em;
@@ -55,8 +68,8 @@
   align-self: center;
 }
 
-@keyframes antline{
-  to{
+@keyframes antline {
+  to {
     stroke-dashoffset: -1000
   }
 }
