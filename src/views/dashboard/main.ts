@@ -47,6 +47,7 @@ export default class Dashboard extends Vue {
 
   // collapse related 
 
+  private progressColor = '#ffffff'
 
   private acitveProjectCollapse: string[] = [];
 
@@ -248,6 +249,10 @@ export default class Dashboard extends Vue {
     });
 
     return graph
+  }
+
+  private progressFormat(percentage:number):string{
+    return percentage === 100 ? "已完成" : `${percentage}% 進行中`
   }
 
 }
