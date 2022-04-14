@@ -56,7 +56,7 @@ export default class Dashboard extends Vue {
   @Watch('trainingInfo')
   onTrainingStage(newActive: getInformationTrainResData, oldActive: getInformationTrainResData): void {
 
-    console.log("trianing watch", newActive.process, "vs", oldActive.process)
+    // console.log("trianing watch", newActive.process, "vs", oldActive.process)
 
     if (typeof newActive.process === "string") return
 
@@ -68,11 +68,11 @@ export default class Dashboard extends Vue {
 
     const percentage = ((latestInstance.model.epoch/latestInstance.model.total)*100).toFixed(0)
     
-    console.log("latest", latestKey, latestInstance)
+    // console.log("latest", latestKey, latestInstance)
 
 
     this.graphs[0].percentage = parseInt(percentage)
-    if(parseInt(percentage) === 100) this.graphs[0].data.flowInfo = GraphService.basicNodes
+    // if(parseInt(percentage) === 100) this.graphs[0].data.flowInfo = GraphService.basicNodes
     this.drawGraph();
 
 
@@ -142,15 +142,24 @@ export default class Dashboard extends Vue {
 
     this.graphInitSetting(this.trainingInfo.projectName)
 
-    console.log("this.graphs", this.graphs)
+    // console.log("this.graphs", this.graphs) 
 
     this.$nextTick(async () => {
 
       const timeIntervalId = window.setInterval((async () => {
         const res = await Api.getInformationTrain()
-        if (res.experimentId === "") window.clearInterval(timeIntervalId)
+
+        if (res.experimentId === ""){
+          if (this.graphs[0].percentage !==0){
+            this.graphs[0].percentage = 100
+            this.graphs[0].data.flowInfo = GraphService.basicNodes
+            window.clearInterval(timeIntervalId)
+          }else{
+            window.clearInterval(timeIntervalId)
+          }
+        } 
         this.trainingInfo = res
-      }), 1000)
+      }), 5000)
 
       this.drawGraph();
 
