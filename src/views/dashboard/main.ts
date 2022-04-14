@@ -8,11 +8,7 @@ import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import graphData from '@/io/graphData';
 
-
-
-
 import store from '@/services/store.service';
-import Icons from '@/constant/icon';
 import { Experiment } from '@/io/experiment';
 import { Project } from "@/io/project";
 
@@ -51,59 +47,7 @@ export default class Dashboard extends Vue {
 
   private acitveProjectCollapse: string[] = [];
 
-  private graphs: Array<graphData> = [];
-
-  private defaultFlow: FlowNodeSettings[] = [
-    {
-      name: "dataset-node",
-      title: "資料集",
-      backgroundColor: "#FCEFFD",
-      borderColor: "#B811CE",
-      icon: Icons.dataset,
-    },
-    {
-      name: "preprocess-node",
-      title: "前處理",
-      backgroundColor: "#F8F8F0",
-      borderColor: "#BCC733",
-      icon: Icons.preprocess,
-    },
-    {
-      name: "data-argument-node",
-      title: "資料擴增",
-      backgroundColor: "#FFF0F0",
-      borderColor: "#DD8282",
-      icon: Icons.dataAugmentation,
-    },
-    {
-      name: "model-select-node",
-      title: "模型選擇",
-      backgroundColor: "#F5F5FD",
-      borderColor: "#8282DD",
-      icon: Icons.modelSelect,
-    },
-    {
-      name: "validation-select-node",
-      title: "驗證方法",
-      backgroundColor: "#FCFCDF",
-      borderColor: "#DE9988",
-      icon: Icons.validationSelect,
-    },
-    {
-      name: "trained-result-node",
-      title: "訓練結果",
-      backgroundColor: "#FAECEC",
-      borderColor: "#BC6161",
-      icon: Icons.trainedResult,
-    },
-    {
-      name: "test-result-node",
-      title: "測試結果",
-      backgroundColor: "#FAECEC",
-      borderColor: "#C69D16",
-      icon: Icons.testedResult,
-    },
-  ]
+  private graphs: graphData[] = [];
 
   @Watch('acitveProjectCollapse')
   onCollapse(newActive: string[], oldActive: string[]): void {
@@ -115,33 +59,14 @@ export default class Dashboard extends Vue {
       if (!repaintGraph) return
       repaintGraph.graph?.clearCells()
       if (!repaintGraph.experiment) return
-      repaintGraph.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.projectName), this.defaultFlow, repaintGraph.experiment, repaintGraph.projectName)
+      repaintGraph.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.projectName), repaintGraph.flowInfo, repaintGraph.experiment, repaintGraph.projectName)
     })
-
 
   }
 
   created(): void {
-
-    // register node on Graph
-    this.defaultFlow.forEach((node) => {
-      Graph.registerVueComponent(
-        node.name,
-        {
-          template: `<flow-node
-            icon= ${node.icon}
-            title=${node.title}
-            background-color = ${node.backgroundColor}
-            border-color = ${node.borderColor}
-          />`,
-          components: { FlowNode },
-        },
-        true
-      );
-    });
-
+    GraphService.registerNodes()
     window.addEventListener("resize", this.drawGraph)
-
   }
 
   mounted(): void {
@@ -158,13 +83,13 @@ export default class Dashboard extends Vue {
 
   private async waitGetAllProjectInfo(): Promise<void> {
 
-    const loadingInstance = this.$loading({target:document.getElementById("mainSection")??""})
+    const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
     await Api.getProjects();
-    if (this.projectList.size === 0){
+    if (this.projectList.size === 0) {
       loadingInstance.close()
       return
-    } 
+    }
     this.projectExist = true
 
     const projectKeys = [...this.projectList.keys()]
@@ -172,23 +97,19 @@ export default class Dashboard extends Vue {
     for (let index = 0; index < this.projectList.size; index++) {
       await Api.getExperiments(projectKeys[index]);
       await Api.getDatasets(projectKeys[index]);
-      await Api.getInformationTrain()
     }
 
     this.graphInitSetting()
 
-    
-    // if (store.currentProject){
-    //   this.acitveProjectCollapse = [store.currentProject]
-    // } else{
-    //   this.acitveProjectCollapse = [projectKeys[0]]
-    // }
-
     this.drawGraph();
 
-    
-
     loadingInstance.close()
+
+    // console.log("this.graphs", this.graphs)
+
+    this.$nextTick(async ()=>{
+      await Api.getInformationTrain()
+    })
 
   }
 
@@ -196,9 +117,17 @@ export default class Dashboard extends Vue {
     this.projectList.forEach((project, projectName) => {
 
       if (!project.experiments) return
+
+      const defaultNodes = GraphService.basicNodes
+        .filter(node => node.name !== "model-select-node")
+        .filter(node => node.name !== "validation-select-node")
+        .filter(node => node.name !== "trained-result-node")
+        .filter(node => node.name !== "test-result-node")
+
       project.experiments.forEach((experiment, experimentId) => {
         this.graphs.push({
           graph: null,
+          flowInfo: defaultNodes,
           projectName, experimentId, experiment
         })
 
@@ -214,7 +143,7 @@ export default class Dashboard extends Vue {
     this.graphs.forEach((item) => {
       item.graph?.clearCells()
       if (!item.experiment) return
-      item.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.projectName), this.defaultFlow, item.experiment, item.projectName)
+      item.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.projectName), item.flowInfo, item.experiment, item.projectName)
     })
   }
 
@@ -251,7 +180,7 @@ export default class Dashboard extends Vue {
     return graph
   }
 
-  private progressFormat(percentage:number):string{
+  private progressFormat(percentage: number): string {
     return percentage === 100 ? "已完成" : `${percentage}% 進行中`
   }
 
