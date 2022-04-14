@@ -29,22 +29,22 @@
         <el-row>
           <el-col>
             <el-collapse v-model="acitveProjectCollapse">
-              <template v-for="[name,project] in projectList" >
-                <el-collapse-item :name=name>
+              <template v-for="graph in graphs" >
+                <el-collapse-item :name=graph.data.projectName>
                   <template slot="title">
                     <el-row type="flex" justify="space-between" style="width: 100%;">
                       <el-col :span="12">
                         <i class="el-icon-star-off"></i>
-                        <span>{{name}}</span>
+                        <span>{{graph.data.projectName}}</span>
                       </el-col>
                       <el-col :span="6">
-                        <el-progress :percentage="10" :format="progressFormat" :color="progressColor" class="custom-progress"></el-progress>
+                        <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor" class="custom-progress"></el-progress>
                       </el-col>
                     </el-row>
                   </template>
                   <el-row type="flex" justify="center">
                     <el-col>
-                      <div :id=name style="flex: 1;"></div>
+                      <div :id=graph.data.projectName style="flex: 1;"></div>
                     </el-col>
                   </el-row>
                   <el-row type="flex" justify="end">

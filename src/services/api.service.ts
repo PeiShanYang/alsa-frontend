@@ -9,8 +9,8 @@ import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
 import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
-import { runExperimentTrainReq, runExperimentTrainRes} from "@/io/rest/runExperimentTrain";
-import { getInformationTrainRes} from "@/io/rest/getInformationTrain";
+import { runExperimentTrainReq, runExperimentTrainRes } from "@/io/rest/runExperimentTrain";
+import { getInformationTrainRes, getInformationTrainResData } from "@/io/rest/getInformationTrain";
 
 
 const host = 'http://tw100104318:37510/';
@@ -43,7 +43,7 @@ export default class Api {
   static async createProjectByKey(name: string, key: string): Promise<void> {
     const reqData: CreateProjectByKeyReq = {
       name,
-      "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnRXZhbHVhdGlvbiI6eyJFdmFsdWF0aW9uUGFyYSI6eyJzaG93QWNjIjoxLCJzaG93Q2xhc3NBY2MiOjF9fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiQWRhbSI6eyJzd2l0Y2giOjEsImJldGFzIjpbMC45LDAuOTk5XSwiZXBzIjoxZS04LCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJhbXNncmFkIjowfX0sIlNjaGVkdWxlclBhcmEiOnsic3RlcExSIjp7InN3aXRjaCI6MSwic3RlcFNpemUiOjEsImdhbW1hIjowLjV9fX0sIkNvbmZpZ1Bvc3Rwcm9jZXNzIjp7IlBvc3RQcm9jZXNzUGFyYSI6eyJjb25maWRlbmNlRmlsdGVyIjp7InN3aXRjaCI6MSwidGhyZXNob2xkIjowLjc1LCJzZWxlY3RMYWJlbCI6Ik9LIiwiY2xhc3NMaXN0IjpbIk5HIiwiT0siXX19fSwiQ29uZmlnUHJlcHJvY2VzcyI6eyJQcmVwcm9jZXNzUGFyYSI6eyJub3JtYWxpemUiOnsic3dpdGNoIjoxLCJtb2RlIjowfX19LCJDb25maWdQeXRvcmNoTW9kZWwiOnsiU2VsZWN0ZWRNb2RlbCI6eyJtb2RlbCI6eyJzdHJ1Y3R1cmUiOiJhdW9fdW5yZXN0cmljdGVkX3Bvd2VyZnVsX21vZGVsIiwicHJldHJhaW5lZCI6MX19LCJDbHNNb2RlbFBhcmEiOnsiYmF0Y2hTaXplIjoxNiwiZXBvY2hzIjoyfX19.dBwho-F-IvM2b5YY0drNTt4PCJxKDk4EOUQRHA09RcE",
+      "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnRXZhbHVhdGlvbiI6eyJFdmFsdWF0aW9uUGFyYSI6eyJzaG93QWNjIjoxLCJzaG93Q2xhc3NBY2MiOjF9fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiQWRhbSI6eyJzd2l0Y2giOjEsImJldGFzIjpbMC45LDAuOTk5XSwiZXBzIjoxZS04LCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJhbXNncmFkIjowfX0sIlNjaGVkdWxlclBhcmEiOnsic3RlcExSIjp7InN3aXRjaCI6MSwic3RlcFNpemUiOjEsImdhbW1hIjowLjV9fX0sIkNvbmZpZ1Bvc3Rwcm9jZXNzIjp7IlBvc3RQcm9jZXNzUGFyYSI6eyJjb25maWRlbmNlRmlsdGVyIjp7InN3aXRjaCI6MSwidGhyZXNob2xkIjowLjc1LCJzZWxlY3RMYWJlbCI6Ik9LIiwiY2xhc3NMaXN0IjpbIk5HIiwiT0siXX19fSwiQ29uZmlnUHJlcHJvY2VzcyI6eyJQcmVwcm9jZXNzUGFyYSI6eyJub3JtYWxpemUiOnsic3dpdGNoIjoxLCJtb2RlIjowfX19LCJDb25maWdQeXRvcmNoTW9kZWwiOnsiU2VsZWN0ZWRNb2RlbCI6eyJtb2RlbCI6eyJzdHJ1Y3R1cmUiOiJhdW9fdW5yZXN0cmljdGVkX3Bvd2VyZnVsX21vZGVsIiwicHJldHJhaW5lZCI6MX19LCJDbHNNb2RlbFBhcmEiOnsiYmF0Y2hTaXplIjoxNiwiZXBvY2hzIjoxMDB9fX0.u5IasDqKlVGgZO_2t4UfoWoGiuPAyD-DgQ7oVDD3FfE",
     };
     const response: AxiosResponse<GetProjectRes> = await axios.post(
       host + 'create-project-by-key',
@@ -183,20 +183,20 @@ export default class Api {
 
   }
 
-  static async getInformationTrain(): Promise<void> {
+  static async getInformationTrain(): Promise<getInformationTrainResData> {
 
     const response: AxiosResponse<getInformationTrainRes> = await axios.post(
       host + 'get-information-train',
     );
 
-    if (response.status !== 200) return;
-  
+    if (response.status !== 200) return new getInformationTrainResData
+
     const res: getInformationTrainRes = response.data;
     if (res.code !== 0) console.log(res.message)
 
-    if (res.data) {
-      console.log("res data", res.data);
-    }
+    if (!res.data) return new getInformationTrainResData
+
+    return res.data
 
   }
 

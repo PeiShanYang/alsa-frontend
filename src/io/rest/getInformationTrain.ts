@@ -11,3 +11,13 @@ export class getInformationTrainResData {
     runId = '';
     task = '';
 }
+
+export class trainingProcess {
+    model = { 
+        epoch: 0,
+        total: 0,
+     };
+    vaild = {
+        accuray:0
+    }
+}
