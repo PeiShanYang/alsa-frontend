@@ -28,10 +28,6 @@ html,body,#app {
     letter-spacing: 1px;
 }
 
-/* 用於 rem 排版 */
-/* html {
-  font-size: 10px !important;
-} */
 
 a {
   text-decoration:none;

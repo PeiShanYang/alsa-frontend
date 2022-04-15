@@ -1,0 +1,21 @@
+{
+    "auo_tiny_focus_model": "友達小型聚焦模型",
+    "auo_classic_deep_model": "友達經典深度模型",
+    "auo_anti_degeneration_model": "友達抗退化模型",
+    "auo_transform_aggregate_model": "友達特徵融合模型",
+    "auo_narrow_intensive_model": "友達高資訊密度模型",
+    "auo_feature_enhance_model_a": "友達特徵增進模型A",
+    "auo_feature_enhance_model_b": "友達特徵增進模型B",
+    "auo_feature_enhance_model_c": "友達特徵增進模型C",
+    "auo_faster_convergency_model": "友達快速收斂模型",
+    "auo_unrestricted_powerful_model": "友達彈性架構模型",
+    "auo_feature_reuse_model": "友達特徵強化模型",
+    "auo_lighten_efficient_model": "友達輕量高效模型",
+    "auo_horizontal_sample_model": "友達橫向取樣模型",
+
+
+    "normalize":"資料正規化",
+    "randomHorizontalFlip":"隨機水平翻轉",
+    "showAcc":"顯示準確率",
+    "showClassAcc":"顯示各類別準確率"
+}

@@ -1,6 +1,7 @@
 import { Experiment } from "@/io/experiment";
 import ProjectSevice from "@/services/project.service";
 
+
 export default class ProcessCellData {
     component!: string;
     content!: string[];

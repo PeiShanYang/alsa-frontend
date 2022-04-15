@@ -68,4 +68,10 @@
       </el-col>
     </el-row>
   </div>
+  <div v-show="!projectExist">
+    <el-alert
+    title="There is no running experiment"
+    type="error">
+  </el-alert>
+  </div>
 </div>

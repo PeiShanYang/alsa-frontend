@@ -35,6 +35,7 @@ export default class Experiments extends Vue {
   private graph = new graphData;
 
   created(): void {
+    this.$i18n.locale = "zh-tw"
     GraphService.registerNodes()
     window.addEventListener("resize", this.drawGraph)
   }
@@ -73,6 +74,8 @@ export default class Experiments extends Vue {
 
     this.drawGraph();
 
+    console.log("test",this.$i18n.messages.en)
+
   }
 
   private drawGraph(): void {
@@ -95,6 +98,18 @@ export default class Experiments extends Vue {
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
+      // if (nodeData?.component === "model-select-node"){
+        
+      //   console.log("nodeData",nodeData.content[0],this.$i18n.t("te"))
+      //   nodeData.content[0] = this.$i18n.t(nodeData?.content[0]).toString()
+      // }
+
+      if(!nodeData?.content) return
+
+      console.log("node",nodeData.content)
+      nodeData.content.forEach((item,index,array)=> array[index] =this.$i18n.t(item).toString())
+      
+      // nodeData.content[0] = this.$i18n.t(nodeData?.content[0]).toString()
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),

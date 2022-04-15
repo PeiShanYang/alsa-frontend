@@ -74,3 +74,7 @@
     stroke-dashoffset: -1000
   }
 }
+
+::v-deep .el-alert__title{
+  font-size: 2em;
+}

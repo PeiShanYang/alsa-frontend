@@ -56,7 +56,7 @@ export default class Dashboard extends Vue {
   @Watch('trainingInfo')
   onTrainingStage(newActive: getInformationTrainResData, oldActive: getInformationTrainResData): void {
 
-    console.log("trianing watch", newActive.process, "vs", oldActive.process)
+    // console.log("trianing watch", newActive.process, "vs", oldActive.process)
 
     if (newActive.process === "") return
 
@@ -91,13 +91,6 @@ export default class Dashboard extends Vue {
     this.waitGetAllProjectInfo()
   }
 
-  // updated(): void{
-
-
-
-  //   // loadingInstance.close()
-  // }
-
   destroy(): void {
     window.removeEventListener("resize", this.drawGraph)
   }
@@ -129,7 +122,6 @@ export default class Dashboard extends Vue {
     this.graphs[0].percentage = this.calculateProgress(this.trainingInfo)
 
 
-
     this.$nextTick(() => {
       this.drawGraph();
       const timeIntervalId = window.setInterval((async () => {
@@ -159,13 +151,11 @@ export default class Dashboard extends Vue {
     if (!experiments) return
 
     const defaultNodes = GraphService.basicNodes
-      .filter(node => node.name !== "model-select-node")
+      .filter(node => node.name !== "model-select-node-processing")
       .filter(node => node.name !== "validation-select-node")
       .filter(node => node.name !== "trained-result-node")
       .filter(node => node.name !== "test-result-node")
 
-    // const percentage = 0
-    // if (this.trainingInfo.process)
 
     experiments.forEach((experiment, experimentId) => {
       this.graphs.push({

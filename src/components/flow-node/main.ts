@@ -2,6 +2,7 @@ import ProcessCellData from '@/io/processCellData';
 import { VueShape } from '@antv/x6-vue-shape';
 import { Cell } from '@antv/x6/lib/model/cell';
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
+import i18n from '@/i18n';
 
 @Component
 export default class flowNode extends Vue {
@@ -26,6 +27,7 @@ export default class flowNode extends Vue {
     this.nodeContent = node.getData().content
 
     node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>) => {
+      
       if (info.current) this.nodeContent = info.current.content
     });
   }
