@@ -5,11 +5,11 @@ export default class ProcessCellData {
     component!: string;
     content!: string[];
 
-    static cellDataContent(experiment: Experiment,projectName:string): Map<string, ProcessCellData> {
+    static cellDataContent(experiment: Experiment, projectName: string): Map<string, ProcessCellData> {
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
-                content: ProjectSevice.getDatasetNodeContent(experiment.Config.PrivateSetting.datasetPath ?? "",projectName),
+                content: ProjectSevice.getDatasetNodeContent(experiment.Config.PrivateSetting.datasetPath ?? "", projectName),
             }],
             ['preprocess-node', {
                 component: 'preprocess-node',
@@ -35,6 +35,23 @@ export default class ProcessCellData {
                 component: 'test-result-node',
                 content: ["尚未訓練"],
             }],
+            ['model-select-node-processing', {
+                component: 'model-select-node',
+                content: ["進行中"],
+            }],
+            ['validation-select-node-processing', {
+                component: 'validation-select-node',
+                content: ["進行中"],
+            }],
+            ['trained-result-node-processing', {
+                component: 'trained-result-node',
+                content: ["進行中"],
+            }],
+            ['test-result-node-processing', {
+                component: 'test-result-node',
+                content: ["進行中"],
+            }],
+
         ]);
     }
 

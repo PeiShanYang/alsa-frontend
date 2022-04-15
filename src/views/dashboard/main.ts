@@ -128,6 +128,8 @@ export default class Dashboard extends Vue {
 
     this.graphs[0].percentage = this.calculateProgress(this.trainingInfo)
 
+    
+
     this.$nextTick(() => {
       this.drawGraph();
       const timeIntervalId = window.setInterval((async () => {
@@ -136,7 +138,7 @@ export default class Dashboard extends Vue {
         if (res.experimentId === "") {
           if (this.graphs[0].percentage !== 0) {
             this.graphs[0].percentage = 100
-            this.graphs[0].data.flowInfo = GraphService.basicNodes
+            this.graphs[0].data.flowInfo = GraphService.basicNodes.filter(node => !node.name.includes("processing"))
             this.drawGraph()
             window.clearInterval(timeIntervalId)
 

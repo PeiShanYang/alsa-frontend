@@ -72,13 +72,15 @@ export default class Experiments extends Vue {
     })
 
     this.drawGraph();
+
   }
 
   private drawGraph(): void {
 
     this.graph.graph?.clearCells()
     if (!this.graph.experiment) return
-    this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), GraphService.basicNodes, this.graph.experiment, this.graph.projectName)
+    const graphFlow = GraphService.basicNodes.filter(node => !node.name.includes("processing"))
+    this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), graphFlow, this.graph.experiment, this.graph.projectName)
     this.listenOnNodeClick();
   }
 
@@ -160,9 +162,9 @@ export default class Experiments extends Vue {
       const h = this.$createElement;
       this.$msgbox({
         type: "error",
-        confirmButtonText:'確定',
-        closeOnClickModal:false,
-        message:h('h2',{style:'color:rgb(8, 100, 141)'},"當前資料集狀態無法執行實驗")
+        confirmButtonText: '確定',
+        closeOnClickModal: false,
+        message: h('h2', { style: 'color:rgb(8, 100, 141)' }, "當前資料集狀態無法執行實驗")
       })
 
       return

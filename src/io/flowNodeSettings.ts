@@ -4,4 +4,5 @@ export default class FlowNodeSettings {
     backgroundColor!: string;
     borderColor!: string;
     icon!: string;
+    opacity!: number;
 }

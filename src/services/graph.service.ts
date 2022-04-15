@@ -99,6 +99,7 @@ export default class GraphService {
       backgroundColor: "#FCEFFD",
       borderColor: "#B811CE",
       icon: Icons.dataset,
+      opacity:1,
     },
     {
       name: "preprocess-node",
@@ -106,6 +107,7 @@ export default class GraphService {
       backgroundColor: "#F8F8F0",
       borderColor: "#BCC733",
       icon: Icons.preprocess,
+      opacity:1,
     },
     {
       name: "data-argument-node",
@@ -113,13 +115,23 @@ export default class GraphService {
       backgroundColor: "#FFF0F0",
       borderColor: "#DD8282",
       icon: Icons.dataAugmentation,
+      opacity:1,
     },
     {
       name: "model-select-node",
-      title: "模型選擇",
+      title: "模型訓練",
       backgroundColor: "#F5F5FD",
       borderColor: "#8282DD",
       icon: Icons.modelSelect,
+      opacity:1,
+    },
+    {
+      name: "model-select-node-processing",
+      title: "模型訓練",
+      backgroundColor: "#F5F5FD",
+      borderColor: "#8282DD",
+      icon: Icons.modelSelect,
+      opacity:0.5,
     },
     {
       name: "validation-select-node",
@@ -127,6 +139,15 @@ export default class GraphService {
       backgroundColor: "#FCFCDF",
       borderColor: "#DE9988",
       icon: Icons.validationSelect,
+      opacity:1,
+    },
+    {
+      name: "validation-select-node-processing",
+      title: "驗證方法",
+      backgroundColor: "#FCFCDF",
+      borderColor: "#DE9988",
+      icon: Icons.validationSelect,
+      opacity:0.5,
     },
     {
       name: "trained-result-node",
@@ -134,6 +155,15 @@ export default class GraphService {
       backgroundColor: "#FAECEC",
       borderColor: "#BC6161",
       icon: Icons.trainedResult,
+      opacity:1,
+    },
+    {
+      name: "trained-result-node-processing",
+      title: "訓練結果",
+      backgroundColor: "#FAECEC",
+      borderColor: "#BC6161",
+      icon: Icons.trainedResult,
+      opacity:0.5,
     },
     {
       name: "test-result-node",
@@ -141,6 +171,15 @@ export default class GraphService {
       backgroundColor: "#FAECEC",
       borderColor: "#C69D16",
       icon: Icons.testedResult,
+      opacity:1,
+    },
+    {
+      name: "test-result-node-processing",
+      title: "測試結果",
+      backgroundColor: "#FAECEC",
+      borderColor: "#C69D16",
+      icon: Icons.testedResult,
+      opacity:0.5,
     },
   ]
 
@@ -193,6 +232,7 @@ export default class GraphService {
             title=${node.title}
             background-color = ${node.backgroundColor}
             border-color = ${node.borderColor}
+            opacity = ${node.opacity}
           />`,
           components: { FlowNode },
         },

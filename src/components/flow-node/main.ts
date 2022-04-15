@@ -10,12 +10,14 @@ export default class flowNode extends Vue {
   @Prop(String) private title!: string;
   @Prop(String) private backgroundColor!: string;
   @Prop(String) private borderColor!: string;
+  @Prop(String) private opacity!: number;
 
   @Inject("getNode") private getNode!: () => VueShape;
 
   private nodeBackgroundColor = `background: ${this.backgroundColor}`;
-  private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};`;
+  private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};opacity: ${this.opacity};`;
   private nodeContent = ["暫無資料"]
+  
 
 
   mounted(): void {
@@ -23,8 +25,8 @@ export default class flowNode extends Vue {
 
     this.nodeContent = node.getData().content
 
-    node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>)=>{
-      if(info.current) this.nodeContent = info.current.content
+    node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>) => {
+      if (info.current) this.nodeContent = info.current.content
     });
   }
 }
