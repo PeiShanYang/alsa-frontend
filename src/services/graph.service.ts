@@ -209,7 +209,7 @@ export default class GraphService {
     if (screenWidth > 1200) nodeBaseX = screenWidth * 0.02
 
     const nodeBaseY = screenWidth * 0.03;
-    const nodeBaseSpace = screenWidth * 0.1;
+    const nodeBaseSpace = screenWidth * 0.11;
 
     return {
       x: nodeBaseX + nodeBaseSpace * index,

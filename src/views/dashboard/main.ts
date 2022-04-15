@@ -128,7 +128,7 @@ export default class Dashboard extends Vue {
 
     this.graphs[0].percentage = this.calculateProgress(this.trainingInfo)
 
-    
+
 
     this.$nextTick(() => {
       this.drawGraph();
@@ -213,13 +213,30 @@ export default class Dashboard extends Vue {
         data: nodeData,
       });
 
+      if (index === 0) return
 
-      if (0 < index && index < array.length) {
+      if (index > 0 && array[index].name.includes("processing")) {
+        graph?.addEdge({
+          source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
+          target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
+          attrs: {
+            line: {
+              stroke: '#1890ff',
+              strokeDasharray: 5,
+              targetMarker: 'classic',
+              style: {
+                animation: 'ant-line 30s infinite linear',
+              },
+            },
+          },
+        });
+      } else {
         graph?.addEdge({
           source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
           target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
         });
       }
+
     });
 
     return graph
