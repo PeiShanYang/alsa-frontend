@@ -11,7 +11,7 @@ import graphData from '@/io/graphData';
 import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { Project } from "@/io/project";
-import { getInformationTrainResData,trainingProcess } from "@/io/rest/getInformationTrain";
+import { getInformationTrainResData, trainingProcess } from "@/io/rest/getInformationTrain";
 
 @Component({
   components: {
@@ -56,26 +56,15 @@ export default class Dashboard extends Vue {
   @Watch('trainingInfo')
   onTrainingStage(newActive: getInformationTrainResData, oldActive: getInformationTrainResData): void {
 
-    // console.log("trianing watch", newActive.process, "vs", oldActive.process)
+    console.log("trianing watch", newActive.process, "vs", oldActive.process)
 
-    if (typeof newActive.process === "string") return
+    if (newActive.process === "") return
 
-    // if (newActive) console.log("newactive",newActive.process)
-    const latestKey = Object.keys(newActive.process).pop()
-    if (!latestKey) return
+    if (!this.graphs[0]) return
 
-    const latestInstance:trainingProcess = newActive.process[latestKey]
+    this.graphs[0].percentage = this.calculateProgress(newActive)
 
-    const percentage = ((latestInstance.model.epoch/latestInstance.model.total)*100).toFixed(0)
-    
-    // console.log("latest", latestKey, latestInstance)
-
-
-    this.graphs[0].percentage = parseInt(percentage)
-    // if(parseInt(percentage) === 100) this.graphs[0].data.flowInfo = GraphService.basicNodes
     this.drawGraph();
-
-
   }
 
   @Watch('acitveProjectCollapse')
@@ -102,6 +91,13 @@ export default class Dashboard extends Vue {
     this.waitGetAllProjectInfo()
   }
 
+  // updated(): void{
+
+
+
+  //   // loadingInstance.close()
+  // }
+
   destroy(): void {
     window.removeEventListener("resize", this.drawGraph)
   }
@@ -112,29 +108,17 @@ export default class Dashboard extends Vue {
 
   private async waitGetAllProjectInfo(): Promise<void> {
 
-    const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
+    // const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
     this.trainingInfo = await Api.getInformationTrain()
 
     if (this.trainingInfo.experimentId === "") {
-      loadingInstance.close()
+      // loadingInstance.close()
       return
     }
 
 
-    // await Api.getProjects();
-    // if (this.projectList.size === 0) {
-    //   // loadingInstance.close()
-    //   return
-    // }
     this.projectExist = true
-
-    // const projectKeys = [...this.projectList.keys()]
-    // this.acitveProjectCollapse = projectKeys
-    // for (let index = 0; index < this.projectList.size; index++) {
-    //   await Api.getExperiments(projectKeys[index]);
-    //   await Api.getDatasets(projectKeys[index]);
-    // }
 
     this.acitveProjectCollapse = [this.trainingInfo.projectName]
     await Api.getExperiments(this.trainingInfo.projectName)
@@ -142,30 +126,29 @@ export default class Dashboard extends Vue {
 
     this.graphInitSetting(this.trainingInfo.projectName)
 
-    // console.log("this.graphs", this.graphs) 
+    this.graphs[0].percentage = this.calculateProgress(this.trainingInfo)
 
-    this.$nextTick(async () => {
-
+    this.$nextTick(() => {
+      this.drawGraph();
       const timeIntervalId = window.setInterval((async () => {
         const res = await Api.getInformationTrain()
 
-        if (res.experimentId === ""){
-          if (this.graphs[0].percentage !==0){
+        if (res.experimentId === "") {
+          if (this.graphs[0].percentage !== 0) {
             this.graphs[0].percentage = 100
             this.graphs[0].data.flowInfo = GraphService.basicNodes
+            this.drawGraph()
             window.clearInterval(timeIntervalId)
-          }else{
+
+          } else {
             window.clearInterval(timeIntervalId)
           }
-        } 
+        }
         this.trainingInfo = res
       }), 5000)
-
-      this.drawGraph();
-
-      loadingInstance.close()
-
     })
+
+    // console.log("this.graphs", this.graphs) 
 
   }
   private graphInitSetting(projectName: string): void {
@@ -178,6 +161,9 @@ export default class Dashboard extends Vue {
       .filter(node => node.name !== "validation-select-node")
       .filter(node => node.name !== "trained-result-node")
       .filter(node => node.name !== "test-result-node")
+
+    // const percentage = 0
+    // if (this.trainingInfo.process)
 
     experiments.forEach((experiment, experimentId) => {
       this.graphs.push({
@@ -192,33 +178,6 @@ export default class Dashboard extends Vue {
     })
 
   }
-
-  // private graphInitSetting(): void {
-  //   this.projectList.forEach((project, projectName) => {
-
-  //     if (!project.experiments) return
-
-  //     const defaultNodes = GraphService.basicNodes
-  //       .filter(node => node.name !== "model-select-node")
-  //       .filter(node => node.name !== "validation-select-node")
-  //       .filter(node => node.name !== "trained-result-node")
-  //       .filter(node => node.name !== "test-result-node")
-
-  //     project.experiments.forEach((experiment, experimentId) => {
-  //       this.graphs.push({
-  //         data: {
-  //           graph: null,
-  //           flowInfo: defaultNodes,
-  //           projectName, experimentId, experiment
-  //         },
-  //         training: false,
-  //         percentage: 10,
-  //       })
-
-  //     })
-  //   })
-  // }
-
 
   private drawGraph(): void {
 
@@ -266,6 +225,21 @@ export default class Dashboard extends Vue {
 
   private progressFormat(percentage: number): string {
     return percentage === 100 ? `已完成` : `${percentage}% 進行中`
+  }
+
+  private calculateProgress(trainData: getInformationTrainResData): number {
+
+    if (typeof trainData.process === "string") return 0
+
+    const latestKey = Object.keys(trainData.process).pop()
+    if (!latestKey) return 0
+
+    const latestInstance: trainingProcess = trainData.process[latestKey]
+
+    const percentage = ((latestInstance.model.epoch / latestInstance.model.total) * 100).toFixed(0)
+
+    return parseInt(percentage)
+
   }
 
 }

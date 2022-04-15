@@ -13,11 +13,11 @@ export class getInformationTrainResData {
 }
 
 export class trainingProcess {
-    model = { 
+    model = {
         epoch: 0,
         total: 0,
-     };
+    };
     vaild = {
-        accuray:0
+        accuray: 0
     }
 }
