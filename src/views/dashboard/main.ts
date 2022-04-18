@@ -83,6 +83,7 @@ export default class Dashboard extends Vue {
   }
 
   created(): void {
+    this.$i18n.locale = "zh-tw"
     GraphService.registerNodes()
     window.addEventListener("resize", this.drawGraph)
   }
@@ -191,10 +192,15 @@ export default class Dashboard extends Vue {
 
     const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
+  
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
+
+      if(!nodeData?.content) return
+
+      nodeData.content.forEach((item,index,array)=> array[index] =this.$i18n.t(item).toString())
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),

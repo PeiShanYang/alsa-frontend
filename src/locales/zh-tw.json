@@ -12,10 +12,16 @@
     "auo_feature_reuse_model": "友達特徵強化模型",
     "auo_lighten_efficient_model": "友達輕量高效模型",
     "auo_horizontal_sample_model": "友達橫向取樣模型",
-
-
-    "normalize":"資料正規化",
-    "randomHorizontalFlip":"隨機水平翻轉",
-    "showAcc":"顯示準確率",
-    "showClassAcc":"顯示各類別準確率"
+    "normalize": "資料正規化",
+    "randomHorizontalFlip": "隨機水平翻轉",
+    "showAcc": "顯示準確率",
+    "showClassAcc": "顯示各類別準確率",
+    "uploaded": "已上傳",
+    "notUploaded": "未上傳",
+    "labeled": "已標記",
+    "notLabeled": "未標記",
+    "split": "已切分",
+    "notSplit": "未切分",
+    "notTraining":"尚未訓練",
+    "training":"訓練中"
 }

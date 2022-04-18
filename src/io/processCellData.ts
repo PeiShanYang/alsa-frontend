@@ -30,27 +30,27 @@ export default class ProcessCellData {
             }],
             ['trained-result-node', {
                 component: 'trained-result-node',
-                content: ["尚未訓練"],
+                content: ["notTraining"],
             }],
             ['test-result-node', {
                 component: 'test-result-node',
-                content: ["尚未訓練"],
+                content: ["notTraining"],
             }],
             ['model-select-node-processing', {
                 component: 'model-select-node',
-                content: ["進行中"],
+                content: ["training"],
             }],
             ['validation-select-node-processing', {
                 component: 'validation-select-node',
-                content: ["進行中"],
+                content: ["training"],
             }],
             ['trained-result-node-processing', {
                 component: 'trained-result-node',
-                content: ["進行中"],
+                content: ["training"],
             }],
             ['test-result-node-processing', {
                 component: 'test-result-node',
-                content: ["進行中"],
+                content: ["training"],
             }],
 
         ]);
