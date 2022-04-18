@@ -56,7 +56,7 @@ export default class Dashboard extends Vue {
   @Watch('trainingInfo')
   onTrainingStage(newActive: getInformationTrainResData, oldActive: getInformationTrainResData): void {
 
-    // console.log("trianing watch", newActive.process, "vs", oldActive.process)
+    console.log("trianing watch", newActive.process, "vs", oldActive.process)
 
     if (newActive.process === "") return
 
@@ -64,7 +64,6 @@ export default class Dashboard extends Vue {
 
     this.graphs[0].percentage = this.calculateProgress(newActive)
 
-    this.drawGraph();
   }
 
   @Watch('acitveProjectCollapse')
@@ -106,11 +105,11 @@ export default class Dashboard extends Vue {
 
     this.trainingInfo = await Api.getInformationTrain()
 
-    if (this.trainingInfo.experimentId === "") {
-      // loadingInstance.close()
-      return
-    }
-
+    if (this.trainingInfo.experimentId === "") return
+    // if (this.trainingInfo.experimentId === "") {
+    //   loadingInstance.close()
+    //   return
+    // }
 
     this.projectExist = true
 
@@ -122,11 +121,33 @@ export default class Dashboard extends Vue {
 
     this.graphs[0].percentage = this.calculateProgress(this.trainingInfo)
 
+    if (this.graphs[0].percentage !== 0) {
+      const trainingNodes = GraphService.basicNodes
+        .filter(node => node.name !== "model-select-node-processing")
+        .filter(node => node.name !== "validation-select-node")
+        .filter(node => node.name !== "trained-result-node")
+        .filter(node => node.name !== "test-result-node")
+      this.graphs[0].data.flowInfo = trainingNodes
+    }
+
 
     this.$nextTick(() => {
       this.drawGraph();
       const timeIntervalId = window.setInterval((async () => {
         const res = await Api.getInformationTrain()
+
+        const checkProcessingNode = this.graphs[0].data.flowInfo.filter( node => node.name == "model-select-node")
+        if (typeof res.process !== "string" && checkProcessingNode.length === 0) {
+          const trainingNodes = GraphService.basicNodes
+            .filter(node => node.name !== "model-select-node-processing")
+            .filter(node => node.name !== "validation-select-node")
+            .filter(node => node.name !== "trained-result-node")
+            .filter(node => node.name !== "test-result-node")
+          this.graphs[0].data.flowInfo = trainingNodes
+          this.drawGraph()
+        }
+
+        this.trainingInfo = res
 
         if (res.experimentId === "") {
           if (this.graphs[0].percentage !== 0) {
@@ -139,7 +160,7 @@ export default class Dashboard extends Vue {
             window.clearInterval(timeIntervalId)
           }
         }
-        this.trainingInfo = res
+
       }), 5000)
     })
 
@@ -152,7 +173,7 @@ export default class Dashboard extends Vue {
     if (!experiments) return
 
     const defaultNodes = GraphService.basicNodes
-      .filter(node => node.name !== "model-select-node-processing")
+      .filter(node => node.name !== "model-select-node")
       .filter(node => node.name !== "validation-select-node")
       .filter(node => node.name !== "trained-result-node")
       .filter(node => node.name !== "test-result-node")
@@ -192,15 +213,13 @@ export default class Dashboard extends Vue {
 
     const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
-  
-
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
 
-      if(!nodeData?.content) return
+      if (!nodeData?.content) return
 
-      nodeData.content.forEach((item,index,array)=> array[index] =this.$i18n.t(item).toString())
+      nodeData.content.forEach((item, index, array) => array[index] = this.$i18n.t(item).toString())
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
