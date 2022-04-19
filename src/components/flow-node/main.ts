@@ -2,7 +2,6 @@ import ProcessCellData from '@/io/processCellData';
 import { VueShape } from '@antv/x6-vue-shape';
 import { Cell } from '@antv/x6/lib/model/cell';
 import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
-import i18n from '@/i18n';
 
 @Component
 export default class flowNode extends Vue {

@@ -11,7 +11,7 @@ import graphData from '@/io/graphData';
 import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { Project } from "@/io/project";
-import { getInformationTrainResData, trainingProcess } from "@/io/rest/getInformationTrain";
+import { GetInformationTrainResData, RunTask, TrainingProcess } from "@/io/rest/getInformationTrain";
 
 @Component({
   components: {
@@ -48,38 +48,46 @@ export default class Dashboard extends Vue {
 
   private acitveProjectCollapse: string[] = [];
 
-  private trainingInfo = new getInformationTrainResData
+  private trainingInfo = new GetInformationTrainResData;
 
-  private graphs: { data: graphData, percentage: number }[] = [];
+  private workList: string[] = [];
+
+  private graphs: { data: graphData, percentage: number, runId: string }[] = [];
 
 
   @Watch('trainingInfo')
-  onTrainingStage(newActive: getInformationTrainResData, oldActive: getInformationTrainResData): void {
+  onTrainingStage(newActive: GetInformationTrainResData): void {
 
-    console.log("trianing watch", newActive.process, "vs", oldActive.process)
+    // console.log("training watch", newActive)
 
-    if (newActive.process === "") return
+    const taskList = [...newActive.work, ...newActive.done]
 
-    if (!this.graphs[0]) return
+    if (taskList.length === 0) return
+    if (!this.graphs) return
+    if (this.workList.length === 0) return
 
-    this.graphs[0].percentage = this.calculateProgress(newActive)
+    const runList = taskList.filter(task => this.workList.includes(task.runId))
 
-  }
+    runList.forEach((run) => {
+      const graphIndex = this.graphs.findIndex(item => item.runId === run.runId)
+      const newRun = this.graphSetting(run)
+      if (!this.graphs[graphIndex]) return
+      const tmp = this.graphs[graphIndex].percentage
+      if (tmp === 100) return
 
-  @Watch('acitveProjectCollapse')
-  onCollapse(newActive: string[], oldActive: string[]): void {
+      if (newRun) this.graphs.splice(graphIndex, 1, newRun)
 
-    const diffProject = newActive.filter(x => !oldActive.includes(x))[0]
-    const repaintGraph = this.graphs.find(x => x.data.projectName === diffProject)
-
-    this.$nextTick(() => {
-      if (!repaintGraph) return
-      repaintGraph.data.graph?.clearCells()
-      if (!repaintGraph.data.experiment) return
-      repaintGraph.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.data.projectName), repaintGraph.data.flowInfo, repaintGraph.data.experiment, repaintGraph.data.projectName)
+      if ((tmp === 0 && this.graphs[graphIndex].percentage > 0) || this.graphs[graphIndex].percentage === 100) {
+        const graphData = this.graphs[graphIndex].data
+        graphData.graph?.clearCells()
+        if (!graphData.experiment) return
+        graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(run.runId), graphData.flowInfo, graphData.experiment, graphData.projectName)
+      }
     })
 
   }
+
+
 
   created(): void {
     this.$i18n.locale = "zh-tw"
@@ -104,8 +112,9 @@ export default class Dashboard extends Vue {
     // const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
     this.trainingInfo = await Api.getInformationTrain()
+    // console.log("this.training info", this.trainingInfo)
 
-    if (this.trainingInfo.experimentId === "") return
+    if (this.trainingInfo.work.length === 0 && this.trainingInfo.done.length === 0) return
     // if (this.trainingInfo.experimentId === "") {
     //   loadingInstance.close()
     //   return
@@ -113,83 +122,78 @@ export default class Dashboard extends Vue {
 
     this.projectExist = true
 
-    this.acitveProjectCollapse = [this.trainingInfo.projectName]
-    await Api.getExperiments(this.trainingInfo.projectName)
-    await Api.getDatasets(this.trainingInfo.projectName)
+    const projectList = [...store.projectList.keys()]
 
-    this.graphInitSetting(this.trainingInfo.projectName)
-
-    this.graphs[0].percentage = this.calculateProgress(this.trainingInfo)
-
-    if (this.graphs[0].percentage !== 0) {
-      const trainingNodes = GraphService.basicNodes
-        .filter(node => node.name !== "model-select-node-processing")
-        .filter(node => node.name !== "validation-select-node")
-        .filter(node => node.name !== "trained-result-node")
-        .filter(node => node.name !== "test-result-node")
-      this.graphs[0].data.flowInfo = trainingNodes
+    for (let i = 0; i < projectList.length; i++) {
+      await Api.getExperiments(projectList[i])
+      await Api.getDatasets(projectList[i])
     }
+
+    const taskList = [...this.trainingInfo.work, ...this.trainingInfo.done]
+
+    // console.log("tasklist", taskList)
+
+    taskList.forEach(task => {
+      const setting = this.graphSetting(task)
+      if (setting) this.graphs.push(setting)
+    })
+
+    this.acitveProjectCollapse = this.graphs.map(item => item.runId)
 
 
     this.$nextTick(() => {
       this.drawGraph();
+      this.workList = this.trainingInfo.work.map(work => work.runId)
+
       const timeIntervalId = window.setInterval((async () => {
-        const res = await Api.getInformationTrain()
+        this.trainingInfo = await Api.getInformationTrain()
 
-        const checkProcessingNode = this.graphs[0].data.flowInfo.filter( node => node.name == "model-select-node")
-        if (typeof res.process !== "string" && checkProcessingNode.length === 0) {
-          const trainingNodes = GraphService.basicNodes
-            .filter(node => node.name !== "model-select-node-processing")
-            .filter(node => node.name !== "validation-select-node")
-            .filter(node => node.name !== "trained-result-node")
-            .filter(node => node.name !== "test-result-node")
-          this.graphs[0].data.flowInfo = trainingNodes
-          this.drawGraph()
+        if (this.trainingInfo.work.length === 0) {
+          window.clearInterval(timeIntervalId)
         }
-
-        this.trainingInfo = res
-
-        if (res.experimentId === "") {
-          if (this.graphs[0].percentage !== 0) {
-            this.graphs[0].percentage = 100
-            this.graphs[0].data.flowInfo = GraphService.basicNodes.filter(node => !node.name.includes("processing"))
-            this.drawGraph()
-            window.clearInterval(timeIntervalId)
-
-          } else {
-            window.clearInterval(timeIntervalId)
-          }
-        }
-
       }), 5000)
-    })
 
-    // console.log("this.graphs", this.graphs) 
+    })
 
   }
-  private graphInitSetting(projectName: string): void {
+  private graphSetting(taskInfo: RunTask): { data: graphData, percentage: number, runId: string } | undefined {
 
-    const experiments = store.projectList.get(projectName)?.experiments
-    if (!experiments) return
+    const experiment = store.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
+    if (!experiment) return
 
-    const defaultNodes = GraphService.basicNodes
-      .filter(node => node.name !== "model-select-node")
-      .filter(node => node.name !== "validation-select-node")
-      .filter(node => node.name !== "trained-result-node")
-      .filter(node => node.name !== "test-result-node")
+    let percentage = 0
+    let defaultNodes: FlowNodeSettings[] = []
+
+    if (typeof taskInfo.process !== "string") percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process)))
+
+    if (percentage === 0) {
+      defaultNodes = GraphService.basicNodes
+        .filter(node => node.name !== "model-select-node")
+        .filter(node => node.name !== "validation-select-node")
+        .filter(node => node.name !== "trained-result-node")
+        .filter(node => node.name !== "test-result-node")
+    } else if (percentage < 100) {
+      defaultNodes = GraphService.basicNodes
+        .filter(node => node.name !== "model-select-node-processing")
+        .filter(node => node.name !== "validation-select-node")
+        .filter(node => node.name !== "trained-result-node")
+        .filter(node => node.name !== "test-result-node")
+    } else {
+      defaultNodes = GraphService.basicNodes.filter(node => !node.name.includes("processing"))
+    }
 
 
-    experiments.forEach((experiment, experimentId) => {
-      this.graphs.push({
-        data: {
-          graph: null,
-          flowInfo: defaultNodes,
-          projectName, experimentId, experiment
-        },
-        percentage: 0,
-      })
-
-    })
+    return {
+      data: {
+        graph: null,
+        flowInfo: defaultNodes,
+        projectName: taskInfo.projectName,
+        experimentId: taskInfo.experimentId,
+        experiment: experiment
+      },
+      percentage: percentage,
+      runId: taskInfo.runId
+    }
 
   }
 
@@ -200,7 +204,7 @@ export default class Dashboard extends Vue {
     this.graphs.forEach((item) => {
       item.data.graph?.clearCells()
       if (!item.data.experiment) return
-      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.data.projectName), item.data.flowInfo, item.data.experiment, item.data.projectName)
+      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item.data.flowInfo, item.data.experiment, item.data.projectName)
     })
   }
 
@@ -261,18 +265,53 @@ export default class Dashboard extends Vue {
     return percentage === 100 ? `已完成` : `${percentage}% 進行中`
   }
 
-  private calculateProgress(trainData: getInformationTrainResData): number {
+  private calculateProgress(process: Map<string, TrainingProcess>): number {
 
-    if (typeof trainData.process === "string") return 0
-
-    const latestKey = Object.keys(trainData.process).pop()
+    const latestKey = [...process.keys()].pop()
     if (!latestKey) return 0
 
-    const latestInstance: trainingProcess = trainData.process[latestKey]
+    const latestInstance = process.get(latestKey)
+    if (!latestInstance) return 0
 
     const percentage = ((latestInstance.model.epoch / latestInstance.model.total) * 100).toFixed(0)
 
     return parseInt(percentage)
+
+  }
+
+  private async handleDeleteGraph(graph: { data: graphData, percentage: number, runId: string }): Promise<void> {
+
+    const h = this.$createElement;
+    const msg = this.$msgbox({
+      type: "warning",
+      confirmButtonText: '確定',
+      // distinguishCancelAndClose: true,
+      showCancelButton: true,
+      cancelButtonText: '取消',
+      closeOnClickModal: false,
+      message: h('h2', { style: 'color:rgb(8, 100, 141)' }, "確定刪除訓練結果?")
+    })
+
+    msg.then(async () => {
+      const response = await Api.deleteRun(graph.data.projectName, graph.runId)
+
+      if (response === 'fail') return
+
+      const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
+
+      if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+    }).catch( e => console.log(e))
+
+
+    // const response = await Api.deleteRun(graph.data.projectName, graph.runId)
+
+    // if (response === 'fail') return
+
+    // const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
+
+    // if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+
+
 
   }
 

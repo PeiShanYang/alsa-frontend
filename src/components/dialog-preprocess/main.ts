@@ -5,7 +5,7 @@ import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 export default class DialogPreprocess extends Vue {
   @Prop() private dialogOpen!: boolean;
 
-  get openDialogPreprocess() {
+  get openDialogPreprocess():boolean  {
     return this.dialogOpen
   }
 
@@ -14,7 +14,7 @@ export default class DialogPreprocess extends Vue {
   }
 
   @Emit("dialog-close")
-  closeDialogPreprocess() {
+  closeDialogPreprocess() :boolean {
     return false;
   }
 
@@ -70,7 +70,7 @@ export default class DialogPreprocess extends Vue {
   private imageList: Array<{ name: string }> = [];
 
 
-  created() {
+  created():void {
     this.handleImageList()
   }
 

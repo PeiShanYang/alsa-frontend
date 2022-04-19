@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import { Project } from "@/io/project";
-import { DatasetStatus } from '@/io/dataset';
 
 class Store {
   currentProject?: string;

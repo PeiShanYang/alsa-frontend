@@ -1,14 +1,14 @@
-export class runExperimentTrainReq {
+export class RunExperimentTrainReq {
     projectName!: string;
     experimentId!: string;
 }
-export class runExperimentTrainRes {
+export class RunExperimentTrainRes {
     code = 0;
     message = '';
-    data?: Array<runExperimentTrainResData>;
+    data?: Array<RunExperimentTrainResData>;
 }
 
-export class runExperimentTrainResData {
+export class RunExperimentTrainResData {
     experimentId = '';
     projectName = '';
     runId = '';

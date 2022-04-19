@@ -1,18 +1,15 @@
-export class getInformationTrainRes {
+export class GetInformationTrainRes {
     code = 0;
     message = '';
-    data?: getInformationTrainResData;
+    data?: GetInformationTrainResData;
 }
 
-export class getInformationTrainResData {
-    experimentId = '';
-    process = '';
-    projectName = '';
-    runId = '';
-    task = '';
+export class GetInformationTrainResData {
+    done: RunTask[] = [];
+    work: RunTask[] = [];
 }
 
-export class trainingProcess {
+export class TrainingProcess {
     model = {
         epoch: 0,
         total: 0,
@@ -20,4 +17,12 @@ export class trainingProcess {
     vaild = {
         accuray: 0
     }
+}
+
+export class RunTask {
+    experimentId = '';
+    process: string | Map<string, TrainingProcess> = '';
+    projectName = '';
+    runId = '';
+    task = '';
 }

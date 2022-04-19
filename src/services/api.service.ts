@@ -9,8 +9,9 @@ import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
 import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
-import { runExperimentTrainReq, runExperimentTrainRes } from "@/io/rest/runExperimentTrain";
-import { getInformationTrainRes, getInformationTrainResData } from "@/io/rest/getInformationTrain";
+import { RunExperimentTrainReq, RunExperimentTrainRes } from "@/io/rest/runExperimentTrain";
+import { GetInformationTrainRes, GetInformationTrainResData } from "@/io/rest/getInformationTrain";
+import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
 
 
 const host = 'http://tw100104318:37510/';
@@ -165,39 +166,57 @@ export default class Api {
 
   static async runExperimentTrain(projectName: string, experimentId: string): Promise<string> {
 
-    const reqData: runExperimentTrainReq = {
+    const reqData: RunExperimentTrainReq = {
       projectName, experimentId
     }
 
-    const response: AxiosResponse<runExperimentTrainRes> = await axios.post(
+    const response: AxiosResponse<RunExperimentTrainRes> = await axios.post(
       host + 'run-experiment-train',
       reqData,
     )
 
     if (response.status !== 200) return "fail";
 
-    const res: runExperimentTrainRes = response.data;
+    const res: RunExperimentTrainRes = response.data;
     if (res.code !== 0) console.log(res.message)
 
     return res.message
-
   }
 
-  static async getInformationTrain(): Promise<getInformationTrainResData> {
+  static async getInformationTrain(): Promise<GetInformationTrainResData> {
 
-    const response: AxiosResponse<getInformationTrainRes> = await axios.post(
+    const response: AxiosResponse<GetInformationTrainRes> = await axios.post(
       host + 'get-information-train',
     );
 
-    if (response.status !== 200) return new getInformationTrainResData
+    if (response.status !== 200) return new GetInformationTrainResData
 
-    const res: getInformationTrainRes = response.data;
+    const res: GetInformationTrainRes = response.data;
     if (res.code !== 0) console.log(res.message)
 
-    if (!res.data) return new getInformationTrainResData
+    if (!res.data) return new GetInformationTrainResData
 
     return res.data
 
+  }
+
+  static async deleteRun(projectName: string, runId: string): Promise<string> {
+
+    const reqData: DeleteRunReq = {
+      projectName, runId
+    }
+
+    const response: AxiosResponse<DeleteRunRes> = await axios.post(
+      host + 'delete-run',
+      reqData
+    )
+
+    if (response.status !== 200) return "fail";
+
+    const res: DeleteRunRes = response.data
+    if (res.code !== 0 ) console.log(res.message)
+
+    return res.message
   }
 
 }
