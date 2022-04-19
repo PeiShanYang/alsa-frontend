@@ -104,3 +104,10 @@
   margin: auto;
   align-self: center;
 }
+
+
+@keyframes ant-line {
+  to {
+      stroke-dashoffset: -1000
+  }
+}

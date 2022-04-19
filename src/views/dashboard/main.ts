@@ -86,6 +86,20 @@ export default class Dashboard extends Vue {
     })
 
   }
+  @Watch('acitveProjectCollapse')
+  onCollapse(newActive: string[], oldActive: string[]): void {
+
+    const diffProject = newActive.filter(x => !oldActive.includes(x))[0]
+    const repaintGraph = this.graphs.find(x => x.runId === diffProject)
+
+    this.$nextTick(() => {
+      if (!repaintGraph) return
+      repaintGraph.data.graph?.clearCells()
+      if (!repaintGraph.data.experiment) return
+      repaintGraph.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.runId), repaintGraph.data.flowInfo, repaintGraph.data.experiment, repaintGraph.data.projectName)
+    })
+
+  }
 
 
 
@@ -243,6 +257,7 @@ export default class Dashboard extends Vue {
               stroke: '#1890ff',
               strokeDasharray: 5,
               targetMarker: 'classic',
+              className : 'ant-line',
               style: {
                 animation: 'ant-line 30s infinite linear',
               },
@@ -300,6 +315,8 @@ export default class Dashboard extends Vue {
       const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
 
       if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+
+      if (this.graphs.length === 0 ) this.projectExist = false
     }).catch( e => console.log(e))
 
 
