@@ -14,8 +14,8 @@ export class TrainingProcess {
         epoch: 0,
         total: 0,
     };
-    vaild = {
-        accuray: 0
+    valid = {
+        accuracy: 0,
     }
 }
 

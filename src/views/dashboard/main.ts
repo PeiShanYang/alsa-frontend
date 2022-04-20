@@ -80,10 +80,13 @@ export default class Dashboard extends Vue {
       if ((tmp === 0 && this.graphs[graphIndex].percentage > 0) || this.graphs[graphIndex].percentage === 100) {
         const graphData = this.graphs[graphIndex].data
         graphData.graph?.clearCells()
+        graphData.graph = null
         if (!graphData.experiment) return
         graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(run.runId), graphData.flowInfo, graphData.experiment, graphData.projectName)
+        this.getResultNode()
       }
     })
+    
 
   }
   @Watch('acitveProjectCollapse')
@@ -95,8 +98,10 @@ export default class Dashboard extends Vue {
     this.$nextTick(() => {
       if (!repaintGraph) return
       repaintGraph.data.graph?.clearCells()
+      repaintGraph.data.graph = null
       if (!repaintGraph.data.experiment) return
       repaintGraph.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.runId), repaintGraph.data.flowInfo, repaintGraph.data.experiment, repaintGraph.data.projectName)
+      this.getResultNode()
     })
 
   }
@@ -123,16 +128,14 @@ export default class Dashboard extends Vue {
 
   private async waitGetAllProjectInfo(): Promise<void> {
 
-    // const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
+    const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
     this.trainingInfo = await Api.getInformationTrain()
-    // console.log("this.training info", this.trainingInfo)
 
-    if (this.trainingInfo.work.length === 0 && this.trainingInfo.done.length === 0) return
-    // if (this.trainingInfo.experimentId === "") {
-    //   loadingInstance.close()
-    //   return
-    // }
+    if (this.trainingInfo.work.length === 0 && this.trainingInfo.done.length === 0) {
+      loadingInstance.close()
+      return
+    }
 
     this.projectExist = true
 
@@ -152,17 +155,21 @@ export default class Dashboard extends Vue {
       if (setting) this.graphs.push(setting)
     })
 
+
     this.acitveProjectCollapse = this.graphs.map(item => item.runId)
 
 
     this.$nextTick(() => {
       this.drawGraph();
-      this.workList = this.trainingInfo.work.map(work => work.runId)
+      // this.getResultNode()
+      loadingInstance.close()
 
+      this.workList = this.trainingInfo.work.map(work => work.runId)
       const timeIntervalId = window.setInterval((async () => {
         this.trainingInfo = await Api.getInformationTrain()
 
         if (this.trainingInfo.work.length === 0) {
+          // this.getResultNode()
           window.clearInterval(timeIntervalId)
         }
       }), 5000)
@@ -217,9 +224,11 @@ export default class Dashboard extends Vue {
 
     this.graphs.forEach((item) => {
       item.data.graph?.clearCells()
+      item.data.graph = null
       if (!item.data.experiment) return
       item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item.data.flowInfo, item.data.experiment, item.data.projectName)
     })
+    this.getResultNode()
   }
 
 
@@ -282,10 +291,10 @@ export default class Dashboard extends Vue {
 
   private calculateProgress(process: Map<string, TrainingProcess>): number {
 
-    const latestKey = [...process.keys()].pop()
-    if (!latestKey) return 0
+    // const latestKey = [...process.keys()].pop()
+    // if (!latestKey) return 0
 
-    const latestInstance = process.get(latestKey)
+    const latestInstance = [...process.values()].pop()
     if (!latestInstance) return 0
 
     const percentage = ((latestInstance.model.epoch / latestInstance.model.total) * 100).toFixed(0)
@@ -319,6 +328,33 @@ export default class Dashboard extends Vue {
       if (this.graphs.length === 0) this.projectExist = false
     }).catch(e => console.log(e))
 
+  }
+
+  private setTestResultContent(graph: Graph, accuracy: number): void {
+
+    const nodes = graph.getNodes()
+    const testResultNode = nodes.find(node => node.id.includes("test-result-node"))
+
+    
+    const sendContent = {
+      component: 'test-result-node',
+      content: [`準確率:${accuracy}`]
+    }
+    testResultNode?.setData(sendContent, { overwrite: true })
+  }
+
+  private getResultNode(): void {
+    this.graphs.forEach(graphContent => {
+      if (graphContent.percentage === 100) {
+        const doneTask = [...this.trainingInfo.done,...this.trainingInfo.work]
+        const doneIndex = doneTask.findIndex(task => task.runId = graphContent.runId)
+        const process = new Map<string, TrainingProcess>(Object.entries(doneTask[doneIndex].process))
+        const lastProcessInstance = [...process.values()].pop()
+        if (!lastProcessInstance) return
+        if (graphContent.data.graph === null) return
+        this.setTestResultContent(graphContent.data.graph, lastProcessInstance.valid.accuracy)
+      }
+    })
   }
 
 }

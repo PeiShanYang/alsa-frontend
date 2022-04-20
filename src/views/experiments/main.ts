@@ -96,9 +96,9 @@ export default class Experiments extends Vue {
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
 
-      if(!nodeData?.content) return
+      if (!nodeData?.content) return
 
-      nodeData.content.forEach((item,index,array)=> array[index] =this.$i18n.t(item).toString())
+      nodeData.content.forEach((item, index, array) => array[index] = this.$i18n.t(item).toString())
 
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
@@ -149,6 +149,10 @@ export default class Experiments extends Vue {
 
     if (!this.graph.experiment) return
     const sendDatasetStatus = ProcessCellData.cellDataContent(this.graph.experiment, this.graph.projectName).get("dataset-node")
+
+    if (!sendDatasetStatus) return
+    sendDatasetStatus.content = sendDatasetStatus?.content.map(item => this.$i18n.t(item).toString())
+
     datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
   }
