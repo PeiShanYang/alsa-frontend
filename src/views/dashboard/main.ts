@@ -333,11 +333,11 @@ export default class Dashboard extends Vue {
   private setTestResultContent(graph: Graph, accuracy: number): void {
 
     const nodes = graph.getNodes()
-    const testResultNode = nodes.find(node => node.id.includes("test-result-node"))
+    const testResultNode = nodes.find(node => node.id.includes("validation-select-node"))
 
     
     const sendContent = {
-      component: 'test-result-node',
+      component: 'validation-select-node',
       content: [`準確率:${accuracy}`]
     }
     testResultNode?.setData(sendContent, { overwrite: true })
