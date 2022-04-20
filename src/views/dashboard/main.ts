@@ -257,7 +257,7 @@ export default class Dashboard extends Vue {
               stroke: '#1890ff',
               strokeDasharray: 5,
               targetMarker: 'classic',
-              className : 'ant-line',
+              className: 'ant-line',
               style: {
                 animation: 'ant-line 30s infinite linear',
               },
@@ -310,25 +310,14 @@ export default class Dashboard extends Vue {
     msg.then(async () => {
       const response = await Api.deleteRun(graph.data.projectName, graph.runId)
 
-      if (response === 'fail') return
+      if (response === 'success') {
+        const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
 
-      const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
+        if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+      }
 
-      if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
-
-      if (this.graphs.length === 0 ) this.projectExist = false
-    }).catch( e => console.log(e))
-
-
-    // const response = await Api.deleteRun(graph.data.projectName, graph.runId)
-
-    // if (response === 'fail') return
-
-    // const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
-
-    // if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
-
-
+      if (this.graphs.length === 0) this.projectExist = false
+    }).catch(e => console.log(e))
 
   }
 

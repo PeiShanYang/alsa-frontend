@@ -189,8 +189,9 @@ export default class GraphService {
       width: screenWidth * 0.8,
       height: screenWidth * 0.15,
       // grid: true,
-      panning: true,
+      // panning: true,
       interacting: false,
+      
     }
   }
 
