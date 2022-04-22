@@ -86,7 +86,7 @@ export default class Dashboard extends Vue {
         this.getResultNode()
       }
     })
-    
+
 
   }
   @Watch('acitveProjectCollapse')
@@ -282,6 +282,40 @@ export default class Dashboard extends Vue {
 
     });
 
+
+    const conditionA = flow.filter(item => item.name.includes("processing")).length
+    const conditionB = flow.filter(item => item.name === "model-select-node").length
+
+    if (conditionA > 0 && conditionB > 0) {
+      const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
+      const modelSelectNodeSetting = GraphService.getNodeSettings(screenWidth, modelSelectNodeIndex)
+      modelSelectNodeSetting.shape = 'rect'
+
+      const rect = graph.addNode({
+        ...modelSelectNodeSetting,
+
+        attrs: {
+          body: {
+            stroke: '#8282DD',
+          },
+        },
+      })
+
+      const view = graph.findView(rect)
+
+      if (view) {
+        view.animate('rect', {
+          attributeType: 'XML',
+          attributeName: 'opacity',
+          from: 0.6,
+          to: 0.1,
+          dur: '0.8s',
+          repeatCount: 'indefinite',
+        })
+      }
+
+    }
+
     return graph
   }
 
@@ -334,8 +368,6 @@ export default class Dashboard extends Vue {
 
     const nodes = graph.getNodes()
     const testResultNode = nodes.find(node => node.id.includes("validation-select-node"))
-
-    
     const sendContent = {
       component: 'validation-select-node',
       content: [`準確率:${accuracy}`]
@@ -346,7 +378,7 @@ export default class Dashboard extends Vue {
   private getResultNode(): void {
     this.graphs.forEach(graphContent => {
       if (graphContent.percentage === 100) {
-        const doneTask = [...this.trainingInfo.done,...this.trainingInfo.work]
+        const doneTask = [...this.trainingInfo.done, ...this.trainingInfo.work]
         const doneIndex = doneTask.findIndex(task => task.runId = graphContent.runId)
         const process = new Map<string, TrainingProcess>(Object.entries(doneTask[doneIndex].process))
         const lastProcessInstance = [...process.values()].pop()
