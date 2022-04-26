@@ -15,6 +15,8 @@ import { Experiment } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 
+import { Line } from '@antv/g2plot';
+
 @Component({
   components: {
     "dialog-dataset": DialogDataset,
@@ -24,6 +26,20 @@ import graphData from '@/io/graphData';
   }
 })
 export default class Experiments extends Vue {
+
+  private data = [
+    { epoch: '1', accuracy: 0.2 },
+    { epoch: '2', accuracy: 0.2 },
+    { epoch: '3', accuracy: 0.4 },
+    { epoch: '4', accuracy: 0.75 },
+    { epoch: '5', accuracy: 0.75 },
+    { epoch: '6', accuracy: 0.75 },
+    { epoch: '7', accuracy: 0.85 },
+    { epoch: '8', accuracy: 0.85 },
+    { epoch: '9', accuracy: 0.9 },
+    { epoch: '10', accuracy: 0.9 },
+  ];
+
   private acitveProjectCollapse: string[] = ["1"];
   private openDialogRunProject = false;
   private openDialogDataset = false;
@@ -73,6 +89,26 @@ export default class Experiments extends Vue {
     })
 
     this.drawGraph();
+
+
+
+    const container = document.querySelector("[data-cell-id='trained-result-node_testkinsus']")
+    console.log("container",container)
+    const linePlot = new Line(document.getElementById("graph-container")!,{
+      padding:20,
+      autoFit:false,
+      width:100,
+      height:100,
+      theme:'dark',
+      data: this.data,
+      xField:"epoch",
+      yField:'accuracy',
+  });
+  // bar.chart.data(this.data)
+
+  linePlot.render();
+  
+    
   }
 
   private drawGraph(): void {
