@@ -1,9 +1,50 @@
-<div>
-  <!-- <el-alert
-    title="No models are available"
-    type="error">
-  </el-alert> -->
-  <div id="chart" style="margin: 2em;">
-
+<div id="mainSection">
+  <div v-show="resultExist">
+    <el-collapse v-model="acitveResultCollapse">
+      <el-collapse-item name="1">
+        <template slot="title">
+          <i class="el-icon-star-off"> </i>
+          <span>projectName</span>
+        </template>
+        <el-row>
+          <el-col>
+            <el-row>
+              <el-col>
+                <img :src="require('@/assets/Forallvision_icon0304/bar_Dataset.svg')" />
+                <span>資料集:</span>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col>
+                <!-- <div id="chart"></div> -->
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col>
+            <el-row>
+              <el-col>
+                <img :src="require('@/assets/Forallvision_icon0304/bar_Models.svg')" />
+                <span>模型:
+                  
+                </span>
+              </el-col>
+            </el-row>
+            <el-row></el-row>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col>
+            <el-button>刪除</el-button>
+            <el-button>下載</el-button>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+    </el-collapse>
   </div>
+</div>
+<div v-show="!resultExist">
+  <el-alert title="No models are available" type="error">
+  </el-alert>
+</div>
+
 </div>

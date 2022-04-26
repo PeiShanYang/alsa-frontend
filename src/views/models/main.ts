@@ -4,6 +4,9 @@ import { Line } from '@antv/g2plot';
 @Component
 export default class Models extends Vue {
 
+    private resultExist = true;
+    private acitveResultCollapse= ["1"];
+
     private data = [
         { epoch: '1', accuracy: 0.2 },
         { epoch: '2', accuracy: 0.2 },
@@ -21,6 +24,7 @@ export default class Models extends Vue {
         const linePlot = new Line(document.getElementById("chart")!,{
             data: this.data,
             xField:"epoch",
+            appendPadding:8,
             yField:'accuracy',
         });
         // bar.chart.data(this.data)
