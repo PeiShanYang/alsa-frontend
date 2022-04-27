@@ -92,21 +92,21 @@ export default class Experiments extends Vue {
 
 
 
-    const container = document.querySelector("[data-cell-id='trained-result-node_testkinsus']")
-    console.log("container",container)
-    const linePlot = new Line(document.getElementById("graph-container")!,{
-      padding:20,
-      autoFit:false,
-      width:100,
-      height:100,
-      theme:'dark',
-      data: this.data,
-      xField:"epoch",
-      yField:'accuracy',
-  });
+    // const container = document.querySelector("[data-cell-id='trained-result-node_testkinsus']")
+    // console.log("container",container)
+    // const linePlot = new Line(document.getElementById("graph-container")!,{
+    //   padding:20,
+    //   autoFit:false,
+    //   width:100,
+    //   height:100,
+    //   theme:'dark',
+    //   data: this.data,
+    //   xField:"epoch",
+    //   yField:'accuracy',
+  // });
   // bar.chart.data(this.data)
 
-  linePlot.render();
+  // linePlot.render();
   
     
   }
