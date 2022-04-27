@@ -1,4 +1,58 @@
+::v-deep .el-alert__title {
+  font-size: 2em;
+}
 
-::v-deep .el-alert__title{
-    font-size: 2em;
-  }
+.el-collapse {
+  border: 0px solid white;
+  box-shadow: 0px 3px 6px #00000029;
+}
+
+
+::v-deep .el-collapse-item__header {
+  background: #0e5879;
+  color: white;
+  padding: 0.5em;
+  border-radius: 8px 8px 0px 0px;
+}
+
+::v-deep .el-collapse-item__header i {
+  font-size: 2.2em;
+}
+
+::v-deep .el-collapse-item__header span {
+  font-size: 2.2em;
+}
+
+::v-deep .el-collapse-item__header i+span {
+  padding-left: 0.2em;
+
+}
+
+::v-deep .el-collapse-item__content {
+  padding: 1vw 2.5vw;
+}
+
+
+#dataset-img {
+  position: relative;
+  left: -80px;
+  filter: drop-shadow(80px 0 #B811CE);
+}
+
+#models-img {
+  position: relative;
+  left: -80px;
+  filter: drop-shadow(80px 0 #8282DD);
+}
+
+.plot-title-bar {
+  background-color: #4A9ABE;
+  border-radius: 4px 4px 0px 0px;
+  padding: 0.5em 1em;
+}
+
+.plot-title-bar span {
+  color: white;
+  font-size: 1.25em;
+}
+

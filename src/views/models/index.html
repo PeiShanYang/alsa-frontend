@@ -1,9 +1,74 @@
-<div>
-  <!-- <el-alert
-    title="No models are available"
-    type="error">
-  </el-alert> -->
-  <div id="chart" style="margin: 2em;">
+<div id="mainSection">
+  <div v-show="resultExit">
+    <el-collapse v-model="acitveResultCollapse">
+      <el-collapse-item name="1">
+        <template slot="title">
+          <i class="el-icon-star-off"> </i>
+          <span>projectName </span>
+        </template>
+        <el-row>
+          <el-col :span="9">
+            <el-row>
+              <el-col style="display: flex;align-items: center;">
+                <img :src="require('@/assets/Forallvision_icon0304/bar_Dataset.svg')" id="dataset-img" />
+                <span style="display: inline-block;font-size: 1.25em;">資料集:</span>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="21" :offset="3">
+                <div style="margin: 1em;">
+                  <div class="plot-title-bar"><span>訓練結果</span></div>
+                  <div style="box-shadow: 0px 3px 6px #00000029;padding:3em">
+                    <div id="chart"></div>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="15">
+            <el-row>
+              <el-col style="display: flex;align-items: center;">
+                <img :src="require('@/assets/Forallvision_icon0304/bar_Models.svg')" id="models-img" />
+                <span style="display: inline-block;font-size: 1.25em;">模型:</span>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="21" :offset="3">
+                <div style="margin: 1em;">
+                  <div class="plot-title-bar"><span>測試結果</span></div>
+                  <div style="box-shadow: 0px 3px 6px #00000029;padding:1em">
+                    <el-row>
+                      <el-col :span="8" style="padding: 2em;">
+                        <div id="plot_1"></div>
+                      </el-col>
+                      <el-col :span="8" style="padding: 2em;">
+                        <div id="plot_2"></div>
+                      </el-col>
+                      <el-col :span="8" style="padding: 2em;">
+                        <div id="plot_3"></div>
+                      </el-col>
+                    </el-row>
+                  </div>
+                </div>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <el-row style="margin: 1.5em 0;">
+          <el-col style="display: flex;justify-content: flex-end;">
+            <el-button>刪除</el-button>
+            <el-button>下載</el-button>
+            <el-button>部屬</el-button>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+    </el-collapse>
 
   </div>
+  <div v-show="!resultExit">
+    <el-alert title="No models are available" type="error">
+    </el-alert>
+  </div>
+
+
 </div>
