@@ -12,6 +12,7 @@ import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { Project } from "@/io/project";
 import { GetInformationTrainResData, RunTask, TrainingProcess } from "@/io/rest/getInformationTrain";
+import { StringUtil } from '@/utils/string.util';
 
 @Component({
   components: {
@@ -214,6 +215,7 @@ export default class Dashboard extends Vue {
         flowInfo: defaultNodes,
         projectName: taskInfo.projectName,
         experimentId: taskInfo.experimentId,
+        date: StringUtil.formatAddSlash(taskInfo.runId),
         experiment: experiment
       },
       percentage: percentage,
