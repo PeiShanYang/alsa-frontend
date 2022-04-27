@@ -22,8 +22,11 @@ export default class Models extends Vue {
     private plot_data_1 = [{ type: "fail", value: 3 }, { type: 'success', value: 97 }]
 
     mounted(): void {
+
+        const windowWidth = window.innerWidth*0.19
+
         const linePlot = new Line(document.getElementById("chart")!, {
-            height:200,
+            height:windowWidth,
             data: this.data,
             xField: "epoch",
             yField: 'accuracy',
@@ -33,7 +36,7 @@ export default class Models extends Vue {
         linePlot.render();
 
         const plot_1 = new Pie(document.getElementById("plot_1")!, {
-            height:200,
+            height:windowWidth,
             data: this.plot_data_1,
             angleField : 'value',
             colorField: 'type',
@@ -62,7 +65,7 @@ export default class Models extends Vue {
         plot_1.render()
 
         const plot_2 = new Pie(document.getElementById("plot_2")!, {
-            height:200,
+            height:windowWidth,
             data: this.plot_data_1,
             angleField : 'value',
             colorField: 'type',
@@ -91,7 +94,7 @@ export default class Models extends Vue {
         plot_2.render()
 
         const plot_3 = new Pie(document.getElementById("plot_3")!, {
-            height:200,
+            height:windowWidth,
             data: this.plot_data_1,
             angleField : 'value',
             colorField: 'type',
