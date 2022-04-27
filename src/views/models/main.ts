@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Line, RingProgress, Pie } from '@antv/g2plot';
+import { Line, Pie } from '@antv/g2plot';
 
 @Component
 export default class Models extends Vue {
@@ -23,7 +23,6 @@ export default class Models extends Vue {
 
     mounted(): void {
         const linePlot = new Line(document.getElementById("chart")!, {
-            width:200,
             height:200,
             data: this.data,
             xField: "epoch",
@@ -34,7 +33,6 @@ export default class Models extends Vue {
         linePlot.render();
 
         const plot_1 = new Pie(document.getElementById("plot_1")!, {
-            // width:210,
             height:200,
             data: this.plot_data_1,
             angleField : 'value',
@@ -64,7 +62,6 @@ export default class Models extends Vue {
         plot_1.render()
 
         const plot_2 = new Pie(document.getElementById("plot_2")!, {
-            width:200,
             height:200,
             data: this.plot_data_1,
             angleField : 'value',
@@ -94,7 +91,6 @@ export default class Models extends Vue {
         plot_2.render()
 
         const plot_3 = new Pie(document.getElementById("plot_3")!, {
-            width:200,
             height:200,
             data: this.plot_data_1,
             angleField : 'value',
@@ -109,7 +105,7 @@ export default class Models extends Vue {
                 content:{
                     offsetY:0,
                     style:{fontWeight:200},
-                    customHtml:(container,view,datum,data)=>{
+                    customHtml:()=>{
 
                         const calculateResult = '96.3%'
                         return `<div>
