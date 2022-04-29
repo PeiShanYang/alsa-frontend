@@ -38,7 +38,7 @@ export default class ChartService {
                     customHtml: () => {
                         return `
                                 <div>
-                                    <div style='font-size:${screenWidth * 0.0015}em;line-height: initial;'>${showPrecent}%</div>
+                                    <div style='font-size:${screenWidth * 0.0012}em;line-height: initial;'>${showPrecent}%</div>
                                     <div style='font-size:${screenWidth * 0.0005}em;'>${showTitle}</div>    
                                 </div>
                                 `

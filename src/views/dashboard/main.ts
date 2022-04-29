@@ -369,6 +369,12 @@ export default class Dashboard extends Vue {
 
   }
 
+  private async handeToModelsPage(graph: { data: graphData, percentage: number, runId: string }): Promise<void>{
+    
+    this.$router.push(`${graph.data.projectName}/models`)
+
+  }
+
   private setTestResultContent(graph: Graph, accuracy: number): void {
 
     const nodes = graph.getNodes()
