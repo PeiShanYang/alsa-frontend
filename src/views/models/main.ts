@@ -1,125 +1,131 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Line, Pie } from '@antv/g2plot';
+import { Line, RingProgress } from '@antv/g2plot';
+import ChartService from "@/services/chart.service";
+import chartData from '@/io/chartData';
+import { GetInformationTrainResData, RunTask, TrainingProcess } from '@/io/rest/getInformationTrain';
+import Api from '@/services/api.service';
+import store from '@/services/store.service';
+import { StringUtil } from '@/utils/string.util';
 
 @Component
 export default class Models extends Vue {
 
     private resultExit = true;
-    private acitveResultCollapse = ["1"];
-    private data = [
-        { epoch: '1', accuracy: 0.2 },
-        { epoch: '2', accuracy: 0.2 },
-        { epoch: '3', accuracy: 0.4 },
-        { epoch: '4', accuracy: 0.75 },
-        { epoch: '5', accuracy: 0.75 },
-        { epoch: '6', accuracy: 0.75 },
-        { epoch: '7', accuracy: 0.85 },
-        { epoch: '8', accuracy: 0.85 },
-        { epoch: '9', accuracy: 0.9 },
-        { epoch: '10', accuracy: 0.9 },
-    ];
+    private acitveResultCollapse: string[] = [];
 
-    private plot_data_1 = [{ type: "fail", value: 3 }, { type: 'success', value: 97 }]
+    private trainingInfo = new GetInformationTrainResData;
+    private charts: { data: chartData, runId: string }[] = [];
+
 
     mounted(): void {
+        this.$i18n.locale = "zh-tw"
+        this.waitGetAllProjectInfo()
+    }
 
-        const windowWidth = window.innerWidth*0.19
+    private async waitGetAllProjectInfo(): Promise<void> {
 
-        const linePlot = new Line(document.getElementById("chart")!, {
-            height:windowWidth,
-            data: this.data,
-            xField: "epoch",
-            yField: 'accuracy',
-            appendPadding: 16,
+        if (!store.currentProject) return
+
+        const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
+
+
+        this.trainingInfo = await Api.getInformationTrain()
+
+        this.trainingInfo.done = this.trainingInfo.done.filter(task => task.projectName === store.currentProject)
+
+        if (this.trainingInfo.done.length === 0) {
+            loadingInstance.close()
+            this.resultExit = false
+            return
+        }
+
+        await Api.getExperiments(store.currentProject)
+
+        this.trainingInfo.done.forEach(task => {
+            const setting = this.chartSetting(task)
+            if (setting) this.charts.push(setting)
+            this.acitveResultCollapse.push(task.runId)
+        })
+
+        this.$nextTick(() => {
+
+            this.charts.forEach(item => this.renderChart(window.innerWidth, item.data, item.runId))
+
+            loadingInstance.close()
+
+        })
+    }
+
+    private chartSetting(taskInfo: RunTask): { data: chartData, runId: string } | undefined {
+
+        const experiment = store.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
+        if (!experiment) return
+        if (!experiment.Config.PrivateSetting.datasetPath) return
+        if (!experiment.ConfigPytorchModel.SelectedModel.model?.structure) return
+
+        const modelName = this.$i18n.t(experiment.ConfigPytorchModel.SelectedModel.model?.structure).toString()
+
+
+        if (typeof taskInfo.process === "string") return
+
+        const process = new Map<string, TrainingProcess>(Object.entries(taskInfo.process))
+        const lineChartData: { epoch: string, accuracy: number }[] = []
+
+        process.forEach(item => {
+            lineChartData.push({
+                epoch: item.model.epoch.toString(),
+                accuracy: item.valid.accuracy,
+            })
+        })
+
+        const lastVaild = [...process.values()][process.size - 1].valid
+
+        const ringProgressChartData: { scoreName: string, score: number }[] = []
+
+        for (const [key, value] of Object.entries(lastVaild)) {
+            ringProgressChartData.push({ scoreName: key, score: value })
+        }
+
+        return {
+            data: {
+                projectName: taskInfo.projectName,
+                date: StringUtil.formatAddSlash(taskInfo.runId),
+                experimentId: taskInfo.experimentId,
+                dataset: experiment.Config.PrivateSetting.datasetPath,
+                modelName: modelName,
+                lineChartData,
+                ringProgressChartData,
+            },
+            runId: taskInfo.runId
+        }
+    }
+
+    private renderChart(screenWidth: number, dataContent: chartData, runId: string): void {
+
+
+        const lineChartContainer = document.getElementById(`${runId}_lineChart`)
+        if (!lineChartContainer) return
+
+        const lineChart = new Line(lineChartContainer, {
+            ...ChartService.getLineChartOption(screenWidth),
+            data: dataContent.lineChartData,
         });
 
-        linePlot.render();
+        lineChart.render();
 
-        const plot_1 = new Pie(document.getElementById("plot_1")!, {
-            height:windowWidth,
-            data: this.plot_data_1,
-            angleField : 'value',
-            colorField: 'type',
-            radius : 1,
-            innerRadius : 0.75,
-            color: ['#E6E1E1','#0E5879'],
-            label:false,
-            legend:false,
-            statistic:{
-                title:false,
-                content:{
-                    offsetY:0,
-                    style:{fontWeight:200},
-                    customHtml:()=>{
-                        const calculateResult = '97.3%'
-                        return `<div>
-                            <div style='font-size:1em'>${calculateResult}</div>
-                            <div style='font-size:0.3em;margin:5px'>Precision</div>
-                            <div style='font-size:0.3em'>97 / 100 張</div>
-                        </div>`
-                    },
-                }
-            }
+        dataContent.ringProgressChartData.forEach(item => {
 
+            const ringProgressContainer = document.getElementById(`${runId}_${item.scoreName}`)
+            if (!ringProgressContainer) return
+
+            const ringProgressChart = new RingProgress(ringProgressContainer, {
+                ...ChartService.getRingChartOption(screenWidth, item.score, item.scoreName),
+                percent: item.score
+            })
+
+            ringProgressChart.render()
         })
-        plot_1.render()
-
-        const plot_2 = new Pie(document.getElementById("plot_2")!, {
-            height:windowWidth,
-            data: this.plot_data_1,
-            angleField : 'value',
-            colorField: 'type',
-            radius : 1,
-            innerRadius : 0.75,
-            color: ['#E6E1E1','#1380B1'],
-            label:false,
-            legend:false,
-            statistic:{
-                title:false,
-                content:{
-                    offsetY:0,
-                    style:{fontWeight:200},
-                    customHtml:()=>{
-                        const calculateResult = '95.3%'
-                        return `<div>
-                            <div style='font-size:1em'>${calculateResult}</div>
-                            <div style='font-size:0.3em;margin:5px'>Recall</div>
-                            <div style='font-size:0.3em'>95 / 100 張</div>
-                        </div>`
-                    },
-                }
-            }
-
-        })
-        plot_2.render()
-
-        const plot_3 = new Pie(document.getElementById("plot_3")!, {
-            height:windowWidth,
-            data: this.plot_data_1,
-            angleField : 'value',
-            colorField: 'type',
-            radius : 1,
-            innerRadius : 0.75,
-            color: ['#E6E1E1','#93E523'],
-            label:false,
-            legend:false,
-            statistic:{
-                title:false,
-                content:{
-                    offsetY:0,
-                    style:{fontWeight:200},
-                    customHtml:()=>{
-
-                        const calculateResult = '96.3%'
-                        return `<div>
-                            <div style='font-size:1em'>${calculateResult}</div>
-                            <div style='font-size:0.3em;margin:5px'>F1-score</div>
-                        </div>`
-                    },
-                }
-            }
-
-        })
-        plot_3.render()
     }
+
+
 }
