@@ -31,7 +31,7 @@ export class TestProcess {
 
 export class RunTask {
     experimentId = '';
-    process!: string | Map<string, TrainingProcess> | TestProcess ;
+    process!: string | Map<string, TrainingProcess> | TestProcess;
     projectName = '';
     runId = '';
     task = '';

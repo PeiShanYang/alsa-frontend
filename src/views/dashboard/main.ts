@@ -440,7 +440,10 @@ export default class Dashboard extends Vue {
     this.graphs.forEach(graphContent => {
 
       const trainIndex = trainTask.findIndex(task => task.runId === graphContent.runId)
+      if (!trainTask[trainIndex]) return
+
       const process = new Map<string, TrainingProcess>(Object.entries(trainTask[trainIndex].process))
+
       const lastProcessInstance = [...process.values()].pop()
       if (!lastProcessInstance) return
       if (graphContent.data.graph === null) return
@@ -450,11 +453,15 @@ export default class Dashboard extends Vue {
     this.graphs.forEach(graphContent => {
 
       const testIndex = testTask.findIndex(task => task.runId === graphContent.runId)
-      const process =  new TestProcess()
+      if (!testTask[testIndex]) return
+
+      const process = new TestProcess()
       process.test = [...Object.values(testTask[testIndex].process)][0]
+
+
       if (graphContent.data.graph === null) return
       this.setTestResultContent(graphContent.data.graph, process.test.test.accuracy)
-      
+
     })
 
   }
