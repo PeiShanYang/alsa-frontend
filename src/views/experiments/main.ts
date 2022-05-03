@@ -74,7 +74,7 @@ export default class Experiments extends Vue {
     })
 
     this.drawGraph();
-    
+
   }
 
   private drawGraph(): void {
@@ -184,8 +184,11 @@ export default class Experiments extends Vue {
       return
     }
 
-    const response = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
-    if (response === 'success') this.openDialogRunProject = true
+    const runTrainResponse = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
+    if (runTrainResponse.runId === '') return
+    const runTestResponse = await Api.runExperimentTest(this.graph.projectName, this.graph.experimentId, runTrainResponse.runId)
+    if (runTestResponse.runId === '') return
+    this.openDialogRunProject = true
 
   }
 

@@ -19,9 +19,19 @@ export class TrainingProcess {
     }
 }
 
+export class TestProcess {
+    test = {
+        test: {
+            accuracy: 0,
+        },
+    }
+}
+
+// {"test":{"test":{"accuracy":1}}}
+
 export class RunTask {
     experimentId = '';
-    process: string | Map<string, TrainingProcess> = '';
+    process!: string | Map<string, TrainingProcess> | TestProcess ;
     projectName = '';
     runId = '';
     task = '';

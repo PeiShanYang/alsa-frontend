@@ -29,5 +29,6 @@ export default class flowNode extends Vue {
       
       if (info.current) this.nodeContent = info.current.content
     });
+
   }
 }

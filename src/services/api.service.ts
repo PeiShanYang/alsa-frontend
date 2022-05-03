@@ -9,7 +9,7 @@ import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
 import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
-import { RunExperimentTrainReq, RunExperimentTrainRes } from "@/io/rest/runExperimentTrain";
+import { RunExperimentTrainReq, RunExperimentTestReq, RunExperimentRes, RunExperimentData } from "@/io/rest/runExperiment";
 import { GetInformationTrainRes, GetInformationTrainResData } from "@/io/rest/getInformationTrain";
 import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
 
@@ -164,23 +164,46 @@ export default class Api {
     }
   }
 
-  static async runExperimentTrain(projectName: string, experimentId: string): Promise<string> {
+  static async runExperimentTrain(projectName: string, experimentId: string): Promise<RunExperimentData> {
 
     const reqData: RunExperimentTrainReq = {
       projectName, experimentId
     }
 
-    const response: AxiosResponse<RunExperimentTrainRes> = await axios.post(
+    const response: AxiosResponse<RunExperimentRes> = await axios.post(
       host + 'run-experiment-train',
       reqData,
     )
 
-    if (response.status !== 200) return "fail";
+    if (response.status !== 200) return new RunExperimentData
 
-    const res: RunExperimentTrainRes = response.data;
+    const res: RunExperimentRes = response.data;
     if (res.code !== 0) console.log(res.message)
 
-    return res.message
+    if (!res.data) return new RunExperimentData
+
+    return res.data
+  }
+
+  static async runExperimentTest(projectName: string, experimentId: string, runId: string): Promise<RunExperimentData> {
+
+    const reqData: RunExperimentTestReq = {
+      projectName, experimentId, runId
+    }
+
+    const response: AxiosResponse<RunExperimentRes> = await axios.post(
+      host + 'run-experiment-test',
+      reqData,
+    )
+    if (response.status !== 200) return new RunExperimentData
+
+    const res: RunExperimentRes = response.data;
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return new RunExperimentData
+
+    return res.data
+
   }
 
   static async getInformationTrain(): Promise<GetInformationTrainResData> {
@@ -214,7 +237,7 @@ export default class Api {
     if (response.status !== 200) return "fail";
 
     const res: DeleteRunRes = response.data
-    if (res.code !== 0 ) console.log(res.message)
+    if (res.code !== 0) console.log(res.message)
 
     return res.message
   }

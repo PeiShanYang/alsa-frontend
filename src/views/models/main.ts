@@ -42,6 +42,7 @@ export default class Models extends Vue {
         await Api.getExperiments(store.currentProject)
 
         this.trainingInfo.done.forEach(task => {
+            if (task.task === "Test") return
             const setting = this.chartSetting(task)
             if (setting) this.charts.push(setting)
             this.acitveResultCollapse.push(task.runId)
@@ -54,6 +55,9 @@ export default class Models extends Vue {
             loadingInstance.close()
 
         })
+
+        
+
     }
 
     private chartSetting(taskInfo: RunTask): { data: chartData, runId: string } | undefined {
