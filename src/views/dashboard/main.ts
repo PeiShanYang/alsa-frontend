@@ -58,24 +58,6 @@ export default class Dashboard extends Vue {
   private graphs: { runId: string, data: graphData, percentage: number }[] = [];
 
 
-  @Watch('acitveProjectCollapse')
-  onCollapse(newActive: string[], oldActive: string[]): void {
-
-    const diffProject = newActive.filter(x => !oldActive.includes(x))[0]
-    const repaintGraph = this.graphs.find(x => x.runId === diffProject)
-
-    this.$nextTick(() => {
-      if (!repaintGraph) return
-      repaintGraph.data.graph?.clearCells()
-      repaintGraph.data.graph = null
-      if (!repaintGraph.data.experiment) return
-      repaintGraph.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.runId), repaintGraph.data.flowInfo, repaintGraph.data.experiment, repaintGraph.data.projectName)
-      this.setResultNodesContent()
-    })
-
-  }
-
-
 
   created(): void {
     this.$i18n.locale = "zh-tw"
