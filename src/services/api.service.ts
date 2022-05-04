@@ -12,6 +12,8 @@ import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import { RunExperimentTrainReq, RunExperimentTestReq, RunExperimentRes, RunExperimentData } from "@/io/rest/runExperiment";
 import { GetInformationTrainRes, GetInformationTrainResData } from "@/io/rest/getInformationTrain";
 import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
+import { DownloadModelReq } from "@/io/rest/downloadModel";
+import { StringUtil } from "@/utils/string.util";
 
 
 const host = 'http://tw100104318:37510/';
@@ -242,4 +244,22 @@ export default class Api {
     return res.message
   }
 
+  static async downloadModel(projectName: string, runId: string, filename: string): Promise<void> {
+    const reqData: DownloadModelReq = { projectName, runId, filename };
+    const jwtStr: string = StringUtil.encodeObject(reqData);
+    const jwtStrParts = jwtStr.split('.');
+
+    const response: AxiosResponse = await axios.get(
+      `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+      { responseType: 'blob' }
+    );
+
+    const file = new Blob([response.data]);
+    console.log(file.type);
+    const url = window.URL.createObjectURL(file);
+    const dom = document.createElement('a');
+    dom.href = url;
+    dom.click();
+    window.URL.revokeObjectURL(url);
+  }
 }

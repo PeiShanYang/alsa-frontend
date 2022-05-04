@@ -56,7 +56,7 @@ export default class Models extends Vue {
 
         })
 
-        
+
 
     }
 
@@ -131,5 +131,8 @@ export default class Models extends Vue {
         })
     }
 
-
+    private downloadModel() {
+        console.log('download model');
+        Api.downloadModel('test0504', '20220504042949', 'PAD-0504');
+    }
 }
