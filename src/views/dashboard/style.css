@@ -95,15 +95,7 @@
   font-size: 1.5em;
 }
 
-.advantage-btn,.el-button:focus, .el-button:hover {
-  height: 3em;
-  width: 8em;
-  font-size: 1.3em;
-  color: white;
-  background-color: #0E5879;
-  margin: auto;
-  align-self: center;
-}
+
 
 
 @keyframes ant-line {
@@ -111,3 +103,4 @@
       stroke-dashoffset: -1000
   }
 }
+

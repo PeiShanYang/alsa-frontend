@@ -58,24 +58,6 @@ export default class Dashboard extends Vue {
   private graphs: { runId: string, data: graphData, percentage: number }[] = [];
 
 
-  @Watch('acitveProjectCollapse')
-  onCollapse(newActive: string[], oldActive: string[]): void {
-
-    const diffProject = newActive.filter(x => !oldActive.includes(x))[0]
-    const repaintGraph = this.graphs.find(x => x.runId === diffProject)
-
-    this.$nextTick(() => {
-      if (!repaintGraph) return
-      repaintGraph.data.graph?.clearCells()
-      repaintGraph.data.graph = null
-      if (!repaintGraph.data.experiment) return
-      repaintGraph.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(repaintGraph.runId), repaintGraph.data.flowInfo, repaintGraph.data.experiment, repaintGraph.data.projectName)
-      this.setResultNodesContent()
-    })
-
-  }
-
-
 
   created(): void {
     this.$i18n.locale = "zh-tw"
@@ -287,19 +269,20 @@ export default class Dashboard extends Vue {
 
     if (conditionA > 0 && conditionB > 0) {
       const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
-      this.progressAnimate(graph,screenWidth,modelSelectNodeIndex)
+      this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
     }
 
     return graph
   }
 
-  private progressAnimate(graph: Graph, screenWidth: number, nodeIndex: number): void {
+  private addTwinkleAnimateNode(graph: Graph, screenWidth: number, nodeIndex: number): void {
 
     const modelSelectNodeSetting = GraphService.getNodeSettings(screenWidth, nodeIndex)
     modelSelectNodeSetting.shape = 'rect'
 
-    const rect = graph.addNode({
+    graph.addNode({
       ...modelSelectNodeSetting,
+      id: "twinkle_node",
       attrs: {
         body: {
           stroke: '#8282DD',
@@ -307,7 +290,7 @@ export default class Dashboard extends Vue {
       },
     })
 
-    const view = graph.findView(rect)
+    const view = graph.findViewByCell("twinkle_node")
 
     if (view) {
       view.animate('rect', {
@@ -366,7 +349,7 @@ export default class Dashboard extends Vue {
 
   }
 
-  private async handeToModelsPage(graph: { data: graphData, percentage: number, runId: string }): Promise<void> {
+  private async handleToModelsPage(graph: { data: graphData, percentage: number, runId: string }): Promise<void> {
 
     this.$router.push(`${graph.data.projectName}/models`)
 
@@ -468,13 +451,26 @@ export default class Dashboard extends Vue {
 
   private handleTestTask(testTask: RunTask, targetGraphIndex: number): void {
 
+    const graph = this.graphs[targetGraphIndex].data.graph
+    if (graph === null) return
 
-    if (typeof testTask.process === "string") return
+    const nodes = graph.getNodes()
+    const testResultNode = nodes.findIndex(node => node.id.includes("test-result-node"))
+    const twinkle_node = nodes.find(node => node.id === "twinkle_node")
+
+
+    if (typeof testTask.process === "string") {
+
+      if(!twinkle_node) this.addTwinkleAnimateNode(graph,window.innerWidth,testResultNode)
+      return
+    }
+
+    if(twinkle_node) graph.removeCell("twinkle_node")
 
     const process = new TestProcess()
     process.test = [...Object.values(testTask.process)][0]
-    const graph = this.graphs[targetGraphIndex].data.graph
-    if (graph === null) return
+    
+    
     this.setTestResultContent(graph, process.test.test.accuracy)
 
   }
