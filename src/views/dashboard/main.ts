@@ -55,43 +55,9 @@ export default class Dashboard extends Vue {
 
   private workList: string[] = [];
 
-  private graphs: { data: graphData, percentage: number, runId: string }[] = [];
+  private graphs: { runId: string, data: graphData, percentage: number }[] = [];
 
 
-  @Watch('trainingInfo')
-  onTrainingStage(newActive: GetInformationTrainResData): void {
-
-    // console.log("training watch", newActive)
-
-    const taskList = [...newActive.work, ...newActive.done]
-
-    if (taskList.length === 0) return
-    if (!this.graphs) return
-    if (this.workList.length === 0) return
-
-    const runList = taskList.filter(task => this.workList.includes(task.runId)).filter(task => task.task !== "Test")
-
-    runList.forEach((run) => {
-      const graphIndex = this.graphs.findIndex(item => item.runId === run.runId)
-      const newRun = this.graphSetting(run)
-      if (!this.graphs[graphIndex]) return
-      const tmp = this.graphs[graphIndex].percentage
-      if (tmp === 100) return
-
-      if (newRun) this.graphs.splice(graphIndex, 1, newRun)
-
-      if ((tmp === 0 && this.graphs[graphIndex].percentage > 0) || this.graphs[graphIndex].percentage === 100) {
-        const graphData = this.graphs[graphIndex].data
-        graphData.graph?.clearCells()
-        graphData.graph = null
-        if (!graphData.experiment) return
-        graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(run.runId), graphData.flowInfo, graphData.experiment, graphData.projectName)
-        this.setResultNodesContent()
-      }
-    })
-
-
-  }
   @Watch('acitveProjectCollapse')
   onCollapse(newActive: string[], oldActive: string[]): void {
 
@@ -168,9 +134,82 @@ export default class Dashboard extends Vue {
 
       loadingInstance.close()
 
-      this.workList = this.trainingInfo.work.map(work => work.runId)
 
-      // const workingIdList = this.trainingInfo.work.map(task => task.runId)
+      const workingIdList = this.trainingInfo.work.map(task => task.runId)
+
+
+      // for (let i = 0; i < workingIdList.length; i++) {
+
+      //   const timeIntervalSetting = window.setInterval((async () => {
+
+      //     this.trainingInfo = await Api.getInformationTrain()
+
+      //     const workId = workingIdList[i]
+      //     const graphIndex = this.graphs.findIndex(graphData => graphData.runId === workId)
+
+
+      //     // RunTask on work
+      //     const workTaskArr = [...this.trainingInfo.work]
+      //       .filter(task => task.runId !== workId)
+      //       .filter(task => task.task !== "Test")
+
+      //     if (workTaskArr.length === 1) {
+
+      //       const workTask = workTaskArr[0]
+      //       const newGraph = this.graphSetting(workTask)
+      //       if (!newGraph) return
+      //       if (newGraph.percentage === 0) return
+
+      //       const oldGraphPercentage = this.graphs[graphIndex].percentage
+
+      //       // update graph content
+      //       this.graphs.splice(graphIndex, 1, newGraph)
+
+      //       if (oldGraphPercentage !== 0) return
+      //       this.updateSingleGraph(this.graphs[graphIndex])
+      //     }
+
+      //     // RunTask on done with train task
+      //     const doneTaskTrainArr = [...this.trainingInfo.done]
+      //       .filter(task => task.task !== "Test")
+
+      //     if (doneTaskTrainArr.length === 1) {
+
+      //       const doneTaskTrain = doneTaskTrainArr[0]
+      //       const newGraph = this.graphSetting(doneTaskTrain)
+      //       if (!newGraph) return
+
+      //       // update graph content
+      //       this.graphs.splice(graphIndex, 1, newGraph)
+
+      //       this.updateSingleGraph(this.graphs[graphIndex])
+
+      //       const process = new Map<string, TrainingProcess>(Object.entries(doneTaskTrain.process))
+      //       const lastProcessInstance = [...process.values()].pop()
+      //       if (!lastProcessInstance) return
+      //       const graph = this.graphs[graphIndex].data.graph
+      //       if (graph === null) return
+      //       this.setTrainResultContent(graph, lastProcessInstance.valid.accuracy)
+      //     }
+
+      //     // RunTask on done with test task
+      //     const doneTaskTestArr = [...this.trainingInfo.done]
+      //       .filter(task => task.task !== "Train")
+
+      //     if(doneTaskTestArr.length === 1){
+
+      //       const doneTaskTest = doneTaskTestArr[0]
+      //       const process = new TestProcess()
+      //       process.test = [...Object.values(doneTaskTest.process)][0]
+      //       const graph = this.graphs[graphIndex].data.graph
+      //       if (graph === null) return
+      //       this.setTestResultContent(graph, process.test.test.accuracy)
+
+      //       window.clearInterval(timeIntervalSetting)
+      //     }
+      //   }), 5000)
+
+      // }
 
 
       const timeIntervalId = window.setInterval((async () => {
@@ -178,32 +217,74 @@ export default class Dashboard extends Vue {
 
         this.trainingInfo = await Api.getInformationTrain()
 
+        // RunTask on work
+        const workTaskList = [...this.trainingInfo.work].filter(task => task.task !== "Test")
 
-        // const workList = [...this.trainingInfo.work, ...this.trainingInfo.done]
-        //   .filter(task => task.task !== "Test")
-        //   .filter(task => workingIdList.includes(task.runId))
+        workTaskList.forEach(workTask => {
 
-        // runList.forEach((run) => {
-        //   const graphIndex = this.graphs.findIndex(item => item.runId === run.runId)
-        //   const newRun = this.graphSetting(run)
-        //   if (!this.graphs[graphIndex]) return
-        //   const tmp = this.graphs[graphIndex].percentage
-        //   if (tmp === 100) return
+          const newGraph = this.graphSetting(workTask)
 
-        //   if (newRun) this.graphs.splice(graphIndex, 1, newRun)
+          if (!newGraph) return
+          if (newGraph.percentage === 0) return
 
-        //   if ((tmp === 0 && this.graphs[graphIndex].percentage > 0) || this.graphs[graphIndex].percentage === 100) {
-        //     const graphData = this.graphs[graphIndex].data
-        //     graphData.graph?.clearCells()
-        //     graphData.graph = null
-        //     if (!graphData.experiment) return
-        //     graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(run.runId), graphData.flowInfo, graphData.experiment, graphData.projectName)
-        //     this.setResultNodesContent()
-        //   }
-        // })
+          const graphIndex = this.graphs.findIndex(item => item.runId === workTask.runId)
+
+          const oldGraphPercentage = this.graphs[graphIndex].percentage
+
+          this.graphs.splice(graphIndex, 1, newGraph)
+
+          if (oldGraphPercentage !== 0) return
+
+          this.updateSingleGraph(this.graphs[graphIndex])
+
+        })
+
+        // RunTask on done
+        const doneTaskList = [...this.trainingInfo.done].filter(task => workingIdList.includes(task.runId))
+
+        const doneTaskListTrain = doneTaskList.filter(task => task.task !== "Test")
+
+        doneTaskListTrain.forEach(doneTask => {
+
+          const newGraph = this.graphSetting(doneTask)
+
+          if (!newGraph) return
+
+          const graphIndex = this.graphs.findIndex(item => item.runId === doneTask.runId)
+
+          const oldGraphPercentage = this.graphs[graphIndex].percentage
+
+          // if (oldGraphPercentage === newGraph.percentage) return
+
+          this.graphs.splice(graphIndex, 1, newGraph)
+
+          this.updateSingleGraph(this.graphs[graphIndex])
+
+          const process = new Map<string, TrainingProcess>(Object.entries(doneTask.process))
+          const lastProcessInstance = [...process.values()].pop()
+          if (!lastProcessInstance) return
+          const graph = this.graphs[graphIndex].data.graph
+          if (graph === null) return
+          this.setTrainResultContent(graph, lastProcessInstance.valid.accuracy)
+        })
+
+        const doneTaskListTest = doneTaskList.filter(task => task.task !== "Train")
+
+        doneTaskListTest.forEach(doneTask => {
+          const graphIndex = this.graphs.findIndex(item => item.runId === doneTask.runId)
+
+          const process = new TestProcess()
+          process.test = [...Object.values(doneTask.process)][0]
+          const graph = this.graphs[graphIndex].data.graph
+          if (graph === null) return
+          this.setTestResultContent(graph, process.test.test.accuracy)
+        })
+
+
 
         if (this.trainingInfo.work.length === 0) window.clearInterval(timeIntervalId)
       }), 5000)
+
 
 
     })
@@ -218,7 +299,9 @@ export default class Dashboard extends Vue {
     let percentage = 0
     let defaultNodes: FlowNodeSettings[] = []
 
-    if (typeof taskInfo.process !== "string") percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process)))
+    if (typeof taskInfo.process !== "string") {
+      percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process)))
+    }
 
     if (percentage === 0) {
       defaultNodes = GraphService.basicNodes
@@ -239,7 +322,6 @@ export default class Dashboard extends Vue {
         .filter(node => !node.name.includes("processing"))
         .filter(node => !node.name.includes("validation-select-node"))
     }
-
 
     return {
       data: {
@@ -430,18 +512,15 @@ export default class Dashboard extends Vue {
   }
 
 
-
-
   private setResultNodesContent(): void {
 
-    const trainTask = [...this.trainingInfo.done].filter(task => task.task === "Train")
-    const testTask = [...this.trainingInfo.done].filter(task => task.task === "Test")
+    const trainTask = [...this.trainingInfo.done, ...this.trainingInfo.work].filter(task => task.task === "Train")
+    const testTask = [...this.trainingInfo.done, ...this.trainingInfo.work].filter(task => task.task === "Test")
 
     this.graphs.forEach(graphContent => {
 
+      if (graphContent.percentage !== 100) return
       const trainIndex = trainTask.findIndex(task => task.runId === graphContent.runId)
-      if (!trainTask[trainIndex]) return
-
       const process = new Map<string, TrainingProcess>(Object.entries(trainTask[trainIndex].process))
 
       const lastProcessInstance = [...process.values()].pop()
@@ -451,13 +530,13 @@ export default class Dashboard extends Vue {
     })
 
     this.graphs.forEach(graphContent => {
+      if (graphContent.percentage !== 100) return
 
       const testIndex = testTask.findIndex(task => task.runId === graphContent.runId)
-      if (!testTask[testIndex]) return
-
       const process = new TestProcess()
-      process.test = [...Object.values(testTask[testIndex].process)][0]
 
+      if (typeof testTask[testIndex].process === "string") return
+      process.test = [...Object.values(testTask[testIndex].process)][0]
 
       if (graphContent.data.graph === null) return
       this.setTestResultContent(graphContent.data.graph, process.test.test.accuracy)
@@ -466,5 +545,13 @@ export default class Dashboard extends Vue {
 
   }
 
+  private updateSingleGraph(graph: { data: graphData, percentage: number, runId: string }): void {
+    const graphData = graph.data
+    graphData.graph?.clearCells()
+    graphData.graph = null
+    if (!graphData.experiment) return
+    graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(graph.runId), graphData.flowInfo, graphData.experiment, graphData.projectName)
+
+  }
 
 }

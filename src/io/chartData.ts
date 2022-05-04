@@ -1,6 +1,3 @@
-import { Line, RingProgress } from '@antv/g2plot';
-
-
 export default class chartData{
     projectName = '';
     date = '';
