@@ -203,14 +203,14 @@ export default class GraphService {
     shape: string;
     ports: Partial<PortManager.Metadata>;
   } {
-    const nodeWidth = screenWidth * 0.08;
+    const nodeWidth = screenWidth * 0.1;
     const nodeHeight = screenWidth * 0.07;
 
     let nodeBaseX = 0
     if (screenWidth > 1200) nodeBaseX = screenWidth * 0.02
 
     const nodeBaseY = screenWidth * 0.03;
-    const nodeBaseSpace = screenWidth * 0.11;
+    const nodeBaseSpace = screenWidth * 0.12;
 
     return {
       x: nodeBaseX + nodeBaseSpace * index,

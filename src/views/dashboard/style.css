@@ -15,15 +15,16 @@
 ::v-deep .el-collapse-item__header {
   background: #4a9abe;
   color: white;
-  padding: 0.5em;
+  padding: 0.15em;
 }
 
 ::v-deep .el-collapse-item__header i {
-  font-size: 2.2em;
+  font-size: 1.6em;
+  margin-left: 0.5em;
 }
 
 ::v-deep .el-collapse-item__header span {
-  font-size: 2.2em;
+  font-size: 1.8em;
 }
 
 ::v-deep .el-collapse-item__header i+span {
@@ -34,7 +35,7 @@
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   margin: auto;
 }
@@ -42,15 +43,27 @@
 ::v-deep .el-progress__text {
   color: #fff;
   font-size: 1.5em !important;
+  margin-left: 1.5em;
 }
 
 ::v-deep .el-progress-bar {
   width: 70%;
 }
 
+#search-btn {
+  height: 2.5em;
+  width: 7.5em;
+  font-size: 1em;
+  color: white;
+  background-color: #0E5879;
+  margin: auto;
+  align-self: center;
+}
+
+
 #delete-btn {
   height: 2.5em;
-  width: 6em;
+  width: 7.5em;
   font-size: 1.5em;
   color: #08648d;
   border: 1px solid #08648d;
@@ -61,7 +74,7 @@
 
 #check-model-btn {
   height: 2.5em;
-  width: 6em;
+  width: 7.5em;
   font-size: 1.5em;
   color: white;
   background-color: #0E5879;

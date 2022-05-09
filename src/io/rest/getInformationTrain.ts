@@ -27,8 +27,6 @@ export class TestProcess {
     }
 }
 
-// {"test":{"test":{"accuracy":1}}}
-
 export class RunTask {
     experimentId = '';
     process!: string | Map<string, TrainingProcess> | TestProcess;

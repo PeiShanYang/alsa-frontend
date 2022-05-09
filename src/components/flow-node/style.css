@@ -11,7 +11,7 @@
 }
 
 .el-col img {
-  width: 2vw;
+  width: 2.5vw;
   height: 2vw;
   margin: auto;
 }
@@ -29,6 +29,6 @@ ul {
 li span {
   position: relative;
   left: -2px;
-  font-size: 0.2vw;
+  font-size: 0.8vw;
   /* word-break: break-all; */
 }
