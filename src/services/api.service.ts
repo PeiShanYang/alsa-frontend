@@ -211,7 +211,7 @@ export default class Api {
   static async getInformationTrain(): Promise<GetInformationTrainResData> {
 
     const response: AxiosResponse<GetInformationTrainRes> = await axios.post(
-      host + 'get-information-train',
+      host + 'get-queue-information',
     );
 
     if (response.status !== 200) return new GetInformationTrainResData
@@ -232,7 +232,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
-      host + 'delete-run',
+      host + 'remove-run-in-queue',
       reqData
     )
 
@@ -249,17 +249,13 @@ export default class Api {
     const jwtStr: string = StringUtil.encodeObject(reqData);
     const jwtStrParts = jwtStr.split('.');
 
-    const response: AxiosResponse = await axios.get(
-      `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
-      { responseType: 'blob' }
-    );
+    // const response: AxiosResponse = await axios.get(
+    //   `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+    //   { responseType: 'blob' }
+    // );
 
-    const file = new Blob([response.data]);
-    console.log(file.type);
-    const url = window.URL.createObjectURL(file);
     const dom = document.createElement('a');
-    dom.href = url;
+    dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
     dom.click();
-    window.URL.revokeObjectURL(url);
   }
 }
