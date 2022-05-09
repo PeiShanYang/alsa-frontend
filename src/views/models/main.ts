@@ -133,6 +133,6 @@ export default class Models extends Vue {
 
     private downloadModel() {
         console.log('download model');
-        Api.downloadModel('test0504', '20220504042949', 'PAD-0504');
+        Api.downloadModel('Kinsus', '20220509021537', 'PAD-0509');
     }
 }
