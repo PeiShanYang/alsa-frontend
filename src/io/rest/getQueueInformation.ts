@@ -1,10 +1,10 @@
-export class GetInformationTrainRes {
+export class GetQueueInformationRes {
     code = 0;
     message = '';
-    data?: GetInformationTrainResData;
+    data?: GetQueueInformationResData;
 }
 
-export class GetInformationTrainResData {
+export class GetQueueInformationResData {
     done: RunTask[] = [];
     work: RunTask[] = [];
 }

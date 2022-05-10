@@ -10,7 +10,7 @@ import graphData from '@/io/graphData';
 
 import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
-import { GetInformationTrainResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getInformationTrain";
+import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
 
 @Component({
@@ -21,7 +21,7 @@ import { StringUtil } from '@/utils/string.util';
 
 export default class Dashboard extends Vue {
 
-  private projectExist = false;
+  private projectExist = true;
 
 
   // search project setting related 
@@ -48,12 +48,7 @@ export default class Dashboard extends Vue {
 
   private acitveProjectCollapse: string[] = [];
 
-  private trainingInfo = new GetInformationTrainResData;
-
-  private workingTask: RunTask[] = [];
-  private doneTask: RunTask[] = [];
-
-  private workList: string[] = [];
+  private trainingInfo = new GetQueueInformationResData;
 
   private graphs: { runId: string, data: graphData, percentage: number }[] = [];
 
@@ -82,10 +77,9 @@ export default class Dashboard extends Vue {
 
     if (this.trainingInfo.work.length === 0 && this.trainingInfo.done.length === 0) {
       loadingInstance.close()
+      this.projectExist = false
       return
     }
-
-    this.projectExist = true
 
 
     // get all project info
@@ -267,10 +261,12 @@ export default class Dashboard extends Vue {
     const conditionA = flow.filter(item => item.name.includes("processing")).length
     const conditionB = flow.filter(item => item.name === "model-select-node").length
 
-    if (conditionA > 0 && conditionB > 0) {
-      const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
+    const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
       this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
-    }
+    // if (conditionA > 0 && conditionB > 0) {
+    //   const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
+    //   this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
+    // }
 
     return graph
   }
@@ -278,30 +274,35 @@ export default class Dashboard extends Vue {
   private addTwinkleAnimateNode(graph: Graph, screenWidth: number, nodeIndex: number): void {
 
     const modelSelectNodeSetting = GraphService.getNodeSettings(screenWidth, nodeIndex)
-    modelSelectNodeSetting.shape = 'rect'
+    modelSelectNodeSetting.shape = 'image'
+
+
 
     graph.addNode({
       ...modelSelectNodeSetting,
       id: "twinkle_node",
-      attrs: {
-        body: {
-          stroke: '#8282DD',
-        },
-      },
+      // attrs: {
+      //   body: {
+      //     stroke: '#8282DD',
+      //   },
+      // },
+      imageUrl:
+    'https://gw.alipayobjects.com/os/s/prod/antv/assets/image/logo-with-text-73b8a.svg',
     })
 
-    const view = graph.findViewByCell("twinkle_node")
+    // const view = graph.findViewByCell("twinkle_node")
 
-    if (view) {
-      view.animate('rect', {
-        attributeType: 'XML',
-        attributeName: 'opacity',
-        from: 0.6,
-        to: 0.1,
-        dur: '0.8s',
-        repeatCount: 'indefinite',
-      })
-    }
+    // if (view) {
+    //   view.animate('rect', {
+    //     attributeType: 'XML',
+    //     attributeName: 'opacity',
+    //     from: 0.6,
+    //     to: 0.1,
+    //     dur: '0.8s',
+    //     repeatCount: 'indefinite',
+    //   })
+    // }
+
   }
 
   private progressFormat(percentage: number): string {

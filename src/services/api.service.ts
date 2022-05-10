@@ -10,7 +10,7 @@ import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExp
 import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import { RunExperimentTrainReq, RunExperimentTestReq, RunExperimentRes, RunExperimentData } from "@/io/rest/runExperiment";
-import { GetInformationTrainRes, GetInformationTrainResData } from "@/io/rest/getInformationTrain";
+import { GetQueueInformationRes, GetQueueInformationResData } from "@/io/rest/getQueueInformation";
 import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
 import { GetModelInformationReq, GetModelInformationRes, GetModelInformationResData } from "@/io/rest/getModelInformation";
 import { DownloadModelReq } from "@/io/rest/downloadModel";
@@ -209,18 +209,18 @@ export default class Api {
 
   }
 
-  static async getQueueInformation(): Promise<GetInformationTrainResData> {
+  static async getQueueInformation(): Promise<GetQueueInformationResData> {
 
-    const response: AxiosResponse<GetInformationTrainRes> = await axios.post(
+    const response: AxiosResponse<GetQueueInformationRes> = await axios.post(
       host + 'get-queue-information',
     );
 
-    if (response.status !== 200) return new GetInformationTrainResData
+    if (response.status !== 200) return new GetQueueInformationResData
 
-    const res: GetInformationTrainRes = response.data;
+    const res: GetQueueInformationRes = response.data;
     if (res.code !== 0) console.log(res.message)
 
-    if (!res.data) return new GetInformationTrainResData
+    if (!res.data) return new GetQueueInformationResData
 
     return res.data
 

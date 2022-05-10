@@ -2,7 +2,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Line, RingProgress } from '@antv/g2plot';
 import ChartService from "@/services/chart.service";
 import chartData from '@/io/chartData';
-import { GetInformationTrainResData, RunTask, TrainingProcess } from '@/io/rest/getInformationTrain';
+import { TrainingProcess } from '@/io/rest/getQueueInformation';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
@@ -14,7 +14,6 @@ export default class Models extends Vue {
     private resultExit = true;
     private acitveResultCollapse: string[] = [];
 
-    private trainingInfo = new GetInformationTrainResData;
     private charts: { data: chartData, runId: string }[] = [];
 
 

@@ -1,4 +1,4 @@
-import { TestProcess, TrainingProcess } from "@/io/rest/getInformationTrain";
+import { TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 
 export class GetModelInformationReq {
     projectName!: string;
