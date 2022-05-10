@@ -1,4 +1,4 @@
-import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import FlowNode from "@/components/flow-node/FlowNode.vue";
@@ -78,7 +78,7 @@ export default class Dashboard extends Vue {
 
     const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
-    this.trainingInfo = await Api.getInformationTrain()
+    this.trainingInfo = await Api.getQueueInformation()
 
     if (this.trainingInfo.work.length === 0 && this.trainingInfo.done.length === 0) {
       loadingInstance.close()
@@ -120,7 +120,7 @@ export default class Dashboard extends Vue {
 
       const timeIntervalId = window.setInterval((async () => {
 
-        this.trainingInfo = await Api.getInformationTrain()
+        this.trainingInfo = await Api.getQueueInformation()
 
         workingIdList.forEach(workingId => {
 
@@ -336,7 +336,7 @@ export default class Dashboard extends Vue {
     })
 
     msg.then(async () => {
-      const response = await Api.deleteRun(graph.data.projectName, graph.runId)
+      const response = await Api.removeRunInQueue(graph.data.projectName, graph.runId)
 
       if (response === 'success') {
         const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
@@ -461,16 +461,16 @@ export default class Dashboard extends Vue {
 
     if (typeof testTask.process === "string") {
 
-      if(!twinkle_node) this.addTwinkleAnimateNode(graph,window.innerWidth,testResultNode)
+      if (!twinkle_node) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNode)
       return
     }
 
-    if(twinkle_node) graph.removeCell("twinkle_node")
+    if (twinkle_node) graph.removeCell("twinkle_node")
 
     const process = new TestProcess()
     process.test = [...Object.values(testTask.process)][0]
-    
-    
+
+
     this.setTestResultContent(graph, process.test.test.accuracy)
 
   }

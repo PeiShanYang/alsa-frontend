@@ -6,6 +6,7 @@ import { GetInformationTrainResData, RunTask, TrainingProcess } from '@/io/rest/
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
+import { GetModelInformationResData } from '@/io/rest/getModelInformation';
 
 @Component
 export default class Models extends Vue {
@@ -28,21 +29,15 @@ export default class Models extends Vue {
 
         const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
+        const response = await Api.getModelInformation(store.currentProject)
 
-        this.trainingInfo = await Api.getInformationTrain()
-
-        this.trainingInfo.done = this.trainingInfo.done.filter(task => task.projectName === store.currentProject)
-
-        if (this.trainingInfo.done.length === 0) {
+        if (response.length === 0) {
             loadingInstance.close()
             this.resultExit = false
             return
         }
 
-        await Api.getExperiments(store.currentProject)
-
-        this.trainingInfo.done.forEach(task => {
-            if (task.task === "Test") return
+        response.forEach(task => {
             const setting = this.chartSetting(task)
             if (setting) this.charts.push(setting)
             this.acitveResultCollapse.push(task.runId)
@@ -60,19 +55,11 @@ export default class Models extends Vue {
 
     }
 
-    private chartSetting(taskInfo: RunTask): { data: chartData, runId: string } | undefined {
+    private chartSetting(taskInfo: GetModelInformationResData): { data: chartData, runId: string } | undefined {
 
-        const experiment = store.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
-        if (!experiment) return
-        if (!experiment.Config.PrivateSetting.datasetPath) return
-        if (!experiment.ConfigPytorchModel.SelectedModel.model?.structure) return
+        const modelName = this.$i18n.t(taskInfo.model).toString()
 
-        const modelName = this.$i18n.t(experiment.ConfigPytorchModel.SelectedModel.model?.structure).toString()
-
-
-        if (typeof taskInfo.process === "string") return
-
-        const process = new Map<string, TrainingProcess>(Object.entries(taskInfo.process))
+        const process = new Map<string, TrainingProcess>(Object.entries(taskInfo.Train))
         const lineChartData: { epoch: string, accuracy: number }[] = []
 
         process.forEach(item => {
@@ -94,9 +81,8 @@ export default class Models extends Vue {
             data: {
                 projectName: taskInfo.projectName,
                 date: StringUtil.formatAddSlash(taskInfo.runId),
-                experimentId: taskInfo.experimentId,
-                dataset: experiment.Config.PrivateSetting.datasetPath,
-                modelName: modelName,
+                datasetPath: taskInfo.datasetPath,
+                model: modelName,
                 lineChartData,
                 ringProgressChartData,
             },

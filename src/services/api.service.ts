@@ -12,6 +12,7 @@ import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import { RunExperimentTrainReq, RunExperimentTestReq, RunExperimentRes, RunExperimentData } from "@/io/rest/runExperiment";
 import { GetInformationTrainRes, GetInformationTrainResData } from "@/io/rest/getInformationTrain";
 import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
+import { GetModelInformationReq, GetModelInformationRes, GetModelInformationResData } from "@/io/rest/getModelInformation";
 import { DownloadModelReq } from "@/io/rest/downloadModel";
 import { StringUtil } from "@/utils/string.util";
 
@@ -208,7 +209,7 @@ export default class Api {
 
   }
 
-  static async getInformationTrain(): Promise<GetInformationTrainResData> {
+  static async getQueueInformation(): Promise<GetInformationTrainResData> {
 
     const response: AxiosResponse<GetInformationTrainRes> = await axios.post(
       host + 'get-queue-information',
@@ -225,7 +226,7 @@ export default class Api {
 
   }
 
-  static async deleteRun(projectName: string, runId: string): Promise<string> {
+  static async removeRunInQueue(projectName: string, runId: string): Promise<string> {
 
     const reqData: DeleteRunReq = {
       projectName, runId
@@ -243,6 +244,30 @@ export default class Api {
 
     return res.message
   }
+
+  static async getModelInformation(projectName: string): Promise<GetModelInformationResData[]> {
+
+    const reqData: GetModelInformationReq = {
+      projectName,
+    }
+
+    const response: AxiosResponse<GetModelInformationRes> = await axios.post(
+      host + 'get-model-information',
+      reqData
+    )
+
+    if (response.status !== 200) return []
+
+    const res: GetModelInformationRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return []
+
+    return res.data
+
+
+  }
+
 
   static async downloadModel(projectName: string, runId: string, filename: string): Promise<void> {
     const reqData: DownloadModelReq = { projectName, runId, filename };

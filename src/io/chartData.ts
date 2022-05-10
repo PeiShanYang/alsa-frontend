@@ -1,9 +1,8 @@
 export default class chartData{
     projectName = '';
     date = '';
-    experimentId ='';
-    dataset ='';
-    modelName = '';
+    datasetPath ='';
+    model = '';
     lineChartData: { epoch: string, accuracy: number }[] = [];
     ringProgressChartData: { scoreName: string, score: number }[] = [];
 }
