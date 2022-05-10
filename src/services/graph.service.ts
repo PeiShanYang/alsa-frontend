@@ -190,7 +190,7 @@ export default class GraphService {
       height: screenWidth * 0.15,
       // grid: true,
       // panning: true,
-      // interacting: false,
+      interacting: false,
       
     }
   }
@@ -209,7 +209,7 @@ export default class GraphService {
     const nodeBaseX = screenWidth * 0.01
  
     const nodeBaseY = screenWidth * 0.03;
-    const nodeBaseSpace = screenWidth * 0.12;
+    const nodeBaseSpace = screenWidth * 0.13;
 
     return {
       x: nodeBaseX + nodeBaseSpace * index,

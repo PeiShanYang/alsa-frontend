@@ -12,6 +12,7 @@ import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
+import { insertCss } from 'insert-css'
 
 @Component({
   components: {
@@ -237,7 +238,7 @@ export default class Dashboard extends Vue {
           target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
           attrs: {
             line: {
-              stroke: '#1890ff',
+              stroke: '#4a9abe',
               strokeDasharray: 5,
               targetMarker: 'classic',
               className: 'ant-line',
@@ -256,17 +257,18 @@ export default class Dashboard extends Vue {
 
     });
 
+    insertCss(`@keyframes ant-line {
+      to { stroke-dashoffset: -1000 }
+    }`)
 
 
     const conditionA = flow.filter(item => item.name.includes("processing")).length
     const conditionB = flow.filter(item => item.name === "model-select-node").length
 
-    const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
+    if (conditionA > 0 && conditionB > 0) {
+      const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
       this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
-    // if (conditionA > 0 && conditionB > 0) {
-    //   const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
-    //   this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
-    // }
+    }
 
     return graph
   }
@@ -274,35 +276,30 @@ export default class Dashboard extends Vue {
   private addTwinkleAnimateNode(graph: Graph, screenWidth: number, nodeIndex: number): void {
 
     const modelSelectNodeSetting = GraphService.getNodeSettings(screenWidth, nodeIndex)
-    modelSelectNodeSetting.shape = 'image'
-
-
+    modelSelectNodeSetting.shape = 'rect'
 
     graph.addNode({
       ...modelSelectNodeSetting,
       id: "twinkle_node",
-      // attrs: {
-      //   body: {
-      //     stroke: '#8282DD',
-      //   },
-      // },
-      imageUrl:
-    'https://gw.alipayobjects.com/os/s/prod/antv/assets/image/logo-with-text-73b8a.svg',
+      attrs: {
+        body: {
+          stroke: '#fff',
+        },
+      },
     })
 
-    // const view = graph.findViewByCell("twinkle_node")
+    const view = graph.findViewByCell("twinkle_node")
 
-    // if (view) {
-    //   view.animate('rect', {
-    //     attributeType: 'XML',
-    //     attributeName: 'opacity',
-    //     from: 0.6,
-    //     to: 0.1,
-    //     dur: '0.8s',
-    //     repeatCount: 'indefinite',
-    //   })
-    // }
-
+    if (view) {
+      view.animate('rect', {
+        attributeType: 'XML',
+        attributeName: 'opacity',
+        from: 0.6,
+        to: 0.1,
+        dur: '1.0s',
+        repeatCount: 'indefinite',
+      })
+    }
   }
 
   private progressFormat(percentage: number): string {
