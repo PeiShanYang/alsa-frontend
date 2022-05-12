@@ -1,12 +1,10 @@
 <el-container style="height: 100%; width: 100%;">
-  <el-aside>
-    <sidebar />
-  </el-aside>
+  <el-header>
+    <navbar />
+  </el-header>
   <el-container>
-    <el-header style="height:6.7%;padding: 0;">
-      <navbar />
-    </el-header>
-    <el-main style="padding:1em">
+    <sidebar />
+    <el-main class="main-block">
       <transition name="fade-transform" mode="out-in">
         <router-view :key="routeName" />
       </transition>

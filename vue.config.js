@@ -6,6 +6,14 @@ module.exports = {
 
   runtimeCompiler:true,
 
+  css:{
+    loaderOptions:{
+      sass:{
+        prependData:`@import "@/styles/index.scss";`
+      }
+    }
+  },
+
   pluginOptions: {
     i18n: {
       locale: 'en',

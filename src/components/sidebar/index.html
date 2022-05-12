@@ -1,18 +1,22 @@
-<el-menu style="height: 100%" background-color="#08648D" text-color="#FFFFFF" active-text-color="#D9DF90" unique-opened router>
+<el-menu style="height: 100%" background-color="#08648D" text-color="#FFFFFF" active-text-color="#D9DF90" unique-opened router :collapse="isCollapse" >
   <el-menu-item index="/">
-    <i><img :src="require('@/assets/Forallvision_icon0304/bar_dashboard.svg')" /></i>
+    <img :src="require('@/assets/Forallvision_icon0304/bar_dashboard.svg')" />
     <span>Dashboard</span>
   </el-menu-item>
   <el-menu-item index="/createProject">
     <i><img :src="require('@/assets/Forallvision_icon0304/bar_Create_Project.svg')" /></i>
     <span>Create Project</span>
   </el-menu-item>
-  <div class="search-panel">
-    <el-input placeholder="Search Project" suffix-icon="el-icon-search" v-model="searchProject" clearable />
-  </div>
+  <el-menu-item>
+    <i><img :src="require('@/assets/Forallvision_icon0304/bar_Create_Project.svg')" /></i>
+    <span>
+      <el-input placeholder="Search Project" suffix-icon="el-icon-search" v-model="searchProject" clearable />
+    </span>
+   
+  </el-menu-item>
   <el-divider></el-divider>
   <template v-for="[name, project] in projectList">
-    <el-submenu :index="name">
+    <el-submenu :index="name" :hide-timeout="5000">
       <template slot="title">
         <i class="el-icon-star-off"></i>
         <span>{{ name }}</span>

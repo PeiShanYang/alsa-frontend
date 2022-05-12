@@ -82,11 +82,6 @@
   align-self: center;
 }
 
-@keyframes antline {
-  to {
-    stroke-dashoffset: -1000
-  }
-}
 
 .advantage-box{
   padding:1.5em;
@@ -106,14 +101,5 @@
   text-decoration:underline;
   color: #08648D;
   font-size: 1.5em;
-}
-
-
-
-
-@keyframes ant-line {
-  to {
-      stroke-dashoffset: -1000
-  }
 }
 

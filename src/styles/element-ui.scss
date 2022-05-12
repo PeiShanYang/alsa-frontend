@@ -1,0 +1,41 @@
+@import "@/styles/basic-setting.scss";
+
+.el-header {
+    // height: 70px !important;
+    padding: 0;
+}
+
+.el-breadcrumb {
+    font-size: 1em;
+    color: #08648d;
+}
+
+::v-deep .el-breadcrumb__item {
+    span {
+        color: #08648d;
+    }
+}
+
+.el-menu {
+    width: $sidebar-width;
+}
+.el-menu--collapse {
+    width: 60px;
+}
+
+.el-menu-item,
+.el-submenu__title {
+    font-size: 1em !important;
+    padding: 0 0.5em !important;
+    img {
+        color: #ffffff;
+        + span {
+            margin: 0.2em;
+        }
+    }
+}
+
+.el-divider--horizontal {
+    width: 90%;
+    margin: auto;
+}

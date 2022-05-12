@@ -1,14 +1,28 @@
-<el-row style="box-shadow: 0px 3px 6px hsla(0, 0%, 0%, 0.161);">
-    <el-col style="padding:1.5em">
-        <el-breadcrumb v-if="currentComponent === 'dashboard'" separator="/"><span>Dashboard</span></el-breadcrumb>
-        <el-breadcrumb v-else-if="currentComponent === 'createProject'" separator="/"><span>Create Project</span></el-breadcrumb>
-        <el-breadcrumb v-else separator="/">
-            <el-breadcrumb-item>
-                <span>{{ projectName }}</span>
-            </el-breadcrumb-item>
-            <el-breadcrumb-item>
-                <span>{{ currentComponent }}</span>
-            </el-breadcrumb-item>
-        </el-breadcrumb>
-    </el-col>
-</el-row>
+<div class="box-shadow navbar-container">
+    <div class="logo-box">
+        <div>SADLA</div>
+    </div>
+    <el-row class="top-info">
+        <el-col :span="2">
+            <el-button @click="handleCollapse">
+                <img :src="require('@/assets/Forallvision_icon0304/bar_dashboard.svg')" style="height: 1em;"/>
+            </el-button>
+        </el-col>
+        <el-col :span="6">
+            <el-breadcrumb v-if="currentComponent === 'dashboard'" separator="/"><span>Dashboard</span></el-breadcrumb>
+            <el-breadcrumb v-else-if="currentComponent === 'createProject'" separator="/"><span>Create Project</span>
+            </el-breadcrumb>
+            <el-breadcrumb v-else separator="/">
+                <el-breadcrumb-item>
+                    <span>{{ projectName }}</span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>
+                    <span>{{ currentComponent }}</span>
+                </el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-col>
+        <el-col :span="2" :offset="14">
+            <div>Login</div>
+        </el-col>
+    </el-row>
+</div>
