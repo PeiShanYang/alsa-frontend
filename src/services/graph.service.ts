@@ -5,7 +5,7 @@ import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 
 import FlowNodeSettings from "@/io/flowNodeSettings";
-import Icons from '@/constant/icon';
+import {ExperimentsIcons} from '@/constant/icon';
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 
 export default class GraphService {
@@ -98,7 +98,7 @@ export default class GraphService {
       title: "資料集",
       backgroundColor: "#FCEFFD",
       borderColor: "#B811CE",
-      icon: Icons.dataset,
+      icon: ExperimentsIcons.dataset,
       opacity:1,
     },
     {
@@ -106,7 +106,7 @@ export default class GraphService {
       title: "前處理",
       backgroundColor: "#F8F8F0",
       borderColor: "#BCC733",
-      icon: Icons.preprocess,
+      icon: ExperimentsIcons.preprocess,
       opacity:1,
     },
     {
@@ -114,7 +114,7 @@ export default class GraphService {
       title: "資料擴增",
       backgroundColor: "#FFF0F0",
       borderColor: "#DD8282",
-      icon: Icons.dataAugmentation,
+      icon: ExperimentsIcons.dataAugmentation,
       opacity:1,
     },
     {
@@ -122,7 +122,7 @@ export default class GraphService {
       title: "模型訓練",
       backgroundColor: "#F5F5FD",
       borderColor: "#8282DD",
-      icon: Icons.modelSelect,
+      icon: ExperimentsIcons.modelSelect,
       opacity:1,
     },
     {
@@ -130,7 +130,7 @@ export default class GraphService {
       title: "模型訓練",
       backgroundColor: "#F5F5FD",
       borderColor: "#8282DD",
-      icon: Icons.modelSelect,
+      icon: ExperimentsIcons.modelSelect,
       opacity:0.5,
     },
     {
@@ -138,7 +138,7 @@ export default class GraphService {
       title: "驗證方法",
       backgroundColor: "#FCFCDF",
       borderColor: "#DE9988",
-      icon: Icons.validationSelect,
+      icon: ExperimentsIcons.validationSelect,
       opacity:1,
     },
     {
@@ -146,7 +146,7 @@ export default class GraphService {
       title: "驗證方法",
       backgroundColor: "#FCFCDF",
       borderColor: "#DE9988",
-      icon: Icons.validationSelect,
+      icon: ExperimentsIcons.validationSelect,
       opacity:0.5,
     },
     {
@@ -154,7 +154,7 @@ export default class GraphService {
       title: "訓練結果",
       backgroundColor: "#FAECEC",
       borderColor: "#BC6161",
-      icon: Icons.trainedResult,
+      icon: ExperimentsIcons.trainedResult,
       opacity:1,
     },
     {
@@ -162,7 +162,7 @@ export default class GraphService {
       title: "訓練結果",
       backgroundColor: "#FAECEC",
       borderColor: "#BC6161",
-      icon: Icons.trainedResult,
+      icon: ExperimentsIcons.trainedResult,
       opacity:0.5,
     },
     {
@@ -170,7 +170,7 @@ export default class GraphService {
       title: "測試結果",
       backgroundColor: "#FAECEC",
       borderColor: "#C69D16",
-      icon: Icons.testedResult,
+      icon: ExperimentsIcons.testedResult,
       opacity:1,
     },
     {
@@ -178,7 +178,7 @@ export default class GraphService {
       title: "測試結果",
       backgroundColor: "#FAECEC",
       borderColor: "#C69D16",
-      icon: Icons.testedResult,
+      icon: ExperimentsIcons.testedResult,
       opacity:0.5,
     },
   ]

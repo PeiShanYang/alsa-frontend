@@ -1,20 +1,4 @@
-html,
-body,
-#app {
-    height: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-}
+@import '@/styles/helpers/_variables.scss';
+@import '@/styles/helpers/_utils.scss';
+@import '@/styles/vendors/_element-ui.scss';
 
-body {
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
-}
-
-#app {
-    letter-spacing: 2px;
-    font-size: 20px;
-}

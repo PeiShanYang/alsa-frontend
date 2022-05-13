@@ -3,10 +3,10 @@
         <div>SADLA</div>
     </div>
     <el-row class="top-info">
-        <el-col :span="2">
-            <el-button @click="handleCollapse">
-                <img :src="require('@/assets/Forallvision_icon0304/bar_dashboard.svg')" style="height: 1em;"/>
-            </el-button>
+        <el-col :span="1">
+            <div @click="handleCollapse" class="collapse-btn">
+                <img :src="require('@/assets/svg_icon/navbar/collapse.svg')"/>
+            </div>
         </el-col>
         <el-col :span="6">
             <el-breadcrumb v-if="currentComponent === 'dashboard'" separator="/"><span>Dashboard</span></el-breadcrumb>
@@ -22,7 +22,9 @@
             </el-breadcrumb>
         </el-col>
         <el-col :span="2" :offset="14">
-            <div>Login</div>
+            <div class="user-info">
+                <span>User</span>
+            </div>
         </el-col>
     </el-row>
 </div>

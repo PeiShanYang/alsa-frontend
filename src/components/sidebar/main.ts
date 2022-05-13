@@ -26,10 +26,7 @@ export default class Sidebar extends Vue {
     );
   }
 
-  get isCollapse():boolean{
-
-    console.log("test",)
-
+  get isCollapse(): boolean {
     return store.sidebarCollapse
   }
 

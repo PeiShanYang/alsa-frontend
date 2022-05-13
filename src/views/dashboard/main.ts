@@ -1,6 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
+import { insertCss } from 'insert-css';
+
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
@@ -12,7 +14,7 @@ import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
-import { insertCss } from 'insert-css'
+
 
 @Component({
   components: {
@@ -23,7 +25,6 @@ import { insertCss } from 'insert-css'
 export default class Dashboard extends Vue {
 
   private projectExist = true;
-
 
   // search project setting related 
   private selectedDatasetValue = "";
