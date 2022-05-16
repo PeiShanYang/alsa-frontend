@@ -7,8 +7,13 @@ import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
 import { GetModelInformationResData } from '@/io/rest/getModelInformation';
+import DialogModelDownload from '@/components/dialog-model-download/DialogModelDownload.vue';
 
-@Component
+@Component({
+    components: {
+        "dialog-model-download": DialogModelDownload
+    }
+})
 export default class Models extends Vue {
 
     private resultExit = true;
@@ -17,6 +22,9 @@ export default class Models extends Vue {
     private acitveResultCollapse: string[] = [];
 
     private charts: { data: chartData, runId: string }[] = [];
+
+    private openDialogModelDownload = false;
+    private downloadInfo = { projectName: '', runId: '' }
 
 
     mounted(): void {
@@ -118,8 +126,25 @@ export default class Models extends Vue {
         })
     }
 
-    private downloadModel() {
-        console.log('download model');
-        Api.downloadModel('Kinsus', '20220509021537', 'PAD-0509');
+    private getDownloadInfo(projectName: string, runId: string): void {
+        this.downloadInfo.projectName = projectName
+        this.downloadInfo.runId = runId
+        this.openDialogModelDownload = true;
+        // console.log('download model', projectName, runId);
+        // Api.downloadModel(projectName, runId, 'PAD-0509');
     }
+
+    private cancelDownloadModel(): void {
+        this.openDialogModelDownload = false;
+    }
+
+    private async confirmDownloadModel(fileName: string): Promise<void> {
+
+        if (fileName === '') return
+
+        await Api.downloadModel(this.downloadInfo.projectName,this.downloadInfo.runId,fileName)
+
+        this.openDialogModelDownload = false;
+    }
+
 }
