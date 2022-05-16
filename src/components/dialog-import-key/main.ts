@@ -37,7 +37,7 @@ export default class DialogImportKey extends Vue {
 
     if (checkStrictName === true && this.inputProjectName !== "" && this.inputSolutionKey !== "") {
 
-      await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey)
+      await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey);
 
       Array.from(
         Store.projectList.entries()
