@@ -1,70 +1,67 @@
 <div id="mainSection">
   <div v-show="resultExit">
+    <el-row type="flex" justify="center" class="search-row">
+      <el-col :span="6">
+        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" clearable />
+      </el-col>
+      <el-col :span="2" :offset="1">
+        <el-button class="primary-btn">確認</el-button>
+      </el-col>
+    </el-row>
     <el-collapse v-model="acitveResultCollapse">
       <template v-for="chart in charts">
         <el-collapse-item :name="chart.runId">
           <template slot="title">
-            <i class="el-icon-star-off"> </i>
-            <span>{{chart.data.projectName}} - {{chart.data.date}}</span>
+            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+            <div>{{chart.data.projectName}} - {{chart.data.date}}</div>
           </template>
-          <el-row>
-            <el-col :span="9">
+          <el-row type="flex" justify="center">
+            <el-col :span="8">
               <el-row>
-                <el-col style="display: flex;align-items: center;">
-                  <img :src="require('@/assets/svg_icon/sidebar/dataset.svg')" id="dataset-img" />
-                  <span style="display: inline-block;font-size: 1.25em;">資料集: {{chart.data.datasetPath}}</span>
+                <el-col class="info-row">
+                  <img :src="require('@/assets/svg_icon/sidebar/dataset_color.svg')" />
+                  <div>資料集: {{chart.data.datasetPath}}</div>
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="21" :offset="3">
-                  <div style="margin: 1em;">
-                    <div class="plot-title-bar"><span>訓練結果</span></div>
-                    <div style="box-shadow: 0px 3px 6px #00000029;padding:3em">
-                      <div :id="chart.runId + '_lineChart'"></div>
-                    </div>
-                  </div>
+                <el-col :span="21" class="plot-container">
+                  <div class="plot-title">訓練結果</div>
+                  <div class="plot-content" :id="chart.runId + '_lineChart'"></div>
                 </el-col>
               </el-row>
             </el-col>
             <el-col :span="15">
               <el-row>
-                <el-col style="display: flex;align-items: center;">
-                  <img :src="require('@/assets/svg_icon/sidebar/models.svg')" id="models-img" />
-                  <span style="display: inline-block;font-size: 1.25em;">模型: {{chart.data.model}}</span>
+                <el-col class="info-row">
+                  <img :src="require('@/assets/svg_icon/sidebar/models_color.svg')" />
+                  <div>模型: {{chart.data.model}}</div>
                 </el-col>
               </el-row>
               <el-row>
-                <el-col :span="21" :offset="3">
-                  <div style="margin: 1em;">
-                    <div class="plot-title-bar"><span>測試結果</span></div>
-                    <div style="box-shadow: 0px 3px 6px #00000029;padding:1em">
-                      <el-row type="flex" justify="center">
-                        <template v-for="ring in chart.data.ringProgressChartData">
-                          <el-col :span="8" style="padding: 2em;">
-                            <div :id="chart.runId + '_'+ ring.scoreName"></div>
-                          </el-col>
-                        </template>
-                      </el-row>
-                    </div>
+                <el-col :span="21" class="plot-container">
+                  <div class="plot-title">測試結果</div>
+                  <div class="plot-content">
+                    <template v-for="ring in chart.data.ringProgressChartData">
+                        <div :id="chart.runId + '_'+ ring.scoreName"></div>
+                    </template>
                   </div>
                 </el-col>
               </el-row>
             </el-col>
           </el-row>
-          <el-row style="margin: 1.5em 0;">
-            <el-col style="display: flex;justify-content: flex-end;">
-              <el-button class="delete-btn">刪除</el-button>
-              <el-button class="operate-btn" id="chart.runId" @click="downloadModel">下載</el-button>
-              <el-button class="operate-btn">部署</el-button>
+          <el-row type="flex" justify="end" >
+            <el-col :span="8" class="action-btn-group">
+              <el-button class="secondary-btn">刪除</el-button>
+              <el-button class="primary-btn" id="chart.runId" @click="downloadModel">下載</el-button>
+              <el-button class="primary-btn">部署</el-button>
             </el-col>
           </el-row>
         </el-collapse-item>
       </template>
     </el-collapse>
-
   </div>
   <div v-show="!resultExit">
-    <el-alert title="No models are available" type="error">
+    <el-alert title="No model is available" type="error">
     </el-alert>
   </div>
 

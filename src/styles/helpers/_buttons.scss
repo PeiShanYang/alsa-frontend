@@ -1,0 +1,14 @@
+.primary-btn {
+    @extend %btn-setting;
+    color: white;
+    background-color: $secondary-color;
+}
+
+.secondary-btn {
+    @extend %btn-setting;
+    color: $primary-color;
+    background-color: white;
+    border: 1px solid $primary-color;
+}
+
+

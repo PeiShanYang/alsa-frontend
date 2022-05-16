@@ -12,6 +12,8 @@ import { GetModelInformationResData } from '@/io/rest/getModelInformation';
 export default class Models extends Vue {
 
     private resultExit = true;
+    private inputDeployPath = '';
+
     private acitveResultCollapse: string[] = [];
 
     private charts: { data: chartData, runId: string }[] = [];

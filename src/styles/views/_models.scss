@@ -1,0 +1,69 @@
+::v-deep .el-alert__title {
+    font-size: $font-normal * 2;
+}
+
+.search-row {
+    font-size: $font-normal;
+    margin: 1em 0;
+    align-items: center;
+}
+
+::v-deep .el-input {
+    font-size: $font-normal;
+    &__inner {
+        height: 2.2em;
+    }
+}
+
+.info-row {
+    display: flex;
+    align-items: center;
+    font-size: $font-normal;
+    color: $primary-color;
+    img {
+        width: $font-normal * 2;
+    }
+    div {
+        display: inline-block;
+        margin-left: 10px;
+    }
+}
+
+.plot-container {
+    font-size: $font-normal;
+    margin: 1em 2.5em;
+    .plot-title {
+        border-radius: 4px 4px 0px 0px;
+        background-color: $third-color;
+        color: white;
+        padding: 0.5em 1em;
+    }
+    .plot-content {
+        @extend %box-shadow;
+        padding: 2em;
+        min-height: 300px;
+        display: flex;
+        div{
+            justify-content: center;
+            margin: auto;
+        }
+    }
+}
+
+
+.action-btn-group{
+    font-size: $font-normal;
+    display: flex;
+    justify-content: flex-end;
+    margin: 1em;
+    .el-button+.el-button {
+        margin-left: 3em;
+    }
+}
+
+
+#dataset-img {
+    position: relative;
+    left: -80px;
+    filter: drop-shadow(80px 0 #b811ce);
+}
