@@ -52,7 +52,7 @@
           <el-row type="flex" justify="end" >
             <el-col :span="8" class="action-btn-group">
               <el-button class="secondary-btn">刪除</el-button>
-              <el-button class="primary-btn" id="chart.runId" @click="downloadModel">下載</el-button>
+              <el-button class="primary-btn" @click="getDownloadInfo(chart.data.projectName,chart.runId)">下載</el-button>
               <el-button class="primary-btn">部署</el-button>
             </el-col>
           </el-row>
@@ -65,5 +65,5 @@
     </el-alert>
   </div>
 
-
+  <dialog-model-download :dialog-open="openDialogModelDownload" @cancel-download="cancelDownloadModel" @confirm-download="confirmDownloadModel"></dialog-model-download>
 </div>
