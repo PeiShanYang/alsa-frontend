@@ -1,14 +1,32 @@
-<el-row style="box-shadow: 0px 3px 6px hsla(0, 0%, 0%, 0.161);">
-    <el-col style="padding:2rem">
-        <el-breadcrumb v-if="currentComponent === 'dashboard'" separator="/"><span>Dashboard</span></el-breadcrumb>
-        <el-breadcrumb v-else-if="currentComponent === 'createProject'" separator="/"><span>Create Project</span></el-breadcrumb>
-        <el-breadcrumb v-else separator="/">
-            <el-breadcrumb-item>
-                <span>{{ projectName }}</span>
-            </el-breadcrumb-item>
-            <el-breadcrumb-item>
-                <span>{{ currentComponent }}</span>
-            </el-breadcrumb-item>
-        </el-breadcrumb>
-    </el-col>
-</el-row>
+<div class="navbar-container">
+    <div class="logo-box">
+        <router-link to="/">
+            <div>SALA</div>
+        </router-link>
+    </div>
+    <el-row class="top-info">
+        <el-col :span="1">
+            <div @click="handleCollapse" class="collapse-btn">
+                <img :src="require('@/assets/svg_icon/navbar/collapse.svg')"/>
+            </div>
+        </el-col>
+        <el-col :span="6">
+            <el-breadcrumb v-if="currentComponent === 'dashboard'" separator="/"><span>Dashboard</span></el-breadcrumb>
+            <el-breadcrumb v-else-if="currentComponent === 'createProject'" separator="/"><span>Create Project</span>
+            </el-breadcrumb>
+            <el-breadcrumb v-else separator="/">
+                <el-breadcrumb-item>
+                    <span>{{ projectName }}</span>
+                </el-breadcrumb-item>
+                <el-breadcrumb-item>
+                    <span>{{ currentComponent }}</span>
+                </el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-col>
+        <el-col :span="2" :offset="14">
+            <div class="user-info">
+                <span>User</span>
+            </div>
+        </el-col>
+    </el-row>
+</div>

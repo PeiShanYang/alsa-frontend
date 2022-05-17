@@ -1,0 +1,80 @@
+.advantage-box {
+    padding: 1.5em;
+    box-shadow: 0px 3px 6px #00000029;
+    height: 15vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.advantage-box img {
+    display: block;
+    margin: auto;
+}
+.advantage-box span {
+    display: block;
+    text-align: center;
+    text-decoration: underline;
+    color: #08648d;
+    font-size: 1.5em;
+}
+
+.search-row {
+    font-size: $font-normal;
+    margin: 1em 0;
+    align-items: center;
+}
+
+::v-deep .el-input {
+    font-size: $font-normal;
+    &__inner {
+        height: 2.2em;
+    }
+}
+
+::v-deep .el-select-dropdown__item {
+    font-size: $font-normal;
+}
+
+::v-deep .el-collapse-item__header {
+    background: $third-color;
+    border-radius: 0px;
+}
+
+.result-title {
+    border-radius: 8px 8px 0px 0px;
+    background: $secondary-color;
+    color: white;
+    font-size: $font-normal;
+    padding: 0.5em 1em;
+    span {
+        font-size: $font-normal * 1.3;
+    }
+}
+
+.progress-container{
+    width: 75%;
+    display: flex;
+
+}
+
+
+
+
+// .custom-progress {
+//     width: 100%;
+//     height: 100%;
+//     display: flex;
+//     justify-content: flex-end;
+//     align-items: center;
+//     margin: auto;
+// }
+
+::v-deep .el-progress__text {
+    color: #fff;
+    font-size: 1.5em !important;
+    margin-left: 1.5em;
+}
+
+::v-deep .el-progress-bar {
+    width: 70%;
+}

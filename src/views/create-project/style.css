@@ -3,12 +3,12 @@ i,span {
 }
 
 i + span {
-    margin-left: 0.5rem;
+    margin-left: 0.5em;
 }
 
 .chosen-box {
     background-color: #EFFBFD;
-    margin: 2rem;
+    margin: 1.5em;
     height: 30vh;
     display:flex;
     justify-content: center;
@@ -16,7 +16,7 @@ i + span {
     border-width: medium;
     border-style: dashed;
     border-color: #08648d;
-    font-size: 2rem;
+    font-size: 1.6em;
 }
 
 .chosen-box:hover{

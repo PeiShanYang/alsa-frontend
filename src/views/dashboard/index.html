@@ -1,87 +1,97 @@
-<div>
-  <template v-if="projectExist">
-    <el-row type="flex" justify="center" style="margin:2rem 0">
-      <el-col :span="5" style="padding: 0 2rem">
-        <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label"
-          style="display: flex; margin: 0 auto">
+<div id="mainSection" style="margin: auto;width: 100%;height: 100%;">
+  <div v-show="projectExist">
+    <el-row type="flex" justify="center" class="search-row">
+      <el-col :span="5">
+        <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label">
           <el-option v-for="item in datasetOptions" :key="item.value" :value="item.value" :label="item.label">
           </el-option>
         </el-select>
       </el-col>
-      <el-col :span="5" style="padding: 0 2rem">
+      <el-col :span="5">
         <el-input placeholder="請輸入專案名稱" clearable v-model="inputModelName"></el-input>
       </el-col>
-      <el-col :span="2" style="padding: 0 1rem">
-        <el-button icon="el-icon-search" style="background: #0e5879; color: white">
-          <span style="font-size: 1.4rem;">搜尋</span>
-        </el-button>
+      <el-col :span="2" :offset="1">
+        <el-button class="primary-btn">搜尋</el-button>
       </el-col>
     </el-row>
-    <el-row class="decorate-box">
+    <el-row class="result-title">
       <el-col>
-
-        <el-row style="background: #0e5879 ;border-radius: 8px 8px 0px 0px;">
-          <el-col :span="4" style="padding:0.7rem 2.8rem">
-            <span style="color: white; font-size: 2.2rem">結果列表</span>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col>
-            <template v-for="project in projectNameList">
-              <el-collapse v-model="activeName" accordion>
-                <el-collapse-item name="1">
-                  <template slot="title">
-                    <el-row type="flex" justify="space-between" style="width: 100%;">
-                      <el-col :span="4">
-                        <i class="el-icon-star-off"></i>
-                        <span>{{project}}</span>
-                      </el-col>
-                      <!-- <el-col :span="8">
-                        <div style="display: flex;justify-content: flex-end; margin:0 2rem">
-                          <span>完成度</span>
-                          <el-progress :text-inside="true" :percentage="progressPercentage" :color="progressColor" style="
-                              display: inline-block;
-                              width: 10rem;
-                              padding: 2rem;
-                            "></el-progress>
-                          <span> {{ progressPercentage }} % </span>
-                        </div>
-                      </el-col> -->
-                    </el-row>
-                  </template>
-                  <!-- <el-row>
-                    <el-col style="margin: 2rem">
-                      <span style="font-size: 1.8rem">建立日期: {{ projectBuildTime }}</span>
-                    </el-col>
-                  </el-row> -->
-                  <el-row type="flex" justify="center">
-                    <el-col>
-                      <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
-                    </el-col>
-                  </el-row>
-                  <el-row type="flex" justify="end">
-                    <el-col :span="3" style="display: flex;padding: 0 1rem;">
-                      <el-button id="delete-btn">
-                        <span>刪除</span>
-                      </el-button>
-                    </el-col>
-                    <el-col :span="3" style="display: flex;padding: 0 1rem;">
-                      <el-button id="check-model-btn">
-                        <span>查看模型</span>
-                      </el-button>
-                    </el-col>
-                  </el-row>
-                </el-collapse-item>
-              </el-collapse>
-            </template>
-
-          </el-col>
-        </el-row>
+        <span>結果列表</span>
       </el-col>
     </el-row>
-  </template>
-  <template v-else>
-    
-  </template>
+    <el-collapse v-model="acitveProjectCollapse">
+      <template v-for="graph in graphs">
+        <el-collapse-item :name=graph.runId>
+          <template slot="title">
+            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+            <div>{{ graph.data.projectName }} - {{ graph.data.date }}</div>
+            <div class="progress-container">
+              <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"
+              class="custom-progress"></el-progress>
+            </div>
+            <!-- <el-row type="flex" justify="space-between" style="width: 100%;">
+              <el-col :span="12">
+              </el-col>
+              <el-col :span="6">
+                
+              </el-col>
+            </el-row> -->
+          </template>
+          <el-row type="flex" justify="center">
+            <el-col>
+              <div :id=graph.runId style="flex: 1;"></div>
+            </el-col>
+          </el-row>
+          <el-row type="flex" justify="end">
+            <el-col :span="3" style="display: flex;padding: 0 1em;">
+              <el-button class="secondary-btn" @click="handleDeleteGraph(graph)">
+                <span>刪除</span>
+              </el-button>
+            </el-col>
+            <el-col :span="3" style="display: flex;padding: 0 1em;">
+              <el-button class="primary-btn" @click="handleToModelsPage(graph)">
+                <span>查看模型</span>
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </template>
+    </el-collapse>
+  </div>
+  <div v-show="!projectExist">
+    <el-card style="margin:10em auto;width: 70vw;">
+      <el-row style="margin: 2em;">
+        <el-col style="text-align: center;color: #08648D;font-weight: bold;font-size: 2em;">
+          <span>Forall Vision 平台三大優勢</span>
+        </el-col>
+      </el-row>
+      <el-row style="margin: 2em;">
+        <el-col :span=8 style="padding: 1em;">
+          <div class="advantage-box">
+            <div>
+              <img :src="require('@/assets/svg_icon/dashboard/advantage_from_project_manage_view.svg')" />
+              <span>從專案角度出發</span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span=8 style="padding: 1em;">
+          <div class="advantage-box">
+            <div>
+              <img :src="require('@/assets/svg_icon/dashboard/advantage_instance_process.svg')" />
+              <span>及時進度顯示</span>
+            </div>
+          </div>
+        </el-col>
+        <el-col :span=8 style="padding: 1em;">
+          <div class="advantage-box">
+            <div>
+              <img :src="require('@/assets/svg_icon/dashboard/advantage_large_resource_and_easy_operate.svg')" />
+              <span>豐富資源與簡易操作融合</span>
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+
+    </el-card>
+  </div>
 </div>

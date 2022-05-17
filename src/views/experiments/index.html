@@ -6,17 +6,17 @@
           <span>{{ projectName }}</span>
         </template>
         <el-row type="flex" justify="center">
-          <div id="graph-container" style="flex: 1;margin: 2rem;"></div>
+          <div id="graph-container" style="flex: 1;"></div>
         </el-row>
         <el-row type="flex" justify="space-between">
-          <el-col :span="4" style="display: flex;padding: 0 1rem;">
+          <el-col :span="4" style="display: flex;padding: 0 1em;">
             <!-- <el-button @click="output" id="new-graph-block-btn">
               <i class="el-icon-circle-plus-outline"> </i>
               <span> 新增區塊</span>
             </el-button> -->
           </el-col>
           <el-col :span="3">
-            <el-button @click="openDialogRunProject=true" id="run-project-btn">
+            <el-button @click="runExperimentTrain" id="run-project-btn">
               <span>執行</span>
             </el-button>
           </el-col>
@@ -29,19 +29,17 @@
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
   <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
-    <el-row type="flex" justify="center" style="margin:2rem 0;">
+    <el-row type="flex" justify="center" style="margin:1.2em 0;">
       <el-col :span='22' style="text-align:center">
-        <span style="font-size: 2.4rem;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
+        <span style="font-size: 2em;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
       </el-col>
     </el-row>
-    <el-row slot="footer" type="flex" justify="center" style="margin:2rem 0;">
-      <el-col :span="5" style="margin-right: 2rem;">
+    <el-row slot="footer" type="flex" justify="center" style="margin:1em 0;">
+      <el-col :span="5" style="margin-right: 2em;">
         <el-button @click="openDialogRunProject=false" id="later-btn">稍後再說</el-button>
       </el-col>
       <el-col :span="5">
-        <router-link to="/">
-          <el-button @click="openDialogRunProject=false" id="go-dashboard-btn">前往查看</el-button>
-        </router-link>
+          <el-button @click="goDashBoard" id="go-dashboard-btn">前往查看</el-button>
       </el-col>
     </el-row>
   </el-dialog>

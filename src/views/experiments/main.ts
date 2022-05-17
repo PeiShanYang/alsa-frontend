@@ -11,9 +11,9 @@ import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 
 import store from '@/services/store.service';
-import Icons from '@/constant/icon';
 import { Experiment } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
+import graphData from '@/io/graphData';
 
 @Component({
   components: {
@@ -24,6 +24,7 @@ import { DatasetStatus } from '@/io/dataset';
   }
 })
 export default class Experiments extends Vue {
+
   private acitveProjectCollapse: string[] = ["1"];
   private openDialogRunProject = false;
   private openDialogDataset = false;
@@ -32,78 +33,11 @@ export default class Experiments extends Vue {
 
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
-  private graph: Graph | null = null;
-
-  private defaultFlow: FlowNodeSettings[] = [
-    {
-      name: "dataset-node",
-      title: "資料集",
-      backgroundColor: "#FCEFFD",
-      borderColor: "#B811CE",
-      icon: Icons.dataset,
-    },
-    {
-      name: "preprocess-node",
-      title: "前處理",
-      backgroundColor: "#F8F8F0",
-      borderColor: "#BCC733",
-      icon: Icons.preprocess,
-    },
-    {
-      name: "data-argument-node",
-      title: "資料擴增",
-      backgroundColor: "#FFF0F0",
-      borderColor: "#DD8282",
-      icon: Icons.dataAugmentation,
-    },
-    {
-      name: "model-select-node",
-      title: "模型選擇",
-      backgroundColor: "#F5F5FD",
-      borderColor: "#8282DD",
-      icon: Icons.modelSelect,
-    },
-    {
-      name: "validation-select-node",
-      title: "驗證方法",
-      backgroundColor: "#FCFCDF",
-      borderColor: "#DE9988",
-      icon: Icons.validationSelect,
-    },
-    {
-      name: "trained-result-node",
-      title: "訓練結果",
-      backgroundColor: "#FAECEC",
-      borderColor: "#BC6161",
-      icon: Icons.trainedResult,
-    },
-    {
-      name: "test-result-node",
-      title: "測試結果",
-      backgroundColor: "#FAECEC",
-      borderColor: "#C69D16",
-      icon: Icons.testedResult,
-    },
-  ]
+  private graph = new graphData;
 
   created(): void {
-    // register node on Graph
-    this.defaultFlow.forEach((node) => {
-      Graph.registerVueComponent(
-        node.name,
-        {
-          template: `<flow-node
-            icon= ${node.icon}
-            title=${node.title}
-            background-color = ${node.backgroundColor}
-            border-color = ${node.borderColor}
-          />`,
-          components: { FlowNode },
-        },
-        true
-      );
-    });
-
+    this.$i18n.locale = "zh-tw"
+    GraphService.registerNodes()
     window.addEventListener("resize", this.drawGraph)
   }
 
@@ -121,51 +55,68 @@ export default class Experiments extends Vue {
 
   private async waitGetExperiments(): Promise<void> {
 
-    await Api.getExperiments();
-
     if (!store.currentProject) return
+
+    this.graph.projectName = store.currentProject
+
+    await Api.getExperiments(store.currentProject);
+    await Api.getDatasets(store.currentProject)
+
     const project = store.projectList.get(store.currentProject)
     if (!project) return
- 
-    await Api.getDatasets(store.currentProject)
     this.datasets = project.datasets
 
+    const experiments = project.experiments
+    if (!experiments) return
+    experiments.forEach((experiment, experimentId) => {
+      this.graph.experimentId = experimentId
+      this.graph.experiment = experiment
+    })
+
     this.drawGraph();
+
   }
 
   private drawGraph(): void {
-    this.graph?.clearCells()
-    this.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), this.defaultFlow)
+
+    this.graph.graph?.clearCells()
+    if (!this.graph.experiment) return
+    const graphFlow = GraphService.basicNodes
+      .filter(node => !node.name.includes("processing"))
+      .filter(node => !node.name.includes("trained-result-node"))
+      .filter(node => !node.name.includes("test-result-node"))
+    this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), graphFlow, this.graph.experiment, this.graph.projectName)
     this.listenOnNodeClick();
   }
 
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[]): Graph | null {
-    if (!container) return null;
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string): Graph | null {
 
-    
-    const experiments = store.projectList.get(store.currentProject ?? '')?.experiments;
-    if (!experiments) return null;
+    if (!container) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    const experiment: Experiment = experiments.values().next().value;
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment);
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
       const nodeData = cellData.get(node.name);
 
+      if (!nodeData?.content) return
+
+      nodeData.content.forEach((item, index, array) => array[index] = this.$i18n.t(item).toString())
+
       graph?.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
-        id: node.name,
+        id: `${node.name}_${projectName}`,
         component: node.name,
         data: nodeData,
       });
 
+
       if (0 < index && index < array.length) {
         graph?.addEdge({
-          source: { cell: array[index - 1].name, port: "portRight" },
-          target: { cell: array[index].name, port: "portLeft" },
+          source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
+          target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
         });
       }
     });
@@ -174,17 +125,17 @@ export default class Experiments extends Vue {
   }
 
   private listenOnNodeClick() {
-    this.graph?.on("node:click", (nodeInfo) => {
+    this.graph.graph?.on("node:click", (nodeInfo) => {
       const targetDialog: ProcessCellData = nodeInfo.node.data;
       switch (targetDialog.component) {
         case "dataset-node":
           this.openDialogDataset = true;
           break;
         case "preprocess-node":
-          this.openDialogPreprocess = true;
+          // this.openDialogPreprocess = true;
           break;
         case "model-select-node":
-          this.openDialogModelSelect = true;
+          // this.openDialogModelSelect = true;
           break;
         default:
           console.log("out of case");
@@ -195,24 +146,55 @@ export default class Experiments extends Vue {
   private async setDatasetContent(path: string): Promise<void> {
 
     this.openDialogDataset = false;
-    const nodes = this.graph?.getNodes()
-    const datasetnode = nodes?.find(node => node.id === "dataset-node")
+    const nodes = this.graph.graph?.getNodes()
+    const datasetnode = nodes?.find(node => node.id === `dataset-node_${this.graph.projectName}`)
 
-    if (!store.currentProject) return
-    const project = store.projectList.get(store.currentProject)
-    if (!project) return
-    
 
-    if (!project.experiments) return
-    const experimentId = [...project.experiments.entries()][0][0]
+    await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
+    this.graph.experiment = store.projectList.get(this.graph.projectName)?.experiments?.get(this.graph.experimentId)
 
-    await Api.setExperimentDataset(store.currentProject, experimentId, path)
+    if (!this.graph.experiment) return
+    const sendDatasetStatus = ProcessCellData.cellDataContent(this.graph.experiment, this.graph.projectName).get("dataset-node")
 
-    const experiment = project.experiments.values().next().value
-    const sendDatasetStatus = ProcessCellData.cellDataContent(experiment).get("dataset-node")
+    if (!sendDatasetStatus) return
+    sendDatasetStatus.content = sendDatasetStatus?.content.map(item => this.$i18n.t(item).toString())
 
-    datasetnode?.setData( sendDatasetStatus , { overwrite: true })
+    datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
+  }
+
+  private async runExperimentTrain(): Promise<void> {
+
+    const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
+    if (!datasetPath) return
+
+    const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
+    if (!datasetStatus) return
+
+    if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
+
+      const h = this.$createElement;
+      this.$msgbox({
+        type: "error",
+        confirmButtonText: '確定',
+        closeOnClickModal: false,
+        message: h('h2', { style: 'color:rgb(8, 100, 141)' }, "當前資料集狀態無法執行實驗")
+      })
+
+      return
+    }
+
+    const runTrainResponse = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
+    if (runTrainResponse.runId === '') return
+    const runTestResponse = await Api.runExperimentTest(this.graph.projectName, this.graph.experimentId, runTrainResponse.runId)
+    if (runTestResponse.runId === '') return
+    this.openDialogRunProject = true
+
+  }
+
+  private goDashBoard(): void {
+    this.openDialogRunProject = false
+    this.$router.push('/')
   }
 
 }

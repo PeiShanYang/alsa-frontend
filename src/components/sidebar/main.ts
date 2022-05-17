@@ -7,6 +7,7 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class Sidebar extends Vue {
   private searchProject = '';
 
+
   created(): void {
     Api.getProjects();
   }
@@ -24,4 +25,9 @@ export default class Sidebar extends Vue {
       )
     );
   }
+
+  get isCollapse(): boolean {
+    return store.sidebarCollapse
+  }
+
 }

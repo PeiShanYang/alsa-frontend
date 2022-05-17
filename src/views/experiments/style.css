@@ -6,34 +6,35 @@
 ::v-deep .el-collapse-item__header {
   background: #0e5879;
   color: white;
-  padding: 1rem;
+  padding: 1em;
   border-radius: 8px 8px 0px 0px;
 }
 
 ::v-deep .el-collapse-item__header i {
-  font-size: 2rem;
+  font-size: 2em;
 }
 
 ::v-deep .el-collapse-item__header span {
-  font-size: 2.3rem;
+  font-size: 2.2em;
 }
 
 ::v-deep .el-collapse-item__header i+span {
-  padding-left: 0.5rem;
+  padding-left: 0.5em;
 }
 
 ::v-deep .el-collapse-item__content {
   padding: 10px;
 }
 
+
 #new-graph-block-btn {
   border-width: medium;
   border-style: dashed;
   border-color: #08648D;
-  height: 8rem;
-  width: 19rem;
+  height: 8em;
+  width: 19em;
   margin: auto;
-  font-size: 2rem;
+  font-size: 2em;
   color: #0e5879;
   background-color: #EFFBFD;
 }
@@ -47,7 +48,7 @@
 }
 
 #later-btn {
-  font-size: 2rem;
+  font-size: 1.2em;
   color: #08648D;
   box-shadow: 0px 1px 3px #00000033;
   border: 1px solid #08648D;
@@ -55,7 +56,7 @@
 }
 
 #go-dashboard-btn {
-  font-size: 2rem;
+  font-size: 1.2em;
   color: white;
   background: #0E5879;
   box-shadow: 0px 1px 3px #00000033;

@@ -1,0 +1,50 @@
+::v-deep .el-breadcrumb {
+    margin: 2.5% 0;
+    font-size: $font-normal;
+    color: $primary-color;
+    &__item{
+        span {
+            color: $primary-color;
+        }
+    }
+}
+
+.navbar-container {
+    @extend %box-shadow;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-box {
+    width: $sidebar-width;
+    div {
+        margin: 0.5em;
+        text-align: center;
+    }
+    a {
+        text-decoration: none;
+    }
+}
+
+.top-info {
+    width: calc(100% - $sidebar-width);
+    padding: 0.5em;
+}
+
+.collapse-btn{
+    cursor: pointer;
+}
+
+.user-info{
+    cursor: pointer;
+    height: 2.2em;
+    display: flex;
+    align-items: center;
+    div{
+        width: 1em;
+        height: 1em;
+        margin: auto;
+    }
+}

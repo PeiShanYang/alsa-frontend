@@ -3,7 +3,7 @@ i,span {
 }
 
 ::v-deep .el-dialog__headerbtn {
-  font-size: 3.5rem;
+  font-size: 3rem;
 }
 ::v-deep .el-dialog__close {
   color: #0e5879!important;
@@ -19,15 +19,15 @@ i,span {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
+  font-size: 2em;
   font-weight: bold;
-  padding: 2rem;
+  padding: 1em;
 }
 
 #cancel-btn {
-  height: 4rem;
-  width: 10rem;
-  font-size: 1.5rem;
+  height: 2em;
+  width: 4em;
+  font-size: 1.5em;
   color: #08648d;
   border: 1px solid #08648d;
   background-color: white;
@@ -36,9 +36,9 @@ i,span {
 }
 
 #confirm-btn {
-  height: 4rem;
-  width: 10rem;
-  font-size: 1.5rem;
+  height: 2em;
+  width: 4em;
+  font-size: 1.5em;
   color: white;
   background-color: #0E5879;
   margin: auto;

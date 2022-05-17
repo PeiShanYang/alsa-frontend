@@ -1,0 +1,31 @@
+.el-menu {
+    width: $sidebar-width;
+    &--collapse{
+        width: 60px;
+    }
+}
+
+.el-menu-item,
+::v-deep .el-submenu__title {
+    font-size: 1em !important;
+    padding: 0 0.5em !important;
+    img {
+        color: #ffffff;
+        + span {
+            margin: 0.5em;
+        }
+    }
+}
+
+.el-divider--horizontal {
+    width: 90%;
+    margin: 0.5em;
+}
+
+.search-panel {
+    padding: 0.5em
+}
+
+.el-input {
+    width: 75%;
+}

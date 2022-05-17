@@ -1,0 +1,25 @@
+::v-deep .el-collapse {
+    @extend %box-shadow;
+    border: 0px solid white;
+
+    font-size: $font-normal;
+
+    &-item__header {
+        border-radius: 8px 8px 0px 0px;
+        background: $secondary-color;
+        color: white;
+        padding: 0.5em 1em;
+        div {
+            font-size: $font-normal * 1.25;
+            height: $font-normal * 2;
+            margin: 0 10px;
+        }
+    }
+    &-item__arrow {
+        font-size: $font-normal * 1.75;
+    }
+    &-item__content {
+        padding: 1em;
+    }
+    
+}

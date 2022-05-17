@@ -1,14 +1,21 @@
-import { CreateProjectByKeyReq } from "@/io/rest/createProject";
-import { GetProjectRes } from "@/io/rest/getProject";
-import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
-import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
 import axios, { AxiosResponse } from "axios";
 import store from "@/services/store.service";
 import { Project } from "@/io/project";
 import { Experiment } from "@/io/experiment";
-import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
 import { DatasetStatus } from "@/io/dataset";
+import { GetProjectRes } from "@/io/rest/getProject";
+import { CreateProjectByKeyReq } from "@/io/rest/createProject";
+import { GetExperimentsReq, GetExperimentsRes } from "@/io/rest/getExperiments";
 import { SetExprimentDatasetReq, SetExprimentDatasetRes } from "@/io/rest/setExperimentDataset";
+import { GetDatasetsReq, GetDatasetsRes } from "@/io/rest/getDatasets";
+import { CheckDatasetReq, CheckDatasetRes } from "@/io/rest/checkDataset";
+import { RunExperimentTrainReq, RunExperimentTestReq, RunExperimentRes, RunExperimentData } from "@/io/rest/runExperiment";
+import { GetQueueInformationRes, GetQueueInformationResData } from "@/io/rest/getQueueInformation";
+import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
+import { GetModelInformationReq, GetModelInformationRes, GetModelInformationResData } from "@/io/rest/getModelInformation";
+import { DownloadModelReq } from "@/io/rest/downloadModel";
+import { StringUtil } from "@/utils/string.util";
+
 
 const host = 'http://tw100104318:37510/';
 
@@ -30,14 +37,16 @@ export default class Api {
       store.projectList = new Map<string, Project>(
         res.data.projects.map((v) => [v, new Project()])
       );
+
+      store.projectList.forEach((project, name) => {
+        project.name = name
+      })
+
     }
   }
-
   static async createProjectByKey(name: string, key: string): Promise<void> {
-    const reqData: CreateProjectByKeyReq = {
-      name,
-      "key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnRXZhbHVhdGlvbiI6eyJFdmFsdWF0aW9uUGFyYSI6eyJzaG93QWNjIjoxLCJzaG93Q2xhc3NBY2MiOjF9fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiQWRhbSI6eyJzd2l0Y2giOjEsImJldGFzIjpbMC45LDAuOTk5XSwiZXBzIjoxZS04LCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJhbXNncmFkIjowfX0sIlNjaGVkdWxlclBhcmEiOnsic3RlcExSIjp7InN3aXRjaCI6MSwic3RlcFNpemUiOjEsImdhbW1hIjowLjV9fX0sIkNvbmZpZ1Bvc3Rwcm9jZXNzIjp7IlBvc3RQcm9jZXNzUGFyYSI6eyJjb25maWRlbmNlRmlsdGVyIjp7InN3aXRjaCI6MSwidGhyZXNob2xkIjowLjc1LCJzZWxlY3RMYWJlbCI6Ik9LIiwiY2xhc3NMaXN0IjpbIk5HIiwiT0siXX19fSwiQ29uZmlnUHJlcHJvY2VzcyI6eyJQcmVwcm9jZXNzUGFyYSI6eyJub3JtYWxpemUiOnsibW9kZSI6MH19fSwiQ29uZmlnUHl0b3JjaE1vZGVsIjp7IlNlbGVjdGVkTW9kZWwiOnsibW9kZWwiOnsic3RydWN0dXJlIjoiYXVvX21tZmFfbW9kZWwiLCJwcmV0cmFpbmVkIjoxfX0sIkNsc01vZGVsUGFyYSI6eyJiYXRjaFNpemUiOjE2LCJlcG9jaHMiOjJ9fX0.IYGFV0GmXV844ePMJw-jl_jJtNJjrWsQe0v0oDQB3ro",
-    };
+    if (key == '.') key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiQWRhbSI6eyJzd2l0Y2giOjEsImJldGFzIjpbMC45LDAuOTk5XSwiZXBzIjoxZS04LCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJhbXNncmFkIjowfX0sIlNjaGVkdWxlclBhcmEiOnsic3RlcExSIjp7InN3aXRjaCI6MSwic3RlcFNpemUiOjEsImdhbW1hIjowLjV9fX0sIkNvbmZpZ1ByZXByb2Nlc3MiOnsiUHJlcHJvY2Vzc1BhcmEiOnsibm9ybWFsaXplIjp7InN3aXRjaCI6MSwibW9kZSI6MH19fSwiQ29uZmlnUHl0b3JjaE1vZGVsIjp7IlNlbGVjdGVkTW9kZWwiOnsibW9kZWwiOnsic3RydWN0dXJlIjoiYXVvX3VucmVzdHJpY3RlZF9wb3dlcmZ1bF9tb2RlbCIsInByZXRyYWluZWQiOjF9fSwiQ2xzTW9kZWxQYXJhIjp7ImJhdGNoU2l6ZSI6MTYsImVwb2NocyI6Mn19LCJDb25maWdSZXN1bHRTdG9yYWdlIjp7InVua25vd25GaWx0ZXIiOnsic3dpdGNoIjowLCJmaWx0ZXIiOnsidW5rbm93biI6MC45fSwicmV2ZXJzZSI6MCwic2F2ZUNzdiI6Mn19fQ.PDOtE_1v5OdqX7IMRuDvob9AF7X0j6c1drjqxa4PuJ0";
+    const reqData: CreateProjectByKeyReq = { name, key };
     const response: AxiosResponse<GetProjectRes> = await axios.post(
       host + 'create-project-by-key',
       reqData,
@@ -58,14 +67,10 @@ export default class Api {
     }
   }
 
-  static async getExperiments(): Promise<void> {
-    if (!store.currentProject) {
-      console.error('no project selected');
-      return;
-    }
+  static async getExperiments(projectName: string): Promise<void> {
 
     const reqData: GetExperimentsReq = {
-      "projectName": store.currentProject,
+      projectName,
     };
     const response: AxiosResponse<GetExperimentsRes> = await axios.post(
       host + 'get-experiments',
@@ -80,7 +85,7 @@ export default class Api {
       return;
     }
 
-    const project = store.projectList.get(store.currentProject);
+    const project = store.projectList.get(projectName);
     if (project === undefined) return;
 
     if (!res.data) return;
@@ -135,7 +140,7 @@ export default class Api {
     if (project === undefined) return;
 
     if (!res.data) return;
-    project.datasets = new Map<string,DatasetStatus>(Object.entries(res.data))
+    project.datasets = new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
   static async checkDataset(datasetPath: string): Promise<void> {
@@ -156,11 +161,124 @@ export default class Api {
     if (res.code !== 0) console.log(res.message);
 
     if (res.data) {
-      console.log("res.data", res.data);
+      console.log("res data", res.data);
     }
+  }
+
+  static async runExperimentTrain(projectName: string, experimentId: string): Promise<RunExperimentData> {
+
+    const reqData: RunExperimentTrainReq = {
+      projectName, experimentId
+    }
+
+    const response: AxiosResponse<RunExperimentRes> = await axios.post(
+      host + 'run-experiment-train',
+      reqData,
+    )
+
+    if (response.status !== 200) return new RunExperimentData
+
+    const res: RunExperimentRes = response.data;
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return new RunExperimentData
+
+    return res.data
+  }
+
+  static async runExperimentTest(projectName: string, experimentId: string, runId: string): Promise<RunExperimentData> {
+
+    const reqData: RunExperimentTestReq = {
+      projectName, experimentId, runId
+    }
+
+    const response: AxiosResponse<RunExperimentRes> = await axios.post(
+      host + 'run-experiment-test',
+      reqData,
+    )
+    if (response.status !== 200) return new RunExperimentData
+
+    const res: RunExperimentRes = response.data;
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return new RunExperimentData
+
+    return res.data
+
+  }
+
+  static async getQueueInformation(): Promise<GetQueueInformationResData> {
+
+    const response: AxiosResponse<GetQueueInformationRes> = await axios.post(
+      host + 'get-queue-information',
+    );
+
+    if (response.status !== 200) return new GetQueueInformationResData
+
+    const res: GetQueueInformationRes = response.data;
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return new GetQueueInformationResData
+
+    return res.data
+
+  }
+
+  static async removeRunInQueue(projectName: string, runId: string): Promise<string> {
+
+    const reqData: DeleteRunReq = {
+      projectName, runId
+    }
+
+    const response: AxiosResponse<DeleteRunRes> = await axios.post(
+      host + 'remove-run-in-queue',
+      reqData
+    )
+
+    if (response.status !== 200) return "fail";
+
+    const res: DeleteRunRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    return res.message
+  }
+
+  static async getModelInformation(projectName: string): Promise<GetModelInformationResData[]> {
+
+    const reqData: GetModelInformationReq = {
+      projectName,
+    }
+
+    const response: AxiosResponse<GetModelInformationRes> = await axios.post(
+      host + 'get-model-information',
+      reqData
+    )
+
+    if (response.status !== 200) return []
+
+    const res: GetModelInformationRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return []
+
+    return res.data
 
 
   }
 
 
+  static async downloadModel(projectName: string, runId: string, filename: string): Promise<void> {
+    const reqData: DownloadModelReq = { projectName, runId, filename };
+    const jwtStr: string = StringUtil.encodeObject(reqData);
+    const jwtStrParts = jwtStr.split('.');
+
+    // const response: AxiosResponse = await axios.get(
+    //   `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+    //   { responseType: 'blob' }
+    // );
+
+    const dom = document.createElement('a');
+    dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
+    dom.click();
+  }
 }
