@@ -1,74 +1,62 @@
 <div id="mainSection" style="margin: auto;width: 100%;height: 100%;">
   <div v-show="projectExist">
-    <el-row type="flex" justify="center" style="padding: 1.5vw 0;">
-      <el-col :span="5" style="padding: 0 2em">
-        <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label"
-          style="display: flex; margin: 0 auto">
+    <el-row type="flex" justify="center" class="search-row">
+      <el-col :span="5">
+        <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label">
           <el-option v-for="item in datasetOptions" :key="item.value" :value="item.value" :label="item.label">
           </el-option>
         </el-select>
       </el-col>
-      <el-col :span="5" style="padding: 0 2em">
+      <el-col :span="5">
         <el-input placeholder="請輸入專案名稱" clearable v-model="inputModelName"></el-input>
       </el-col>
-      <el-col :span="2" style="padding: 0 1em">
-        <el-button icon="el-icon-search" id="search-btn">
-          <span style="font-size: 1.2em;">搜尋</span>
-        </el-button>
+      <el-col :span="2" :offset="1">
+        <el-button class="primary-btn">搜尋</el-button>
       </el-col>
     </el-row>
-    <el-row class="decorate-box">
+    <el-row class="result-title">
       <el-col>
-
-        <el-row style="background: #0e5879 ;border-radius: 8px 8px 0px 0px;">
-          <el-col style="padding:0.5em 1.5em">
-            <span style="color: white; font-size: 1.6em">結果列表</span>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col>
-            <el-collapse v-model="acitveProjectCollapse">
-              <template v-for="graph in graphs">
-                <el-collapse-item :name=graph.runId>
-                  <template slot="title">
-                    <el-row type="flex" justify="space-between" style="width: 100%;">
-                      <el-col :span="12">
-                        <i class="el-icon-star-off"></i>
-                        <span>{{ graph.data.projectName }} - {{ graph.data.date }}</span>
-                        <!-- <span style="font-size: 1.7em;"> (id:{{graph.runId}})</span> -->
-                      </el-col>
-                      <el-col :span="6">
-                        <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"
-                          class="custom-progress"></el-progress>
-                      </el-col>
-                    </el-row>
-                  </template>
-                  <el-row type="flex" justify="center">
-                    <el-col>
-                      <div :id=graph.runId style="flex: 1;"></div>
-                    </el-col>
-                  </el-row>
-                  <el-row type="flex" justify="end">
-                    <el-col :span="3" style="display: flex;padding: 0 1em;">
-                      <el-button class="secondary-btn" @click="handleDeleteGraph(graph)">
-                        <span>刪除</span>
-                      </el-button>
-                    </el-col>
-                    <el-col :span="3" style="display: flex;padding: 0 1em;">
-                      <el-button class="primary-btn" @click="handleToModelsPage(graph)">
-                        <span>查看模型</span>
-                      </el-button>
-                    </el-col>
-                  </el-row>
-                </el-collapse-item>
-              </template>
-            </el-collapse>
-          </el-col>
-        </el-row>
-
+        <span>結果列表</span>
       </el-col>
     </el-row>
+    <el-collapse v-model="acitveProjectCollapse">
+      <template v-for="graph in graphs">
+        <el-collapse-item :name=graph.runId>
+          <template slot="title">
+            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+            <div>{{ graph.data.projectName }} - {{ graph.data.date }}</div>
+            <div class="progress-container">
+              <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"
+              class="custom-progress"></el-progress>
+            </div>
+            <!-- <el-row type="flex" justify="space-between" style="width: 100%;">
+              <el-col :span="12">
+              </el-col>
+              <el-col :span="6">
+                
+              </el-col>
+            </el-row> -->
+          </template>
+          <el-row type="flex" justify="center">
+            <el-col>
+              <div :id=graph.runId style="flex: 1;"></div>
+            </el-col>
+          </el-row>
+          <el-row type="flex" justify="end">
+            <el-col :span="3" style="display: flex;padding: 0 1em;">
+              <el-button class="secondary-btn" @click="handleDeleteGraph(graph)">
+                <span>刪除</span>
+              </el-button>
+            </el-col>
+            <el-col :span="3" style="display: flex;padding: 0 1em;">
+              <el-button class="primary-btn" @click="handleToModelsPage(graph)">
+                <span>查看模型</span>
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </template>
+    </el-collapse>
   </div>
   <div v-show="!projectExist">
     <el-card style="margin:10em auto;width: 70vw;">
@@ -97,13 +85,13 @@
         <el-col :span=8 style="padding: 1em;">
           <div class="advantage-box">
             <div>
-            <img :src="require('@/assets/svg_icon/dashboard/advantage_large_resource_and_easy_operate.svg')" />
-            <span>豐富資源與簡易操作融合</span>
+              <img :src="require('@/assets/svg_icon/dashboard/advantage_large_resource_and_easy_operate.svg')" />
+              <span>豐富資源與簡易操作融合</span>
             </div>
           </div>
         </el-col>
       </el-row>
-      
+
     </el-card>
   </div>
 </div>
