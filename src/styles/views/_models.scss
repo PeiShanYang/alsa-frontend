@@ -2,12 +2,6 @@
     font-size: $font-normal * 2;
 }
 
-.search-row {
-    font-size: $font-normal;
-    margin: 1em 0;
-    align-items: center;
-}
-
 ::v-deep .el-input {
     font-size: $font-normal;
     &__inner {
@@ -47,16 +41,6 @@
             justify-content: center;
             margin: auto;
         }
-    }
-}
-
-.action-btn-group {
-    font-size: $font-normal;
-    display: flex;
-    justify-content: flex-end;
-    margin: 1em;
-    .el-button + .el-button {
-        margin-left: 3em;
     }
 }
 

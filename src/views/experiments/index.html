@@ -1,46 +1,44 @@
-<div style="margin: auto;width: 100%;height: 100%;">
-    <el-collapse v-model="acitveProjectCollapse" accordion>
-      <el-collapse-item name="1">
-        <template slot="title">
-          <i class="el-icon-star-off"> </i>
-          <span>{{ projectName }}</span>
-        </template>
-        <el-row type="flex" justify="center">
+<div style="margin: auto;width: 100%">
+  <el-collapse v-model="acitveProjectCollapse" accordion>
+    <el-collapse-item name="1">
+      <template slot="title">
+        <el-row style="width: 100%;">
+          <el-col class="title-container">
+            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+            <div class="header-title">{{ projectName }}</div>
+          </el-col>
+        </el-row>
+      </template>
+      <el-row type="flex" justify="center">
+        <el-col>
           <div id="graph-container" style="flex: 1;"></div>
-        </el-row>
-        <el-row type="flex" justify="space-between">
-          <el-col :span="4" style="display: flex;padding: 0 1em;">
-            <!-- <el-button @click="output" id="new-graph-block-btn">
-              <i class="el-icon-circle-plus-outline"> </i>
-              <span> 新增區塊</span>
-            </el-button> -->
-          </el-col>
-          <el-col :span="3">
-            <el-button @click="runExperimentTrain" id="run-project-btn">
-              <span>執行</span>
-            </el-button>
-          </el-col>
-        </el-row>
-      </el-collapse-item>
-    </el-collapse>
+        </el-col>
+      </el-row>
+      <el-row type="flex" justify="end">
+        <el-col :span="3" class="action-btn-group">
+          <el-button class="primary-btn" @click="runExperimentTrain">執行</el-button>
+        </el-col>
+      </el-row>
+    </el-collapse-item>
+  </el-collapse>
 
-  <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false" @set-dataset="setDatasetContent" />
+  <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false"
+    @set-dataset="setDatasetContent" />
   <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false" />
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
   <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
-    <el-row type="flex" justify="center" style="margin:1.2em 0;">
-      <el-col :span='22' style="text-align:center">
-        <span style="font-size: 2em;color: #08648D;"> 請至 Dashboard 查看執行進度為何</span>
+    <el-row type="flex" justify="center">
+      <el-col :span='24' class="dialog-title">
+        <div> 請至 Dashboard 查看執行進度為何</div>
       </el-col>
     </el-row>
-    <el-row slot="footer" type="flex" justify="center" style="margin:1em 0;">
-      <el-col :span="5" style="margin-right: 2em;">
-        <el-button @click="openDialogRunProject=false" id="later-btn">稍後再說</el-button>
-      </el-col>
-      <el-col :span="5">
-          <el-button @click="goDashBoard" id="go-dashboard-btn">前往查看</el-button>
+    <el-row type="flex" justify="center" slot="footer">
+      <el-col :span="12" class="action-btn-group">
+        <el-button class="secondary-btn" @click="openDialogRunProject=false">稍後再說</el-button>
+        <el-button class="primary-btn" @click="goDashBoard">前往查看</el-button>
       </el-col>
     </el-row>
   </el-dialog>
+
 </div>

@@ -3,3 +3,8 @@
 @import '@/styles/helpers/_buttons.scss';
 @import '@/styles/vendors/_element-ui.scss';
 
+.search-row {
+    font-size: $font-normal;
+    margin: 1em 0;
+    align-items: center;
+}

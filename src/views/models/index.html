@@ -12,8 +12,12 @@
       <template v-for="chart in charts">
         <el-collapse-item :name="chart.runId">
           <template slot="title">
-            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
-            <div>{{chart.data.projectName}} - {{chart.data.date}}</div>
+            <el-row style="width: 100%;">
+              <el-col class="title-container">
+                <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+                <div class="header-title">{{chart.data.projectName}} - {{chart.data.date}}</div>
+              </el-col>
+            </el-row>
           </template>
           <el-row type="flex" justify="center">
             <el-col :span="8">

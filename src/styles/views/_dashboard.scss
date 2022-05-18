@@ -1,43 +1,35 @@
-.advantage-box {
-    padding: 1.5em;
-    box-shadow: 0px 3px 6px #00000029;
-    height: 15vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.advantage-box img {
-    display: block;
-    margin: auto;
-}
-.advantage-box span {
-    display: block;
-    text-align: center;
-    text-decoration: underline;
-    color: #08648d;
-    font-size: 1.5em;
-}
-
-.search-row {
+.el-card {
     font-size: $font-normal;
-    margin: 1em 0;
-    align-items: center;
-}
-
-::v-deep .el-input {
-    font-size: $font-normal;
-    &__inner {
-        height: 2.2em;
+    width: 70vw;
+    margin: 8em auto 0;
+    padding: 0.5em 1em;
+    .card-title {
+        margin: 0.5em 0;
+        display: flex;
+        justify-content: center;
+        color: $primary-color;
+        font-size: $font-normal * 2;
     }
-}
-
-::v-deep .el-select-dropdown__item {
-    font-size: $font-normal;
-}
-
-::v-deep .el-collapse-item__header {
-    background: $third-color;
-    border-radius: 0px;
+    .card-box {
+        @extend %box-shadow;
+        margin: 2em 0 3em;
+        height: 20em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        img {
+            display: block;
+            margin: auto;
+        }
+        .card-content {
+            text-align: center;
+            text-decoration: underline;
+            color: $primary-color;
+            font-size: $font-normal * 1.2;
+            margin-top: 1em;
+        }
+    }
 }
 
 .result-title {
@@ -51,36 +43,30 @@
     }
 }
 
-.progress-container {
-    width: 75%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
+::v-deep .el-input {
+    font-size: $font-normal;
+    &__inner {
+        height: 2.2em;
+    }
+}
+
+::v-deep .el-collapse-item__header {
+    background: $third-color;
+    border-radius: 0px;
 }
 
 ::v-deep .el-progress {
     font-size: $font-normal;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0.5em 0;
+    &-bar {
+        width: 70%;
+    }
     &__text {
         color: #fff;
-        // font-size: 1.5em !important;
+        font-size: $font-normal * 1.25 !important;
+        margin: 0 15px;
     }
 }
-
-// .custom-progress {
-//     width: 100%;
-//     height: 100%;
-//     display: flex;
-//     justify-content: flex-end;
-//     align-items: center;
-//     margin: auto;
-// }
-
-// ::v-deep .el-progress__text {
-//     color: #fff;
-//     font-size: 1.5em !important;
-//     margin-left: 1.5em;
-// }
-
-// ::v-deep .el-progress-bar {
-//     width: 70%;
-// }

@@ -78,13 +78,17 @@ export default class Models extends Vue {
             })
         })
 
-        const lastVaild = [...process.values()][process.size - 1].valid
+        // const lastVaild = [...process.values()][process.size - 1].valid
+
+        // console.log("taskinfo",taskInfo.Test.test.test)
 
         const ringProgressChartData: { scoreName: string, score: number }[] = []
 
-        for (const [key, value] of Object.entries(lastVaild)) {
-            ringProgressChartData.push({ scoreName: key, score: value })
-        }
+        // for (const [key, value] of Object.entries(lastVaild)) {
+        //     ringProgressChartData.push({ scoreName: key, score: value })
+        // }
+
+        ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
 
         return {
             data: {
