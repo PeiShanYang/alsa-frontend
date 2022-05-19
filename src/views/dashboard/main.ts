@@ -161,22 +161,20 @@ export default class Dashboard extends Vue {
 
     if (percentage === 0) {
       defaultNodes = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
         .filter(node => node.name !== "model-select-node")
-        .filter(node => node.name !== "validation-select-node")
         .filter(node => node.name !== "trained-result-node")
         .filter(node => node.name !== "test-result-node")
-        .filter(node => node.name !== "validation-select-node-processing")
     } else if (percentage < 100) {
       defaultNodes = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
         .filter(node => node.name !== "model-select-node-processing")
-        .filter(node => node.name !== "validation-select-node")
         .filter(node => node.name !== "trained-result-node")
         .filter(node => node.name !== "test-result-node")
-        .filter(node => node.name !== "validation-select-node-processing")
     } else {
       defaultNodes = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
         .filter(node => !node.name.includes("processing"))
-        .filter(node => !node.name.includes("validation-select-node"))
     }
 
     return {

@@ -9,6 +9,22 @@ export default class ChartService {
             appendPadding: 8,
             xField: "epoch",
             yField: 'accuracy',
+            xAxis:{
+                title:{
+                    text:"Epoch",
+                    style:{
+                        fontSize:20,
+                    }
+                },
+            },
+            yAxis:{
+                title:{
+                    text:"Accuracy",
+                    style:{
+                        fontSize:20,
+                    }
+                },
+            },
         }
     }
 
