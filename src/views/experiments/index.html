@@ -27,18 +27,7 @@
   <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false" />
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
-  <el-dialog :visible.sync="openDialogRunProject" width="35%" top="35vh" :show-close="false">
-    <el-row type="flex" justify="center">
-      <el-col :span='24' class="dialog-title">
-        <div> 請至 Dashboard 查看執行進度為何</div>
-      </el-col>
-    </el-row>
-    <el-row type="flex" justify="center" slot="footer">
-      <el-col :span="12" class="action-btn-group">
-        <el-button class="secondary-btn" @click="openDialogRunProject=false">稍後再說</el-button>
-        <el-button class="primary-btn" @click="goDashBoard">前往查看</el-button>
-      </el-col>
-    </el-row>
-  </el-dialog>
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+  @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
 
 </div>

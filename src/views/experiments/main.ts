@@ -5,10 +5,13 @@ import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import FlowNode from "@/components/flow-node/FlowNode.vue";
+import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
 import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
+import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
@@ -21,15 +24,19 @@ import graphData from '@/io/graphData';
     "dialog-preprocess": DialogPreprocess,
     "dialog-model-select": DialogModelSelect,
     "flow-node": FlowNode,
+    "dialog-message": DialogMessage,
   }
 })
 export default class Experiments extends Vue {
 
   private acitveProjectCollapse: string[] = ["1"];
+  private openDialogMessage = false;
   private openDialogRunProject = false;
   private openDialogDataset = false;
   private openDialogPreprocess = false;
   private openDialogModelSelect = false;
+
+  private dialogMessageData: DialogMessageData = new DialogMessageData()
 
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
@@ -172,15 +179,6 @@ export default class Experiments extends Vue {
     if (!datasetStatus) return
 
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
-
-      const h = this.$createElement;
-      this.$msgbox({
-        type: "error",
-        confirmButtonText: '確定',
-        closeOnClickModal: false,
-        message: h('h2', { style: 'color:rgb(8, 100, 141)' }, "當前資料集狀態無法執行實驗")
-      })
-
       return
     }
 
@@ -188,12 +186,19 @@ export default class Experiments extends Vue {
     if (runTrainResponse.runId === '') return
     const runTestResponse = await Api.runExperimentTest(this.graph.projectName, this.graph.experimentId, runTrainResponse.runId)
     if (runTestResponse.runId === '') return
-    this.openDialogRunProject = true
+
+    this.dialogMessageData = {
+      type: 'info',
+      title: '請至 Dashboard 查看執行進度為何',
+      cancelBtnName:'稍後再說',
+      confirmBtnName:'前往查看',
+    }
+    this.openDialogMessage = true
 
   }
 
   private goDashBoard(): void {
-    this.openDialogRunProject = false
+    this.openDialogMessage = false
     this.$router.push('/')
   }
 

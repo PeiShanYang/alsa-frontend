@@ -433,7 +433,7 @@ export default class Dashboard extends Vue {
     if ((originPercentage === 0 && updatedPercentage > 0) || updatedPercentage === 100) {
       this.updateSingleGraph(this.graphs[targetGraphIndex])
     }
-
+    
     if (updatedPercentage === 100) {
       const process = new Map<string, TrainingProcess>(Object.entries(trainTask.process))
       const lastProcessInstance = [...process.values()].pop()

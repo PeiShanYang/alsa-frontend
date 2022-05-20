@@ -1,0 +1,37 @@
+::v-deep .el-dialog {
+    margin-top: 30vh !important;
+    width: 586px;
+    min-height: 330px;
+    font-size: $font-normal;
+    display: grid;
+
+    &__header,
+    &__body,
+    &__footer {
+        padding: 0;
+    }
+    &__body {
+        color: $secondary-color;
+        font-size: $font-normal * 1.25;
+        text-align: center;
+        margin-top: 1em;
+    }
+
+    .dialog-title {
+        display: flex;
+        justify-content: center;
+        margin: 1em 0;
+        i {
+            font-size: $font-normal * 1.75;
+            margin-right: 0.5em;
+        }
+    }
+
+    .dialog-input {
+        .el-input {
+            font-size: $font-normal;
+            margin: 1em 0;
+            width: 50%;
+        }
+    }
+}
