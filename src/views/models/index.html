@@ -46,14 +46,14 @@
                   <div class="plot-title">測試結果</div>
                   <div class="plot-content">
                     <template v-for="ring in chart.data.ringProgressChartData">
-                        <div :id="chart.runId + '_'+ ring.scoreName"></div>
+                      <div :id="chart.runId + '_'+ ring.scoreName"></div>
                     </template>
                   </div>
                 </el-col>
               </el-row>
             </el-col>
           </el-row>
-          <el-row type="flex" justify="end" >
+          <el-row type="flex" justify="end">
             <el-col :span="8" class="action-btn-group">
               <el-button class="secondary-btn">刪除</el-button>
               <el-button class="primary-btn" @click="getDownloadInfo(chart.data.projectName,chart.runId)">下載</el-button>
@@ -69,5 +69,7 @@
     </el-alert>
   </div>
 
-  <dialog-model-download :dialog-open="openDialogModelDownload" @cancel-download="cancelDownloadModel" @confirm-download="confirmDownloadModel"></dialog-model-download>
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+    @cancel-action="openDialogMessage=false" @confrim-action="downloadModel" />
+
 </div>

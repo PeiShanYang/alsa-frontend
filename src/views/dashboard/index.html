@@ -40,7 +40,7 @@
           </el-row>
           <el-row type="flex" justify="end">
             <el-col :span="6" class="action-btn-group">
-              <el-button class="secondary-btn" @click="handleDeleteGraph(graph)">刪除</el-button>
+              <el-button class="secondary-btn" @click="askDeleteRun(graph.data.projectName,graph.runId)">刪除</el-button>
               <el-button class="primary-btn" @click="handleToModelsPage(graph)">查看模型</el-button>
             </el-col>
           </el-row>
@@ -78,4 +78,8 @@
       </el-row>
     </el-card>
   </div>
+
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+    @cancel-action="openDialogMessage=false" @confrim-action="removeRunInQueue" />
+
 </div>

@@ -6,7 +6,6 @@ export default class DialogMessage extends Vue {
   @Prop() private dialogOpen!: boolean;
   @Prop() private messageData!: DialogMessageData;
 
-
   @Emit("cancel-action")
   handleCancelAction(): void {
     return;

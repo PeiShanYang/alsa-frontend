@@ -2,7 +2,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 import Api from '@/services/api.service';
-import Store from '@/services/store.service';
+import store from '@/services/store.service';
 
 
 @Component({
@@ -50,7 +50,7 @@ export default class CreateProject extends Vue {
             await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey);
 
             Array.from(
-                Store.projectList.entries()
+                store.projectList.entries()
             ).forEach((project) => {
                 if (project[0].includes(this.inputProjectName)) {
                     this.$router.push({ name: 'experiments', params: { projectName: this.inputProjectName } })

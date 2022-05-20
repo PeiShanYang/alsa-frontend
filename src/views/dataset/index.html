@@ -10,7 +10,7 @@
       <el-button class="primary-btn">搜尋</el-button>
     </el-col>
     <el-col :span="3">
-      <el-button class="primary-btn" @click="openDialogCheckDataset=true">新增資料集</el-button>
+      <el-button class="primary-btn" @click="settingDatasetPath">新增資料集</el-button>
     </el-col>
   </el-row>
 
@@ -55,7 +55,7 @@
     </el-collapse-item>
   </el-collapse>
 
-  <dialog-check-dataset :dialog-open="openDialogCheckDataset" @cancel-check="openDialogCheckDataset=false"
-    @confirm-check="openDialogCheckDataset=false" />
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+    @cancel-action="openDialogMessage=false" @confrim-action="checkDataset" />
 
 </div>
