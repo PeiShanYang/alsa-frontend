@@ -1,0 +1,26 @@
+<el-dialog :visible.sync="dialogOpen" :show-close=false :close-on-click-modal="false">
+  <template v-if="messageData.title !== ''">
+    <el-row>
+      <el-col class="dialog-title">
+        <i :class="typeIcon"></i>
+        <div>{{messageData.title}}</div>
+      </el-col>
+    </el-row>
+  </template>
+  <template v-if="messageData.content">
+    <template v-for="item in messageData.content">
+      <el-row>
+        <el-col class="dialog-input">
+          <div>{{item.inputName}}</div>
+          <el-input v-model="item.inputContent" clearable/>
+        </el-col>
+      </el-row>
+    </template>
+  </template>
+  <el-row type="flex" justify="center" slot="footer">
+    <el-col :span="12" class="action-btn-group">
+      <el-button class="secondary-btn" @click="handleCancelAction">{{messageData.cancelBtnName}}</el-button>
+      <el-button class="primary-btn" @click="handleConfrimAction">{{messageData.confirmBtnName}}</el-button>
+    </el-col>
+  </el-row>
+</el-dialog>

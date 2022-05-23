@@ -1,0 +1,45 @@
+.el-card {
+    font-size: $font-normal;
+    width: 60vw;
+    margin: 8em auto 0;
+    padding: 0.5em 1em;
+    .card-title {
+        margin: 0.5em 0;
+        display: flex;
+        justify-content: center;
+        color: $primary-color;
+        font-size: $font-normal * 2;
+    }
+    .card-box {
+        margin: 2em 0 3em;
+        display: flex;
+        justify-content: center;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+        .content-wrap {
+            width: 20em;
+            height: 20em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #effbfd;
+            border-width: medium;
+            border-style: dashed;
+            border-color: #08648d;
+        }
+        i {
+            display: block;
+            color: $primary-color;
+            font-size: $font-normal * 1.5;
+        }
+        .card-content {
+            text-align: center;
+            color: $primary-color;
+            font-size: $font-normal * 1.2;
+            margin-left: 10px;
+        }
+    }
+}

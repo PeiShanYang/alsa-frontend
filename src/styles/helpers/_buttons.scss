@@ -11,4 +11,12 @@
     border: 1px solid $primary-color;
 }
 
-
+.action-btn-group {
+    font-size: $font-normal;
+    display: flex;
+    justify-content: flex-end;
+    margin: 1em;
+    .el-button + .el-button {
+        margin-left: 3em;
+    }
+}

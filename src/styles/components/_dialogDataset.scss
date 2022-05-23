@@ -1,0 +1,71 @@
+::v-deep .el-dialog {
+  margin-top: 7vh !important;
+  font-size: $font-normal;
+  &__header {
+    padding: 0.5em 0.5em 0;
+  }
+  &__body,
+  &__footer {
+    padding: 0 0.5em;
+  }
+}
+
+::v-deep .el-collapse-item__header {
+  background: $third-color !important;
+}
+
+::v-deep .el-radio {
+  @extend %box-shadow;
+  font-size: $font-normal;
+  margin: 0.5em 0;
+  padding: 0.5em 1em;
+
+  display: flex;
+
+  &__inner {
+    width: 1em;
+    height: 1em;
+    margin-top: 0.5em;
+  }
+
+  &__label {
+    width: 100%;
+    font-size: $font-normal;
+  }
+
+  .path-box {
+    display: flex;
+    padding: 0.5em 0;
+    &-path {
+      color: $primary-color;
+      margin-left: 0.5em;
+    }
+  }
+
+  .status-box {
+    display: flex;
+    justify-content: space-around;
+    &-content {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      .content-text {
+        margin: 0 0.5em;
+      }
+      i {
+        color: $primary-color;
+      }
+    }
+  }
+}
+
+#go-dataset-btn {
+  border-width: medium;
+  border-style: dashed;
+  border-color: $third-color;
+  color: $third-color;
+  background: $fourth-color;
+  font-size: $font-normal;
+  height: 8em;
+  width: 100%;
+}

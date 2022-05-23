@@ -1,57 +1,61 @@
-<div>
-  <el-row class="decorate-box">
-    <el-col :span="5" :offset="8">
-      <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label" class="select-bar">
+<div style="margin: auto;width: 100%">
+  <el-row type="flex" justify="center" class="search-row">
+    <el-col :span="4">
+      <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label">
         <el-option v-for="item in datasetOptions" :key="item.value" :value="item.value" :label="item.label">
         </el-option>
       </el-select>
     </el-col>
+    <el-col :span="3" :offset="1">
+      <el-button class="primary-btn">搜尋</el-button>
+    </el-col>
     <el-col :span="3">
-      <el-button icon="el-icon-search" class="decorate-btn">
-        <span>搜尋</span>
-      </el-button>
-    </el-col>
-    <el-col :span="3" :offset="4">
-      <el-button class="decorate-btn" @click="openDialogCheckDataset=true">
-        <span>新增資料集</span>
-      </el-button>
+      <el-button class="primary-btn" @click="settingDatasetPath">新增資料集</el-button>
     </el-col>
   </el-row>
-  <el-row>
-    <el-collapse v-model="acitveDatasetCollapse" accordion>
-      <el-collapse-item name="1">
-        <template slot="title">
-          <i class="el-icon-star-off"> </i>
-          <span>{{ projectName }}</span>
-        </template>
-        <template v-for="[path,status] in datasets">
-          <el-row type="flex" justify="space-around"  style="box-shadow: 0px 3px 6px #00000029;margin-bottom: 1em;">
-            <el-col :span=12 style="padding: 1em;font-size: 1.5em;">
-              <span style="padding-left: 1.3em;">資料集路徑 : </span>
-              <span style="color:rgb(8 100 141) ;"> {{ path }}</span>
-            </el-col>
-            <el-col :span=12 style="display: flex;justify-content: flex-end;padding: 1em 2em;font-size: 1.5em;">
-              <div class="status-box">
-                <span>上傳</span>
-                <i v-if=status.uploaded class="el-icon-check"></i>
-                <i v-else class="el-icon-close"></i>
-              </div>
-              <div class="status-box">
-                <span>標記</span>
-                <i v-if=status.labeled class="el-icon-check"></i>
-                <i v-else class="el-icon-close"></i>
-              </div>
-              <div class="status-box">
-                <span>切分</span>
-                <i v-if=status.split class="el-icon-check"></i>
-                <i v-else class="el-icon-close"></i>
-              </div>
-            </el-col>
-          </el-row>
-        </template>
-      </el-collapse-item>
-    </el-collapse>
-  </el-row>
-  <dialog-check-dataset :dialog-open="openDialogCheckDataset" @cancel-check="openDialogCheckDataset=false"
-    @confirm-check="openDialogCheckDataset=false" />
+
+  <el-collapse v-model="acitveDatasetCollapse" accordion>
+    <el-collapse-item name="1">
+      <template slot="title">
+        <el-row style="width: 100%;">
+          <el-col class="title-container">
+            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+            <div class="header-title">{{ projectName }}</div>
+          </el-col>
+        </el-row>
+      </template>
+      <template v-for="[path,status] in datasets">
+        <el-row type="flex" justify="space-around" class="dataset-box">
+          <el-col :span=12 class="path-box">
+            <div>資料集路徑 : </div>
+            <div class="path-box-path"> {{ path }}</div>
+          </el-col>
+          <el-col :span=12 class="status-box">
+            <div class="status-box-content">
+              <img :src="require('@/assets/svg_icon/dataset/edit_color.svg')" />
+              <div class="content-text">上傳</div>
+              <i v-if=status.uploaded class="el-icon-check"></i>
+              <i v-else class="el-icon-close"></i>
+            </div>
+            <div class="status-box-content">
+              <img :src="require('@/assets/svg_icon/dataset/mark_color.svg')" />
+              <div class="content-text">標記</div>
+              <i v-if=status.labeled class="el-icon-check"></i>
+              <i v-else class="el-icon-close"></i>
+            </div>
+            <div class="status-box-content">
+              <img :src="require('@/assets/svg_icon/dataset/segment_color.svg')" />
+              <div class="content-text">切分</div>
+              <i v-if=status.split class="el-icon-check"></i>
+              <i v-else class="el-icon-close"></i>
+            </div>
+          </el-col>
+        </el-row>
+      </template>
+    </el-collapse-item>
+  </el-collapse>
+
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+    @cancel-action="openDialogMessage=false" @confrim-action="checkDataset" />
+
 </div>

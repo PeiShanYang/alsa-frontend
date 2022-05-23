@@ -1,0 +1,13 @@
+::v-deep .x6-node {
+    cursor: pointer;
+}
+
+.dialog-title {
+    font-size: $font-normal;
+    display: flex;
+    justify-content: center;
+    div {
+        color: $secondary-color;
+        font-size: $font-normal * 1.25;
+    }
+}

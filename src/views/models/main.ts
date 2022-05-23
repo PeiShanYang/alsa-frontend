@@ -7,11 +7,12 @@ import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
 import { GetModelInformationResData } from '@/io/rest/getModelInformation';
-import DialogModelDownload from '@/components/dialog-model-download/DialogModelDownload.vue';
+import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessageData from '@/io/dialogMessageData';
 
 @Component({
     components: {
-        "dialog-model-download": DialogModelDownload
+        "dialog-message": DialogMessage,
     }
 })
 export default class Models extends Vue {
@@ -23,7 +24,8 @@ export default class Models extends Vue {
 
     private charts: { data: chartData, runId: string }[] = [];
 
-    private openDialogModelDownload = false;
+    private openDialogMessage = false;
+    private dialogMessageData: DialogMessageData = new DialogMessageData()
     private downloadInfo = { projectName: '', runId: '' }
 
 
@@ -78,13 +80,17 @@ export default class Models extends Vue {
             })
         })
 
-        const lastVaild = [...process.values()][process.size - 1].valid
+        // const lastVaild = [...process.values()][process.size - 1].valid
+
+        // console.log("taskinfo",taskInfo.Test.test.test)
 
         const ringProgressChartData: { scoreName: string, score: number }[] = []
 
-        for (const [key, value] of Object.entries(lastVaild)) {
-            ringProgressChartData.push({ scoreName: key, score: value })
-        }
+        // for (const [key, value] of Object.entries(lastVaild)) {
+        //     ringProgressChartData.push({ scoreName: key, score: value })
+        // }
+
+        ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
 
         return {
             data: {
@@ -129,22 +135,25 @@ export default class Models extends Vue {
     private getDownloadInfo(projectName: string, runId: string): void {
         this.downloadInfo.projectName = projectName
         this.downloadInfo.runId = runId
-        this.openDialogModelDownload = true;
-        // console.log('download model', projectName, runId);
-        // Api.downloadModel(projectName, runId, 'PAD-0509');
+
+        this.dialogMessageData = {
+            ...this.dialogMessageData,
+            content: [{ inputName: "請輸入下載的檔案名稱", inputContent: "" }],
+        }
+
+        this.openDialogMessage = true
     }
 
-    private cancelDownloadModel(): void {
-        this.openDialogModelDownload = false;
-    }
 
-    private async confirmDownloadModel(fileName: string): Promise<void> {
+    private async downloadModel(content: { inputName: string, inputContent: string }[]): Promise<void> {
 
-        if (fileName === '') return
+        const fileName = content.find(item => item.inputName === "請輸入下載的檔案名稱")?.inputContent
 
-        await Api.downloadModel(this.downloadInfo.projectName,this.downloadInfo.runId,fileName)
+        if (!fileName) return;
+        if (fileName === "") return
+        await Api.downloadModel(this.downloadInfo.projectName, this.downloadInfo.runId, fileName)
 
-        this.openDialogModelDownload = false;
+        this.openDialogMessage = false
     }
 
 }

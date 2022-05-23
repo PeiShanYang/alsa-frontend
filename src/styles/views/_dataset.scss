@@ -1,0 +1,42 @@
+::v-deep .el-collapse-item__header {
+    background: $third-color;
+}
+
+::v-deep .el-input {
+    font-size: $font-normal;
+    &__inner {
+        height: 2.2em;
+    }
+}
+
+.dataset-box {
+    @extend %box-shadow;
+    font-size: $font-normal;
+    margin: 0.5em 0;
+    padding: 0.5em 1em;
+
+    .path-box {
+        display: flex;
+        padding-left: $font-normal + 8px;
+        &-path {
+            color: $primary-color;
+            margin-left: 0.5em;
+        }
+    }
+
+    .status-box {
+        display: flex;
+        justify-content: space-around;
+        &-content {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            .content-text {
+                margin: 0 0.5em;
+            }
+            i {
+                color: $primary-color;
+            }
+        }
+    }
+}

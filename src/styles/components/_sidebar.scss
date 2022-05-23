@@ -17,6 +17,10 @@
     }
 }
 
+::v-deep .el-menu--inline{
+    margin-left: 45px;
+}
+
 .el-divider--horizontal {
     width: 90%;
     margin: 0.5em;

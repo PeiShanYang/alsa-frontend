@@ -9,10 +9,13 @@
         background: $secondary-color;
         color: white;
         padding: 0.5em 1em;
-        div {
-            font-size: $font-normal * 1.25;
-            height: $font-normal * 2;
-            margin: 0 10px;
+        .title-container {
+            display: flex;
+            div {
+                font-size: $font-normal * 1.25;
+                height: $font-normal * 2;
+                margin: 0 10px;
+            }
         }
     }
     &-item__arrow {
@@ -21,5 +24,9 @@
     &-item__content {
         padding: 1em;
     }
-    
 }
+
+::v-deep .el-select-dropdown__item {
+    font-size: $font-normal;
+}
+

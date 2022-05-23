@@ -14,11 +14,14 @@ import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
+import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessageData from '@/io/dialogMessageData';
 
 
 @Component({
   components: {
     "flow-node": FlowNode,
+    "dialog-message": DialogMessage,
   }
 })
 
@@ -54,6 +57,11 @@ export default class Dashboard extends Vue {
 
   private graphs: { runId: string, data: graphData, percentage: number }[] = [];
 
+  // dialog for delete
+
+  private openDialogMessage = false;
+  private dialogMessageData: DialogMessageData = new DialogMessageData()
+  private deleteGraphInfo = { projectName: '', runId: "" }
 
 
   created(): void {
@@ -161,22 +169,20 @@ export default class Dashboard extends Vue {
 
     if (percentage === 0) {
       defaultNodes = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
         .filter(node => node.name !== "model-select-node")
-        .filter(node => node.name !== "validation-select-node")
         .filter(node => node.name !== "trained-result-node")
         .filter(node => node.name !== "test-result-node")
-        .filter(node => node.name !== "validation-select-node-processing")
     } else if (percentage < 100) {
       defaultNodes = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
         .filter(node => node.name !== "model-select-node-processing")
-        .filter(node => node.name !== "validation-select-node")
         .filter(node => node.name !== "trained-result-node")
         .filter(node => node.name !== "test-result-node")
-        .filter(node => node.name !== "validation-select-node-processing")
     } else {
       defaultNodes = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
         .filter(node => !node.name.includes("processing"))
-        .filter(node => !node.name.includes("validation-select-node"))
     }
 
     return {
@@ -321,32 +327,7 @@ export default class Dashboard extends Vue {
 
   }
 
-  private async handleDeleteGraph(graph: { data: graphData, percentage: number, runId: string }): Promise<void> {
 
-    const h = this.$createElement;
-    const msg = this.$msgbox({
-      type: "warning",
-      confirmButtonText: '確定',
-      // distinguishCancelAndClose: true,
-      showCancelButton: true,
-      cancelButtonText: '取消',
-      closeOnClickModal: false,
-      message: h('h2', { style: 'color:rgb(8, 100, 141)' }, "確定刪除訓練結果?")
-    })
-
-    msg.then(async () => {
-      const response = await Api.removeRunInQueue(graph.data.projectName, graph.runId)
-
-      if (response === 'success') {
-        const graphIndex = this.graphs.findIndex(item => item.runId === graph.runId)
-
-        if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
-      }
-
-      if (this.graphs.length === 0) this.projectExist = false
-    }).catch(e => console.log(e))
-
-  }
 
   private async handleToModelsPage(graph: { data: graphData, percentage: number, runId: string }): Promise<void> {
 
@@ -473,5 +454,36 @@ export default class Dashboard extends Vue {
     this.setTestResultContent(graph, process.test.test.accuracy)
 
   }
+
+  private askDeleteRun(projectName: string, runId: string): void {
+
+    this.deleteGraphInfo.projectName = projectName
+    this.deleteGraphInfo.runId = runId
+
+    this.dialogMessageData = {
+      ...this.dialogMessageData,
+      type: 'warning',
+      title: '確定刪除訓練結果?',
+    }
+
+    this.openDialogMessage = true
+  }
+
+  private async removeRunInQueue(): Promise<void> {
+
+    const response = await Api.removeRunInQueue(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
+
+    if (response === 'success') {
+      const graphIndex = this.graphs.findIndex(item => item.runId === this.deleteGraphInfo.runId)
+
+      if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+    }
+
+    if (this.graphs.length === 0) this.projectExist = false
+
+    this.openDialogMessage = false
+  }
+
+
 
 }

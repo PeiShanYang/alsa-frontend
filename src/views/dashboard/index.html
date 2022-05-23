@@ -1,4 +1,4 @@
-<div id="mainSection" style="margin: auto;width: 100%;height: 100%;">
+<div id="mainSection" style="margin: auto;width: 100%">
   <div v-show="projectExist">
     <el-row type="flex" justify="center" class="search-row">
       <el-col :span="5">
@@ -23,19 +23,15 @@
       <template v-for="graph in graphs">
         <el-collapse-item :name=graph.runId>
           <template slot="title">
-            <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
-            <div>{{ graph.data.projectName }} - {{ graph.data.date }}</div>
-            <div class="progress-container">
-              <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"
-              class="custom-progress"></el-progress>
-            </div>
-            <!-- <el-row type="flex" justify="space-between" style="width: 100%;">
-              <el-col :span="12">
+            <el-row style="width: 100%;">
+              <el-col :span="18" class="title-container">
+                <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
+                <div>{{ graph.data.projectName }} - {{ graph.data.date }}</div>
               </el-col>
-              <el-col :span="6">
-                
+              <el-col :span="6" class="progress-container">
+                <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"></el-progress>
               </el-col>
-            </el-row> -->
+            </el-row>
           </template>
           <el-row type="flex" justify="center">
             <el-col>
@@ -43,55 +39,47 @@
             </el-col>
           </el-row>
           <el-row type="flex" justify="end">
-            <el-col :span="3" style="display: flex;padding: 0 1em;">
-              <el-button class="secondary-btn" @click="handleDeleteGraph(graph)">
-                <span>刪除</span>
-              </el-button>
-            </el-col>
-            <el-col :span="3" style="display: flex;padding: 0 1em;">
-              <el-button class="primary-btn" @click="handleToModelsPage(graph)">
-                <span>查看模型</span>
-              </el-button>
+            <el-col :span="6" class="action-btn-group">
+              <el-button class="secondary-btn" @click="askDeleteRun(graph.data.projectName,graph.runId)">刪除</el-button>
+              <el-button class="primary-btn" @click="handleToModelsPage(graph)">查看模型</el-button>
             </el-col>
           </el-row>
         </el-collapse-item>
       </template>
     </el-collapse>
   </div>
-  <div v-show="!projectExist">
-    <el-card style="margin:10em auto;width: 70vw;">
-      <el-row style="margin: 2em;">
-        <el-col style="text-align: center;color: #08648D;font-weight: bold;font-size: 2em;">
-          <span>Forall Vision 平台三大優勢</span>
-        </el-col>
-      </el-row>
-      <el-row style="margin: 2em;">
-        <el-col :span=8 style="padding: 1em;">
-          <div class="advantage-box">
-            <div>
-              <img :src="require('@/assets/svg_icon/dashboard/advantage_from_project_manage_view.svg')" />
-              <span>從專案角度出發</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span=8 style="padding: 1em;">
-          <div class="advantage-box">
-            <div>
-              <img :src="require('@/assets/svg_icon/dashboard/advantage_instance_process.svg')" />
-              <span>及時進度顯示</span>
-            </div>
-          </div>
-        </el-col>
-        <el-col :span=8 style="padding: 1em;">
-          <div class="advantage-box">
-            <div>
-              <img :src="require('@/assets/svg_icon/dashboard/advantage_large_resource_and_easy_operate.svg')" />
-              <span>豐富資源與簡易操作融合</span>
-            </div>
-          </div>
-        </el-col>
-      </el-row>
 
+  <div v-show="!projectExist">
+    <el-card>
+      <el-row>
+        <el-col class="card-title">
+          <div>SALA 三大優勢</div>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span=8 class="card-box">
+          <div>
+            <img :src="require('@/assets/svg_icon/dashboard/advantage_from_project_manage_view.svg')" />
+            <div class="card-content">從專案角度出發</div>
+          </div>
+        </el-col>
+        <el-col :span=8 class="card-box">
+          <div>
+            <img :src="require('@/assets/svg_icon/dashboard/advantage_instance_process.svg')" />
+            <div class="card-content">及時進度顯示</div>
+          </div>
+        </el-col>
+        <el-col :span=8 class="card-box">
+          <div>
+            <img :src="require('@/assets/svg_icon/dashboard/advantage_large_resource_and_easy_operate.svg')" />
+            <div class="card-content">豐富資源與簡易操作融合</div>
+          </div>
+        </el-col>
+      </el-row>
     </el-card>
   </div>
+
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+    @cancel-action="openDialogMessage=false" @confrim-action="removeRunInQueue" />
+
 </div>
