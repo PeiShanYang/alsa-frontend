@@ -43,5 +43,29 @@ export default class DialogMessage extends Vue {
     return iconClass
   }
 
+  get typeColor(): string {
+
+    let iconColor = ''
+
+    switch (this.messageData.type) {
+      case 'warning':
+        iconColor = 'color:#DE1743';
+        break;
+      case 'info':
+        iconColor = 'color:#DCE0EC';
+        break;
+      case 'success':
+        iconColor = 'color:#DCE0EC';
+        break;
+      case 'error':
+        iconColor = 'color:#DE1743';
+        break;
+      default:
+        iconColor = '';
+    }
+
+    return iconColor
+  }
+
 
 }
