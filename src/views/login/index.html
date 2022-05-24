@@ -1,0 +1,33 @@
+<el-row id="main-section">
+  <el-col :span="16" class="left-container">
+    <div class="icon-box">SALA ICON</div>
+    <div class="promote-box">
+      <div class="promote-title">歡迎來到 SALA!</div>
+      <div class="promote-content">使用友達所提供的專屬解決方案金鑰，</div>
+      <div class="promote-content">無需專業AI工程師，也能輕鬆訓練模型!</div>
+    </div>
+  </el-col>
+  <el-col :span="8" class="right-container">
+    <div class="login-box">
+      <div class="login-title">登入</div>
+      <div class="register-box">
+        <div>尚未註冊？</div>
+        <router-link to="/login">
+          <div>建立帳號</div>
+        </router-link>
+      </div>
+      <div class="account-box">
+        <div>帳號</div>
+        <el-input v-model="inputAccount" clearable></el-input>
+      </div>
+      <div class="password-box">
+        <div>密碼</div>
+        <el-input v-model="inputPassword" show-password clearable></el-input>
+        <el-checkbox v-model="rememberChecked">記住我</el-checkbox>
+      </div>
+      <div class="login-btn">
+        <el-button class="primary-btn" @click="handleLogin(inputAccount,inputPassword,rememberChecked)">登入</el-button>
+      </div>
+    </div>
+  </el-col>
+</el-row>

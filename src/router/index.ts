@@ -6,11 +6,16 @@ import Dataset from '@/views/dataset/Dataset.vue';
 import Experiments from '@/views/experiments/Experiments.vue';
 import Models from '@/views/models/Models.vue';
 import CreateProject from '@/views/create-project/CreateProject.vue';
+import Login from '@/views/login/Login.vue';
 import store from '@/services/store.service';
 
 Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
+    {
+        path:"/login",
+        component:Login,
+    },
     {
         path: '/',
         component: Layout,

@@ -1,0 +1,89 @@
+#main-section {
+    width: 100%;
+    height: 100%;
+    font-size: $font-normal;
+}
+
+.left-container {
+    background-image: url("../../assets/svg_icon/login/left_banner.svg");
+    height: 100%;
+    padding: 5em 8em 15em;
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    letter-spacing: 10px;
+
+    .icon-box {
+        height: 3em;
+        font-size: $font-normal * 1.5;
+    }
+
+    .promote-box {
+        height: 10em;
+        margin: auto 0;
+
+        .promote-title {
+            font-size: $font-normal * 3.5;
+            font-weight: bold;
+            margin-bottom: 0.3em;
+        }
+        .promote-content {
+            font-size: $font-normal * 1.4;
+            font-weight: lighter;
+        }
+    }
+}
+
+.right-container {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.login-box {
+    height: 25em;
+    width: 20em;
+    margin: auto;
+
+    .login-title {
+        font-size: $font-normal * 2.8;
+        font-weight: bold;
+        color: $secondary-color;
+    }
+
+    .register-box {
+        color: #bfbaba;
+        display: flex;
+        a {
+            color: $third-color;
+            margin-left: 10px;
+        }
+    }
+
+    .account-box,
+    .password-box {
+        margin: 1.5em 0;
+        color: #968c8c;
+    }
+}
+
+.el-input {
+    margin: 0.5em 0;
+}
+
+::v-deep .el-checkbox {
+    font-size: $font-normal;
+    margin: 0.5em 0;
+    &__inner {
+        width: 1em;
+        height: 1em;
+    }
+    &__label {
+        font-size: $font-normal * 0.9;
+        color: #bfbaba;
+    }
+}
+
+.el-button {
+    width: 100%;
+}
