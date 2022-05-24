@@ -23,7 +23,12 @@
       <div class="password-box">
         <div>密碼</div>
         <el-input v-model="inputPassword" show-password clearable></el-input>
-        <el-checkbox v-model="rememberChecked">記住我</el-checkbox>
+        <div class="extra-box">
+          <el-checkbox v-model="rememberChecked">記住我</el-checkbox>
+          <router-link to="/login">
+            <div>忘記密碼？</div>
+          </router-link>
+        </div>
       </div>
       <div class="login-btn">
         <el-button class="primary-btn" @click="handleLogin(inputAccount,inputPassword,rememberChecked)">登入</el-button>
