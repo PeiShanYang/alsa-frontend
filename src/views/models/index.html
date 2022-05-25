@@ -2,10 +2,10 @@
   <div v-show="resultExit">
     <el-row type="flex" justify="center" class="search-row">
       <el-col :span="6">
-        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" clearable />
+        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="editDeployPath" />
       </el-col>
       <el-col :span="2" :offset="1">
-        <el-button class="primary-btn">確認</el-button>
+        <el-button class="primary-btn" @click="editDeployPath">設定</el-button>
       </el-col>
     </el-row>
     <el-collapse v-model="acitveResultCollapse">
@@ -15,7 +15,7 @@
             <el-row style="width: 100%;">
               <el-col class="title-container">
                 <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
-                <div class="header-title">{{chart.data.projectName}} - {{chart.data.date}}</div>
+                <div class="header-title">{{chart.data.projectName}} - {{chart.runId}}</div>
               </el-col>
             </el-row>
           </template>
@@ -56,8 +56,16 @@
           <el-row type="flex" justify="end">
             <el-col :span="8" class="action-btn-group">
               <el-button class="secondary-btn">刪除</el-button>
-              <el-button class="primary-btn" @click="getDownloadInfo(chart.data.projectName,chart.runId)">下載</el-button>
-              <el-button class="primary-btn">部署</el-button>
+              <el-button class="primary-btn" @click="getDownloadInfo(chart.runId)">下載</el-button>
+              <el-tooltip :disabled="chart.deployInfoMsg.length === 0" placement="top-end" effect="light">
+                <div slot="content">
+                  <template v-for="msg in chart.deployInfoMsg">
+                    <span class="pop-out-msg">{{ msg }}</span><br>
+                  </template>
+                </div>
+                <el-button class="primary-btn" @click="setDeployFilename(chart.runId)">{{ chart.deployBtnName }}
+                </el-button>
+              </el-tooltip>
             </el-col>
           </el-row>
         </el-collapse-item>
@@ -71,5 +79,11 @@
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="downloadModel" />
+
+  <dialog-message :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
+    @cancel-action="setDeployPathDialog=false" @confrim-action="setDeployPath" />
+
+  <dialog-message :dialog-open="deployDialog" :message-data="deployDialogData" @cancel-action="deployDialog=false"
+    @confrim-action="deploy" />
 
 </div>
