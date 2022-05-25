@@ -431,6 +431,8 @@ export default class Dashboard extends Vue {
 
   private handleTestTask(testTask: RunTask, targetGraphIndex: number): void {
 
+    this.updateSingleGraph(this.graphs[targetGraphIndex])
+
     const graph = this.graphs[targetGraphIndex].data.graph
     if (graph === null) return
 
