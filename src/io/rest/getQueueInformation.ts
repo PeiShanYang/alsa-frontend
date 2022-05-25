@@ -23,6 +23,7 @@ export class TestProcess {
     test = {
         test: {
             accuracy: 0,
+            classAccuracy: new Map<string, number>(),
         },
     }
 }

@@ -46,7 +46,9 @@
                   <div class="plot-title">測試結果</div>
                   <div class="plot-content">
                     <template v-for="ring in chart.data.ringProgressChartData">
-                      <div :id="chart.runId + '_'+ ring.scoreName"></div>
+                      <div class="ring-container">
+                        <div :id="chart.runId + '_'+ ring.scoreName"></div>
+                      </div>
                     </template>
                   </div>
                 </el-col>

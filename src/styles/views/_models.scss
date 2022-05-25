@@ -35,12 +35,13 @@
     .plot-content {
         @extend %box-shadow;
         padding: 2em;
-        min-height: 300px;
+        min-height: 400px;
         display: flex;
-        div {
-            justify-content: center;
-            margin: auto;
+        .ring-container{
+            width: 33%;
+            margin: 0 0.5em;
         }
+
     }
 }
 

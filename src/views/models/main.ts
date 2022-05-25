@@ -100,17 +100,16 @@ export default class Models extends Vue {
             })
         })
 
-        // const lastVaild = [...process.values()][process.size - 1].valid
-
-        // console.log("taskinfo",taskInfo.Test.test.test)
-
         const ringProgressChartData: { scoreName: string, score: number }[] = []
 
-        // for (const [key, value] of Object.entries(lastVaild)) {
-        //     ringProgressChartData.push({ scoreName: key, score: value })
-        // }
-
+        // for accuracy
         ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
+
+        // for class accuracy
+        for (const [key, value] of Object.entries(taskInfo.Test.test.test.classAccuracy)) {
+            ringProgressChartData.push({ scoreName: key, score: Math.round(value * 1000) / 1000 })
+        }
+
 
         return {
             data: {
@@ -228,7 +227,7 @@ export default class Models extends Vue {
 
         if (deployInfo !== null) {
             this.deployInfo = deployInfo
-            
+
             this.charts = this.charts.map((chart) => {
                 chart.isCurrentVersion = this.isCurrentVersion(chart.runId);
                 chart.deployInfoMsg = this.modelDeployInfoMsg(chart.runId);
