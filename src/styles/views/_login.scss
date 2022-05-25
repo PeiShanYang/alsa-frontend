@@ -7,6 +7,8 @@
 
 .left-container {
     background-image: url("../../assets/svg_icon/login/left_banner.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
     height: 100%;
     width: 60%;
     display: flex;

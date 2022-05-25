@@ -127,38 +127,7 @@ export default class Experiments extends Vue {
         });
       }
 
-
-      if (nodeData.component !== 'dataset-node') return
-
-      const targetContent = nodeData.content
-        .filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
-
-      if (targetContent.length !== 0) {
-
-        graph.addNode({
-          id: 'dataset_tooltip',
-          shape: 'path',
-          x: 35,
-          y: 190,
-          width: 210,
-          height: 50,
-          path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
-          attrs: {
-            body: {
-              fill: '#951414',
-              stroke: '#951414',
-            },
-            label: {
-              text: '尚未有資料集，請點擊上傳',
-              x: 6,
-              y: 6,
-              fill: '#fff'
-            },
-          },
-        })
-      }
-
-
+      if (nodeData.component === 'dataset-node') this.displayDatasetToolTip(graph, nodeData.content)
 
     });
 
@@ -187,8 +156,9 @@ export default class Experiments extends Vue {
   private async setDatasetContent(path: string): Promise<void> {
 
     this.openDialogDataset = false;
-    const nodes = this.graph.graph?.getNodes()
-    const datasetnode = nodes?.find(node => node.id === `dataset-node_${this.graph.projectName}`)
+    if (!this.graph.graph) return
+    const nodes = this.graph.graph.getNodes()
+    const datasetnode = nodes.find(node => node.id === `dataset-node_${this.graph.projectName}`)
 
 
     await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
@@ -202,16 +172,45 @@ export default class Experiments extends Vue {
 
     datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
+    this.displayDatasetToolTip(this.graph.graph, sendDatasetStatus.content)
 
-    const targetContent = sendDatasetStatus.content
-      .filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
+  }
 
-    if (targetContent.length !== 0) return
 
-    const tipNode = nodes?.find(node => node.id === 'dataset_tooltip')
+  private displayDatasetToolTip(graph: Graph, content: string[]): void {
 
-    if (tipNode) this.graph.graph?.removeCell("dataset_tooltip")
+    const contentFilter = content.filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
+    const nodeId = 'dataset_tooltip'
+    const nodes = graph.getNodes()
+    const tipNode = nodes.find((node => node.id === nodeId))
 
+    if (contentFilter.length !== 0 && !tipNode) {
+      graph.addNode({
+        id: nodeId,
+        shape: 'path',
+        x: 35,
+        y: 190,
+        width: 210,
+        height: 50,
+        path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
+        attrs: {
+          body: {
+            fill: '#951414',
+            stroke: '#951414',
+          },
+          label: {
+            text: '尚未有資料集，請點擊上傳',
+            x: 6,
+            y: 6,
+            fill: '#fff'
+          },
+        },
+      })
+    }
+
+    if (contentFilter.length === 0 && tipNode) {
+      graph.removeCell(nodeId)
+    }
 
   }
 
