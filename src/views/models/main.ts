@@ -6,9 +6,19 @@ import { TrainingProcess } from '@/io/rest/getQueueInformation';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
-import { GetModelInformationResData } from '@/io/rest/getModelInformation';
+import { ModelInfo } from '@/io/rest/getModelInformation';
 import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
+import storeService from '@/services/store.service';
+import { DeployInfo } from '@/io/deployInfo';
+
+class Chart {
+    data!: chartData;
+    runId!: string;
+    isCurrentVersion = false;
+    deployBtnName = '部署此模型';
+    deployInfoMsg: string[] = [];
+}
 
 @Component({
     components: {
@@ -22,12 +32,19 @@ export default class Models extends Vue {
 
     private acitveResultCollapse: string[] = [];
 
-    private charts: { data: chartData, runId: string }[] = [];
+    private charts: Chart[] = [];
+
+    private deployInfo: DeployInfo[] = [];
 
     private openDialogMessage = false;
     private dialogMessageData: DialogMessageData = new DialogMessageData()
-    private downloadInfo = { projectName: '', runId: '' }
+    private downloadInfo = { runId: '' }
 
+    private setDeployPathDialog = false;
+    private setDeployPathDialogData = new DialogMessageData()
+
+    private deployDialog = false;
+    private deployDialogData = new DialogMessageData()
 
     mounted(): void {
         this.$i18n.locale = "zh-tw"
@@ -42,16 +59,19 @@ export default class Models extends Vue {
 
         const response = await Api.getModelInformation(store.currentProject)
 
-        if (response.length === 0) {
+        this.inputDeployPath = response.deployPath
+        this.deployInfo = response.deployInfo
+
+        if (response.modelList.length === 0) {
             loadingInstance.close()
             this.resultExit = false
             return
         }
 
-        response.forEach(task => {
-            const setting = this.chartSetting(task)
+        response.modelList.forEach(model => {
+            const setting = this.chartSetting(model)
             if (setting) this.charts.push(setting)
-            this.acitveResultCollapse.push(task.runId)
+            this.acitveResultCollapse.push(model.runId)
         })
 
         this.$nextTick(() => {
@@ -66,7 +86,7 @@ export default class Models extends Vue {
 
     }
 
-    private chartSetting(taskInfo: GetModelInformationResData): { data: chartData, runId: string } | undefined {
+    private chartSetting(taskInfo: ModelInfo): Chart | undefined {
 
         const modelName = this.$i18n.t(taskInfo.model).toString()
 
@@ -101,7 +121,10 @@ export default class Models extends Vue {
                 lineChartData,
                 ringProgressChartData,
             },
-            runId: taskInfo.runId
+            runId: taskInfo.runId,
+            isCurrentVersion: this.isCurrentVersion(taskInfo.runId),
+            deployInfoMsg: this.modelDeployInfoMsg(taskInfo.runId),
+            deployBtnName: this.deployBtnName(taskInfo.runId),
         }
     }
 
@@ -132,8 +155,7 @@ export default class Models extends Vue {
         })
     }
 
-    private getDownloadInfo(projectName: string, runId: string): void {
-        this.downloadInfo.projectName = projectName
+    private getDownloadInfo(runId: string): void {
         this.downloadInfo.runId = runId
 
         this.dialogMessageData = {
@@ -147,13 +169,100 @@ export default class Models extends Vue {
 
     private async downloadModel(content: { inputName: string, inputContent: string }[]): Promise<void> {
 
-        const fileName = content.find(item => item.inputName === "請輸入下載的檔案名稱")?.inputContent
+        const filename = content.find(item => item.inputName === "請輸入下載的檔案名稱")?.inputContent
 
-        if (!fileName) return;
-        if (fileName === "") return
-        await Api.downloadModel(this.downloadInfo.projectName, this.downloadInfo.runId, fileName)
+        if (!filename || filename === "") return
+        if (!storeService.currentProject) return;
+        await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
 
         this.openDialogMessage = false
     }
 
+    private editDeployPath(): void {
+        this.setDeployPathDialogData = {
+            ...this.setDeployPathDialogData,
+            content: [{ inputName: "請輸入部署路徑", inputContent: this.inputDeployPath }],
+        }
+
+        this.setDeployPathDialog = true
+    }
+
+    private async setDeployPath(content: { inputName: string, inputContent: string }[]): Promise<void> {
+
+        const deployPath = content.find(item => item.inputName === "請輸入部署路徑")?.inputContent
+
+        if (!deployPath || deployPath === "") return
+        if (!storeService.currentProject) return;
+        const deployInfo = await Api.setDeployPath(storeService.currentProject, deployPath);
+
+        if (deployInfo === null) {
+            this.inputDeployPath = ""
+        } else {
+            this.inputDeployPath = deployInfo.deployPath
+            this.deployInfo = deployInfo.infoList
+        }
+        this.setDeployPathDialog = false
+    }
+
+    private setDeployFilename(runId: string): void {
+        if (this.isCurrentVersion(runId)) return
+
+        this.downloadInfo.runId = runId
+
+        this.deployDialogData = {
+            ...this.deployDialogData,
+            content: [{ inputName: "請輸入部署檔名", inputContent: "" }],
+        }
+
+        this.deployDialog = true
+    }
+
+    private async deploy(content: { inputName: string, inputContent: string }[]): Promise<void> {
+
+        const filename = content.find(item => item.inputName === "請輸入部署檔名")?.inputContent
+
+        if (!filename || filename === "") return
+        if (!storeService.currentProject) return;
+        const deployInfo = await Api.deploy(storeService.currentProject, this.downloadInfo.runId, filename);
+        console.log(`this: ${deployInfo}`)
+
+        if (deployInfo !== null) {
+            this.deployInfo = deployInfo
+            
+            this.charts = this.charts.map((chart) => {
+                chart.isCurrentVersion = this.isCurrentVersion(chart.runId);
+                chart.deployInfoMsg = this.modelDeployInfoMsg(chart.runId);
+                chart.deployBtnName = this.deployBtnName(chart.runId);
+                return chart
+            })
+        }
+        this.deployDialog = false
+    }
+
+    private isCurrentVersion(runId: string): boolean {
+        return runId === this.deployInfo[this.deployInfo.length - 1]?.runId ?? '';
+    }
+
+    private deployBtnName(runId: string): string {
+        if (this.isCurrentVersion(runId)) return "當前版本"
+        else return "部署此模型"
+    }
+
+    private modelDeployInfoMsg(runId: string): string[] {
+        let modelName = ''
+        const deployDate: string[] = [];
+        for (let i = 0; i < this.deployInfo.length; i++) {
+            const info = this.deployInfo[i];
+            if (info.runId !== runId) continue
+
+            modelName = info.filename
+            if (i === this.deployInfo.length - 1) deployDate.push(`${info.date} ~ now`)
+            else deployDate.push(`${info.date} ~ ${this.deployInfo[i + 1].date}`)
+        }
+        if (deployDate.length === 0) return ['尚未部署過此模型'];
+        return [
+            `模型名稱： ${modelName}`,
+            `部署期間： ${deployDate.join(", ")}`
+        ]
+    }
 }

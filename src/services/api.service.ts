@@ -15,6 +15,9 @@ import { DeleteRunReq, DeleteRunRes } from "@/io/rest/deleteRun";
 import { GetModelInformationReq, GetModelInformationRes, GetModelInformationResData } from "@/io/rest/getModelInformation";
 import { DownloadModelReq } from "@/io/rest/downloadModel";
 import { StringUtil } from "@/utils/string.util";
+import { SetDeployPathData, SetDeployPathReq, SetDeployPathRes } from "@/io/rest/setDeployPath";
+import { DeployInfo } from "@/io/deployInfo";
+import { DeployReq, DeployRes } from "@/io/rest/deploy";
 
 
 const host = 'http://tw100104318:37510/';
@@ -243,7 +246,7 @@ export default class Api {
     return res.message
   }
 
-  static async getModelInformation(projectName: string): Promise<GetModelInformationResData[]> {
+  static async getModelInformation(projectName: string): Promise<GetModelInformationResData> {
 
     const reqData: GetModelInformationReq = {
       projectName,
@@ -254,12 +257,14 @@ export default class Api {
       reqData
     )
 
-    if (response.status !== 200) return []
+    if (response.status !== 200) return new GetModelInformationResData();
 
     const res: GetModelInformationRes = response.data
     if (res.code !== 0) console.log(res.message)
 
-    if (!res.data) return []
+    if (!res.data) return new GetModelInformationResData();
+
+    console.log(res.data)
 
     return res.data
 
@@ -280,5 +285,44 @@ export default class Api {
     const dom = document.createElement('a');
     dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
     dom.click();
+  }
+
+  static async setDeployPath(projectName: string, deployPath: string): Promise<SetDeployPathData | null> {
+    const reqData: SetDeployPathReq = { projectName, deployPath }
+
+    const response: AxiosResponse<SetDeployPathRes> = await axios.post(
+      host + 'set-deploy-path',
+      reqData
+    )
+
+    if (response.status !== 200) return null
+
+    const res: SetDeployPathRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return null
+
+    console.log(res.data)
+
+    return res.data
+
+  }
+
+  static async deploy(projectName: string, runId: string, filename: string): Promise<DeployInfo[] | null> {
+    const reqData: DeployReq = { projectName, runId, filename }
+
+    const response: AxiosResponse<DeployRes> = await axios.post(
+      host + 'deploy',
+      reqData
+    )
+
+    if (response.status != 200) return null
+
+    const res: DeployRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return null
+
+    return res.data;
   }
 }
