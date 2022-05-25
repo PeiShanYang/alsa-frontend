@@ -1,27 +1,33 @@
 #main-section {
     width: 100%;
     height: 100%;
+    display: flex;
     font-size: $font-normal;
 }
 
 .left-container {
     background-image: url("../../assets/svg_icon/login/left_banner.svg");
     height: 100%;
-    padding: 5em 8em 15em;
+    width: 60%;
     display: flex;
     flex-direction: column;
     color: #ffffff;
     letter-spacing: 10px;
 
     .icon-box {
-        height: 3em;
-        font-size: $font-normal * 1.5;
+        margin: 5em;
+        display: flex;
+        align-items: center;
+        img{
+            margin-right: 10px;
+        }
+        .icon-name{
+            font-size: $font-normal * 2;
+        }
     }
 
     .promote-box {
-        height: 10em;
-        margin: auto 0;
-
+        margin: 8em 5em;
         .promote-title {
             font-size: $font-normal * 3.5;
             font-weight: bold;
@@ -36,6 +42,7 @@
 
 .right-container {
     height: 100%;
+    width: 40%;
     display: flex;
     justify-content: center;
 }
@@ -54,6 +61,7 @@
     .register-box {
         color: #bfbaba;
         display: flex;
+        margin: 1em 0;
         a {
             color: $third-color;
             margin-left: 10px;
@@ -62,7 +70,6 @@
 
     .account-box,
     .password-box {
-        margin: 1.5em 0;
         color: #968c8c;
     }
 

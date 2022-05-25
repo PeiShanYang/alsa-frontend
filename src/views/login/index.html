@@ -1,13 +1,16 @@
-<el-row id="main-section">
-  <el-col :span="16" class="left-container">
-    <div class="icon-box">SALA ICON</div>
+<div id="main-section">
+  <div class="left-container">
+    <div class="icon-box">
+      <img :src="require('@/assets/svg_icon/sidebar/dashboard.svg')" />
+      <span class="icon-name">SALA</span>
+    </div>
     <div class="promote-box">
       <div class="promote-title">歡迎來到 SALA!</div>
       <div class="promote-content">使用友達所提供的專屬解決方案金鑰，</div>
       <div class="promote-content">無需專業AI工程師，也能輕鬆訓練模型!</div>
     </div>
-  </el-col>
-  <el-col :span="8" class="right-container">
+  </div>
+  <div class="right-container">
     <div class="login-box">
       <div class="login-title">登入</div>
       <div class="register-box">
@@ -34,5 +37,5 @@
         <el-button class="primary-btn" @click="handleLogin(inputAccount,inputPassword,rememberChecked)">登入</el-button>
       </div>
     </div>
-  </el-col>
-</el-row>
+  </div>
+</div>

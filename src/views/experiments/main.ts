@@ -126,6 +126,40 @@ export default class Experiments extends Vue {
           target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
         });
       }
+
+
+      if (nodeData.component !== 'dataset-node') return
+
+      const targetContent = nodeData.content
+        .filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
+
+      if (targetContent.length !== 0) {
+
+        graph.addNode({
+          id: 'dataset_tooltip',
+          shape: 'path',
+          x: 35,
+          y: 190,
+          width: 210,
+          height: 50,
+          path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
+          attrs: {
+            body: {
+              fill: '#951414',
+              stroke: '#951414',
+            },
+            label: {
+              text: '尚未有資料集，請點擊上傳',
+              x: 6,
+              y: 6,
+              fill: '#fff'
+            },
+          },
+        })
+      }
+
+
+
     });
 
     return graph
@@ -168,6 +202,17 @@ export default class Experiments extends Vue {
 
     datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
+
+    const targetContent = sendDatasetStatus.content
+      .filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
+
+    if (targetContent.length !== 0) return
+
+    const tipNode = nodes?.find(node => node.id === 'dataset_tooltip')
+
+    if (tipNode) this.graph.graph?.removeCell("dataset_tooltip")
+
+
   }
 
   private async runExperimentTrain(): Promise<void> {
@@ -190,8 +235,8 @@ export default class Experiments extends Vue {
     this.dialogMessageData = {
       type: 'info',
       title: '請至 Dashboard 查看執行進度為何',
-      cancelBtnName:'稍後再說',
-      confirmBtnName:'前往查看',
+      cancelBtnName: '稍後再說',
+      confirmBtnName: '前往查看',
     }
     this.openDialogMessage = true
 
