@@ -24,11 +24,11 @@
         <el-collapse-item :name=graph.runId>
           <template slot="title">
             <el-row style="width: 100%;">
-              <el-col :span="18" class="title-container">
+              <el-col :span="17" class="title-container">
                 <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
                 <div>{{ graph.data.projectName }} - {{ graph.data.date }}</div>
               </el-col>
-              <el-col :span="6" class="progress-container">
+              <el-col :span="7" class="progress-container">
                 <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"></el-progress>
               </el-col>
             </el-row>

@@ -102,6 +102,8 @@ export default class Models extends Vue {
 
         const ringProgressChartData: { scoreName: string, score: number }[] = []
 
+        if(!taskInfo.Test) return
+        
         // for accuracy
         ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
 

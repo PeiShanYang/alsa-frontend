@@ -431,29 +431,30 @@ export default class Dashboard extends Vue {
 
   private handleTestTask(testTask: RunTask, targetGraphIndex: number): void {
 
-    this.updateSingleGraph(this.graphs[targetGraphIndex])
+
 
     const graph = this.graphs[targetGraphIndex].data.graph
     if (graph === null) return
 
     const nodes = graph.getNodes()
-    const testResultNode = nodes.findIndex(node => node.id.includes("test-result-node"))
-    const twinkle_node = nodes.find(node => node.id === "twinkle_node")
+    const testResultNodeIndex = nodes.findIndex(node => node.id.includes("test-result-node"))
+    const twinkleNodeIndex = nodes.find(node => node.id === "twinkle_node")
 
 
-    if (typeof testTask.process === "string") {
-
-      if (!twinkle_node) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNode)
+    if (typeof testTask.process === "string" && !twinkleNodeIndex) {
+      this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
+      this.updateSingleGraph(this.graphs[targetGraphIndex])
       return
     }
 
-    if (twinkle_node) graph.removeCell("twinkle_node")
+    if (twinkleNodeIndex) graph.removeCell("twinkle_node")
 
-    const process = new TestProcess()
-    process.test = [...Object.values(testTask.process)][0]
+    if (typeof testTask.process !== "string") {
+      const process = new TestProcess()
+      process.test = [...Object.values(testTask.process)][0]
+      this.setTestResultContent(graph, process.test.test.accuracy)
+    }
 
-
-    this.setTestResultContent(graph, process.test.test.accuracy)
 
   }
 
