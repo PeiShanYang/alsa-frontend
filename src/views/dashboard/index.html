@@ -79,7 +79,7 @@
     </el-card>
   </div>
 
-  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
-    @cancel-action="openDialogMessage=false" @confrim-action="removeRunInQueue" />
+  <dialog-message :dialog-open="deleteDialog" :message-data="dialogMessageData"
+    @cancel-action="deleteDialog=false" @confrim-action="removeRunInQueue" />
 
 </div>
