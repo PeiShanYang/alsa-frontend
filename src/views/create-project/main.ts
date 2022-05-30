@@ -35,19 +35,34 @@ export default class CreateProject extends Vue {
         const firstChr = new RegExp("^[A-Za-z]")
         const otherpattern = new RegExp("[`~!@#$^&*()=|{}':;'\\[\\]<>/?~！@#￥……&*（）——|{}【】‘；：”“'% - \\s \\.]");
         let checkStrictName = true
+        let checkOrder = false
 
         if (this.inputProjectName.match(firstChr) === null) {
-            alert("error with first input char")
+
+            const h = this.$createElement;
+            this.$message({
+                type: 'error',
+                message: h('h3', { style: 'color:#F56C6C;' }, "專案名稱開頭須為英文字母 (A-Z, a-z)"),
+            })
+
             checkStrictName = false
+            checkOrder = true
         }
-        if (this.inputProjectName.match(otherpattern) !== null) {
-            alert("error with illegal char")
+        if (this.inputProjectName.match(otherpattern) !== null && checkOrder === false) {
+
+            const h = this.$createElement;
+            this.$message({
+                type: 'error',
+                message: h('h3', { style: 'color:#F56C6C;' }, "請勿輸入特殊字元"),
+            })
+
             checkStrictName = false
         }
 
+        let response = false
         if (checkStrictName === true && this.inputProjectName !== "" && this.inputSolutionKey !== "") {
 
-            await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey);
+            response = await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey);
 
             Array.from(
                 store.projectList.entries()
@@ -56,11 +71,22 @@ export default class CreateProject extends Vue {
                     this.$router.push({ name: 'experiments', params: { projectName: this.inputProjectName } })
                 }
             })
+
         }
 
-        this.inputProjectName = '';
-        this.inputSolutionKey = '';
-        this.openDialogMessage = false;
+        if (response === false) {
+            const h = this.$createElement;
+            this.$message({
+                type: 'error',
+                message: h('h3', { style: 'color:#F56C6C;' }, "專案建立失敗"),
+            })
+        } else {
+            this.inputProjectName = '';
+            this.inputSolutionKey = '';
+            this.openDialogMessage = false;
+        }
+
+
     }
 
 }

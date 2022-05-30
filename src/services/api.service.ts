@@ -47,7 +47,7 @@ export default class Api {
 
     }
   }
-  static async createProjectByKey(name: string, key: string): Promise<void> {
+  static async createProjectByKey(name: string, key: string): Promise<boolean> {
     if (key === '.') key = "eyJhbGciOiJIUzI1NiJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnRXZhbHVhdGlvbiI6eyJFdmFsdWF0aW9uUGFyYSI6eyJzaG93QWNjIjp7InN3aXRjaCI6MX0sInNob3dDbGFzc0FjYyI6eyJzd2l0Y2giOjF9fX0sIkNvbmZpZ01vZGVsU2VydmljZSI6eyJMb3NzRnVuY3Rpb25QYXJhIjp7Imxvc3NGdW5jdGlvbiI6IkNyb3NzRW50cm9weUxvc3MifSwiTGVhcm5pbmdSYXRlIjp7ImxlYXJuaW5nUmF0ZSI6MC4wMDF9LCJPcHRpbWl6ZXJQYXJhIjp7IkFkYW0iOnsic3dpdGNoIjoxLCJiZXRhcyI6WzAuOSwwLjk5OV0sImVwcyI6MWUtOCwid2VpZ2h0RGVjYXkiOjAuMDAwNSwiYW1zZ3JhZCI6MH19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC41fX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOjB9fX0sIkNvbmZpZ1B5dG9yY2hNb2RlbCI6eyJTZWxlY3RlZE1vZGVsIjp7Im1vZGVsIjp7InN0cnVjdHVyZSI6ImF1b191bnJlc3RyaWN0ZWRfcG93ZXJmdWxfbW9kZWwiLCJwcmV0cmFpbmVkIjoxfX0sIkNsc01vZGVsUGFyYSI6eyJiYXRjaFNpemUiOjE2LCJlcG9jaHMiOjJ9fSwiQ29uZmlnUmVzdWx0U3RvcmFnZSI6eyJ1bmtub3duRmlsdGVyIjp7InN3aXRjaCI6MCwiZmlsdGVyIjp7InVua25vd24iOjAuOX0sInJldmVyc2UiOjAsInNhdmVDc3YiOjJ9fX0.M_Xlw_Oeb3CedhN6cJEWDjrSEdu04u7vlVQWPjPYosg";
     const reqData: CreateProjectByKeyReq = { name, key };
     const response: AxiosResponse<GetProjectRes> = await axios.post(
@@ -55,19 +55,21 @@ export default class Api {
       reqData,
     );
 
-    if (response.status !== 200) return;
+    if (response.status !== 200) return false;
 
     const res: GetProjectRes = response.data;
     if (res.code !== 0) {
       console.log(res.message);
-      return;
+      return false;
     }
 
-    if (res.data) {
-      store.projectList = new Map<string, Project>(
-        res.data.projects.map((v) => [v, new Project()])
-      );
-    }
+    if (!res.data) return false
+
+    store.projectList = new Map<string, Project>(
+      res.data.projects.map((v) => [v, new Project()])
+    );
+    
+    return true
   }
 
   static async getExperiments(projectName: string): Promise<void> {
@@ -146,8 +148,8 @@ export default class Api {
     project.datasets = new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
-  static async checkDataset(datasetPath: string): Promise<void> {
-    if (!store.currentProject) return;
+  static async checkDataset(datasetPath: string): Promise<boolean> {
+    if (!store.currentProject) return false;
 
     const reqData: CheckDatasetReq = {
       projectName: store.currentProject,
@@ -158,14 +160,14 @@ export default class Api {
       reqData,
     );
 
-    if (response.status !== 200) return;
+    if (response.status !== 200) return false;
 
     const res: CheckDatasetRes = response.data;
     if (res.code !== 0) console.log(res.message);
 
-    if (res.data) {
-      console.log("res data", res.data);
-    }
+    if (!res.data) return false
+
+    return true
   }
 
   static async runExperimentTrain(projectName: string, experimentId: string): Promise<RunExperimentData> {

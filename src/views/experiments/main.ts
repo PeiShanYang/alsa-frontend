@@ -190,8 +190,8 @@ export default class Experiments extends Vue {
         shape: 'path',
         x: 35,
         y: 190,
-        width: 210,
-        height: 50,
+        width: 250,
+        height: 60,
         path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
         attrs: {
           body: {
@@ -199,7 +199,7 @@ export default class Experiments extends Vue {
             stroke: '#951414',
           },
           label: {
-            text: '尚未有資料集，請點擊上傳',
+            text: '資料集尚未完成，請點擊上傳',
             x: 6,
             y: 6,
             fill: '#fff'
@@ -223,6 +223,11 @@ export default class Experiments extends Vue {
     if (!datasetStatus) return
 
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先完成資料集的 上傳、標註、切分的任務"),
+      })
       return
     }
 

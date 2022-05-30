@@ -1,17 +1,8 @@
 <div id="mainSection" style="margin: auto;width: 100%">
   <div v-show="projectExist">
-    <el-row type="flex" justify="center" class="search-row">
-      <el-col :span="5">
-        <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label">
-          <el-option v-for="item in datasetOptions" :key="item.value" :value="item.value" :label="item.label">
-          </el-option>
-        </el-select>
-      </el-col>
-      <el-col :span="5">
-        <el-input placeholder="請輸入專案名稱" clearable v-model="inputModelName"></el-input>
-      </el-col>
-      <el-col :span="2" :offset="1">
-        <el-button class="primary-btn">搜尋</el-button>
+    <el-row type="flex" justify="end" class="search-row">
+      <el-col :span="4">
+        <el-input placeholder="Search Project" v-model="searchProjectName" clearable></el-input>
       </el-col>
     </el-row>
     <el-row class="result-title">
@@ -20,7 +11,7 @@
       </el-col>
     </el-row>
     <el-collapse v-model="acitveProjectCollapse">
-      <template v-for="graph in graphs">
+      <template v-for="graph in graphList">
         <el-collapse-item :name=graph.runId>
           <template slot="title">
             <el-row style="width: 100%;">

@@ -1,15 +1,9 @@
 <div style="margin: auto;width: 100%">
-  <el-row type="flex" justify="center" class="search-row">
-    <el-col :span="4">
-      <el-select v-model="selectedDatasetValue" clearable :placeholder="datasetOptions[0].label">
-        <el-option v-for="item in datasetOptions" :key="item.value" :value="item.value" :label="item.label">
-        </el-option>
-      </el-select>
+  <el-row type="flex" justify="end" class="search-row">
+    <el-col :span="4" >
+      <el-input placeholder="Search Dataset" v-model="searchDataset" clearable />
     </el-col>
     <el-col :span="3" :offset="1">
-      <el-button class="primary-btn">搜尋</el-button>
-    </el-col>
-    <el-col :span="3">
       <el-button class="primary-btn" @click="settingDatasetPath">新增資料集</el-button>
     </el-col>
   </el-row>
@@ -24,7 +18,7 @@
           </el-col>
         </el-row>
       </template>
-      <template v-for="[path,status] in datasets">
+      <template v-for="[path,status] in  datasetList">
         <el-row type="flex" justify="space-around" class="dataset-box">
           <el-col :span=12 class="path-box">
             <div>資料集路徑 : </div>

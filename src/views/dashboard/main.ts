@@ -1,4 +1,4 @@
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue,Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
@@ -30,22 +30,8 @@ export default class Dashboard extends Vue {
   private projectExist = true;
 
   // search project setting related 
-  private selectedDatasetValue = "";
-  private datasetOptions: Array<{ value: string, label: string }> = [
-    {
-      value: "all data",
-      label: "所有資料集",
-    },
-    {
-      value: "dataset 001",
-      label: "001 dataset",
-    },
-    {
-      value: "dataset 002",
-      label: "002 dataset",
-    },
-  ]
-  private inputModelName = "";
+
+  private searchProjectName = '';
 
   // collapse related 
 
@@ -62,6 +48,25 @@ export default class Dashboard extends Vue {
   private deleteDialog = false;
   private dialogMessageData: DialogMessageData = new DialogMessageData()
   private deleteGraphInfo = { projectName: '', runId: "" }
+
+  get graphList(): { runId: string, data: graphData, percentage: number }[] | undefined {
+
+    if (this.searchProjectName === ''){
+      this.drawGraph()
+      return this.graphs
+    } 
+
+    return this.graphs.filter(item =>
+      item.data.projectName.toUpperCase().includes(this.searchProjectName.toUpperCase())
+    )
+
+  }
+
+  @Watch('searchProjectName')
+  handleSearch():void{
+    this.drawGraph()
+    console.log("test")
+  }
 
 
   created(): void {
@@ -127,11 +132,13 @@ export default class Dashboard extends Vue {
 
         this.trainingInfo = await Api.getQueueInformation()
 
+        const allTask = [...this.trainingInfo.work, ...this.trainingInfo.done]
+
         workingIdList.forEach(workingId => {
 
           const targetGraphIndex = this.graphs.findIndex(item => item.runId === workingId)
 
-          const workingIdTask = [...this.trainingInfo.work, ...this.trainingInfo.done].filter(task => task.runId === workingId)
+          const workingIdTask = allTask.filter(task => task.runId === workingId)
 
           // train task
           const workingIdTaskTrain = workingIdTask.find(task => task.task === "Train")
@@ -140,13 +147,19 @@ export default class Dashboard extends Vue {
 
           let gate = false
 
+
+
           if (workingIdTaskTrain) gate = this.handleTrainTask(workingIdTaskTrain, targetGraphIndex)
 
           if (workingIdTaskTest && gate === true) this.handleTestTask(workingIdTaskTest, targetGraphIndex)
 
+          // console.log("run", workingIdTaskTrain, workingIdTaskTest, gate)
+
         })
 
-        if (this.trainingInfo.work.length === 0) window.clearInterval(timeIntervalId)
+        const stopCondition = allTask.filter(item => typeof item.process === "string")
+
+        if (stopCondition.length === 0) window.clearInterval(timeIntervalId)
 
       }), 5000)
 
@@ -399,13 +412,18 @@ export default class Dashboard extends Vue {
     const newGraphSetting = this.graphSetting(trainTask)
     if (!newGraphSetting) return false
 
-    // update graph setting
-    this.graphs.splice(targetGraphIndex, 1, newGraphSetting)
+    const updatedPercentage = newGraphSetting.percentage
 
-    const updatedPercentage = this.graphs[targetGraphIndex].percentage
+    // update graph percentage 
+    this.graphs[targetGraphIndex].percentage = updatedPercentage
+
 
     if ((originPercentage === 0 && updatedPercentage > 0) || originPercentage !== 100 && updatedPercentage === 100) {
-      this.updateSingleGraph(this.graphs[targetGraphIndex])
+
+      this.updateSingleGraph(newGraphSetting)
+
+      this.graphs.splice(targetGraphIndex, 1, newGraphSetting)
+
     }
 
     if (updatedPercentage !== 100) return false
@@ -428,22 +446,18 @@ export default class Dashboard extends Vue {
 
     const nodes = graph.getNodes()
     const testResultNodeIndex = nodes.findIndex(node => node.id.includes("test-result-node"))
-    const twinkleNodeIndex = nodes.find(node => node.id.includes("twinkle_node"))
+    const twinkleNode = nodes.find(node => node.id.includes("twinkle_node"))
 
-    
-    if (typeof testTask.process === "string" && !twinkleNodeIndex) {
-      this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
+    if (typeof testTask.process === "string") {
+
+      if (!twinkleNode) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
+
       return
     }
 
-    if (twinkleNodeIndex) graph.removeCell("twinkle_node")
-
-    if (typeof testTask.process !== "string") {
-
-      const testContent = this.getTestProcessData([...Object.values(testTask.process)][0])
-      this.setNodeContent(graph, 'test-result-node', testContent)
-    }
-
+    graph.removeCell("twinkle_node")
+    const testContent = this.getTestProcessData([...Object.values(testTask.process)][0])
+    this.setNodeContent(graph, 'test-result-node', testContent)
 
   }
 
