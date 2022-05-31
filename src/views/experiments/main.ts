@@ -190,7 +190,7 @@ export default class Experiments extends Vue {
         shape: 'path',
         x: 35,
         y: 190,
-        width: 250,
+        width: 200,
         height: 60,
         path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
         attrs: {
@@ -199,7 +199,7 @@ export default class Experiments extends Vue {
             stroke: '#951414',
           },
           label: {
-            text: '資料集尚未完成，請點擊上傳',
+            text: '請設定有效的資料集',
             x: 6,
             y: 6,
             fill: '#fff'
