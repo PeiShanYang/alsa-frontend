@@ -1,4 +1,4 @@
-import { Component, Vue,Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
@@ -51,21 +51,22 @@ export default class Dashboard extends Vue {
 
   get graphList(): { runId: string, data: graphData, percentage: number }[] | undefined {
 
-    if (this.searchProjectName === ''){
+    if (this.searchProjectName === '') {
       this.drawGraph()
       return this.graphs
-    } 
+    }
 
     return this.graphs.filter(item =>
       item.data.projectName.toUpperCase().includes(this.searchProjectName.toUpperCase())
     )
-
   }
 
   @Watch('searchProjectName')
-  handleSearch():void{
-    this.drawGraph()
-    console.log("test")
+  handleSearch(): void {
+    this.$nextTick(() => {
+      this.drawGraph()
+      console.log("test")
+    })
   }
 
 
