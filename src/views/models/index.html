@@ -75,8 +75,13 @@
     </el-collapse>
   </div>
   <div v-show="!resultExit">
-    <el-alert title="No model is available" type="error">
-    </el-alert>
+    <el-empty description="暫無已訓練模型">
+      <router-link :to="{ name: 'experiments', params: { projectName: $route.params.projectName,settingPath:true} }">
+        <el-button class="primary-btn empty-btn" >
+          立即訓練 GO !
+        </el-button>
+      </router-link>
+    </el-empty>
   </div>
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"

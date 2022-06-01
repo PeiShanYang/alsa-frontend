@@ -11,31 +11,50 @@
     </div>
   </div>
   <div class="right-container">
-    <div class="login-box">
-      <div class="login-title">登入</div>
-      <div class="register-box">
-        <div>尚未註冊？</div>
-        <router-link to="/login">
-          <div>建立帳號</div>
-        </router-link>
-      </div>
-      <div class="account-box">
-        <div>帳號</div>
-        <el-input v-model="inputAccount" clearable></el-input>
-      </div>
-      <div class="password-box">
-        <div>密碼</div>
-        <el-input v-model="inputPassword" show-password clearable></el-input>
-        <div class="extra-box">
-          <el-checkbox v-model="rememberChecked">記住我</el-checkbox>
-          <router-link to="/login">
-            <div>忘記密碼？</div>
-          </router-link>
+    <div class="back-box" :style="{ visibility: rightBoxDisplay !== 'login'? 'visible': 'hidden'}">
+      <el-button type="text" class="text-btn" @click="rightBoxDisplay = 'login'" icon="el-icon-arrow-left">返回
+      </el-button>
+    </div>
+    <div class="right-main-box">
+      <transition-group name="el-fade-in-linear" tag="section">
+        <div v-if="rightBoxDisplay === 'login'" key="login">
+          <div class="main-title">登入</div>
+          <div class="register-box">
+            <div>尚未註冊？</div>
+            <el-button type="text" class="text-btn" @click="rightBoxDisplay = 'register'">建立帳號</el-button>
+          </div>
+          <div class="input-box">
+            <div>帳號</div>
+            <el-input v-model="inputAccount" clearable></el-input>
+          </div>
+          <div class="input-box">
+            <div>密碼</div>
+            <el-input v-model="inputPassword" show-password clearable></el-input>
+            <div class="extra-box">
+              <el-checkbox v-model="rememberChecked">記住我</el-checkbox>
+              <el-button type="text" class="text-btn" @click="rightBoxDisplay = 'forgetPassword'">忘記密碼 ?</el-button>
+            </div>
+          </div>
+          <div>
+            <el-button class="primary-btn" @click="handleLogin(inputAccount,inputPassword,rememberChecked)">登入
+            </el-button>
+          </div>
         </div>
-      </div>
-      <div class="login-btn">
-        <el-button class="primary-btn" @click="handleLogin(inputAccount,inputPassword,rememberChecked)">登入</el-button>
-      </div>
+        <div v-if="rightBoxDisplay === 'register'" key="register">
+          <div class="main-title">建立 SALA 帳號</div>
+          <div class="input-box">
+            <div>姓名</div>
+            <el-input v-model="inputAccount" clearable></el-input>
+          </div>
+        </div>
+        <div v-if="rightBoxDisplay === 'forgetPassword'" key="forgetPassword">
+          <div>forget</div>
+        </div>
+        <div v-if="rightBoxDisplay === 'resetPassword'" key="resetPassword">
+          <div>reset</div>
+        </div>
+
+      </transition-group>
     </div>
   </div>
 </div>

@@ -30,6 +30,18 @@
     font-size: $font-normal;
 }
 
+::v-deep .el-empty {
+    font-size: $font-normal;
+    &__image{
+        width: 10em;
+    }
+
+    &__description {
+        p {
+            font-size: $font-normal;
+        }
+    }
+}
 // ::v-deep .el-message{
 //     font-size: $font-normal;
 //     padding: 1em;

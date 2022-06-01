@@ -65,7 +65,6 @@ export default class Dashboard extends Vue {
   handleSearch(): void {
     this.$nextTick(() => {
       this.drawGraph()
-      console.log("test")
     })
   }
 

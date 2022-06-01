@@ -4,9 +4,15 @@ import { Component, Vue } from 'vue-property-decorator';
 @Component
 export default class Login extends Vue {
 
-    private rememberChecked = false;
+    private rightBoxDisplay = 'login';
+
+    // for login
     private inputAccount = '';
     private inputPassword = '';
+    private rememberChecked = false;
+    
+    // for create account
+    
 
     private handleLogin(account:string,password:string,remember:boolean):void{
         

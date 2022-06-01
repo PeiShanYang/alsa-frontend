@@ -29,7 +29,7 @@
     }
 
     .promote-box {
-        margin: 8em 5em;
+        margin: 10em 5em;
         .promote-title {
             font-size: $font-normal * 3.5;
             font-weight: bold;
@@ -47,17 +47,22 @@
     width: 40%;
     display: flex;
     justify-content: center;
+    flex-direction: column;
 }
 
-.login-box {
+.right-main-box {
     height: 25em;
     width: 20em;
     margin: auto;
 
-    .login-title {
-        font-size: $font-normal * 2.8;
+    .main-title {
+        font-size: $font-normal * 2.5;
         font-weight: bold;
         color: $secondary-color;
+    }
+
+    .input-box{
+        color: #968c8c;
     }
 
     .register-box {
@@ -70,11 +75,6 @@
         }
     }
 
-    .account-box,
-    .password-box {
-        color: #968c8c;
-    }
-
     .extra-box {
         display: flex;
         align-items: center;
@@ -83,10 +83,23 @@
             color: $third-color;
         }
     }
+
 }
 
 .el-input {
     margin: 0.5em 0;
+}
+
+.text-btn{
+    padding: 0;
+    font-size: $font-normal;
+    text-decoration: underline;
+    color: $third-color;
+}
+
+.primary-btn {
+    width: 100%;
+    margin: 3em 0;
 }
 
 ::v-deep .el-checkbox {
@@ -102,6 +115,16 @@
     }
 }
 
-.el-button {
-    width: 100%;
+.back-box{
+    position: absolute;
+    z-index: 100;
+    top:0;
+    width: 34%;
+    display: flex;
+    justify-content: flex-end;
+    padding: 2.5em;
+    .text-btn{
+        font-size: $font-normal *1.25;
+        text-decoration: none;
+    }
 }
