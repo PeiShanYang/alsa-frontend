@@ -65,6 +65,22 @@
         color: #968c8c;
     }
 
+    .wrap-input-box{
+        margin-top: 2em;
+        display: flex;
+        justify-content: space-between;
+        .input-box{
+            width: 45%;
+        }
+    }
+
+    .forget-box{
+        margin-top: 2em;
+        .text-btn{
+            margin: 0.5em 0;
+        }
+    }
+
     .register-box {
         color: #bfbaba;
         display: flex;
@@ -99,7 +115,7 @@
 
 .primary-btn {
     width: 100%;
-    margin: 3em 0;
+    margin: 2em 0;
 }
 
 ::v-deep .el-checkbox {
@@ -127,4 +143,20 @@
         font-size: $font-normal *1.25;
         text-decoration: none;
     }
+}
+
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  opacity: 1;
 }

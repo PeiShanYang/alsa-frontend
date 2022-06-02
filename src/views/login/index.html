@@ -11,12 +11,12 @@
     </div>
   </div>
   <div class="right-container">
-    <div class="back-box" :style="{ visibility: rightBoxDisplay !== 'login'? 'visible': 'hidden'}">
+    <div class="back-box" v-if="rightBoxDisplay !== 'login'">
       <el-button type="text" class="text-btn" @click="rightBoxDisplay = 'login'" icon="el-icon-arrow-left">返回
       </el-button>
     </div>
     <div class="right-main-box">
-      <transition-group name="el-fade-in-linear" tag="section">
+      <transition-group name="fade" tag="section" >
         <div v-if="rightBoxDisplay === 'login'" key="login">
           <div class="main-title">登入</div>
           <div class="register-box">
@@ -25,33 +25,69 @@
           </div>
           <div class="input-box">
             <div>帳號</div>
-            <el-input v-model="inputAccount" clearable></el-input>
+            <el-input v-model="loginContent.account" clearable></el-input>
           </div>
           <div class="input-box">
             <div>密碼</div>
-            <el-input v-model="inputPassword" show-password clearable></el-input>
+            <el-input v-model="loginContent.password" show-password clearable></el-input>
             <div class="extra-box">
-              <el-checkbox v-model="rememberChecked">記住我</el-checkbox>
+              <el-checkbox v-model="loginContent.rememberChecked">記住我</el-checkbox>
               <el-button type="text" class="text-btn" @click="rightBoxDisplay = 'forgetPassword'">忘記密碼 ?</el-button>
             </div>
           </div>
           <div>
-            <el-button class="primary-btn" @click="handleLogin(inputAccount,inputPassword,rememberChecked)">登入
+            <el-button class="primary-btn" @click="handleLogin(loginContent)">登入
             </el-button>
           </div>
         </div>
         <div v-if="rightBoxDisplay === 'register'" key="register">
           <div class="main-title">建立 SALA 帳號</div>
+          <div class="wrap-input-box">
+            <div class="input-box">
+              <div>姓名</div>
+              <el-input v-model="createContent.name" clearable></el-input>
+            </div>
+            <div class="input-box">
+              <div>公司部門</div>
+              <el-input v-model="createContent.department" clearable></el-input>
+            </div>
+          </div>
           <div class="input-box">
-            <div>姓名</div>
-            <el-input v-model="inputAccount" clearable></el-input>
+            <div>帳號</div>
+            <el-input v-model="createContent.account" clearable></el-input>
+          </div>
+          <div class="input-box">
+            <div>密碼</div>
+            <el-input v-model="createContent.password" show-password clearable></el-input>
+            <div class="extra-box">
+              <el-checkbox v-model="createContent.agreeChecked">勾選同意友達光電之</el-checkbox>
+              <el-button type="text" class="text-btn">服務條款</el-button>
+              <div>、</div>
+              <el-button type="text" class="text-btn">隱私政策</el-button>
+            </div>
+          </div>
+          <div>
+            <el-button class="primary-btn" @click="handleCreateAccount(createContent)">登入
+            </el-button>
           </div>
         </div>
         <div v-if="rightBoxDisplay === 'forgetPassword'" key="forgetPassword">
-          <div>forget</div>
+          <div class="main-title">忘記密碼</div>
+          <div class="forget-box">
+            <div class="input-box">
+              <div>公司信箱</div>
+              <el-input v-model="sendEmail" clearable></el-input>
+            </div>
+            <el-button type="text" class="text-btn" @click="rightBoxDisplay = 'login'">返回登入頁面
+            </el-button>
+          </div>
+          <div>
+            <el-button class="primary-btn" @click="handleSendToEmail(sendEmail)">傳送至信箱
+            </el-button>
+          </div>
         </div>
         <div v-if="rightBoxDisplay === 'resetPassword'" key="resetPassword">
-          <div>reset</div>
+          <div class="main-title">重新設定密碼</div>
         </div>
 
       </transition-group>

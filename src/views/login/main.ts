@@ -7,19 +7,49 @@ export default class Login extends Vue {
     private rightBoxDisplay = 'login';
 
     // for login
-    private inputAccount = '';
-    private inputPassword = '';
-    private rememberChecked = false;
-    
-    // for create account
-    
+    private loginContent = {
+        account: '',
+        password: '',
+        rememberChecked: false,
+    };
 
-    private handleLogin(account:string,password:string,remember:boolean):void{
-        
-        console.log("test",account,password,remember)
+    // for create account
+    private createContent = {
+        name: '',
+        department: '',
+        account: '',
+        password: '',
+        agreeChecked: false,
+    };
+
+    // for forget password
+    private sendEmail = '';
+
+
+    private handleLogin(content: {
+        account: string,
+        password: string,
+        rememberChecked: boolean
+    }): void {
+
+        console.log("test", content)
 
         this.$router.push('/')
     }
 
+    private handleCreateAccount(content: {
+        name: string,
+        department: string,
+        account: string,
+        password: string,
+        agreeChecked: boolean
+    }): void {
+        console.log("tst", content)
+    }
+
+    private handleSendToEmail(email:string):void{
+        console.log("mail",email)
+        this.rightBoxDisplay = 'resetPassword'
+    }
 
 }

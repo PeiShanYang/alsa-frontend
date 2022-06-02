@@ -52,7 +52,7 @@ export default class Dashboard extends Vue {
   get graphList(): { runId: string, data: graphData, percentage: number }[] | undefined {
 
     if (this.searchProjectName === '') {
-      this.drawGraph()
+      // this.drawGraph()
       return this.graphs
     }
 

@@ -217,10 +217,24 @@ export default class Experiments extends Vue {
   private async runExperimentTrain(): Promise<void> {
 
     const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
-    if (!datasetPath) return
+    if (!datasetPath){
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
+      })
+      return
+    } 
 
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
-    if (!datasetStatus) return
+    if (!datasetStatus){
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
+      })
+      return
+    } 
 
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
       const h = this.$createElement;
