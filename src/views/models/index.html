@@ -20,16 +20,20 @@
             </el-row>
           </template>
           <el-row>
-            
+            <el-col :span="8" class="info-row">
+              <img :src="require('@/assets/svg_icon/models/dataset_pink.svg')" />
+              <div>資料集: {{chart.data.datasetPath}}</div>
+            </el-col>
+            <el-col :span="8" class="info-row">
+              <img :src="require('@/assets/svg_icon/models/models_purple.svg')" />
+              <div>模型: {{chart.data.model}}</div>
+            </el-col>
+            <el-col :span="8">
+              
+            </el-col>
           </el-row>
           <el-row type="flex" justify="center">
             <el-col :span="8">
-              <el-row>
-                <el-col class="info-row">
-                  <img :src="require('@/assets/svg_icon/models/dataset_pink.svg')" />
-                  <div>資料集: {{chart.data.datasetPath}}</div>
-                </el-col>
-              </el-row>
               <el-row>
                 <el-col :span="21" class="plot-container">
                   <div class="plot-title">訓練結果</div>
@@ -38,12 +42,6 @@
               </el-row>
             </el-col>
             <el-col :span="15">
-              <el-row>
-                <el-col class="info-row">
-                  <img :src="require('@/assets/svg_icon/models/models_purple.svg')" />
-                  <div>模型: {{chart.data.model}}</div>
-                </el-col>
-              </el-row>
               <el-row>
                 <el-col :span="21" class="plot-container">
                   <div class="plot-title">測試結果</div>
@@ -80,7 +78,7 @@
   <div v-show="!resultExit">
     <el-empty description="暫無已訓練模型">
       <router-link :to="{ name: 'experiments', params: { projectName: $route.params.projectName,settingPath:true} }">
-        <el-button class="primary-btn empty-btn" >
+        <el-button class="primary-btn empty-btn">
           立即訓練 GO !
         </el-button>
       </router-link>
