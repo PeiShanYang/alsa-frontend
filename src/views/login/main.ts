@@ -25,6 +25,14 @@ export default class Login extends Vue {
     // for forget password
     private sendEmail = '';
 
+    // for reset password
+    private ressetPassword ={
+        account:'',
+        password:'',
+        passwordAgain:'',
+        rememberChecked:false,
+    }
+
 
     private handleLogin(content: {
         account: string,
@@ -44,12 +52,23 @@ export default class Login extends Vue {
         password: string,
         agreeChecked: boolean
     }): void {
-        console.log("tst", content)
+        console.log("test", content)
+        this.$router.push('/')
     }
 
     private handleSendToEmail(email:string):void{
         console.log("mail",email)
         this.rightBoxDisplay = 'resetPassword'
+    }
+
+    private handleResetPassword(content:{
+        account:string,
+        password:string,
+        passwordAgain:string,
+        rememberChecked:boolean
+    }):void{
+        console.log("test", content)
+        this.$router.push('/')
     }
 
 }

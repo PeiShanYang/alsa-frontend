@@ -16,7 +16,7 @@
       </el-button>
     </div>
     <div class="right-main-box">
-      <transition-group name="fade" tag="section" >
+
         <div v-if="rightBoxDisplay === 'login'" key="login">
           <div class="main-title">登入</div>
           <div class="register-box">
@@ -88,9 +88,27 @@
         </div>
         <div v-if="rightBoxDisplay === 'resetPassword'" key="resetPassword">
           <div class="main-title">重新設定密碼</div>
+          <div class="input-box">
+            <div>帳號</div>
+            <el-input v-model="ressetPassword.account" clearable></el-input>
+          </div>
+          <div class="input-box">
+            <div>新密碼</div>
+            <el-input v-model="ressetPassword.password" show-password clearable></el-input>
+          </div>
+          <div class="input-box">
+            <div>再次輸入新密碼</div>
+            <el-input v-model="ressetPassword.passwordAgain" show-password clearable></el-input>
+            <div class="extra-box">
+              <el-checkbox v-model="ressetPassword.rememberChecked">記住我</el-checkbox>
+            </div>
+          </div>
+          <div>
+            <el-button class="primary-btn" @click="handleResetPassword(ressetPassword)">重設並登入
+            </el-button>
+          </div>
+          
         </div>
-
-      </transition-group>
     </div>
   </div>
 </div>

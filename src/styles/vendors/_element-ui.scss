@@ -42,6 +42,11 @@
         }
     }
 }
+
+::v-deep .el-checkbox__inner::after{
+    height: 10px;
+    left:7px;
+}
 // ::v-deep .el-message{
 //     font-size: $font-normal;
 //     padding: 1em;
