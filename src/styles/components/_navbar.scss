@@ -19,12 +19,14 @@
 
 .logo-box {
     width: $sidebar-width;
-    div {
-        margin: 0.5em;
-        text-align: center;
+    display: flex;
+    img{
+        height:35px;
+        display: block;
     }
     a {
         text-decoration: none;
+        margin: auto;
     }
 }
 

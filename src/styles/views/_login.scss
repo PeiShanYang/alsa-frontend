@@ -17,14 +17,11 @@
     letter-spacing: 10px;
 
     .icon-box {
-        margin: 5em;
+        margin: 4em 5em;
         display: flex;
         align-items: center;
         img{
-            margin-right: 10px;
-        }
-        .icon-name{
-            font-size: $font-normal * 2;
+            height: 80px;
         }
     }
 
