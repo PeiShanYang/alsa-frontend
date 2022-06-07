@@ -24,6 +24,7 @@ export class TestProcess {
         test: {
             accuracy: 0,
             classAccuracy: new Map<string, number>(),
+            ConfusionMatrix:'',
         },
     }
 }

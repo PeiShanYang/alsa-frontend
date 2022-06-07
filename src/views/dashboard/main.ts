@@ -366,7 +366,7 @@ export default class Dashboard extends Vue {
     return `準確率:${lastProcessInstance.valid.accuracy}`
   }
 
-  private getTestProcessData(testData: { test: { accuracy: number, classAccuracy: Map<string, number> } }): string {
+  private getTestProcessData(testData: { test: { accuracy: number, classAccuracy: Map<string, number>, ConfusionMatrix: string } }): string {
     const process = new TestProcess()
     process.test = testData
 
@@ -380,6 +380,7 @@ export default class Dashboard extends Vue {
     const trainIndex = trainTask.findIndex(item => item.runId === graphRunId)
     if (trainIndex === -1) return
 
+    if (typeof trainTask[trainIndex].process === 'string') return
     const trainContent = this.getTrainProcessData(new Map<string, TrainingProcess>(Object.entries(trainTask[trainIndex].process)))
     if (trainContent === '') return
 

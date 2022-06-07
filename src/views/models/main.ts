@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Line, RingProgress,Bar } from '@antv/g2plot';
+import { Line, RingProgress} from '@antv/g2plot';
 import ChartService from "@/services/chart.service";
 import chartData from '@/io/chartData';
 import { TrainingProcess } from '@/io/rest/getQueueInformation';
@@ -35,8 +35,6 @@ export default class Models extends Vue {
 
     private charts: Chart[] = [];
 
-    private customColor ='#8184D7';
-
     private deployInfo: DeployInfo[] = [];
 
     private openDialogMessage = false;
@@ -71,11 +69,12 @@ export default class Models extends Vue {
             return
         }
 
-        response.modelList.forEach(model => {
-            const setting = this.chartSetting(model)
-            if (setting) this.charts.push(setting)
-            this.acitveResultCollapse.push(model.runId)
-        })
+        for (let i = 0; i < response.modelList.length; i++){
+            const setting = await this.chartSetting(response.modelList[i])
+            if (setting)  this.charts.push(setting)
+            this.acitveResultCollapse.push(response.modelList[i].runId)
+        }
+
 
         this.$nextTick(() => {
 
@@ -85,7 +84,7 @@ export default class Models extends Vue {
         })
     }
 
-    private chartSetting(taskInfo: ModelInfo): Chart | undefined {
+    private async chartSetting(taskInfo: ModelInfo): Promise<Chart | undefined> {
 
         const modelName = this.$i18n.t(taskInfo.model).toString()
 
@@ -99,22 +98,20 @@ export default class Models extends Vue {
             })
         })
 
-        // const ringProgressChartData: { scoreName: string, score: number }[] = []
 
         if (!taskInfo.Test) return
 
         const ringProgressChartData = { scoreName: "Accuracy", score: taskInfo.Test.test.test.accuracy }
 
-        // for accuracy
-        // ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
 
-        const barChartData:{ className: string, classScore: number,classColor:string }[] = []
-        const customColor = ['#275776','#8184D7','#81D6E6','#58C6E0']
+        const barChartData: { className: string, classScore: number, classColor: string }[] = []
+        const customColor = ['#275776', '#8184D7', '#81D6E6', '#58C6E0']
         // for class accuracy
         for (const [key, value] of Object.entries(taskInfo.Test.test.test.classAccuracy)) {
-            barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10 ,classColor: customColor[barChartData.length]})
+            barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length] })
         }
 
+        const confusionMatrixImagePath = await Api.sendReport(taskInfo.Test.test.test.ConfusionMatrix)
 
         return {
             data: {
@@ -125,6 +122,7 @@ export default class Models extends Vue {
                 lineChartData,
                 ringProgressChartData,
                 barChartData,
+                confusionMatrixImagePath,
             },
             runId: taskInfo.runId,
             isCurrentVersion: this.isCurrentVersion(taskInfo.runId),
@@ -148,45 +146,15 @@ export default class Models extends Vue {
         lineChart.render();
 
         const ringProgressChartContainer = document.getElementById(`${runId}_ringProgressChart`)
-        if(!ringProgressChartContainer) return
+        if (!ringProgressChartContainer) return
 
-        const ringProgressChart = new RingProgress(ringProgressChartContainer,{
-            ...ChartService.getRingChartOption(screenWidth,dataContent.ringProgressChartData.score,dataContent.ringProgressChartData.scoreName),
+        const ringProgressChart = new RingProgress(ringProgressChartContainer, {
+            ...ChartService.getRingChartOption(screenWidth, dataContent.ringProgressChartData.score, dataContent.ringProgressChartData.scoreName),
             percent: dataContent.ringProgressChartData.score
         })
 
         ringProgressChart.render();
 
-        const barChartContainer =  document.getElementById(`${runId}_barChart`)
-        if(!barChartContainer) return
-
-        const barChart = new Bar(barChartContainer,{
-            data:dataContent.barChartData,
-            xField:'score',
-            yField:'scoreName',
-            seriesField:'scoreName',
-            legend: false,
-            label:{
-                position:'right',
-                offsetY:-55,
-            },
-            // yAxis: false,
-      xAxis: false,
-        })
-
-        barChart.render()
-        // dataContent.ringProgressChartData.forEach(item => {
-
-        //     const ringProgressContainer = document.getElementById(`${runId}_${item.scoreName}`)
-        //     if (!ringProgressContainer) return
-
-        //     const ringProgressChart = new RingProgress(ringProgressContainer, {
-        //         ...ChartService.getRingChartOption(screenWidth, item.score, item.scoreName),
-        //         percent: item.score
-        //     })
-
-        //     ringProgressChart.render()
-        // })
     }
 
     private getDownloadInfo(runId: string): void {

@@ -23,6 +23,10 @@
     }
 }
 
+.wrap-info-row{
+    padding: 0 1em 1em;
+}
+
 .plot-container {
     font-size: $font-normal;
     margin: 0.7em;
@@ -36,7 +40,7 @@
         @extend %box-shadow;
         box-sizing: border-box;
         height: $font-normal *20;
-        padding: 2.5em;
+        padding: 2em;
         display: flex;
         flex-direction: column;
     }
@@ -88,9 +92,16 @@
     }
     &-bar__innerText {
         font-size: $font-normal * 1.5;
-        color: black;
+        color: $primary-color;
         position: absolute;
         top: -1em;
         right: -1.5em;
     }
+}
+
+.matirx-img{
+    position: absolute;
+    height: 75%;
+    right: 2%;
+    top: 19%;
 }

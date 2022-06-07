@@ -68,7 +68,7 @@ export default class Api {
     store.projectList = new Map<string, Project>(
       res.data.projects.map((v) => [v, new Project()])
     );
-    
+
     return true
   }
 
@@ -266,7 +266,7 @@ export default class Api {
 
     if (!res.data) return new GetModelInformationResData();
 
-    console.log(res.data)
+    // console.log(res.data)
 
     return res.data
 
@@ -326,5 +326,15 @@ export default class Api {
     if (!res.data) return null
 
     return res.data;
+  }
+
+  static async sendReport(path: string): Promise<string> {
+
+    if(!path) return ''
+    
+    const pathToAppend = path.split('./')[1]
+
+    return `${host}images/${pathToAppend}`;
+
   }
 }
