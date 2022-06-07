@@ -2,7 +2,7 @@
   <template v-if="messageData.title !== ''">
     <el-row>
       <el-col class="dialog-title">
-        <i :class="typeIcon"></i>
+        <i :class="typeIcon" :style="typeColor"></i>
         <div>{{messageData.title}}</div>
       </el-col>
     </el-row>

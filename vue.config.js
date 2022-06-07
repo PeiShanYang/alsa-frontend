@@ -2,6 +2,7 @@ module.exports = {
   devServer: {
     proxy: "http://joejhhaung:Auo20222@auhqwsg.corpnet.auo.com:8080",
     disableHostCheck: true,
+    port:8084,
   },
 
   runtimeCompiler:true,
@@ -22,5 +23,14 @@ module.exports = {
       enableInSFC: false,
       enableBridge: false
     }
+  },
+
+  chainWebpack: config=>{
+    config
+      .plugin('html')
+      .tap(args=>{
+        args[0].title = 'SALA';
+        return args;
+      })
   }
 };

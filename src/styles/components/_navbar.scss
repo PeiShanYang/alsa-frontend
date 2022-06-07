@@ -13,38 +13,65 @@
     @extend %box-shadow;
     height: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    font-size: $font-normal;
 }
 
 .logo-box {
     width: $sidebar-width;
-    div {
-        margin: 0.5em;
-        text-align: center;
+    display: flex;
+    img{
+        height:35px;
+        display: block;
     }
     a {
         text-decoration: none;
-    }
-}
-
-.top-info {
-    width: calc(100% - $sidebar-width);
-    padding: 0.5em;
-}
-
-.collapse-btn{
-    cursor: pointer;
-}
-
-.user-info{
-    cursor: pointer;
-    height: 2.2em;
-    display: flex;
-    align-items: center;
-    div{
-        width: 1em;
-        height: 1em;
         margin: auto;
     }
 }
+
+.main-nav-box {
+    width: calc(100% - $sidebar-width);
+    display: flex;
+    justify-content: space-between;
+}
+
+.path-info-box{
+    display: flex;
+    align-items: center;
+    .collapse-btn{
+        cursor: pointer;
+        margin-right: 10px;
+    }
+}
+
+.user-info-box{
+    margin: 0 2em;
+
+    i {
+        font-size: $font-normal *1.5;
+        color: $primary-color;
+    }
+
+}
+
+::v-deep .el-submenu{
+
+    &__title{
+        border-bottom-color: #fff !important;
+    }
+    
+    &__icon-arrow{
+        font-size: $font-normal;
+    }
+}
+
+.el-menu-item{
+    font-size: $font-normal;
+    text-align: center;
+    color: $primary-color !important;
+}
+.el-divider{
+    margin: 10px 0;
+}
+

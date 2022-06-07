@@ -126,6 +126,9 @@ export default class Experiments extends Vue {
           target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
         });
       }
+
+      if (nodeData.component === 'dataset-node') this.displayDatasetToolTip(graph, nodeData.content)
+
     });
 
     return graph
@@ -153,8 +156,9 @@ export default class Experiments extends Vue {
   private async setDatasetContent(path: string): Promise<void> {
 
     this.openDialogDataset = false;
-    const nodes = this.graph.graph?.getNodes()
-    const datasetnode = nodes?.find(node => node.id === `dataset-node_${this.graph.projectName}`)
+    if (!this.graph.graph) return
+    const nodes = this.graph.graph.getNodes()
+    const datasetnode = nodes.find(node => node.id === `dataset-node_${this.graph.projectName}`)
 
 
     await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
@@ -168,17 +172,76 @@ export default class Experiments extends Vue {
 
     datasetnode?.setData(sendDatasetStatus, { overwrite: true })
 
+    this.displayDatasetToolTip(this.graph.graph, sendDatasetStatus.content)
+
+  }
+
+
+  private displayDatasetToolTip(graph: Graph, content: string[]): void {
+
+    const contentFilter = content.filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
+    const nodeId = 'dataset_tooltip'
+    const nodes = graph.getNodes()
+    const tipNode = nodes.find((node => node.id === nodeId))
+
+    if (contentFilter.length !== 0 && !tipNode) {
+      graph.addNode({
+        id: nodeId,
+        shape: 'path',
+        x: 35,
+        y: 190,
+        width: 200,
+        height: 60,
+        path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
+        attrs: {
+          body: {
+            fill: '#951414',
+            stroke: '#951414',
+          },
+          label: {
+            text: '請設定有效的資料集',
+            x: 6,
+            y: 6,
+            fill: '#fff'
+          },
+        },
+      })
+    }
+
+    if (contentFilter.length === 0 && tipNode) {
+      graph.removeCell(nodeId)
+    }
+
   }
 
   private async runExperimentTrain(): Promise<void> {
 
     const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
-    if (!datasetPath) return
+    if (!datasetPath){
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
+      })
+      return
+    } 
 
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
-    if (!datasetStatus) return
+    if (!datasetStatus){
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
+      })
+      return
+    } 
 
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先完成資料集的 上傳、標註、切分的任務"),
+      })
       return
     }
 
@@ -190,8 +253,8 @@ export default class Experiments extends Vue {
     this.dialogMessageData = {
       type: 'info',
       title: '請至 Dashboard 查看執行進度為何',
-      cancelBtnName:'稍後再說',
-      confirmBtnName:'前往查看',
+      cancelBtnName: '稍後再說',
+      confirmBtnName: '前往查看',
     }
     this.openDialogMessage = true
 

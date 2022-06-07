@@ -12,14 +12,8 @@ import { DatasetStatus } from '@/io/dataset';
 })
 export default class Dataset extends Vue {
 
-  private selectedDatasetValue = '';
-  private datasetOptions: { value: string, label: string }[] = [
-    {
-      value: "all data",
-      label: "所有資料集",
-    },
-  ];
   private acitveDatasetCollapse: string[] = ["1"];
+  private searchDataset = '';
 
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
@@ -29,6 +23,16 @@ export default class Dataset extends Vue {
 
   get projectName(): string {
     return this.$route.params.projectName
+  }
+
+  get datasetList(): Map<string, DatasetStatus> | undefined {
+    
+    if(!this.datasets) return
+    if (this.searchDataset === '') return this.datasets
+
+    return new Map<string, DatasetStatus>([...this.datasets]
+      .filter(item=> item[0].toUpperCase().includes(this.searchDataset.toUpperCase())));
+
   }
 
   @Watch('openDialogMessage')
@@ -48,7 +52,7 @@ export default class Dataset extends Vue {
     await Api.getDatasets(store.currentProject)
 
     const project = store.projectList.get(store.currentProject)
-    if(!project) return
+    if (!project) return
 
     this.datasets = project.datasets
 
@@ -68,10 +72,18 @@ export default class Dataset extends Vue {
 
     if (!datasetPath) return;
     if (datasetPath === "") return
-    await Api.checkDataset(datasetPath)
+    const response = await Api.checkDataset(datasetPath)
 
-    this.openDialogMessage = false
-    
+    if (response === false) {
+      const h = this.$createElement;
+      this.$message({
+        type: 'error',
+        message: h('h3', { style: 'color:#F56C6C;' }, "資料集位置設置錯誤"),
+      })
+    } else {
+      this.openDialogMessage = false
+    }
+
   }
 
 }
