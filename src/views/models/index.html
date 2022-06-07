@@ -67,8 +67,8 @@
                     <div class="plot-content">
                       <template v-for="item in chart.data.barChartData">
                         <div class="progress-bar-container">
-                          <div class="progress-content">{{item.scoreName}}</div>
-                          <el-progress :text-inside="true" :stroke-width="20" :percentage="item.score" :color="customColor"></el-progress>
+                          <div class="progress-content" :style="'background-color:'+item.classColor">{{item.className}}</div>
+                          <el-progress :text-inside="true" :stroke-width="20" :percentage="item.classScore" :color="item.classColor"></el-progress>
                           <div class="progress-end-extra">100%</div>
                         </div>
                       </template> 
