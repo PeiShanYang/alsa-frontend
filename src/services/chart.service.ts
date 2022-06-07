@@ -36,15 +36,15 @@ export default class ChartService {
             autoFit: true,
             radius: 1,
             innerRadius: 0.75,
-            color: ['#0E5879', '#E6E1E1'],
+            color: ['#1380B1', '#E6E1E1'],
             statistic: {
                 title: false,
                 content: {
                     customHtml: () => {
                         return `
                                 <div>
-                                    <div style='font-size:30px;line-height: initial;padding:5px 0'>${showPrecent}%</div>
-                                    <div style='font-size:20px;'>${title}</div>    
+                                    <div style='font-size:50px;line-height: initial;padding:5px 0'>${showPrecent}%</div>
+                                    <div style='font-size:30px;'>${title}</div>    
                                 </div>
                                 `
                     }

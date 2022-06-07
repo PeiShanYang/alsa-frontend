@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Line, RingProgress } from '@antv/g2plot';
+import { Line, RingProgress,Bar } from '@antv/g2plot';
 import ChartService from "@/services/chart.service";
 import chartData from '@/io/chartData';
 import { TrainingProcess } from '@/io/rest/getQueueInformation';
@@ -18,6 +18,7 @@ class Chart {
     isCurrentVersion = false;
     deployBtnName = '部署此模型';
     deployInfoMsg: string[] = [];
+    displayResult = 'train';
 }
 
 @Component({
@@ -33,6 +34,8 @@ export default class Models extends Vue {
     private acitveResultCollapse: string[] = [];
 
     private charts: Chart[] = [];
+
+    private customColor ='#8184D7';
 
     private deployInfo: DeployInfo[] = [];
 
@@ -79,11 +82,7 @@ export default class Models extends Vue {
             this.charts.forEach(item => this.renderChart(window.innerWidth, item.data, item.runId))
 
             loadingInstance.close()
-
         })
-
-
-
     }
 
     private chartSetting(taskInfo: ModelInfo): Chart | undefined {
@@ -100,16 +99,19 @@ export default class Models extends Vue {
             })
         })
 
-        const ringProgressChartData: { scoreName: string, score: number }[] = []
+        // const ringProgressChartData: { scoreName: string, score: number }[] = []
 
-        if(!taskInfo.Test) return
-        
+        if (!taskInfo.Test) return
+
+        const ringProgressChartData = { scoreName: "Accuracy", score: taskInfo.Test.test.test.accuracy }
+
         // for accuracy
-        ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
+        // ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
 
+        const barChartData:{scoreName:string,score:number}[] = []
         // for class accuracy
         for (const [key, value] of Object.entries(taskInfo.Test.test.test.classAccuracy)) {
-            ringProgressChartData.push({ scoreName: key, score: Math.round(value * 1000) / 1000 })
+            barChartData.push({ scoreName: key, score: Math.round(value * 1000) / 10 })
         }
 
 
@@ -121,11 +123,13 @@ export default class Models extends Vue {
                 model: modelName,
                 lineChartData,
                 ringProgressChartData,
+                barChartData,
             },
             runId: taskInfo.runId,
             isCurrentVersion: this.isCurrentVersion(taskInfo.runId),
             deployInfoMsg: this.modelDeployInfoMsg(taskInfo.runId),
             deployBtnName: this.deployBtnName(taskInfo.runId),
+            displayResult: 'test',
         }
     }
 
@@ -142,18 +146,46 @@ export default class Models extends Vue {
 
         lineChart.render();
 
-        dataContent.ringProgressChartData.forEach(item => {
+        const ringProgressChartContainer = document.getElementById(`${runId}_ringProgressChart`)
+        if(!ringProgressChartContainer) return
 
-            const ringProgressContainer = document.getElementById(`${runId}_${item.scoreName}`)
-            if (!ringProgressContainer) return
-
-            const ringProgressChart = new RingProgress(ringProgressContainer, {
-                ...ChartService.getRingChartOption(screenWidth, item.score, item.scoreName),
-                percent: item.score
-            })
-
-            ringProgressChart.render()
+        const ringProgressChart = new RingProgress(ringProgressChartContainer,{
+            ...ChartService.getRingChartOption(screenWidth,dataContent.ringProgressChartData.score,dataContent.ringProgressChartData.scoreName),
+            percent: dataContent.ringProgressChartData.score
         })
+
+        ringProgressChart.render();
+
+        const barChartContainer =  document.getElementById(`${runId}_barChart`)
+        if(!barChartContainer) return
+
+        const barChart = new Bar(barChartContainer,{
+            data:dataContent.barChartData,
+            xField:'score',
+            yField:'scoreName',
+            seriesField:'scoreName',
+            legend: false,
+            label:{
+                position:'right',
+                offsetY:-55,
+            },
+            // yAxis: false,
+      xAxis: false,
+        })
+
+        barChart.render()
+        // dataContent.ringProgressChartData.forEach(item => {
+
+        //     const ringProgressContainer = document.getElementById(`${runId}_${item.scoreName}`)
+        //     if (!ringProgressContainer) return
+
+        //     const ringProgressChart = new RingProgress(ringProgressContainer, {
+        //         ...ChartService.getRingChartOption(screenWidth, item.score, item.scoreName),
+        //         percent: item.score
+        //     })
+
+        //     ringProgressChart.render()
+        // })
     }
 
     private getDownloadInfo(runId: string): void {
@@ -265,5 +297,17 @@ export default class Models extends Vue {
             `模型名稱： ${modelName}`,
             `部署期間： ${deployDate.join(", ")}`
         ]
+    }
+
+    private handleDropdownDisplay(command: string): void {
+
+        const content = command.split("_")
+        const chartId = content[0]
+        const displayInfo = content[1]
+
+        const targetChart = this.charts.find(item => item.runId === chartId)
+        if (!targetChart) return
+        targetChart.displayResult = displayInfo
+
     }
 }

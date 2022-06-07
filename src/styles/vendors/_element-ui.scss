@@ -47,6 +47,13 @@
     height: 10px;
     left:7px;
 }
+
+::v-deep .el-dropdown{
+    font-size: $font-normal;
+    &-menu__item{
+        font-size: $font-normal;
+    }
+}
 // ::v-deep .el-message{
 //     font-size: $font-normal;
 //     padding: 1em;
