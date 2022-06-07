@@ -108,10 +108,11 @@ export default class Models extends Vue {
         // for accuracy
         // ringProgressChartData.push({ scoreName: "accuracy", score: taskInfo.Test.test.test.accuracy })
 
-        const barChartData:{scoreName:string,score:number}[] = []
+        const barChartData:{ className: string, classScore: number,classColor:string }[] = []
+        const customColor = ['#275776','#8184D7','#81D6E6','#58C6E0']
         // for class accuracy
         for (const [key, value] of Object.entries(taskInfo.Test.test.test.classAccuracy)) {
-            barChartData.push({ scoreName: key, score: Math.round(value * 1000) / 10 })
+            barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10 ,classColor: customColor[barChartData.length]})
         }
 
 

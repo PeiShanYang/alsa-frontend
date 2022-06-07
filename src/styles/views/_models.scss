@@ -25,7 +25,7 @@
 
 .plot-container {
     font-size: $font-normal;
-    margin: 0.5em;
+    margin: 0.7em;
     .plot-title {
         border-radius: 8px 8px 0px 0px;
         background-color: $third-color;
@@ -50,9 +50,6 @@
 }
 
 
-
-
-
 .progress-bar-container {
     font-size: $font-normal;
     display: flex;
@@ -61,7 +58,7 @@
         width: $font-normal * 5;
         height: $font-normal * 2.5;
         border-radius: 5px;
-        background-color: #275776;
+        // background-color: #275776;
         color: white;
         display: flex;
         align-items: center;
