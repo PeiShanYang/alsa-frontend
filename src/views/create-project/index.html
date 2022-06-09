@@ -13,9 +13,9 @@
         </div>
       </el-col>
       <el-col :span="8" class="card-box">
-        <div class="content-wrap">
+        <div class="content-wrap" @click="createEmpty">
           <i class="el-icon-circle-plus-outline"></i>
-          <div class="card-content">空白頁面</div>
+          <div class="card-content">新增專案</div>
         </div>
       </el-col>
     </el-row>
@@ -24,4 +24,6 @@
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="createProjectByKey" />
 
+  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
+  @cancel-action="openDialogMessage=false" @confrim-action="createProjectByKey" />
 </div>
