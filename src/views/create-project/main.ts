@@ -26,11 +26,18 @@ export default class CreateProject extends Vue {
         this.openDialogMessage = true
     }
 
+    private createEmpty(): void {
+        this.dialogMessageData = {
+            ...this.dialogMessageData,
+            content: [{ inputName: "專案名稱", inputContent: "" }]
+        }
+        this.openDialogMessage = true
+    }
 
     private async createProjectByKey(content: { inputName: string, inputContent: string }[]): Promise<void> {
 
         this.inputProjectName = content.find(item => item.inputName === "專案名稱")?.inputContent ?? ''
-        this.inputSolutionKey = content.find(item => item.inputName === "請輸入您的解決方案金鑰")?.inputContent ?? ''
+        this.inputSolutionKey = content.find(item => item.inputName === "請輸入您的解決方案金鑰")?.inputContent ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7fX0sIkNvbmZpZ0V2YWx1YXRpb24iOnsiRXZhbHVhdGlvblBhcmEiOnsic2hvd0FjYyI6eyJzd2l0Y2giOjF9LCJzaG93Q2xhc3NBY2MiOnsic3dpdGNoIjoxfX19LCJDb25maWdNb2RlbFNlcnZpY2UiOnsiTG9zc0Z1bmN0aW9uUGFyYSI6eyJsb3NzRnVuY3Rpb24iOiJDcm9zc0VudHJvcHlMb3NzIn0sIkxlYXJuaW5nUmF0ZSI6eyJsZWFybmluZ1JhdGUiOjAuMDAxfSwiT3B0aW1pemVyUGFyYSI6eyJTR0QiOnsic3dpdGNoIjp0cnVlLCJtb21lbnR1bSI6MC45LCJkYW1wZW5pbmciOjAsIndlaWdodERlY2F5IjowLjAwMDUsIm5lc3Rlcm92IjpmYWxzZX19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC4xfX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOiJJbWFnZU5ldCIsIm1lYW4iOm51bGwsInN0ZCI6bnVsbH0sInJlc2l6ZSI6eyJzd2l0Y2giOnRydWUsImltYWdlU2l6ZSI6WzIyNCwyMjRdLCJpbnRlcnBvbGF0aW9uIjoiQklMSU5FQVIifX19LCJDb25maWdQeXRvcmNoTW9kZWwiOnsiU2VsZWN0ZWRNb2RlbCI6eyJtb2RlbCI6eyJzdHJ1Y3R1cmUiOiJhdW9fdW5yZXN0cmljdGVkX3Bvd2VyZnVsX21vZGVsIiwicHJldHJhaW5lZCI6MX19LCJDbHNNb2RlbFBhcmEiOnsiYmF0Y2hTaXplIjoxNiwiZXBvY2hzIjoyfX0sIkNvbmZpZ1Jlc3VsdFN0b3JhZ2UiOnsidW5rbm93bkZpbHRlciI6eyJzd2l0Y2giOjAsImZpbHRlciI6eyJ1bmtub3duIjowLjl9LCJyZXZlcnNlIjowLCJzYXZlQ3N2IjoyfSwiZHJhd0NvbmZ1c2lvbk1hdHJpeCI6eyJzd2l0Y2giOjF9fX0.u05NTZ3SsHRMJi3yLJ9U5lELwk7qfDuqBp12jmVP_Vs"
 
         const firstChr = new RegExp("^[A-Za-z]")
         const otherpattern = new RegExp("[`~!@#$^&*()=|{}':;'\\[\\]<>/?~！@#￥……&*（）——|{}【】‘；：”“'% - \\s \\.]");
