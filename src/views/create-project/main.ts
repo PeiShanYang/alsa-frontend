@@ -47,6 +47,7 @@ export default class CreateProject extends Vue {
 
             checkStrictName = false
             checkOrder = true
+            return
         }
         if (this.inputProjectName.match(otherpattern) !== null && checkOrder === false) {
 
@@ -57,6 +58,7 @@ export default class CreateProject extends Vue {
             })
 
             checkStrictName = false
+            return
         }
 
         let response = false
@@ -80,6 +82,7 @@ export default class CreateProject extends Vue {
                 type: 'error',
                 message: h('h3', { style: 'color:#F56C6C;' }, "專案建立失敗"),
             })
+            return
         } else {
             this.inputProjectName = '';
             this.inputSolutionKey = '';

@@ -207,6 +207,16 @@ export default class Models extends Vue {
     }
 
     private setDeployFilename(runId: string): void {
+
+        if(this.inputDeployPath === ''){
+            const h = this.$createElement;
+            this.$message({
+                type: 'warning',
+                message: h('h3', { style: 'color:#e6a23c;' }, "請先設定部署路徑"),
+            })
+            return
+        }
+
         if (this.isCurrentVersion(runId)) return
 
         this.downloadInfo.runId = runId

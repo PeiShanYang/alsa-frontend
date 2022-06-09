@@ -4,10 +4,12 @@ import DialogMessageData from '@/io/dialogMessageData';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { DatasetStatus } from '@/io/dataset';
+import { VueTreeList, Tree, TreeNode } from 'vue-tree-list';
 
 @Component({
   components: {
     "dialog-message": DialogMessage,
+    "vue-tree-list":VueTreeList,
   }
 })
 export default class Dataset extends Vue {
@@ -19,6 +21,41 @@ export default class Dataset extends Vue {
 
   private openDialogMessage = false;
   private dialogMessageData: DialogMessageData = new DialogMessageData()
+
+  private newTree = {};
+
+  private data = new Tree([
+    {
+      name: 'Node 1',
+      id: 1,
+      pid: 0,
+      dragDisabled: true,
+      addTreeNodeDisabled: true,
+      addLeafNodeDisabled: true,
+      editNodeDisabled: true,
+      delNodeDisabled: true,
+      children: [
+        {
+          name: 'Node 1-2',
+          id: 'tests',
+          isLeaf: true,
+          pid: 1
+        }
+      ]
+    },
+    {
+      name: 'Node 2',
+      id: 3,
+      pid: 0,
+      disabled: true
+    },
+    {
+      name: 'Node 3',
+      id: 4,
+      pid: 0,
+      addLeafNodeDisabled: true,
+    }
+  ])
 
 
   get projectName(): string {
