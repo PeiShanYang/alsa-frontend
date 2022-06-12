@@ -2,10 +2,10 @@
   <div v-show="resultExit">
     <el-row type="flex" justify="center" class="search-row">
       <el-col :span="6">
-        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="editDeployPath" />
+        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="setDeployPathDialog=true" />
       </el-col>
       <el-col :span="2" :offset="1">
-        <el-button class="primary-btn" @click="editDeployPath">設定</el-button>
+        <el-button class="primary-btn" @click="setDeployPathDialog=true">設定</el-button>
       </el-col>
     </el-row>
     <el-collapse v-model="acitveResultCollapse">
@@ -123,7 +123,9 @@
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="downloadModel" />
 
-  <dialog-message :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
+  
+
+    <dialog-tree-list :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
     @cancel-action="setDeployPathDialog=false" @confrim-action="setDeployPath" />
 
   <dialog-message :dialog-open="deployDialog" :message-data="deployDialogData" @cancel-action="deployDialog=false"

@@ -4,7 +4,7 @@
       <el-input placeholder="Search Dataset" v-model="searchDataset" clearable />
     </el-col>
     <el-col :span="3" :offset="1">
-      <el-button class="primary-btn" @click="settingDatasetPath">新增資料集</el-button>
+      <el-button class="primary-btn" @click="setDatasetPathDialog=true">新增資料集</el-button>
     </el-col>
   </el-row>
 
@@ -49,23 +49,7 @@
     </el-collapse-item>
   </el-collapse>
 
-  <vue-tree-list :model="data" default-tree-node-name="new node" default-leaf-node-name="new leaf"
-    v-bind:default-expanded="false">
-    <template v-slot:leafNameDisplay="slotProps">
-      <span>
-
-        {{ slotProps.model.name }} <span class="muted">#{{ slotProps.model.id }}</span>
-        
-      </span>
-    </template>
-    <template v-slot:treeNodeIcon="slotProps">
-      <el-checkbox></el-checkbox>
-      <i class="vtl-icon vtl-menu-icon vtl-icon-folder"></i>
-    </template>
-
-  </vue-tree-list>
-
-  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
-    @cancel-action="openDialogMessage=false" @confrim-action="checkDataset" />
+  <dialog-tree-list :dialog-open="setDatasetPathDialog" :message-data="setDatasetPathDialogData"
+    @cancel-action="setDatasetPathDialog=false" @confrim-action="checkDataset" />
 
 </div>

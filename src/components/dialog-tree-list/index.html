@@ -1,0 +1,41 @@
+<el-dialog :visible.sync="dialogOpen" :show-close=false :close-on-click-modal="false">
+  <el-row>
+    <el-col class="dialog-title">
+      <div>{{messageData.title}}</div>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col class="dialog-input">
+      <el-input v-model="messageData.content" clearable />
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col class="dialog-list">
+      <vue-tree-list :model="treeData" v-bind:default-expanded="true">
+        <template v-slot:leafNameDisplay="slotProps">
+          <div v-if="!slotProps.model.editable" class="vtl-icon" @click="handleCeckFolder(slotProps.model)">{{
+            slotProps.model.name }}</div>
+          <el-input v-else v-model="slotProps.model.name" @blur="setUnEditable(slotProps.model)" clearable />
+          <div class="icon-box">
+            <template v-if="slotProps.model.name !== messageData.rootPath">
+              <i class="vtl-icon vtl-icon-folder-plus-e" @click="addNewFolder(slotProps.model)"></i>
+              <i class="vtl-icon vtl-icon-edit" @click="slotProps.model.editable = true"></i>
+              <i class="vtl-icon vtl-icon-trash" @click="askDeleteFolder(slotProps.model)"></i>
+            </template>
+          </div>
+
+        </template>
+      </vue-tree-list>
+    </el-col>
+  </el-row>
+  <el-row type="flex" justify="center" slot="footer">
+    <el-col :span="12" class="action-btn-group">
+      <el-button class="secondary-btn" @click="handleCancelAction">取消</el-button>
+      <el-button class="primary-btn" @click="handleConfrimAction">確認</el-button>
+    </el-col>
+  </el-row>
+
+  <dialog-message :dialog-open="deleteFolderDialog" :message-data="deleteFolderDialogData"
+    @cancel-action="deleteFolderDialog=false" @confrim-action="confirmDelete" />
+
+</el-dialog>

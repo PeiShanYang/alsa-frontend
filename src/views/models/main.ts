@@ -11,6 +11,7 @@ import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 import storeService from '@/services/store.service';
 import { DeployInfo } from '@/io/deployInfo';
+import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
 
 class Chart {
     data!: chartData;
@@ -24,6 +25,7 @@ class Chart {
 @Component({
     components: {
         "dialog-message": DialogMessage,
+        "dialog-tree-list": DialogTreeList,
     }
 })
 export default class Models extends Vue {
@@ -42,7 +44,7 @@ export default class Models extends Vue {
     private downloadInfo = { runId: '' }
 
     private setDeployPathDialog = false;
-    private setDeployPathDialogData = new DialogMessageData()
+    private setDeployPathDialogData = { rootPath:'deploy',title: '設定部署路徑', content: '' };
 
     private deployDialog = false;
     private deployDialogData = new DialogMessageData()
@@ -180,18 +182,10 @@ export default class Models extends Vue {
         this.openDialogMessage = false
     }
 
-    private editDeployPath(): void {
-        this.setDeployPathDialogData = {
-            ...this.setDeployPathDialogData,
-            content: [{ inputName: "請輸入部署路徑", inputContent: this.inputDeployPath }],
-        }
 
-        this.setDeployPathDialog = true
-    }
 
-    private async setDeployPath(content: { inputName: string, inputContent: string }[]): Promise<void> {
+    private async setDeployPath(deployPath: string): Promise<void> {
 
-        const deployPath = content.find(item => item.inputName === "請輸入部署路徑")?.inputContent
 
         if (!deployPath || deployPath === "") return
         if (!storeService.currentProject) return;

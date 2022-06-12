@@ -1,0 +1,63 @@
+::v-deep .el-dialog {
+    margin-top: 20vh !important;
+    width: 40vw;
+    min-height: 330px;
+    font-size: $font-normal;
+    display: grid;
+
+    &__header,
+    &__body,
+    &__footer {
+        padding: 0;
+    }
+    &__body {
+        color: $secondary-color;
+        font-size: $font-normal * 1.25;
+        text-align: center;
+        margin-top: 1em;
+    }
+
+    .dialog-title {
+        display: flex;
+        justify-content: center;
+        margin: 1em 0;
+        i {
+            font-size: $font-normal * 1.75;
+            margin-right: 0.5em;
+        }
+    }
+
+    .dialog-input {
+        .el-input {
+            font-size: $font-normal;
+            margin: 1em 0;
+            width: 75%;
+        }
+    }
+
+    .dialog-list {
+        display: flex;
+        justify-content: center;
+        max-height: 300px;
+        overflow-y: scroll;
+        .vtl-node-content {
+            display: flex;
+            align-items: center;
+        }
+        .el-input {
+            font-size: $font-normal;
+            width: 45%;
+        }
+        .icon-box {
+            display: flex;
+            opacity: 0;
+        }
+        .icon-box:hover {
+            opacity: 0.8;
+        }
+        .vtl-icon {
+            margin: 0 2px;
+            cursor: pointer;
+        }
+    }
+}

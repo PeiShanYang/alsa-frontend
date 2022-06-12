@@ -18,6 +18,10 @@ import { StringUtil } from "@/utils/string.util";
 import { SetDeployPathData, SetDeployPathReq, SetDeployPathRes } from "@/io/rest/setDeployPath";
 import { DeployInfo } from "@/io/deployInfo";
 import { DeployReq, DeployRes } from "@/io/rest/deploy";
+import { ListFolderRes, ListFolderResData } from "@/io/rest/listFolder";
+import { CreateFolderReq, CreateFolderRes } from "@/io/rest/createFolder";
+import { RemoveFolderReq, RemoveFolderRes } from "@/io/rest/removeFolder";
+import { RenameFolderReq, RenameFolderRes } from "@/io/rest/renameFolder";
 
 
 const host = 'http://tw100104318:37510/';
@@ -330,11 +334,106 @@ export default class Api {
 
   static async sendReport(path: string): Promise<string> {
 
-    if(!path) return ''
-    
+    if (!path) return ''
     const pathToAppend = path.split('./')[1]
 
     return `${host}images/${pathToAppend}`;
+  }
+
+  // folder select and edit
+
+  static async listFolder(rootPath: string): Promise<ListFolderResData[]> {
+
+    let reqUrl = ''
+    if (rootPath === 'datasets') reqUrl = 'list-dataset-folder'
+    if (rootPath === 'deploy') reqUrl = 'list-deploy-folder'
+
+    const response: AxiosResponse<ListFolderRes> = await axios.post(
+      host + reqUrl,
+    );
+
+    if (response.status !== 200) return [];
+
+    const res: ListFolderRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    if (!res.data) return [];
+
+    return res.data;
 
   }
+
+  static async createFolder(rootPath: string, root: string, dir: string): Promise<boolean> {
+
+    const reqData: CreateFolderReq = { root, dir }
+
+    let reqUrl = ''
+    if (rootPath === 'datasets') reqUrl = 'create-dataset-folder'
+    if (rootPath === 'deploy') reqUrl = 'create-deploy-folder'
+
+    const response: AxiosResponse<CreateFolderRes> = await axios.post(
+      host + reqUrl,
+      reqData
+    )
+
+    if (response.status !== 200) return false
+
+    const res: CreateFolderRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return false
+    }
+
+    return true
+  }
+
+  static async removeFolder(rootPath: string, root: string, dir: string): Promise<boolean> {
+
+    const reqData: RemoveFolderReq = { root, dir }
+
+    let reqUrl = ''
+    if (rootPath === 'datasets') reqUrl = 'remove-dataset-folder'
+    if (rootPath === 'deploy') reqUrl = 'remove-deploy-folder'
+
+    const response: AxiosResponse<RemoveFolderRes> = await axios.post(
+      host + reqUrl,
+      reqData
+    )
+
+    if (response.status !== 200) return false
+
+    const res: RemoveFolderRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return false
+    }
+
+    return true
+  }
+
+  static async renameFolder(rootPath: string, root: string, src: string, dst: string): Promise<boolean> {
+
+    const reqData: RenameFolderReq = { root, src, dst }
+
+    let reqUrl = ''
+    if (rootPath === 'datasets') reqUrl = 'rename-dataset-folder'
+    if (rootPath === 'deploy') reqUrl = 'rename-deploy-folder'
+
+    const response: AxiosResponse<RenameFolderRes> = await axios.post(
+      host + reqUrl,
+      reqData
+    )
+
+    if (response.status !== 200) return false
+
+    const res: RenameFolderRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return false
+    }
+
+    return true
+  }
+
+
 }
