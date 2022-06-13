@@ -1,15 +1,15 @@
 {
-        "auo_tiny_focus_model": "auo_tiny_focus_model",
-        "auo_classic_deep_model": "auo_classic_deep_model",
-        "auo_anti_degeneration_model":"auo_anti_degeneration_model",
-        "auo_transform_aggregate_model":"auo_transform_aggregate_model",
-        "auo_narrow_intensive_model":"auo_narrow_intensive_model",
-        "auo_feature_enhance_model_a":"auo_feature_enhance_model_a",
-        "auo_feature_enhance_model_b":"auo_feature_enhance_model_b",
-        "auo_feature_enhance_model_c":"auo_feature_enhance_model_c",
-        "auo_faster_convergency_model":"auo_faster_convergency_model",
-        "auo_unrestricted_powerful_model":"auo_unrestricted_powerful_model",
-        "auo_feature_reuse_model":"auo_feature_reuse_model",
-        "auo_lighten_efficient_model":"auo_lighten_efficient_model",
-        "auo_horizontal_sample_model":"auo_horizontal_sample_model"
+    "auo_tiny_focus_model": "auo_tiny_focus_model",
+    "auo_classic_deep_model": "auo_classic_deep_model",
+    "auo_anti_degeneration_model":"auo_anti_degeneration_model",
+    "auo_transform_aggregate_model":"auo_transform_aggregate_model",
+    "auo_narrow_intensive_model":"auo_narrow_intensive_model",
+    "auo_feature_enhance_model_a":"auo_feature_enhance_model_a",
+    "auo_feature_enhance_model_b":"auo_feature_enhance_model_b",
+    "auo_feature_enhance_model_c":"auo_feature_enhance_model_c",
+    "auo_faster_convergency_model":"auo_faster_convergency_model",
+    "auo_unrestricted_powerful_model":"auo_unrestricted_powerful_model",
+    "auo_feature_reuse_model":"auo_feature_reuse_model",
+    "auo_lighten_efficient_model":"auo_lighten_efficient_model",
+    "auo_horizontal_sample_model":"auo_horizontal_sample_model"
 }
