@@ -344,7 +344,7 @@ export default class Api {
 
   // folder select and edit
 
-  static async listFolder(rootPath: string): Promise<ListFolderResData[]> {
+  static async listFolder(rootPath: string): Promise<ListFolderResData> {
 
     let reqUrl = ''
     if (rootPath === 'datasets') reqUrl = 'list-dataset-folder'
@@ -354,12 +354,12 @@ export default class Api {
       host + reqUrl,
     );
 
-    if (response.status !== 200) return [];
+    if (response.status !== 200) return new ListFolderResData;
 
     const res: ListFolderRes = response.data
     if (res.code !== 0) console.log(res.message)
 
-    if (!res.data) return [];
+    if (!res.data) return new ListFolderResData;
 
     return res.data;
 
