@@ -1,0 +1,42 @@
+<el-dialog :visible.sync="dialogOpen" :show-close=false :close-on-click-modal="false">
+  <el-row>
+    <el-col class="dialog-title">
+      <div>{{messageData.title}}</div>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col class="dialog-input">
+      <el-input v-model="messageData.content" clearable placeholder="請點選以下路徑" />
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col class="dialog-list">
+      <vue-tree-list :model="treeData" v-bind:default-expanded="true">
+        <template v-slot:leafNameDisplay="slotProps">
+          <div class="vtl-icon" @click="handlePickFolder(slotProps.model)">{{slotProps.model.name }}</div>
+          <div class="icon-box">
+            <template v-if="slotProps.model.name !== messageData.rootPath">
+              <i class="vtl-icon vtl-icon-folder-plus-e" @click="askFolderName(slotProps.model,'createFolder')"></i>
+              <i class="vtl-icon vtl-icon-edit" @click="askFolderName(slotProps.model,'renameFolder')"></i>
+              <i class="vtl-icon vtl-icon-trash" @click="askDeleteFolder(slotProps.model)"></i>
+            </template>
+          </div>
+
+        </template>
+      </vue-tree-list>
+    </el-col>
+  </el-row>
+  <el-row type="flex" justify="center" slot="footer">
+    <el-col :span="12" class="action-btn-group">
+      <el-button class="secondary-btn" @click="handleCancelAction">取消</el-button>
+      <el-button class="primary-btn" @click="handleConfrimAction">確認</el-button>
+    </el-col>
+  </el-row>
+
+  <dialog-message :dialog-open="deleteFolderDialog" :message-data="deleteFolderDialogData"
+    @cancel-action="deleteFolderDialog=false" @confrim-action="confirmDelete" />
+
+  <dialog-message :dialog-open="setFolderNameDialog" :message-data="setFolderNameDialogData"
+    @cancel-action="setFolderNameDialog=false" @confrim-action="confirmFolderName" />
+
+</el-dialog>

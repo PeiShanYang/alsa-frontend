@@ -1,10 +1,10 @@
 <div style="margin: auto;width: 100%">
   <el-row type="flex" justify="end" class="search-row">
-    <el-col :span="4" >
+    <el-col :span="4">
       <el-input placeholder="Search Dataset" v-model="searchDataset" clearable />
     </el-col>
     <el-col :span="3" :offset="1">
-      <el-button class="primary-btn" @click="settingDatasetPath">新增資料集</el-button>
+      <el-button class="primary-btn" @click="setDatasetPathDialog=true">新增資料集</el-button>
     </el-col>
   </el-row>
 
@@ -49,7 +49,7 @@
     </el-collapse-item>
   </el-collapse>
 
-  <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
-    @cancel-action="openDialogMessage=false" @confrim-action="checkDataset" />
+  <dialog-tree-list :dialog-open="setDatasetPathDialog" :message-data="setDatasetPathDialogData"
+    @cancel-action="setDatasetPathDialog=false" @confrim-action="checkDataset" />
 
 </div>

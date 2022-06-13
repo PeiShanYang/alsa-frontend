@@ -2,10 +2,10 @@
   <div v-show="resultExit">
     <el-row type="flex" justify="center" class="search-row">
       <el-col :span="6">
-        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="editDeployPath" />
+        <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="setDeployPathDialog=true" />
       </el-col>
       <el-col :span="2" :offset="1">
-        <el-button class="primary-btn" @click="editDeployPath">設定</el-button>
+        <el-button class="primary-btn" @click="setDeployPathDialog=true">設定</el-button>
       </el-col>
     </el-row>
     <el-collapse v-model="acitveResultCollapse">
@@ -19,7 +19,7 @@
               </el-col>
             </el-row>
           </template>
-          <el-row>
+          <el-row class="wrap-info-row">
             <el-col :span="8" class="info-row">
               <img :src="require('@/assets/svg_icon/models/dataset_pink.svg')" />
               <div>資料集: {{chart.data.datasetPath}}</div>
@@ -32,10 +32,10 @@
               <div class="display-result-box">
                 <div>顯示:</div>
                 <el-dropdown @command="handleDropdownDisplay">
-                  <span class="el-dropdown-link">
+                  <el-button class="secondary-btn">
                     {{chart.displayResult === 'train' ? '訓練結果' : '測試結果'}} <i
                       class="el-icon-arrow-down el-icon--right"></i>
-                  </span>
+                  </el-button>
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item :command="chart.runId + '_train'">訓練結果</el-dropdown-item>
                     <el-dropdown-item :command="chart.runId + '_test'">測試結果</el-dropdown-item>
@@ -53,9 +53,9 @@
             </el-col>
             <el-col v-show="chart.displayResult === 'test'">
               <el-row>
-                <el-col :span="7">
+                <el-col :span="6">
                   <div class="plot-container">
-                    <div class="plot-title">ALL Accuracy</div>
+                    <div class="plot-title">All Accuracy</div>
                     <div class="plot-content">
                       <div class="ring-container" :id="chart.runId + '_ringProgressChart'"></div>
                     </div>
@@ -67,15 +67,27 @@
                     <div class="plot-content">
                       <template v-for="item in chart.data.barChartData">
                         <div class="progress-bar-container">
-                          <div class="progress-content">{{item.scoreName}}</div>
-                          <el-progress :text-inside="true" :stroke-width="20" :percentage="item.score" :color="customColor"></el-progress>
+                          <div class="progress-content" :style="'background-color:'+item.classColor">{{item.className}}</div>
+                          <el-progress :text-inside="true" :stroke-width="20" :percentage="item.classScore" :color="item.classColor"></el-progress>
                           <div class="progress-end-extra">100%</div>
                         </div>
                       </template> 
                     </div>
                   </div>
                 </el-col>
-                <el-col :span="7"></el-col>
+                <el-col :span="8">
+                  <div class="plot-container">
+                    <div class="plot-title">Confusion Matrix</div>
+                    <div class="plot-content">
+                      <template v-if="chart.data.confusionMatrixImagePath !== '' ">
+                        <img class="matirx-img"  :src="chart.data.confusionMatrixImagePath"/>
+                      </template>
+                     <template v-else>
+                      <el-empty description="準備中 ..."></el-empty>
+                     </template>
+                    </div>
+                  </div>
+                </el-col>
               </el-row>
             </el-col>
           </el-row>
@@ -111,7 +123,9 @@
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="downloadModel" />
 
-  <dialog-message :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
+  
+
+    <dialog-tree-list :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
     @cancel-action="setDeployPathDialog=false" @confrim-action="setDeployPath" />
 
   <dialog-message :dialog-open="deployDialog" :message-data="deployDialogData" @cancel-action="deployDialog=false"

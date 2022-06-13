@@ -23,9 +23,13 @@
     }
 }
 
+.wrap-info-row{
+    padding: 0 1em 1em;
+}
+
 .plot-container {
     font-size: $font-normal;
-    margin: 0.5em;
+    margin: 0.7em;
     .plot-title {
         border-radius: 8px 8px 0px 0px;
         background-color: $third-color;
@@ -36,7 +40,7 @@
         @extend %box-shadow;
         box-sizing: border-box;
         height: $font-normal *20;
-        padding: 2.5em;
+        padding: 2em;
         display: flex;
         flex-direction: column;
     }
@@ -49,10 +53,6 @@
     margin: auto;
 }
 
-
-
-
-
 .progress-bar-container {
     font-size: $font-normal;
     display: flex;
@@ -61,7 +61,7 @@
         width: $font-normal * 5;
         height: $font-normal * 2.5;
         border-radius: 5px;
-        background-color: #275776;
+        // background-color: #275776;
         color: white;
         display: flex;
         align-items: center;
@@ -91,9 +91,15 @@
     }
     &-bar__innerText {
         font-size: $font-normal * 1.5;
-        color: black;
+        color: $primary-color;
         position: absolute;
         top: -1em;
         right: -1.5em;
     }
+}
+
+.matirx-img{
+    display: flex;
+    margin: auto;
+    height: 100%;
 }

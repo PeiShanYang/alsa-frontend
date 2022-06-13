@@ -1,13 +1,12 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
-import DialogMessageData from '@/io/dialogMessageData';
+import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { DatasetStatus } from '@/io/dataset';
 
 @Component({
   components: {
-    "dialog-message": DialogMessage,
+    "dialog-tree-list": DialogTreeList,
   }
 })
 export default class Dataset extends Vue {
@@ -17,31 +16,30 @@ export default class Dataset extends Vue {
 
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
-  private openDialogMessage = false;
-  private dialogMessageData: DialogMessageData = new DialogMessageData()
-
+  private setDatasetPathDialog = false;
+  private setDatasetPathDialogData = { rootPath:'datasets',title: '設定資料集位置', content: '' };
 
   get projectName(): string {
     return this.$route.params.projectName
   }
 
   get datasetList(): Map<string, DatasetStatus> | undefined {
-    
-    if(!this.datasets) return
+
+    if (!this.datasets) return
     if (this.searchDataset === '') return this.datasets
 
     return new Map<string, DatasetStatus>([...this.datasets]
-      .filter(item=> item[0].toUpperCase().includes(this.searchDataset.toUpperCase())));
+      .filter(item => item[0].toUpperCase().includes(this.searchDataset.toUpperCase())));
 
   }
 
-  @Watch('openDialogMessage')
+  @Watch('setDatasetPathDialog')
   onDialogChange(): void {
     this.waitGetDatasets()
   }
 
   mounted(): void {
-    if (this.$route.params.settingPath) setTimeout(this.settingDatasetPath, 500);
+    if (this.$route.params.settingPath) setTimeout(()=>{this.setDatasetPathDialog = true}, 500);
     this.waitGetDatasets()
   }
 
@@ -58,19 +56,9 @@ export default class Dataset extends Vue {
 
   }
 
-  private settingDatasetPath(): void {
-    this.dialogMessageData = {
-      ...this.dialogMessageData,
-      content: [{ inputName: "設定資料集位置", inputContent: "" }]
-    }
-    this.openDialogMessage = true
-  }
+  
+  private async checkDataset(datasetPath: string): Promise<void> {
 
-  private async checkDataset(content: { inputName: string, inputContent: string }[]): Promise<void> {
-
-    const datasetPath = content.find(item => item.inputName === "設定資料集位置")?.inputContent
-
-    if (!datasetPath) return;
     if (datasetPath === "") return
     const response = await Api.checkDataset(datasetPath)
 
@@ -81,9 +69,13 @@ export default class Dataset extends Vue {
         message: h('h3', { style: 'color:#F56C6C;' }, "資料集位置設置錯誤"),
       })
     } else {
-      this.openDialogMessage = false
+      this.setDatasetPathDialog = false
     }
 
+    this.setDatasetPathDialogData.content = ''
+
   }
+
+  
 
 }

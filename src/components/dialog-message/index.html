@@ -1,4 +1,4 @@
-<el-dialog :visible.sync="dialogOpen" :show-close=false :close-on-click-modal="false">
+<el-dialog :visible.sync="dialogOpen" :show-close=false :close-on-click-modal="false" append-to-body>
   <template v-if="messageData.title !== ''">
     <el-row>
       <el-col class="dialog-title">
