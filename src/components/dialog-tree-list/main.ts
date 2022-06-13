@@ -50,17 +50,14 @@ export default class DialogTreeList extends Vue {
   private modelToNameAction = '';
 
 
+  private rootPath = '.'
   private baseNode = new nodeAttr
   private baseChildren: nodeAttr[] = []
   private baseTree = {
     ...this.baseNode,
-    name: this.messageData.rootPath,
-    id: this.messageData.rootPath,
+    name: this.rootPath,
+    id: this.rootPath,
     pid: '0',
-    editNodeDisabled: true,
-    delNodeDisabled: true,
-    children: this.baseChildren
-
   }
   private treeData = new Tree([this.baseTree])
 
@@ -73,20 +70,30 @@ export default class DialogTreeList extends Vue {
 
     const response = await Api.listFolder(this.messageData.rootPath)
 
-    response.forEach(item => {
-      this.treeDataSetting(item)
-    })
+    if(response.children?.length === 0) return
+    console.log("response", response)
+
+    this.treeDataSetting(response)
 
   }
 
-  private createNodeInstance(folderName: string, folderFullPath: string, rootPath: string): nodeAttr {
+  private createNodeInstance(folderName: string, folderFullPath: string): nodeAttr {
 
     const nodeName = folderName
     const nodeId = folderFullPath
 
-    const splitPath = nodeId.split('/')
+    const splitPath = nodeId.split('/') ?? '0'
     splitPath.pop()
-    const nodePid = splitPath.join('/') === '' ? rootPath : splitPath.join('/')
+
+    let nodePid = ''
+
+    if (nodeName === this.rootPath) {
+      nodePid = '0'
+    } else if (splitPath.length === 0) {
+      nodePid = this.rootPath
+    } else {
+      nodePid = splitPath.join('/')
+    }
 
     return {
       ...this.baseNode,
@@ -103,18 +110,18 @@ export default class DialogTreeList extends Vue {
 
     const nodeNameCollation = childCollection.map(item => item.name)
     if (nodeNameCollation.indexOf(folderData.name) === -1) {
-      const currentNode = this.createNodeInstance(folderData.name, folderData.fullpath, this.messageData.rootPath)
+      const currentNode = this.createNodeInstance(folderData.name, folderData.fullpath)
       childCollection.push(currentNode)
     }
 
-    const childNodes = folderData.children.map(item => this.createNodeInstance(item.name, item.fullpath, this.messageData.rootPath))
+    const childNodes = folderData.children.map(item => this.createNodeInstance(item.name, item.fullpath))
     childCollection.push(...childNodes)
 
     folderData.children.forEach(item => this.initialAllNodes(item, childCollection))
 
   }
 
-  private wrapChildNode(childCollection: nodeAttr[], rootPath: string): nodeAttr[] {
+  private wrapChildNode(childCollection: nodeAttr[]): nodeAttr[] {
 
     const mainChidren: nodeAttr[] = []
 
@@ -130,7 +137,7 @@ export default class DialogTreeList extends Vue {
 
     })
 
-    return childCollection.filter(element => element.pid === rootPath)
+    return childCollection.filter(element => element.pid === '0')
 
   }
 
@@ -141,26 +148,22 @@ export default class DialogTreeList extends Vue {
 
     this.initialAllNodes(folderData, childCollection)
 
-    this.baseTree.children = this.wrapChildNode(childCollection, this.messageData.rootPath)
+    this.baseTree.children = this.wrapChildNode(childCollection)
 
-    this.treeData = new Tree([this.baseTree])
+    this.treeData = new Tree(this.wrapChildNode(childCollection))
 
   }
 
 
   private handlePickFolder(targetModel: any): void {
 
-    // console.log("target", targetModel)
+    console.log("target", targetModel)
 
-    if (targetModel.id !== this.messageData.rootPath) {
-      this.messageData.content = this.messageData.rootPath + '/' + targetModel.id
-    } else {
-      this.messageData.content = this.messageData.rootPath
-    }
+    this.messageData.content = targetModel.id
 
   }
 
-  private async handleCreateFolder(parentModel: any,folderName:string): Promise<void> {
+  private async handleCreateFolder(parentModel: any, folderName: string): Promise<void> {
 
     // const childName = `new folder-${new Date().valueOf()}`
     const childName = folderName
@@ -202,7 +205,7 @@ export default class DialogTreeList extends Vue {
 
   }
 
-  private async handleRenameFolder(nodeModel: any,folderName:string): Promise<void> {
+  private async handleRenameFolder(nodeModel: any, folderName: string): Promise<void> {
 
     nodeModel.editable = false
 
@@ -267,8 +270,8 @@ export default class DialogTreeList extends Vue {
 
     if (this.modelToNameAction === '' && this.modelToName === null) return
 
-    if (this.modelToNameAction === 'createFolder') await this.handleCreateFolder(this.modelToName,folderName)
-    if( this.modelToNameAction === 'renameFolder') await this.handleRenameFolder(this.modelToName,folderName)
+    if (this.modelToNameAction === 'createFolder') await this.handleCreateFolder(this.modelToName, folderName)
+    if (this.modelToNameAction === 'renameFolder') await this.handleRenameFolder(this.modelToName, folderName)
 
     this.modelToName = null
     this.modelToNameAction = ''

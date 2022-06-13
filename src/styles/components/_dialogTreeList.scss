@@ -37,16 +37,13 @@
 
     .dialog-list {
         display: flex;
-        justify-content: center;
+        width: 80%;
+        margin: 0 3.5em;
         max-height: 300px;
         overflow-y: scroll;
         .vtl-node-content {
             display: flex;
             align-items: center;
-        }
-        .el-input {
-            font-size: $font-normal;
-            width: 45%;
         }
         .icon-box {
             display: flex;
