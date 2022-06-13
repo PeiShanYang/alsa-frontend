@@ -6,20 +6,18 @@
   </el-row>
   <el-row>
     <el-col class="dialog-input">
-      <el-input v-model="messageData.content" clearable />
+      <el-input v-model="messageData.content" clearable placeholder="請點選以下路徑" />
     </el-col>
   </el-row>
   <el-row>
     <el-col class="dialog-list">
       <vue-tree-list :model="treeData" v-bind:default-expanded="true">
         <template v-slot:leafNameDisplay="slotProps">
-          <div v-if="!slotProps.model.editable" class="vtl-icon" @click="handleCeckFolder(slotProps.model)">{{
-            slotProps.model.name }}</div>
-          <el-input v-else v-model="slotProps.model.name" @blur="setUnEditable(slotProps.model)" clearable />
+          <div class="vtl-icon" @click="handlePickFolder(slotProps.model)">{{slotProps.model.name }}</div>
           <div class="icon-box">
             <template v-if="slotProps.model.name !== messageData.rootPath">
-              <i class="vtl-icon vtl-icon-folder-plus-e" @click="addNewFolder(slotProps.model)"></i>
-              <i class="vtl-icon vtl-icon-edit" @click="slotProps.model.editable = true"></i>
+              <i class="vtl-icon vtl-icon-folder-plus-e" @click="askFolderName(slotProps.model,'createFolder')"></i>
+              <i class="vtl-icon vtl-icon-edit" @click="askFolderName(slotProps.model,'renameFolder')"></i>
               <i class="vtl-icon vtl-icon-trash" @click="askDeleteFolder(slotProps.model)"></i>
             </template>
           </div>
@@ -37,5 +35,8 @@
 
   <dialog-message :dialog-open="deleteFolderDialog" :message-data="deleteFolderDialogData"
     @cancel-action="deleteFolderDialog=false" @confrim-action="confirmDelete" />
+
+  <dialog-message :dialog-open="setFolderNameDialog" :message-data="setFolderNameDialogData"
+    @cancel-action="setFolderNameDialog=false" @confrim-action="confirmFolderName" />
 
 </el-dialog>

@@ -72,6 +72,8 @@ export default class Dataset extends Vue {
       this.setDatasetPathDialog = false
     }
 
+    this.setDatasetPathDialogData.content = ''
+
   }
 
   

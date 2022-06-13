@@ -44,6 +44,11 @@ export default class DialogTreeList extends Vue {
   private deleteFolderDialogData: DialogMessageData = new DialogMessageData()
   private modelToDelete = null;
 
+  private setFolderNameDialog = false;
+  private setFolderNameDialogData: DialogMessageData = new DialogMessageData()
+  private modelToName = null;
+  private modelToNameAction = '';
+
 
   private baseNode = new nodeAttr
   private baseChildren: nodeAttr[] = []
@@ -111,8 +116,6 @@ export default class DialogTreeList extends Vue {
 
   private wrapChildNode(childCollection: nodeAttr[], rootPath: string): nodeAttr[] {
 
-    // childCollection.forEach(item => console.log('id:',item.id,'name:',item.name,'pid:',item.pid))
-
     const mainChidren: nodeAttr[] = []
 
     const pidCollection = [...new Set(childCollection.map(item => item.pid))]
@@ -145,22 +148,22 @@ export default class DialogTreeList extends Vue {
   }
 
 
-  private handleCeckFolder(targetModel: any): void {
+  private handlePickFolder(targetModel: any): void {
 
-    console.log("target", targetModel)
+    // console.log("target", targetModel)
 
-    if(targetModel.id !== this.messageData.rootPath){
+    if (targetModel.id !== this.messageData.rootPath) {
       this.messageData.content = this.messageData.rootPath + '/' + targetModel.id
-    }else{
+    } else {
       this.messageData.content = this.messageData.rootPath
     }
 
   }
 
-  private async addNewFolder(parentModel: any): Promise<void> {
+  private async handleCreateFolder(parentModel: any,folderName:string): Promise<void> {
 
-    const childName = `new folder-${new Date().valueOf()}`
-
+    // const childName = `new folder-${new Date().valueOf()}`
+    const childName = folderName
 
     const response = await Api.createFolder(this.messageData.rootPath, parentModel.id, childName)
     if (!response) return
@@ -185,6 +188,43 @@ export default class DialogTreeList extends Vue {
     parentModel.addChildren(node)
   }
 
+
+  private async handleDeleteFolder(nodeModel: any): Promise<void> {
+
+    const splitPath = nodeModel.id.split('/')
+    splitPath.pop()
+    const root = splitPath.join('/')
+
+    const response = await Api.removeFolder(this.messageData.rootPath, root, nodeModel.name)
+    if (!response) return
+
+    nodeModel.remove()
+
+  }
+
+  private async handleRenameFolder(nodeModel: any,folderName:string): Promise<void> {
+
+    nodeModel.editable = false
+
+    const splitPath = nodeModel.id.split('/')
+    splitPath.pop()
+    const root = splitPath.join('/')
+
+    const oldFolderName = nodeModel.id.split('/').pop()
+    const newFolderName = folderName
+    // const newFolderName = nodeModel.name
+
+    const response = await Api.renameFolder(this.messageData.rootPath, root, oldFolderName, newFolderName)
+    if (!response) return
+
+    this.waitGetTreeList()
+
+    // nodeModel.changeName(newFolderName)
+    // splitPath.push(newFolderName)
+    // nodeModel.id = splitPath.join('/')
+
+  }
+
   private askDeleteFolder(nodeModel: any): void {
 
     const title = `確定刪除資料夾 ${nodeModel.name} ?`
@@ -201,46 +241,39 @@ export default class DialogTreeList extends Vue {
   private async confirmDelete(): Promise<void> {
 
     if (this.modelToDelete === null) return
-    await this.deleteFolder(this.modelToDelete)
+    await this.handleDeleteFolder(this.modelToDelete)
 
     this.modelToDelete = null
     this.deleteFolderDialog = false
   }
 
-  private async deleteFolder(nodeModel: any): Promise<void> {
+  private askFolderName(nodeModel: any, action: string): void {
 
-    const splitPath = nodeModel.id.split('/')
-    splitPath.pop()
-    const root = splitPath.join('/')
+    this.setFolderNameDialogData = {
+      ...this.setFolderNameDialogData,
+      content: [{ inputName: "請輸入資料夾名稱", inputContent: "" }],
+    }
 
-    const response = await Api.removeFolder(this.messageData.rootPath, root, nodeModel.name)
-    if (!response) return
-
-    nodeModel.remove()
-
+    this.modelToName = nodeModel
+    this.modelToNameAction = action
+    this.setFolderNameDialog = true
   }
 
-  private async setUnEditable(nodeModel: any): Promise<void> {
+  private async confirmFolderName(content: { inputName: string, inputContent: string }[]): Promise<void> {
 
-    nodeModel.editable = false
+    const folderName = content.find(item => item.inputName === "請輸入資料夾名稱")?.inputContent
 
-    const splitPath = nodeModel.id.split('/')
-    splitPath.pop()
-    const root = splitPath.join('/')
+    if (!folderName || folderName === "") return
 
-    const oldFolderName = nodeModel.id.split('/').pop()
-    const newFolderName = nodeModel.name
+    if (this.modelToNameAction === '' && this.modelToName === null) return
 
-    const response = await Api.renameFolder(this.messageData.rootPath, root, oldFolderName, newFolderName)
-    if (!response) return
+    if (this.modelToNameAction === 'createFolder') await this.handleCreateFolder(this.modelToName,folderName)
+    if( this.modelToNameAction === 'renameFolder') await this.handleRenameFolder(this.modelToName,folderName)
 
-    this.waitGetTreeList()
-
-    // nodeModel.changeName(newFolderName)
-    // splitPath.push(newFolderName)
-    // nodeModel.id = splitPath.join('/')
+    this.modelToName = null
+    this.modelToNameAction = ''
+    this.setFolderNameDialog = false
 
   }
-
 
 }
