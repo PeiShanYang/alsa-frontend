@@ -1,4 +1,4 @@
-.preprocess-title {
+.augmentation-title {
   border-radius: 8px 8px 0px 0px;
   background: $secondary-color;
   color: white;
@@ -9,18 +9,10 @@
   }
 }
 
-.option-row {
-  height: 250px;
-}
-
-.option-box {
-  margin: 10px;
-}
 
 ::v-deep .el-dialog {
   margin-top: 7vh !important;
   font-size: $font-normal;
-  width: 80%;
   &__header {
     padding: 0.5em 0.5em 0;
   }
@@ -31,10 +23,7 @@
 }
 
 ::v-deep .el-collapse-item__header {
-  font-size: $font-normal * 0.5 !important;
   background: $third-color !important;
 }
 
-::v-deep .el-collapse-item__arrow {
-  font-size: $font-normal !important;
-}
+

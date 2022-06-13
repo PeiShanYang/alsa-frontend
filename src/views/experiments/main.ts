@@ -34,6 +34,7 @@ export default class Experiments extends Vue {
   private openDialogRunProject = false;
   private openDialogDataset = false;
   private openDialogPreprocess = false;
+  private openDialogAugmentation = false;
   private openDialogModelSelect = false;
 
   private dialogMessageData: DialogMessageData = new DialogMessageData()
@@ -69,7 +70,6 @@ export default class Experiments extends Vue {
     await Api.getExperiments(store.currentProject)
     await Api.getDatasets(store.currentProject)
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
-    console.log(store.experimentConfigs)
 
     const project = store.projectList.get(store.currentProject)
     if (!project) return
@@ -139,12 +139,16 @@ export default class Experiments extends Vue {
   private listenOnNodeClick() {
     this.graph.graph?.on("node:click", (nodeInfo) => {
       const targetDialog: ProcessCellData = nodeInfo.node.data;
+      console.log(targetDialog.component)
       switch (targetDialog.component) {
         case "dataset-node":
           this.openDialogDataset = true;
           break;
         case "preprocess-node":
           this.openDialogPreprocess = true;
+          break;
+        case "augmentation-node":
+          this.openDialogAugmentation = true;
           break;
         case "model-select-node":
           this.openDialogModelSelect = true;

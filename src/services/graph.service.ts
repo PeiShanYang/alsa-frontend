@@ -110,7 +110,7 @@ export default class GraphService {
       opacity:1,
     },
     {
-      name: "data-argument-node",
+      name: "augmentation-node",
       title: "資料擴增",
       backgroundColor: "#FFF0F0",
       borderColor: "#DD8282",
