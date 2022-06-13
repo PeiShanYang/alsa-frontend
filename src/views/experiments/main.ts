@@ -66,8 +66,10 @@ export default class Experiments extends Vue {
 
     this.graph.projectName = store.currentProject
 
-    await Api.getExperiments(store.currentProject);
+    await Api.getExperiments(store.currentProject)
     await Api.getDatasets(store.currentProject)
+    if (!store.experimentConfigs) await Api.getExperimentConfigs()
+    console.log(store.experimentConfigs)
 
     const project = store.projectList.get(store.currentProject)
     if (!project) return

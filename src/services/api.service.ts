@@ -22,6 +22,8 @@ import { ListFolderRes, ListFolderResData } from "@/io/rest/listFolder";
 import { CreateFolderReq, CreateFolderRes } from "@/io/rest/createFolder";
 import { RemoveFolderReq, RemoveFolderRes } from "@/io/rest/removeFolder";
 import { RenameFolderReq, RenameFolderRes } from "@/io/rest/renameFolder";
+import { GetExperimentConfigsRes } from "@/io/rest/getExperimentConfig";
+import storeService from "@/services/store.service";
 
 
 const host = 'http://tw100104318:37510/';
@@ -435,18 +437,17 @@ export default class Api {
     return true
   }
 
-  //Experiment config
   static async getExperimentConfigs(): Promise<void> {
-
-    const response: AxiosResponse<any> = await axios.post(
-      host + 'get-experiment-configs',
-    );
+    const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(host + 'get-experiment-configs')
 
     if (response.status !== 200) return
 
-    console.log("response",response.data)
+    const res: GetExperimentConfigsRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return
+    }
 
-
+    storeService.experimentConfigs = res.data
   }
-
 }
