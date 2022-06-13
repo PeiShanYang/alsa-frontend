@@ -435,5 +435,18 @@ export default class Api {
     return true
   }
 
+  //Experiment config
+  static async getExperimentConfigs(): Promise<void> {
+
+    const response: AxiosResponse<any> = await axios.post(
+      host + 'get-experiment-configs',
+    );
+
+    if (response.status !== 200) return
+
+    console.log("response",response.data)
+
+
+  }
 
 }
