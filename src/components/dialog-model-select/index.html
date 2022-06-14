@@ -1,4 +1,4 @@
-<el-dialog :visible.sync="openDialogModelSelect" width="80%" top="1vh" :show-close="false">
+<el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
 
   <el-row>
     <template v-for="item in modelSelectItem">
@@ -34,12 +34,10 @@
 
     </template>
   </el-row>
-  <el-row slot="footer" type="flex" justify="center">
-    <el-col :span="2" style="margin-right: 15rem;">
-      <el-button @click="closeDialogModelSelect" id="cancel-btn">取消</el-button>
-    </el-col>
-    <el-col :span="2">
-      <el-button @click="closeDialogModelSelect" id="confirm-btn">確認</el-button>
+  <el-row slot="footer">
+    <el-col class="action-btn-group">
+      <el-button class="secondary-btn" @click="closeDialogModelSelect">取消</el-button>
+      <el-button class="primary-btn" @click="closeDialogModelSelect">儲存設定</el-button>
     </el-col>
   </el-row>
 </el-dialog>

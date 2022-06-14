@@ -9,8 +9,8 @@ export default class DialogPreprocess extends Vue {
   @Prop() private dialogOpen!: boolean;
 
   @Emit("dialog-close")
-  closeDialogPreprocess(): boolean {
-    return false;
+  closeDialogPreprocess(): void {
+    return
   }
 
   private configs = new Map<string, Map<string, ConfigType>>()
