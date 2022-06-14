@@ -19,6 +19,9 @@ export default class DialogPreprocess extends Vue {
   }
 
   private configs = new Map<string, Map<string, ConfigType>>()
+  private resizeCheck = []
+  private colorPick = 'rgb(255,255,255,1)';
+
   mounted(): void {
     this.waitConfigsSetting()
   }
