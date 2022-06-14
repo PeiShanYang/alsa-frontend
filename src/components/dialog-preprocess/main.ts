@@ -14,6 +14,7 @@ export default class DialogPreprocess extends Vue {
   }
 
   private configs = new Map<string, Map<string, ConfigType>>()
+
   mounted(): void {
     this.waitConfigsSetting()
   }

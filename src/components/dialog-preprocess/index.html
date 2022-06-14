@@ -5,32 +5,97 @@
     </el-col>
   </el-row>
   <el-row>
-    <el-col class="option-row" :span="6" v-for="(args, name) in configs" :key="name">
-      <el-collapse class="option-box" accordion id="datasetCollapse">
+    <el-col class="option-box" :span="6" v-for="(args, name) in configs" :key="name">
+      <el-collapse accordion id="datasetCollapse">
         <el-collapse-item name="1">
           <template slot="title">
             <el-row style="width: 100%;">
               <el-col class="title-container">
-                <div class="option-title">{{ optionName(name) }}{{name}}</div>
+                <div>{{ optionName(name) }}{{name}}</div>
               </el-col>
             </el-row>
           </template>
-          <template v-if="true">
-            <el-row>
-              <el-col>
-                {{args[name]}}
-                <br/>
-                {{args}}
-              </el-col>
-            </el-row>
+          <template v-if="['brightness','contrast','saturation'].includes(name)">
+            <div class="content-box">
+              <div class="input-box">
+                <div class="input-title">{{optionName(name)}}</div>
+                <el-input clearable></el-input>
+              </div>
+            </div>
           </template>
+          <template v-if="name === 'centerCrop'">
+            <div class="content-box">
+              <div class="input-box">
+                <div class="input-title">寬度</div>
+                <el-input clearable></el-input>
+              </div>
+              <div class="input-box">
+                <div class="input-title">高度</div>
+                <el-input clearable></el-input>
+              </div>
+            </div>
+          </template>
+          <template v-if="name === 'gaussianBlur'">
+            <div class="content-box">
+              <div class="children-container">
+                <div>Kernel Size</div>
+                <div class="input-box">
+                  <div class="input-title">寬度</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">高度</div>
+                  <el-input clearable></el-input>
+                </div>
+              </div>
+              <div class="input-box">
+                <div class="input-title">Sigma</div>
+                <el-input clearable></el-input>
+              </div>
+            </div>
+          </template>
+          <template v-if="name === 'hue'">
+            <div class="content-box">
+              <div class="slider-box">
+                <div>{{optionName(name)}}</div>
+                <el-slider :min="-0.5" :max="0.5" :step="0.1"></el-slider>
+              </div>
+            </div>
+          </template>
+          <template v-if="name === 'resize'">
+            <div class="content-box">
+              <div class="children-container">
+                <div>Image Size</div>
+                <div class="input-box">
+                  <div class="input-title">寬度</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">高度</div>
+                  <el-input clearable></el-input>
+                </div>
+              </div>
+              <div class="check-box">
+                <div>Interpolation</div>
+                <el-checkbox-group>
+                  <el-checkbox></el-checkbox>
+                </el-checkbox-group>
+              </div>
+            </div>
+          </template>
+          <el-row>
+            <el-col class="option-btn-group">
+              <el-button class="secondary-btn" @click="closeDialogPreprocess">取消</el-button>
+              <el-button class="primary-btn" @click="closeDialogPreprocess">確定</el-button>
+            </el-col>
+          </el-row>
         </el-collapse-item>
       </el-collapse>
     </el-col>
   </el-row>
 
-  <el-row type="flex" justify="center" slot="footer">
-    <el-col :span="8" class="action-btn-group">
+  <el-row slot="footer">
+    <el-col class="action-btn-group">
       <el-button class="secondary-btn" @click="closeDialogPreprocess">取消</el-button>
       <el-button class="primary-btn" @click="closeDialogPreprocess">儲存設定</el-button>
     </el-col>
