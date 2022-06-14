@@ -2,9 +2,14 @@ import { ConfigType } from '@/io/experimentConfig';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import OptionForm from '@/components/options/option-form/main';
 
 
-@Component
+@Component({
+  components: {
+    OptionForm
+  }
+})
 export default class DialogPreprocess extends Vue {
   @Prop() private dialogOpen!: boolean;
 
