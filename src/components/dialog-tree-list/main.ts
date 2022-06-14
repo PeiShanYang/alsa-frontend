@@ -71,8 +71,7 @@ export default class DialogTreeList extends Vue {
     const response = await Api.listFolder(this.messageData.rootPath)
 
     if(response.children?.length === 0) return
-    console.log("response", response)
-
+  
     this.treeDataSetting(response)
 
   }
@@ -157,7 +156,7 @@ export default class DialogTreeList extends Vue {
 
   private handlePickFolder(targetModel: any): void {
 
-    console.log("target", targetModel)
+    // console.log("target", targetModel)
 
     this.messageData.content = targetModel.id
 

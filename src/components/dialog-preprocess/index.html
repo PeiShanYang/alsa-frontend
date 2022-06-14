@@ -11,13 +11,17 @@
           <template slot="title">
             <el-row style="width: 100%;">
               <el-col class="title-container">
-                <div class="option-title">{{ optionName(name) }}</div>
+                <div class="option-title">{{ optionName(name) }}{{name}}</div>
               </el-col>
             </el-row>
           </template>
-          <template>
+          <template v-if="true">
             <el-row>
-              <el-col></el-col>
+              <el-col>
+                {{args[name]}}
+                <br/>
+                {{args}}
+              </el-col>
             </el-row>
           </template>
         </el-collapse-item>

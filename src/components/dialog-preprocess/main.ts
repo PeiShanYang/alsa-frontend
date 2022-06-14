@@ -13,15 +13,18 @@ export default class DialogPreprocess extends Vue {
     return false;
   }
 
+  private configs = new Map<string, Map<string, ConfigType>>()
   mounted(): void {
-
-    Api.getExperimentConfigs()
-    console.log("mounted")
+    this.waitConfigsSetting()
   }
 
-  private get configs(): Map<string, Map<string, ConfigType>> {
-    if (store.experimentConfigs) return store.experimentConfigs.ConfigPreprocess.PreprocessPara
-    return new Map<string, Map<string, ConfigType>>()
+  private async waitConfigsSetting():Promise<void>{
+    if (!store.experimentConfigs) await Api.getExperimentConfigs()
+    
+    if (store.experimentConfigs) this.configs =  store.experimentConfigs.ConfigPreprocess.PreprocessPara
+
+    console.log("this.configs",this.configs)
+
   }
 
   private optionName(name: string): string {
