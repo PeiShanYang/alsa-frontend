@@ -5,13 +5,13 @@
     </el-col>
   </el-row>
   <el-row>
-    <el-col class="option-box" :span="6" v-for="(args, name) in configs" :key="name">
+    <el-col class="option-box" :span="8" v-for="(args, name) in configs" :key="name">
       <el-collapse accordion id="datasetCollapse">
         <el-collapse-item name="1">
           <template slot="title">
             <el-row style="width: 100%;">
               <el-col class="title-container">
-                <div>{{ optionName(name) }}{{name}}</div>
+                <div>{{ optionName(name) }} ({{name}})</div>
               </el-col>
             </el-row>
           </template>
@@ -62,6 +62,89 @@
               </div>
             </div>
           </template>
+          <template v-if="name === 'pad'">
+            <div class="content-box">
+              <div class="children-container">
+                <div>Fill</div>
+                <div class="color-pick-box">
+                  <div class="color-title">{{colorPick}}</div>
+                  <el-color-picker v-model="colorPick" show-alpha size="medium"></el-color-picker>
+                </div>
+              </div>
+              <div class="children-container">
+                <div>Padding</div>
+                <div class="input-box">
+                  <div class="input-title">top</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">bottom</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">left</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">right</div>
+                  <el-input clearable></el-input>
+                </div>
+              </div>
+              <div class="children-container">
+                <div>PaddingModel</div>
+                <el-checkbox-group v-model='resizeCheck' :max="1">
+                  <el-checkbox label="constant" key="constant">constant</el-checkbox>
+                  <el-checkbox label="edge" key="edge">edge</el-checkbox>
+                  <el-checkbox label="reflect" key="reflect">reflect</el-checkbox>
+                  <el-checkbox label="symmetric" key="symmetric">symmetric</el-checkbox>
+                </el-checkbox-group>
+              </div>
+            </div>
+          </template>
+          <template v-if="name === 'normalize'">
+            <div class="content-box">
+              <div class="children-container">
+                <div>Mean</div>
+                <div class="input-box">
+                  <div class="input-title">R</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">G</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">B</div>
+                  <el-input clearable></el-input>
+                </div>
+              </div>
+              <div class="children-container">
+                <div>Mode</div>
+                <el-checkbox-group v-model='resizeCheck' :max="1">
+                  <el-checkbox label="CIFAR10" key="CIFAR10">CIFAR10</el-checkbox>
+                  <el-checkbox label="CalculateFromData" key="CalculateFromData">CalculateFromData</el-checkbox>
+                  <el-checkbox label="ImageNet" key="ImageNet">ImageNet</el-checkbox>
+                  <el-checkbox label="MNIST" key="MNIST">MNIST</el-checkbox>
+                  <el-checkbox label="UserInput" key="UserInput">UserInput</el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <div class="children-container">
+                <div>Std</div>
+                <div class="input-box">
+                  <div class="input-title">R</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">G</div>
+                  <el-input clearable></el-input>
+                </div>
+                <div class="input-box">
+                  <div class="input-title">B</div>
+                  <el-input clearable></el-input>
+                </div>
+              </div>
+            </div>
+          </template>
           <template v-if="name === 'resize'">
             <div class="content-box">
               <div class="children-container">
@@ -77,8 +160,10 @@
               </div>
               <div class="check-box">
                 <div>Interpolation</div>
-                <el-checkbox-group>
-                  <el-checkbox></el-checkbox>
+                <el-checkbox-group v-model='resizeCheck' :max="1">
+                  <el-checkbox label="BILINEAR" key="BILINEAR">BILINEAR</el-checkbox>
+                  <el-checkbox label="BICUBIC" key="BICUBIC">BICUBIC</el-checkbox>
+                  <el-checkbox label="NEAREST" key="NEAREST">NEAREST</el-checkbox>
                 </el-checkbox-group>
               </div>
             </div>

@@ -43,10 +43,10 @@
     }
 }
 
-::v-deep .el-checkbox__inner::after{
-    height: 10px;
-    left:7px;
-}
+// ::v-deep .el-checkbox__inner::after{
+//     height: 10px;
+//     left:7px;
+// }
 
 ::v-deep .el-dropdown{
     font-size: $font-normal;

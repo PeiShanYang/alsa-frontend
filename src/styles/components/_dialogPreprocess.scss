@@ -29,19 +29,22 @@
 .option-box {
   font-size: $font-normal;
   padding: 0.5em;
-  min-height: $font-normal * 20;
+  min-height: $font-normal * 22.5;
 }
 
 .content-box {
   font-size: $font-normal;
   margin: 1em 0;
   color: $secondary-color;
-
-  
+  height: $font-normal * 10;
+  overflow-y: auto;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
 }
 
 .children-container {
-  .input-box {
+  .input-box,.slider-box {
     margin-left: 1em;
   }
 }
@@ -52,9 +55,8 @@
   align-items: center;
   margin: 1em 0;
   .input-title {
-    margin-right: 0.5em;
-    width: 30%;
-    text-align: center;
+    // margin-right: 5px;
+    width: 40%;
   }
 }
 
@@ -62,13 +64,31 @@
   margin: 1em;
 }
 
+::v-deep .el-checkbox{
+  margin: 0.51em 2.2em;
+  &-group{
+    display: flex;
+    flex-direction: column;
+  }
+  &__label{
+    font-size: $font-normal !important;
+    color: $secondary-color;
+    margin-left: 10px;
+  }
+}
 
-
-
+.color-pick-box{
+  display: flex;
+  .color-title{
+    margin:0 1em 0 2em;
+  }
+}
 
 
 .option-btn-group {
-  margin: 2em 0 1em;
+  display: flex;
+  justify-content: center;
+  margin: 1em 0;
 }
 
 .action-btn-group {
