@@ -1,12 +1,4 @@
 <el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
-  <el-row slot="title" type="flex" justify="center" class="search-row">
-    <el-col :span="6">
-      <el-input placeholder="所有資料" v-model="searchPattern" clearable />
-    </el-col>
-    <el-col :span="2" :offset="1">
-      <el-button class="primary-btn">確認</el-button>
-    </el-col>
-  </el-row>
 
   <el-collapse v-model="activeDatasetCollapse" accordion id="datasetCollapse">
     <el-collapse-item name="1">
@@ -50,8 +42,8 @@
           </el-radio>
         </el-radio-group>
       </template>
-      <el-row >
-        <el-col >
+      <el-row>
+        <el-col>
           <router-link :to="{ name: 'dataset', params: { projectName: $route.params.projectName,settingPath:true} }">
             <el-button id="go-dataset-btn">
               <i class="el-icon-circle-plus-outline"></i>
@@ -62,7 +54,6 @@
       </el-row>
     </el-collapse-item>
   </el-collapse>
-  </el-row>
   <el-row type="flex" justify="center" slot="footer">
     <el-col :span="8" class="action-btn-group">
       <el-button class="secondary-btn" @click="closeDialogDataset">取消</el-button>

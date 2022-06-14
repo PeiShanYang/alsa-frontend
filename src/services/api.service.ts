@@ -22,6 +22,8 @@ import { ListFolderRes, ListFolderResData } from "@/io/rest/listFolder";
 import { CreateFolderReq, CreateFolderRes } from "@/io/rest/createFolder";
 import { RemoveFolderReq, RemoveFolderRes } from "@/io/rest/removeFolder";
 import { RenameFolderReq, RenameFolderRes } from "@/io/rest/renameFolder";
+import { GetExperimentConfigsRes } from "@/io/rest/getExperimentConfig";
+import storeService from "@/services/store.service";
 
 
 const host = 'http://tw100104318:37510/';
@@ -342,7 +344,7 @@ export default class Api {
 
   // folder select and edit
 
-  static async listFolder(rootPath: string): Promise<ListFolderResData[]> {
+  static async listFolder(rootPath: string): Promise<ListFolderResData> {
 
     let reqUrl = ''
     if (rootPath === 'datasets') reqUrl = 'list-dataset-folder'
@@ -352,12 +354,12 @@ export default class Api {
       host + reqUrl,
     );
 
-    if (response.status !== 200) return [];
+    if (response.status !== 200) return new ListFolderResData;
 
     const res: ListFolderRes = response.data
     if (res.code !== 0) console.log(res.message)
 
-    if (!res.data) return [];
+    if (!res.data) return new ListFolderResData;
 
     return res.data;
 
@@ -435,5 +437,17 @@ export default class Api {
     return true
   }
 
+  static async getExperimentConfigs(): Promise<void> {
+    const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(host + 'get-experiment-configs')
 
+    if (response.status !== 200) return
+
+    const res: GetExperimentConfigsRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return
+    }
+
+    storeService.experimentConfigs = res.data
+  }
 }

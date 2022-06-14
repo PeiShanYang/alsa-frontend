@@ -1,118 +1,38 @@
-<el-dialog :visible.sync="openDialogPreprocess" width="80%" top="1vh" :show-close="false">
-  <el-row type="flex" justify="center">
-    <el-col :span=14 class="decorate-box" style="margin-right: 1.5em;">
-      <el-row style="background: #0e5879;">
-        <el-col style="padding: 1em;" :span=4>
-          <span style="color:white;">前處理</span>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col>
-          <el-row>
-            <template v-for="item in preprocessItem">
-              <el-col :span=6 style="height: 11.5em;padding: 1em">
-                <el-collapse>
-                  <el-collapse-item class="preprocessCollapse">
-                    <template slot="title">
-                      <span style="color:white">{{ item.title}}</span>
-                    </template>
-                    <template v-for="element in item.content">
-                      <el-row style="margin:3%">
-                        <el-col :span="8">
-                          <span>{{element.name}} : </span>
-                        </el-col>
-                        <el-col :span="10">
-                          <el-input v-model="element.number" size="mini">{{element.number}}</el-input>
-                        </el-col>
-                        <el-col :span="5" style="margin: 0 2%;" class="decorate-box">
-                          <span>{{element.unit}}</span>
-                        </el-col>
-                      </el-row>
-                    </template>
-                  </el-collapse-item>
-                </el-collapse>
-              </el-col>
-            </template>
-          </el-row>
-        </el-col>
-      </el-row>
-    </el-col>
-    <el-col :span=9 class="decorate-box">
-      <el-row style="background: #0e5879;">
-        <el-col style="padding: 1em;" :span=6>
-          <span style="color:white;">圖片預覽</span>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="16" style="padding: 1em;">
-          <el-row>
-            <el-col>
-              <el-row style="background: #EFFBFD;">
-                <el-col style="padding: 1em;">
-                  <span style="color:#0E5879;">未前處理</span>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <!-- <img :src="imgBeforeProcess" width="100%" height="100%" /> -->
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
-          <el-row style="padding-top: 1em ;">
-            <el-col>
-              <el-row style="background: #EFFBFD;">
-                <el-col style="padding: 1em;">
-                  <span style="color:#0E5879;">前處理結果</span>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col>
-                  <!-- <img :src="imgBeforeProcess" width="100%" height="100%" /> -->
-                </el-col>
-              </el-row>
-            </el-col>
-          </el-row>
-        </el-col>
-        <el-col :span="8" style="padding: 1em;">
-          <div style="
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: #effbfd;
-        font-weight: bold;
-        padding: 5%;
-      ">
-            <i class="el-icon-collection-tag"></i>
-            <span>影像列表</span>
-          </div>
-          <el-table :data="
-        imageList.slice(
-          (currentPage - 1) * pageSize,
-          currentPage * pageSize
-        )
-      " style="width: 100%" stripe :show-header="false">
-
-            <el-table-column>
-              <template slot-scope="scope">
-                <span style="margin: 10%; font-size: 1em;">{{ scope.row.name }}</span>
-              </template>
-            </el-table-column>
-          </el-table>
-          <el-pagination @current-change="handleCurrentChange" background :current-page="currentPage"
-            :page-size="pageSize" :total="imageList.length" :hide-on-single-page="true" :small="true"
-            layout="prev, pager, next">
-          </el-pagination>
-        </el-col>
-      </el-row>
+<el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
+  <el-row class="preprocess-title">
+    <el-col>
+      <span>前處理</span>
     </el-col>
   </el-row>
-  <el-row slot="footer" type="flex" justify="center">
-    <el-col :span="2">
-      <el-button @click="closeDialogPreprocess">取消</el-button>
+  <el-row>
+    <el-col :span="12">
+      <el-collapse accordion id="datasetCollapse">
+        <el-collapse-item name="1">
+          <template slot="title">
+            <el-row style="width: 100%;">
+              <el-col class="title-container">
+                <div class="header-title">亮度/對比</div>
+              </el-col>
+            </el-row>
+          </template>
+          <el-row>
+            <el-col></el-col>
+          </el-row>
+          <el-row type="flex" justify="center">
+            <el-col :span="12" class="action-btn-group">
+              <el-button class="secondary-btn">取消</el-button>
+              <el-button class="primary-btn">確定</el-button>
+            </el-col>
+          </el-row>
+        </el-collapse-item>
+      </el-collapse>
     </el-col>
-    <el-col :span="2" :offset="1">
-      <el-button @click="closeDialogPreprocess" class="dialog-custom-btn">儲存設定</el-button>
+  </el-row>
+
+  <el-row type="flex" justify="center" slot="footer">
+    <el-col :span="8" class="action-btn-group">
+      <el-button class="secondary-btn" @click="closeDialogPreprocess">取消</el-button>
+      <el-button class="primary-btn" @click="closeDialogPreprocess">儲存設定</el-button>
     </el-col>
   </el-row>
 </el-dialog>

@@ -13,10 +13,10 @@
     <el-col class="dialog-list">
       <vue-tree-list :model="treeData" v-bind:default-expanded="true">
         <template v-slot:leafNameDisplay="slotProps">
-          <div class="vtl-icon" @click="handlePickFolder(slotProps.model)">{{slotProps.model.name }}</div>
+          <div  @click="handlePickFolder(slotProps.model)">{{slotProps.model.name }}</div>
           <div class="icon-box">
-            <template v-if="slotProps.model.name !== messageData.rootPath">
-              <i class="vtl-icon vtl-icon-folder-plus-e" @click="askFolderName(slotProps.model,'createFolder')"></i>
+            <i class="vtl-icon vtl-icon-folder-plus-e" @click="askFolderName(slotProps.model,'createFolder')"></i>
+            <template v-if="slotProps.model.name !== rootPath">
               <i class="vtl-icon vtl-icon-edit" @click="askFolderName(slotProps.model,'renameFolder')"></i>
               <i class="vtl-icon vtl-icon-trash" @click="askDeleteFolder(slotProps.model)"></i>
             </template>

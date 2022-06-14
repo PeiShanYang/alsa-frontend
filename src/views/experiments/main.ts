@@ -66,8 +66,10 @@ export default class Experiments extends Vue {
 
     this.graph.projectName = store.currentProject
 
-    await Api.getExperiments(store.currentProject);
+    await Api.getExperiments(store.currentProject)
     await Api.getDatasets(store.currentProject)
+    if (!store.experimentConfigs) await Api.getExperimentConfigs()
+    console.log(store.experimentConfigs)
 
     const project = store.projectList.get(store.currentProject)
     if (!project) return
@@ -142,10 +144,10 @@ export default class Experiments extends Vue {
           this.openDialogDataset = true;
           break;
         case "preprocess-node":
-          // this.openDialogPreprocess = true;
+          this.openDialogPreprocess = true;
           break;
         case "model-select-node":
-          // this.openDialogModelSelect = true;
+          this.openDialogModelSelect = true;
           break;
         default:
           console.log("out of case");

@@ -1,7 +1,7 @@
 export class ListFolderRes {
     code = 0;
     message = '';
-    data?: ListFolderResData[];
+    data?: ListFolderResData;
 }
 
 export class ListFolderResData {
