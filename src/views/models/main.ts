@@ -6,16 +6,18 @@ import { TrainingProcess } from '@/io/rest/getQueueInformation';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
-import { ModelInfo } from '@/io/rest/getModelInformation';
+import { GetModelInformationResData, ModelInfo } from '@/io/rest/getModelInformation';
 import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 import storeService from '@/services/store.service';
 import { DeployInfo } from '@/io/deployInfo';
 import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
+import { Experiment } from '@/io/experiment';
 
 class Chart {
     data!: chartData;
     runId!: string;
+    experiment!: Experiment;
     isCurrentVersion = false;
     deployBtnName = '部署此模型';
     deployInfoMsg: string[] = [];
@@ -60,7 +62,7 @@ export default class Models extends Vue {
 
         const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
-        const response = await Api.getModelInformation(store.currentProject)
+        const response: GetModelInformationResData = await Api.getModelInformation(store.currentProject)
 
         this.inputDeployPath = response.deployPath
         this.deployInfo = response.deployInfo
@@ -127,6 +129,7 @@ export default class Models extends Vue {
                 confusionMatrixImagePath,
             },
             runId: taskInfo.runId,
+            experiment: taskInfo.experiment,
             isCurrentVersion: this.isCurrentVersion(taskInfo.runId),
             deployInfoMsg: this.modelDeployInfoMsg(taskInfo.runId),
             deployBtnName: this.deployBtnName(taskInfo.runId),
