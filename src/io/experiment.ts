@@ -101,15 +101,7 @@ export class Experiment {
         }
     };
     ConfigPreprocess!: {
-        PreprocessPara: {
-            normalize?: {
-                switch: 1,
-                mode: 0,
-                mean: number[],
-                std: number[],
-            },
-            imageSize?: [224,224],
-        }
+        PreprocessPara: PreprocessPara
     };
     ConfigPytorchModel!: {
         SelectedModel: {
@@ -145,4 +137,42 @@ export class Experiment {
             drawConfusionMatrix?: 0,
         }
     };
+}
+
+export class PreprocessPara {
+    normalize?: {
+        mode: number,
+        mean?: number[],
+        std?: number[],
+    };
+    resize?: {
+        imageSize: number[]
+        interpolation: string
+    };
+    centerCrop?: {
+        size: number[]
+    };
+    pad?: {
+        padding:  number[]
+        fill?: number[],
+        paddingModel: string,
+    };
+    gaussianBlur?: {
+        kernelSize: number[],
+        sigma: number
+    };
+    brightness?: {
+        brightness: number,
+    };
+    contrast?: {
+        contrast: number
+    };
+    saturation?: {
+        saturation: number
+    };
+    hue?: {
+        hue: number
+    };
+
+    [s: string]: any | ((s: string) => any);
 }
