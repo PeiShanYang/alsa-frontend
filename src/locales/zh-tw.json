@@ -63,6 +63,12 @@
     "unknownFilterFiltered": "僅被過濾",
     "unknownFilterAll": "全部",
 
+    "ImageNet": "Image Net",
+    "CIFAR10": "CIFAR 10",
+    "MNIST": "MNIST",
+    "CalculateFromData": "由資料集計算",
+    "UserInput": "自行輸入",
+
     "showAcc": "顯示準確率",
     "showClassAcc": "顯示各類別準確率",
     "showNumOfClasses": "顯示各類別總數及正確預測數",

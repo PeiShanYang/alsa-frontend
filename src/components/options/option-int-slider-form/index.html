@@ -1,0 +1,8 @@
+<el-row>
+  <el-col :span="16" justify="center">
+    <el-slider :min="min" :max="max" :step="1" v-model="v" />
+  </el-col>
+  <el-col :span="8" justify="center">
+    <el-input v-model.number="v"></el-input>
+  </el-col>
+</el-row>

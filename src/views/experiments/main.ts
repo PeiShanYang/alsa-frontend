@@ -14,7 +14,7 @@ import ProcessCellData from '@/io/processCellData';
 import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
-import { Experiment } from '@/io/experiment';
+import { Experiment, PreprocessPara } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 
@@ -42,6 +42,9 @@ export default class Experiments extends Vue {
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
   private graph = new graphData;
+
+  private dialogExperimentId = ''
+  private dialogPreprocessPara: PreprocessPara = {}
 
   created(): void {
     this.$i18n.locale = "zh-tw"
@@ -142,19 +145,21 @@ export default class Experiments extends Vue {
       console.log(targetDialog.component)
       switch (targetDialog.component) {
         case "dataset-node":
-          this.openDialogDataset = true;
+          this.openDialogDataset = true
           break;
         case "preprocess-node":
-          this.openDialogPreprocess = true;
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogPreprocessPara = this.graph.experiment?.ConfigPreprocess.PreprocessPara ?? {}
+          this.openDialogPreprocess = true
           break;
         case "augmentation-node":
-          this.openDialogAugmentation = true;
+          this.openDialogAugmentation = true
           break;
         case "model-select-node":
-          this.openDialogModelSelect = true;
+          this.openDialogModelSelect = true
           break;
         default:
-          console.log("out of case");
+          console.log("out of case")
       }
     });
   }

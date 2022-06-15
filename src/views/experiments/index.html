@@ -24,10 +24,11 @@
 
   <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false"
     @set-dataset="setDatasetContent" />
-  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false" />
+  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false"
+    :experiment-id="dialogExperimentId" :default="dialogPreprocessPara" />
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
-  @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
+    @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
 
 </div>

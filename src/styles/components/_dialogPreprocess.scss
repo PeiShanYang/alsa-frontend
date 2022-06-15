@@ -1,7 +1,7 @@
 ::v-deep .el-dialog {
   font-size: $font-normal;
   margin-top: 7vh !important;
-  width: 80%;
+  width: 90%;
   &__header {
     padding: 0.5em 0.5em 0;
   }
@@ -9,6 +9,10 @@
   &__footer {
     padding: 0 0.5em;
   }
+}
+
+::v-deep .el-col {
+  padding: 0 8px;
 }
 
 .preprocess-title {
@@ -28,8 +32,8 @@
 
 .option-box {
   font-size: $font-normal;
-  padding: 0.5em;
-  min-height: $font-normal * 10;
+  padding: 0.2em;
+  min-height: $font-normal * 15;
 }
 
 .content-box {
@@ -38,9 +42,6 @@
   color: $secondary-color;
   height: $font-normal * 10;
   overflow-y: auto;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
 }
 
 .children-container {
@@ -55,7 +56,6 @@
   align-items: center;
   margin: 1em 0;
   .input-title {
-    // margin-right: 5px;
     width: 40%;
   }
 }
