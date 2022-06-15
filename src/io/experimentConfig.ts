@@ -7,6 +7,7 @@ export class ConfigType {
     max?: number;
     min?: number;
     children?: Args;
+    enums?:Map<string,string>;
 }
 
 export class ExperimentConfigs {

@@ -31,7 +31,7 @@ export default class DialogPreprocess extends Vue {
     
     if (store.experimentConfigs) this.configs =  store.experimentConfigs.ConfigPreprocess.PreprocessPara
 
-    console.log("this.configs",this.configs)
+    // console.log("this.configs",this.configs)
 
   }
 

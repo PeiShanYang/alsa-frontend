@@ -1,43 +1,49 @@
 <el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
-
-  <el-row>
-    <template v-for="item in modelSelectItem">
-      <el-col :span="6" style="padding: 1rem;">
-        <div style="box-shadow: 0px 1px 3px #00000033;border-radius: 4px;" @click="item.contentSetting = true">
-          <el-row style="background: #F5F5FD;padding-top: 1rem">
-            <el-col :span="22" style="display: flex;height: 15rem;">
-              <img src="https://cdn-icons-png.flaticon.com/512/2400/2400721.png"
-                style="display: inline-block;width:10.8rem; height:10.2rem;margin: auto;" />
-            </el-col>
-            <el-col :span="2">
-              <i class="el-icon-edit-outline" style="font-size: 2rem;"></i>
-            </el-col>
-          </el-row>
-          <el-row style="padding: 1rem 2rem;">
-            <el-col style="display: flex;align-items: center;">
-              <img src="https://cdn-icons-png.flaticon.com/512/2400/2400721.png"
-                style="display: inline-block;width:2.8rem; height:2.8rem" />
-              <span style="font-size: 2rem;margin: 1rem;color: #0E5879;">{{ item.title}}</span>
-            </el-col>
-          </el-row>
-          <el-row style="padding:2rem;">
-            <el-col>
-              <span style="font-size: 1.4rem;color:#939393;display: inline-block;height: 3.5rem;">簡介 : {{item.describe}}
-              </span>
-            </el-col>
-          </el-row>
-        </div>
+  <div v-if="!changeToSetting">
+    <el-row class="model-select-title">
+      <el-col>
+        <span>模型選擇</span>
       </el-col>
+    </el-row>
+    <el-row>
+      <el-col class="option-box" :span="6" v-for="item in models" :key="item">
+        <div class="content-box">
+          <div class="icon-box">
+            <img class="large_img" />
+            <div class="edit-box" @click="handleSelectModel(item)">
+              <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
+            </div>
+          </div>
+          <div class="main-box">
+            <div class="model-name-box">
+              <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
+              <span>{{item}}</span>
+            </div>
+          </div>
+        </div>
 
-      <el-dialog :visible.sync=item.contentSetting append-to-body width="80%" top="1vh" :show-close="false">
-      </el-dialog>
-
-    </template>
-  </el-row>
-  <el-row slot="footer">
-    <el-col class="action-btn-group">
-      <el-button class="secondary-btn" @click="closeDialogModelSelect">取消</el-button>
-      <el-button class="primary-btn" @click="closeDialogModelSelect">儲存設定</el-button>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+    <el-row slot="footer">
+      <el-col class="action-btn-group">
+        <el-button class="secondary-btn" @click="closeDialogModelSelect">取消</el-button>
+        <el-button class="primary-btn" @click="closeDialogModelSelect">確定</el-button>
+      </el-col>
+    </el-row>
+  </div>
+  <div v-else>
+    <div @click="changeToSetting=false">返回</div>
+    <div>
+      <el-row>
+        <el-col>
+          {{targetModel}}
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col class="option-box" :span="8" v-for="(item,name) in modelSetting" :key="item[0]">
+          {{item}}{{item[0]}}{{item[1]['enums']}}{{name}}
+        </el-col>
+      </el-row>
+    </div>
+  </div>
 </el-dialog>
