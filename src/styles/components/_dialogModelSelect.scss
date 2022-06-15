@@ -1,7 +1,7 @@
 ::v-deep .el-dialog {
   font-size: $font-normal;
   margin-top: 7vh !important;
-  width: 80%;
+  width: 85%;
   &__header {
     padding: 0.5em 0.5em 0;
   }
@@ -11,7 +11,7 @@
   }
 }
 
-.preprocess-title {
+.model-select-title {
   border-radius: 8px 8px 0px 0px;
   background: $secondary-color;
   color: white;
@@ -28,67 +28,57 @@
 
 .option-box {
   font-size: $font-normal;
-  padding: 0.5em;
-  min-height: $font-normal * 10;
+  padding: 1em;
+  height: $font-normal * 18;
+  cursor: pointer;
 }
 
 .content-box {
+  @extend %box-shadow;
   font-size: $font-normal;
-  margin: 1em 0;
-  color: $secondary-color;
-  height: $font-normal * 10;
-  overflow-y: auto;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
-}
-
-.children-container {
-  .input-box,.slider-box {
-    margin-left: 1em;
-  }
+  height: $font-normal * 16;
 }
 
 
-.input-box {
-  display: flex;
-  align-items: center;
-  margin: 1em 0;
-  .input-title {
-    // margin-right: 5px;
-    width: 40%;
-  }
-}
-
-.slider-box{
-  margin: 1em;
-}
-
-::v-deep .el-checkbox{
-  margin: 0.51em 2.2em;
-  &-group{
-    display: flex;
-    flex-direction: column;
-  }
-  &__label{
-    font-size: $font-normal !important;
-    color: $secondary-color;
-    margin-left: 10px;
-  }
-}
-
-.color-pick-box{
-  display: flex;
-  .color-title{
-    margin:0 1em 0 2em;
-  }
-}
-
-
-.option-btn-group {
+.icon-box{
+  background: #F5F5FD;
+  height: 70%;
   display: flex;
   justify-content: center;
-  margin: 1em 0;
+  position: relative;
+  .large_img{
+    content: url('../../assets/svg_icon/model_select/model_purple.svg');
+    height: 90%;
+    margin: auto;
+  }
+  .edit-box{
+    position:absolute;
+    right: 0.8em;
+    top: 0.5em;
+  }
+}
+
+.icon-box:hover,.icon-box:focus,.icon-box:active{
+  background: $third-color;
+  .large_img{
+    content: url('../../assets/svg_icon/model_select/model_transparent.svg');
+  }
+  
+}
+
+
+.main-box{
+  height: 30%;
+  display: flex;
+}
+
+.model-name-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: auto;
+  color: $secondary-color;
+  font-size: $font-normal;
 }
 
 .action-btn-group {
