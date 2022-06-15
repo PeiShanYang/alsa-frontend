@@ -1,29 +1,31 @@
 <el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
   <div v-if="!changeToSetting">
-    <el-row class="model-select-title">
-      <el-col>
-        <span>模型選擇</span>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col class="option-box" :span="6" v-for="item in models" :key="item">
-        <div class="content-box">
-          <div class="icon-box">
-            <img class="large_img" />
-            <div class="edit-box" @click="handleSelectModel(item)">
-              <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
+    <div class="main-container">
+      <el-row>
+        <el-col class="model-container-title">
+          <span>模型選擇</span>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col class="option-box" :span="6" v-for="item in models" :key="item">
+          <div class="content-box">
+            <div class="icon-box">
+              <img class="large_img" />
+              <div class="edit-box" @click="handleSelectModel(item)">
+                <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
+              </div>
+            </div>
+            <div class="main-box">
+              <div class="model-name-box">
+                <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
+                <span>{{item}}</span>
+              </div>
             </div>
           </div>
-          <div class="main-box">
-            <div class="model-name-box">
-              <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
-              <span>{{item}}</span>
-            </div>
-          </div>
-        </div>
 
-      </el-col>
-    </el-row>
+        </el-col>
+      </el-row>
+    </div>
     <el-row slot="footer">
       <el-col class="action-btn-group">
         <el-button class="secondary-btn" @click="closeDialogModelSelect">取消</el-button>
@@ -32,18 +34,69 @@
     </el-row>
   </div>
   <div v-else>
-    <div @click="changeToSetting=false">返回</div>
-    <div>
+    <div class="go-back-box" @click="changeToSetting=false">
+      <i class="el-icon-arrow-left"></i>
+      <span>返回</span>
+    </div>
+    <div class="setting-main-container">
       <el-row>
-        <el-col>
-          {{targetModel}}
+        <el-col class="model-container-title">
+          <span>{{targetModel}}</span>
         </el-col>
       </el-row>
       <el-row>
-        <el-col class="option-box" :span="8" v-for="(item,name) in modelSetting" :key="item[0]">
-          {{item}}{{item[0]}}{{item[1]['enums']}}{{name}}
+        <el-col class="setting-box" :span="6" v-for="item in modelSetting" :key="item">
+          <el-collapse accordion>
+            <el-collapse-item name="1">
+              <template slot="title">
+                <el-row style="width: 100%;">
+                  <el-col class="title-container">
+                    <div>{{optionName(item)}}</div>
+                  </el-col>
+                </el-row>
+              </template>
+              <template v-if="['batchSize','epochs'].includes(item)">
+                <div class="input-box">
+                  <el-input clearable></el-input>
+                </div>
+              </template>
+              <template v-if="item === 'pretrained'">
+                <div class="check-box">
+                  <el-checkbox-group v-model='resizeCheck' :max="1">
+                    <el-checkbox label="yes" key="yes">是</el-checkbox>
+                    <el-checkbox label="no" key="no">否</el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </template>
+              <template v-if="item === 'Optimizer'">
+                <div class="check-box">
+                  <el-checkbox-group v-model='resizeCheck' :max="1">
+                    <el-checkbox label="SGD" key="SGD">SGD</el-checkbox>
+                    <el-checkbox label="Adam" key="Adam">Adam</el-checkbox>
+                    <el-checkbox label="Adadelta" key="Adadelta">Adadelta</el-checkbox>
+                    <el-checkbox label="AdamW" key="AdamW">AdamW</el-checkbox>
+                    <el-checkbox label="NAdam" key="NAdam">NAdam</el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </template>
+              <template v-if="item === 'Scheduler'">
+                <div class="check-box">
+                  <el-checkbox-group v-model='resizeCheck' :max="1">
+                    <el-checkbox label="stepLR" key="stepLR">stepLR</el-checkbox>
+                    <el-checkbox label="cosineAnnealingLR" key="cosineAnnealingLR">cosineAnnealingLR</el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </template>
+            </el-collapse-item>
+          </el-collapse>
         </el-col>
       </el-row>
     </div>
+    <el-row slot="footer">
+      <el-col class="action-btn-group">
+        <el-button class="secondary-btn" @click="changeToSetting=false">取消</el-button>
+        <el-button class="primary-btn" @click="changeToSetting=false">儲存修改</el-button>
+      </el-col>
+    </el-row>
   </div>
 </el-dialog>

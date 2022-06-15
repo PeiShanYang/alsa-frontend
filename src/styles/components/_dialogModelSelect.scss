@@ -11,7 +11,11 @@
   }
 }
 
-.model-select-title {
+.main-container{
+  @extend %box-shadow;
+}
+
+.model-container-title {
   border-radius: 8px 8px 0px 0px;
   background: $secondary-color;
   color: white;
@@ -83,4 +87,38 @@
 
 .action-btn-group {
   justify-content: center;
+  margin: 2em;
+}
+
+/// model setting related
+
+.go-back-box{
+  font-size: $font-normal *1.25;
+  cursor: pointer;
+  margin: 1em;
+  color: $secondary-color;
+}
+
+.setting-main-container{
+  @extend %box-shadow;
+  margin: 2em 8em;
+}
+
+.setting-box {
+  font-size: $font-normal;
+  padding: 2em;
+  min-height: $font-normal * 12;
+}
+
+::v-deep .el-checkbox{
+  margin: 0.4em 1em;
+  &-group{
+    display: flex;
+    flex-direction: column;
+  }
+  &__label{
+    font-size: $font-normal !important;
+    color: $secondary-color;
+    margin-left: 5px;
+  }
 }

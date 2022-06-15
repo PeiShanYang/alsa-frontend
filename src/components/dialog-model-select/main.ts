@@ -20,14 +20,9 @@ export default class DialogModelSelect extends Vue {
   private models: string[] = [];
   private changeToSetting = false;
   private targetModel = ''
-  private modelSetting: Map<string, ConfigType> = new Map([
-    ['pretrained', { type: 'boolean', default: true }],
-    ['batchSize', { type: 'int', default: 1, min: 1 }],
-    ['epochs', { type: 'int', default: 1, min: 1 }],
-    ['Optimizer', { type: 'enums', default: 'SGD', enums: new Map([['SGD','SGD'],['Adam', 'Adam'],['Adadelta','Adadelta'],['AdamW','AdamW'],['NAdam','NAdam']]) }],
-    ['Scheduler',{type:'enums',default:'stepLR',enums: new Map([['stepLR','stepLR'],['cosineAnnealingLR','cosineAnnealingLR']])}]
-  ])
+  private resizeCheck = []
 
+  private modelSetting = ['pretrained','batchSize','epochs','Optimizer','Scheduler']
 
   mounted(): void {
     this.waitConfigsSetting()
