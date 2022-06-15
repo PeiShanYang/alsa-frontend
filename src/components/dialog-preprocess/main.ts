@@ -4,7 +4,6 @@ import store from '@/services/store.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import OptionForm from '@/components/options/option-form/OptionForm.vue';
 import { PreprocessPara } from '@/io/experiment';
-import { stringToArray } from 'konva/lib/shapes/Text';
 
 type Dict = Map<string, number | number[] | string | string[]>
 
@@ -19,18 +18,21 @@ export default class DialogPreprocess extends Vue {
   @Prop() private default!: PreprocessPara
 
   private newPara: PreprocessPara = this.default
+  private configs = new Map<string, Map<string, ConfigType>>()
+  // private resizeCheck = []
+  // private colorPick = 'rgb(255,255,255,1)';
 
   @Emit("dialog-close")
   closeDialogPreprocess(): void {
     return
   }
 
-  private configs = new Map<string, Map<string, ConfigType>>()
-  // private resizeCheck = []
-  // private colorPick = 'rgb(255,255,255,1)';
-
   mounted(): void {
     this.waitConfigsSetting()
+  }
+
+  updated(): void {
+    this.newPara = this.default
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -47,15 +49,17 @@ export default class DialogPreprocess extends Vue {
     const newPara = new Map<string, number | number[] | string | string[]>()
     config.forEach((arg, name) => {
       if (arg.type == 'list') {
-        const l: number[] = []
         if (arg.children !== undefined) {
-          new Map<string, ConfigType>(Object.entries(arg.children)).forEach((v) => l.push(v.default))
-        }
-        newPara.set(name, l)
-      } else if (arg.type == 'dict') {
-        const d = new Map<string, number | string>()
-        if (arg.children !== undefined) {
-          new Map<string, ConfigType>(Object.entries(arg.children)).forEach((v, k) => d.set(k, v.default))
+          const children = new Map<string, ConfigType>(Object.entries(arg.children))
+          if (Array.from(children.values())[0].type == 'string') {
+            const l: string[] = []
+            children.forEach((v) => l.push(v.default as string))
+            newPara.set(name, l)
+          } else {
+            const l: number[] = []
+            children.forEach((v) => l.push(v.default as number))
+            newPara.set(name, l)
+          }
         }
       } else {
         newPara.set(name, arg.default)
@@ -76,19 +80,4 @@ export default class DialogPreprocess extends Vue {
   private updateOption(name: string, event: {target: {value: Map<string, number | number[] | string | string[]>}}) {
     this.newPara[name] = event.target.value
   }
-
-  // private optionEnabled(name: string): boolean {
-  //   return this.newPara[name] !== undefined
-  // }
-
-  // private toggleOption(name: string): void {
-  //   if (this.newPara[name] !== undefined) {
-  //     this.newPara[name] = undefined
-  //   }
-  //   else {
-  //     this.newPara[name] = {
-  //       switch: 1
-  //     }
-  //   }
-  // }
 }

@@ -1,0 +1,12 @@
+<el-row>
+  <el-col :span="12" justify="center">
+    <el-dropdown @command="handleDropdownDisplay">
+      <el-button class="secondary-btn">
+        {{ keyName }}
+      </el-button>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item v-for="(val, name) in enums" :command="val">{{ name }}</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+  </el-col>
+</el-row>

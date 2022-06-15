@@ -1,9 +1,27 @@
 <div>
   <div v-for="(arg, name) in config">
+    <el-row v-if="formType(arg)==='enums'">
+      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
+      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
+        <OptionEnumsForm :enums="arg.enums" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
+      </el-col>
+    </el-row>
+    <el-row v-if="formType(arg)==='int-slider'">
+      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
+      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
+        <OptionIntSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
+      </el-col>
+    </el-row>
     <el-row v-if="formType(arg)==='float-slider'">
       <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
       <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
         <OptionFloatSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
+      </el-col>
+    </el-row>
+    <el-row v-if="formType(arg)==='int-input'">
+      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
+      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
+        <OptionIntInputForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
       </el-col>
     </el-row>
   </div>

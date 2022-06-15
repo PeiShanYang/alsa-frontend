@@ -2,12 +2,12 @@ type Args = Map<string, ConfigType>
 type FuncArgs = Map<string, Map<string, ConfigType>>
 
 export class ConfigType {
-    type!: string;
-    default!: any;
-    max?: number;
-    min?: number;
-    children?: Args;
-    enums?:Map<string,string>;
+    type!: string
+    default!: number | string
+    max?: number
+    min?: number
+    enums?: Map<string, number | string>
+    children?: Args
 }
 
 export class ExperimentConfigs {
