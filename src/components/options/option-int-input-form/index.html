@@ -1,0 +1,8 @@
+<el-row>
+  <el-col :span="12" justify="center">
+    <el-input v-model.number="v"></el-input>
+  </el-col>
+  <el-col :span="8" v-if="unit !== undefined">
+    {{ unit }}
+  </el-col>
+</el-row>
