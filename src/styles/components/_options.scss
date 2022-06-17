@@ -1,4 +1,53 @@
-::v-deep .el-col {
-    padding: 0px 8px;
-    margin: auto;
+// ::v-deep .el-col {
+//     padding: 0px 8px;
+//     margin: auto;
+// }
+
+// .slider-box{
+//     margin: 1em;
+//   }
+
+.children-container {
+    margin-left: 1em;
+    .input-box,
+    .slider-box {
+      margin-left: 1em;
+    }
+  }
+  
+
+
+.input-box {
+    display: flex;
+    align-items: center;
+    margin: 1em 0;
+    .input-title {
+        width: 40%;
+    }
+}
+
+// .select-box{
+//     display: flex;
+//     justify-content: center;
+// }
+::v-deep .el-dropdown{
+    width: 100%;
+    display: flex;
+    .el-button{
+        width: 85%;
+        margin: auto;
+    }
+}
+
+::v-deep .el-checkbox {
+    margin: 0.51em 2.2em;
+    &-group {
+        display: flex;
+        flex-direction: column;
+    }
+    &__label {
+        font-size: $font-normal !important;
+        color: $secondary-color;
+        margin-left: 10px;
+    }
 }

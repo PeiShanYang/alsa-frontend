@@ -61,3 +61,7 @@
 //         font-size: $font-normal;
 //     }
 // }
+::v-deep .el-input__inner{
+    font-size: $font-normal;
+    color: $secondary-color;
+}

@@ -3,6 +3,7 @@ import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import OptionIntSliderForm from '@/components/options/option-int-slider-form/OptionIntSliderForm.vue';
 import OptionFloatSliderForm from '@/components/options/option-float-slider-form/OptionFloatSliderForm.vue';
 import OptionIntInputForm from '@/components/options/option-int-input-form/OptionIntInputForm.vue';
+import OptionFloatInputForm from '@/components/options/option-float-input-form/OptionFloatInputForm.vue';
 import OptionEnumsForm from '@/components/options/option-enums-form/OptionEnumsForm.vue';
 
 @Component({
@@ -10,6 +11,7 @@ import OptionEnumsForm from '@/components/options/option-enums-form/OptionEnumsF
     OptionIntSliderForm,
     OptionFloatSliderForm,
     OptionIntInputForm,
+    OptionFloatInputForm,
     OptionEnumsForm,
   }
 })
@@ -49,7 +51,35 @@ export default class OptionForm extends Vue {
     else if (arg.type === 'int') {
       return 'int-input'
     }
+    else if (arg.type === 'float') {
+      return 'float-input'
+    }
+    else if (arg.type === 'list') {
+      return 'list'
+    }
     return ''
+  }
+
+  private childValue(name: string, index: number): string | number | undefined {
+
+    const childPara = this.newPara.get(name)
+
+    if (Array.isArray(childPara)) return childPara[index]
+
+    return childPara
+  }
+
+  private setChildValue(name: string, index: number, value: number | string): void {
+
+    const childPara = this.newPara.get(name)
+
+    if(Array.isArray(childPara)){
+      childPara[index] = value
+      this.newPara.set(name,childPara)
+    }else{
+      this.newPara.set(name,value)
+    }
+
   }
 
 }

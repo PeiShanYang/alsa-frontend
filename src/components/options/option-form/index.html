@@ -1,28 +1,59 @@
-<div>
-  <div v-for="(arg, name) in config">
-    <el-row v-if="formType(arg)==='enums'">
-      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
-      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
-        <OptionEnumsForm :enums="arg.enums" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
-      </el-col>
-    </el-row>
-    <el-row v-if="formType(arg)==='int-slider'">
-      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
-      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
+<div class="content-box">
+  <template v-for="(arg, name) in config">
+    <div v-if="formType(arg)==='enums'" class="select-box">
+      <div>{{ tr(name) }}</div>
+        <template v-if="newPara.get(name) !== undefined">
+          <OptionEnumsForm :enums="arg.enums" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
+        </template>
+    </div>
+    <div v-if="formType(arg)==='int-slider'" class="slider-box">
+      <div>{{ tr(name) }}</div>
+      <template v-if="newPara.get(name) !== undefined">
         <OptionIntSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
-      </el-col>
-    </el-row>
-    <el-row v-if="formType(arg)==='float-slider'">
-      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
-      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
+      </template>
+    </div>
+    <div v-if="formType(arg)==='float-slider'" class="slider-box">
+      <div>{{ tr(name) }}</div>
+      <template v-if="newPara.get(name) !== undefined">
         <OptionFloatSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
-      </el-col>
-    </el-row>
-    <el-row v-if="formType(arg)==='int-input'">
-      <el-col :span="4" justify="center">{{ tr(name) }}</el-col>
-      <el-col :span="20" justify="center" v-if="newPara.get(name) !== undefined">
+      </template>
+    </div>
+    <div v-if="formType(arg)==='int-input'" class="input-box">
+      <div class="input-title">{{ tr(name) }}</div>
+      <template v-if="newPara.get(name) !== undefined">
         <OptionIntInputForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="($event) => newPara.set(name, $event.target.value)" />
-      </el-col>
-    </el-row>
-  </div>
+      </template>
+    </div>
+    <div v-if="formType(arg)==='list'">
+      <div>{{ tr(name)}}</div>
+      <div class="children-container">
+        <template v-for="(argChild,nameChild,index) in arg.children">
+          <div v-if="formType(argChild)==='int-slider'" class="silder-box">
+            <div>{{ tr(nameChild) }}</div>
+            <template v-if="childValue(name,index) !== undefined">
+              <OptionIntSliderForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event.target.value)" />
+            </template>
+          </div>
+          <div v-if="formType(argChild)==='float-slider'" class="silder-box">
+            <div>{{ tr(nameChild) }}</div>
+            <template v-if="childValue(name,index) !== undefined">
+              <OptionFloatSliderForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event.target.value)" />
+            </template>
+          </div>
+          <div v-if="formType(argChild)==='int-input'" class="input-box">
+            <div class="input-title">{{ tr(nameChild) }}</div>
+            <template v-if="childValue(name,index) !== undefined">
+              <OptionIntInputForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event.target.value)" />
+            </template>
+          </div>
+          <div v-if="formType(argChild)==='float-input'" class="input-box">
+            <div class="input-title">{{ tr(nameChild) }}</div>
+            <template v-if="childValue(name,index) !== undefined">
+              <OptionFloatInputForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event.target.value)" />
+            </template>
+          </div>
+        </template>
+      </div>
+    </div>
+  </template>
 </div>

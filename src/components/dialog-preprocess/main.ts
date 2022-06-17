@@ -40,9 +40,12 @@ export default class DialogPreprocess extends Vue {
 
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPreprocess.PreprocessPara
 
-    console.log("this.configs", this.configs)
+    console.log("this.configs", this.configs,Object.entries(this.configs))
+
+    
   }
 
+  // 參數預設值
   private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
     if (defaultValue !== undefined) return defaultValue
     config = new Map<string, ConfigType>(Object.entries(config))

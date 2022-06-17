@@ -32,58 +32,33 @@
 
 .option-box {
   font-size: $font-normal;
-  padding: 0.2em;
-  min-height: $font-normal * 15;
+  padding: 1em;
+  height: $font-normal * 18;
 }
 
 .content-box {
   font-size: $font-normal;
-  margin: 1em 0;
+  margin: 0.1em 0;
+  padding: 0.5em;
   color: $secondary-color;
   height: $font-normal * 10;
   overflow-y: auto;
 }
 
 .children-container {
-  .input-box,.slider-box {
+  .input-box,
+  .slider-box {
     margin-left: 1em;
   }
 }
 
 
-.input-box {
+.color-pick-box {
   display: flex;
-  align-items: center;
-  margin: 1em 0;
-  .input-title {
-    width: 40%;
+  .color-title {
+    margin: 0 1em 0 2em;
   }
 }
-
-.slider-box{
-  margin: 1em;
-}
-
-::v-deep .el-checkbox{
-  margin: 0.51em 2.2em;
-  &-group{
-    display: flex;
-    flex-direction: column;
-  }
-  &__label{
-    font-size: $font-normal !important;
-    color: $secondary-color;
-    margin-left: 10px;
-  }
-}
-
-.color-pick-box{
-  display: flex;
-  .color-title{
-    margin:0 1em 0 2em;
-  }
-}
-
 
 .option-btn-group {
   display: flex;

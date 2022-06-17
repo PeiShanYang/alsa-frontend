@@ -34,7 +34,7 @@ export default class DialogModelSelect extends Vue {
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPytorchModel.SelectedModel
 
     if (!this.configs.model.structure.enums) return
-    console.log("this.configs", this.configs)
+    // console.log("this.configs", this.configs)
 
     this.models = Object.entries(this.configs.model.structure.enums).map(item => this.optionName(item[0]))
 
