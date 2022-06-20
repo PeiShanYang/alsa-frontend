@@ -26,14 +26,17 @@ export default class DialogPreprocess extends Vue {
     return
   }
 
+  @Emit("set-newPara")
+  setNewPara(): PreprocessPara {
+    return this.newPara
+  }
+
   mounted(): void {
     this.waitConfigsSetting()
   }
 
   updated(): void {
-    console.log("update")
     this.newPara = this.default
-  
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -41,9 +44,9 @@ export default class DialogPreprocess extends Vue {
 
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPreprocess.PreprocessPara
 
-    console.log("this.configs", this.configs,Object.entries(this.configs))
+    console.log("this.configs", this.configs, Object.entries(this.configs))
 
-    
+
   }
 
   // 參數預設值
@@ -84,7 +87,7 @@ export default class DialogPreprocess extends Vue {
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = event
 
-    console.log(name,event)
-    console.log("this.para",this.newPara)
+    console.log(name, event)
+    console.log("this.para", this.newPara)
   }
 }
