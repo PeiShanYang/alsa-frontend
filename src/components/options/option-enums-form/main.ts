@@ -28,11 +28,13 @@ export default class OptionEnumsForm extends Vue {
 
   @Watch('value')
   private onValueChange() {
+    console.log('t',this.valueName,this.getKeyName)
     this.valueName = this.getKeyName
   }
 
   @Emit("input")
   private onInputChange(): string | number {
+    console.log('t',this.valueName,this.getKeyName)
     return this.enumsMap.get(this.valueName) ?? ''
   }
 }

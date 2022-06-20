@@ -9,8 +9,13 @@ export default class OptionIntInputForm extends Vue {
 
   private v = this.value.toString()
 
+  updated(): void {    
+    this.onInputChange()
+  }
+
   @Emit("input")
   private onInputChange(): number {
+    console.log("tes",this.v)
     return parseInt(this.v)
   }
 }

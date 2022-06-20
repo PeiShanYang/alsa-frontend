@@ -11,6 +11,7 @@ export default class OptionIntSliderForm extends Vue {
 
   updated(): void {
     this.strValue = this.v.toString()
+    this.onInputChange()
   }
 
   @Emit("input")

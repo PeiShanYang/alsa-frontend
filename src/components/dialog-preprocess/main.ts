@@ -33,6 +33,7 @@ export default class DialogPreprocess extends Vue {
 
   updated(): void {
     this.newPara = this.default
+  
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -81,6 +82,8 @@ export default class DialogPreprocess extends Vue {
   }
 
   private updateOption(name: string, event: {target: {value: Map<string, number | number[] | string | string[]>}}) {
-    this.newPara[name] = event.target.value
+    this.newPara[name] = event
+
+    console.log("tes",name,event,this.newPara)
   }
 }

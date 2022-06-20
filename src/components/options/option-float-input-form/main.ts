@@ -9,6 +9,10 @@ export default class OptionFloatInputForm extends Vue {
 
   private v = this.value.toString()
 
+  updated():void{
+    this.onInputChange()
+  }
+
   @Emit("input")
   private onInputChange(): number {
     return parseFloat(this.v)
