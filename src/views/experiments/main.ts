@@ -284,6 +284,7 @@ export default class Experiments extends Vue {
     if(!this.graph.experiment) return
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
     this.openDialogPreprocess = false
+
   }
 
   private exportExperiment(): void {
