@@ -283,7 +283,7 @@ export default class Experiments extends Vue {
     this.showSolutionKey = true
   }
 
-  private get solutionKey(): string {
+  private solutionKey(): string {
     if (!store.currentProject) return ''
 
     const project = store.projectList.get(store.currentProject)
@@ -300,6 +300,7 @@ export default class Experiments extends Vue {
       experiment.Config.PrivateSetting.datasetPath = ""
     })
 
+    console.log(experiment)
     return StringUtil.encodeObject(experiment)
   }
 }

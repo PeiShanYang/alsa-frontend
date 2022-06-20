@@ -34,5 +34,5 @@
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
 
-  <el-dialog :visible.sync="showSolutionKey" append-to-body>{{ solutionKey }}</el-dialog>
+  <el-dialog :visible.sync="showSolutionKey" append-to-body>{{ solutionKey() }}</el-dialog>
 </div>
