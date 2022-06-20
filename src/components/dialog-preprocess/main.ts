@@ -26,8 +26,8 @@ export default class DialogPreprocess extends Vue {
     return
   }
 
-  @Emit("set-newPara")
-  setNewPara(): PreprocessPara {
+  @Emit("set-para")
+  setPara(): PreprocessPara {
     return this.newPara
   }
 
@@ -43,9 +43,6 @@ export default class DialogPreprocess extends Vue {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPreprocess.PreprocessPara
-
-    // console.log("this.configs", this.configs, Object.entries(this.configs))
-
 
   }
 

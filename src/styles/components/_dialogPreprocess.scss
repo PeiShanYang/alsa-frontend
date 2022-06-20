@@ -11,11 +11,11 @@
   }
 }
 
-::v-deep .el-col {
-  padding: 0 8px;
+.main-container{
+  @extend %box-shadow;
 }
 
-.preprocess-title {
+.container-title {
   border-radius: 8px 8px 0px 0px;
   background: $secondary-color;
   color: white;
@@ -52,19 +52,6 @@
   }
 }
 
-
-.color-pick-box {
-  display: flex;
-  .color-title {
-    margin: 0 1em 0 2em;
-  }
-}
-
-.option-btn-group {
-  display: flex;
-  justify-content: center;
-  margin: 1em 0;
-}
 
 .action-btn-group {
   justify-content: center;

@@ -1,38 +1,34 @@
 <el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
-  <el-row class="preprocess-title">
-    <el-col>
-      <span>前處理</span>
-    </el-col>
-  </el-row>
-  <el-row>
-    <el-col :span="12">
-      <el-collapse accordion id="datasetCollapse">
-        <el-collapse-item name="1">
-          <template slot="title">
-            <el-row style="width: 100%;">
-              <el-col class="title-container">
-                <div class="header-title">亮度/對比</div>
-              </el-col>
-            </el-row>
-          </template>
-          <el-row>
-            <el-col></el-col>
-          </el-row>
-          <el-row type="flex" justify="center">
-            <el-col :span="12" class="action-btn-group">
-              <el-button class="secondary-btn">取消</el-button>
-              <el-button class="primary-btn">確定</el-button>
-            </el-col>
-          </el-row>
-        </el-collapse-item>
-      </el-collapse>
-    </el-col>
-  </el-row>
-
-  <el-row type="flex" justify="center" slot="footer">
-    <el-col :span="8" class="action-btn-group">
-      <el-button class="secondary-btn" @click="closeDialogPreprocess">取消</el-button>
-      <el-button class="primary-btn" @click="closeDialogPreprocess">儲存設定</el-button>
+  <div class="main-container">
+    <el-row class="container-title">
+      <el-col>
+        <span>前處理</span>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col class="option-box" :span="6" v-for="(args, name) in configs" :key="name">
+        <el-collapse accordion :value="activeOption(name)">
+          <el-collapse-item name="1">
+            <template slot="title">
+              <el-row style="width: 100%;">
+                <!-- <el-col :span="4">
+                  <el-checkbox :value="optionEnabled(name)" @click.stop="toggleOption(name)" />
+                </el-col> -->
+                <el-col :span="20" class="title-container">
+                  <div>{{ optionName(name) }}</div>
+                </el-col>
+              </el-row>
+            </template>
+            <OptionForm :config="args" :default="defaultFromConfig(args, newPara[name])" @change="updateOption(name, $event)" />
+          </el-collapse-item>
+        </el-collapse>
+      </el-col>
+    </el-row>
+  </div>
+ <el-row slot="footer">
+    <el-col class="action-btn-group">
+      <el-button class="secondary-btn" @click="closeDialogAugmentation">取消</el-button>
+      <el-button class="primary-btn" @click="setPara">儲存設定</el-button>
     </el-col>
   </el-row>
 </el-dialog>

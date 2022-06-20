@@ -15,10 +15,8 @@
         </el-col>
       </el-row>
       <el-row type="flex" justify="end">
-        <el-col :span="3" class="action-btn-group">
+        <el-col :span="6" class="action-btn-group">
           <el-button class="primary-btn" @click="exportExperiment">匯出</el-button>
-        </el-col>
-        <el-col :span="3" class="action-btn-group">
           <el-button class="primary-btn" @click="runExperimentTrain">執行</el-button>
         </el-col>
       </el-row>
@@ -28,7 +26,12 @@
   <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false"
     @set-dataset="setDatasetContent" />
   <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false"
-    :experiment-id="dialogExperimentId" :default="dialogPreprocessPara" @set-newPara="setPreprocessPara"/>
+    :experiment-id="dialogExperimentId" :default="dialogPreprocessPara" @set-para="setPreprocessPara"/>
+
+  <dialog-augmentation :dialog-open="openDialogAugmentation" @dialog-close="openDialogAugmentation=false"
+  :experiment-id="dialogExperimentId" :default="dialogAugmentationPara" @set-para="setAugmentationPara"/> 
+
+
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"

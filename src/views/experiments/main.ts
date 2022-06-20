@@ -3,6 +3,7 @@ import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
+import DialogAugmentation from '@/components/dialog-augmentation/DialogAugmentation.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
@@ -14,7 +15,7 @@ import ProcessCellData from '@/io/processCellData';
 import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
-import { Experiment, PreprocessPara } from '@/io/experiment';
+import { AugmentationPara, Experiment, PreprocessPara } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
@@ -23,6 +24,7 @@ import { StringUtil } from '@/utils/string.util';
   components: {
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
+    "dialog-augmentation":DialogAugmentation,
     "dialog-model-select": DialogModelSelect,
     "flow-node": FlowNode,
     "dialog-message": DialogMessage,
@@ -46,6 +48,7 @@ export default class Experiments extends Vue {
 
   private dialogExperimentId = ''
   private dialogPreprocessPara: PreprocessPara = {}
+  private dialogAugmentationPara: AugmentationPara ={}
 
   private showSolutionKey = false
 
@@ -156,6 +159,8 @@ export default class Experiments extends Vue {
           this.openDialogPreprocess = true
           break;
         case "augmentation-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogAugmentationPara = this.graph.experiment?.ConfigAugmentation.AugmentationPara ?? {}
           this.openDialogAugmentation = true
           break;
         case "model-select-node":
@@ -285,7 +290,19 @@ export default class Experiments extends Vue {
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
     this.openDialogPreprocess = false
 
+    this.drawGraph()
   }
+
+  private setAugmentationPara(newPara:AugmentationPara):void{
+
+    if(!this.graph.experiment) return
+    this.graph.experiment.ConfigAugmentation.AugmentationPara = newPara
+    this.openDialogAugmentation = false
+
+    this.drawGraph()
+  }
+
+
 
   private exportExperiment(): void {
     this.showSolutionKey = true
@@ -303,7 +320,7 @@ export default class Experiments extends Vue {
 
     let experiment: Experiment = new Experiment()
 
-    experiments.forEach((exp, expId) => {
+    experiments.forEach((exp) => {
       experiment = exp
       experiment.Config.PrivateSetting.datasetPath = ""
     })

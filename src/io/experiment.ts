@@ -11,16 +11,7 @@ export class Experiment {
         }
     };
     ConfigAugmentation!: {
-        AugmentationPara: {
-            randomHorizontalFlip?: {
-                switch: 1,
-                probability: 0.5,
-            }
-            randomVerticalFlip?: {
-                switch: 0,
-                probability: 0.5,
-            }
-        }
+        AugmentationPara: AugmentationPara
     };
     ConfigEvaluation!: {
         EvaluationPara: {
@@ -175,4 +166,55 @@ export class PreprocessPara {
     };
 
     [s: string]: any | ((s: string) => any);
+}
+
+export class AugmentationPara{
+    randomHorizontalFlip?:{
+        probability:number
+    };
+    randomVerticalFlip?:{
+        probability:number
+    };
+    randomRotation?:{
+        degrees:number[]
+    };
+    randomTranslate?:{
+        translate:number[]
+    };
+    randomScale?:{
+        scale:number[]
+    };
+    randomShear?:{
+        shear:number[]
+    };
+    randomGrayscale?:{
+        probability:number
+    };
+    randomBrightness?:{
+        brightness:number[]
+    };
+    randomContrast?:{
+        contrast:number[]
+    };
+    randomSaturation?:{
+        saturation:number[]
+    };
+    randomHue?:{
+        hue:number[]
+    };
+    randomErasing?:{
+        probability:number,
+        scale:number[],
+        ratio:number[],
+        value:number[],
+    };
+    randomPerspective?:{
+        distortion:number,
+        probability:number,
+        interpolation:string,
+        fill:number[],
+    }
+
+    [s: string]: any | ((s: string) => any);
+
 }
