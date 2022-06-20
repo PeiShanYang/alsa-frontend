@@ -54,6 +54,10 @@
         font-size: $font-normal;
     }
 }
+
+ .el-select-dropdown__item{
+    font-size: $font-normal;
+}
 // ::v-deep .el-message{
 //     font-size: $font-normal;
 //     padding: 1em;

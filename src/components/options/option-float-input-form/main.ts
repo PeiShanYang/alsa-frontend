@@ -15,6 +15,14 @@ export default class OptionFloatInputForm extends Vue {
 
   @Emit("input")
   private onInputChange(): number {
-    return parseFloat(this.v)
+
+    if(this.v === '') return this.min ?? 0
+
+    const value = parseFloat(this.v)
+    if(this.max && value > this.max) return this.max
+    if(this.min && value < this.min) return this.min
+
+    return value
+
   }
 }

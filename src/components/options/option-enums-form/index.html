@@ -1,8 +1,4 @@
-<el-dropdown @command="handleDropdownDisplay">
-  <el-button class="secondary-btn">
-    {{ displayName(valueName) }}
-  </el-button>
-  <el-dropdown-menu slot="dropdown">
-    <el-dropdown-item v-for="(val, name) in enums" :command="name" :key="name">{{ displayName(name) }}</el-dropdown-item>
-  </el-dropdown-menu>
-</el-dropdown>
+<el-select v-model="v">
+  <el-option v-for="(val,name) in enums" :key="val" :label="displayName(name)" :value="val">
+  </el-option>
+</el-select>

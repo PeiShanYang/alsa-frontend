@@ -85,7 +85,6 @@ export default class OptionForm extends Vue {
   }
 
   private updateNewPara(name:string,value:string|number):void{
-    console.log("newm",name,value)
     this.newPara.set(name,value)
     this.$forceUpdate()
   }

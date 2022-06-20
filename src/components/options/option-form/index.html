@@ -24,6 +24,12 @@
         <OptionIntInputForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" />
       </template>
     </div>
+    <div v-if="formType(arg)==='float-input'" class="input-box">
+      <div class="input-title">{{ tr(name) }}</div>
+      <template v-if="newPara.get(name) !== undefined">
+        <OptionFloatInputForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" />
+      </template>
+    </div>
     <div v-if="formType(arg)==='list'">
       <div>{{ tr(name)}}</div>
       <div class="children-container">

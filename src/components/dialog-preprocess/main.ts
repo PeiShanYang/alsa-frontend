@@ -19,8 +19,7 @@ export default class DialogPreprocess extends Vue {
 
   private newPara: PreprocessPara = this.default
   private configs = new Map<string, Map<string, ConfigType>>()
-  // private resizeCheck = []
-  // private colorPick = 'rgb(255,255,255,1)';
+
 
   @Emit("dialog-close")
   closeDialogPreprocess(): void {
@@ -32,6 +31,7 @@ export default class DialogPreprocess extends Vue {
   }
 
   updated(): void {
+    console.log("update")
     this.newPara = this.default
   
   }
@@ -81,9 +81,10 @@ export default class DialogPreprocess extends Vue {
     return []
   }
 
-  private updateOption(name: string, event: {target: {value: Map<string, number | number[] | string | string[]>}}) {
+  private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = event
 
-    console.log("tes",name,event,this.newPara)
+    console.log(name,event)
+    console.log("this.para",this.newPara)
   }
 }

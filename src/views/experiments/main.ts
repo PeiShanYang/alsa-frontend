@@ -276,4 +276,9 @@ export default class Experiments extends Vue {
     this.$router.push('/')
   }
 
+  private setPreprocessPara(newPara:any):void{
+    if(!this.graph.experiment) return
+    this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
+  }
+
 }

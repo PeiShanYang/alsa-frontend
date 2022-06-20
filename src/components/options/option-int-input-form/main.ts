@@ -15,7 +15,14 @@ export default class OptionIntInputForm extends Vue {
 
   @Emit("input")
   private onInputChange(): number {
-    console.log("tes",this.v)
-    return parseInt(this.v)
+
+    if(this.v === '') return this.min ?? 0
+
+    const value = parseInt(this.v)
+    if(this.max && value > this.max) return this.max
+    if(this.min && value < this.min) return this.min
+
+    return value
+
   }
 }

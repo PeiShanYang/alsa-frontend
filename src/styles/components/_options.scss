@@ -26,10 +26,11 @@
     }
 }
 
-// .select-box{
-//     display: flex;
-//     justify-content: center;
-// }
+.select-box{
+    display: flex;
+    flex-direction: column;
+    margin: 1em 0;
+}
 ::v-deep .el-dropdown{
     width: 100%;
     display: flex;
