@@ -17,6 +17,7 @@ import store from '@/services/store.service';
 import { Experiment, PreprocessPara } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
+import { StringUtil } from '@/utils/string.util';
 
 @Component({
   components: {
@@ -45,6 +46,8 @@ export default class Experiments extends Vue {
 
   private dialogExperimentId = ''
   private dialogPreprocessPara: PreprocessPara = {}
+
+  private showSolutionKey = false
 
   created(): void {
     this.$i18n.locale = "zh-tw"
@@ -276,4 +279,27 @@ export default class Experiments extends Vue {
     this.$router.push('/')
   }
 
+  private exportExperiment(): void {
+    this.showSolutionKey = true
+  }
+
+  private get solutionKey(): string {
+    if (!store.currentProject) return ''
+
+    const project = store.projectList.get(store.currentProject)
+    if (!project) return ''
+    this.datasets = project.datasets
+
+    const experiments = project.experiments
+    if (!experiments) return ''
+
+    let experiment: Experiment = new Experiment()
+
+    experiments.forEach((exp, expId) => {
+      experiment = exp
+      experiment.Config.PrivateSetting.datasetPath = ""
+    })
+
+    return StringUtil.encodeObject(experiment)
+  }
 }

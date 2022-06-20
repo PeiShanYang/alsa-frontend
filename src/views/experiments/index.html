@@ -16,6 +16,9 @@
       </el-row>
       <el-row type="flex" justify="end">
         <el-col :span="3" class="action-btn-group">
+          <el-button class="primary-btn" @click="exportExperiment">匯出</el-button>
+        </el-col>
+        <el-col :span="3" class="action-btn-group">
           <el-button class="primary-btn" @click="runExperimentTrain">執行</el-button>
         </el-col>
       </el-row>
@@ -31,4 +34,5 @@
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
 
+  <el-dialog :visible.sync="showSolutionKey" append-to-body>{{ solutionKey }}</el-dialog>
 </div>
