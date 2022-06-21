@@ -83,4 +83,8 @@ export default class DialogPreprocess extends Vue {
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = event
   }
+
+  private optionCase(name: string): string | undefined {
+    if (name == 'normalize') return 'normal'
+  }
 }
