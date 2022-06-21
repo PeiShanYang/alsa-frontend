@@ -32,7 +32,8 @@
     :experiment-id="dialogExperimentId" :default="dialogAugmentationPara" @set-para="setAugmentationPara" />
 
 
-  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
+  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false"
+  :experiment-id="dialogExperimentId" :default="dialogModelSelectPara" />
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />

@@ -47,7 +47,7 @@ export default class DialogAugmentation extends Vue {
 
   }
 
-  // 參數預設值
+
   private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
     if (defaultValue !== undefined) return defaultValue
     config = new Map<string, ConfigType>(Object.entries(config))

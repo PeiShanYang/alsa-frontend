@@ -2,10 +2,20 @@ import { ConfigType } from '@/io/experimentConfig';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import OptionForm from '@/components/options/option-form/OptionForm.vue';
 
-@Component
+type Dict = Map<string, boolean | number | number[] | string | string[]>
+
+@Component({
+  components: {
+    OptionForm
+  }
+})
+
 export default class DialogModelSelect extends Vue {
   @Prop() private dialogOpen!: boolean;
+  @Prop() private experimentId!: string;
+  @Prop() private default!: any;
 
   @Emit("dialog-close")
   closeDialogModelSelect(): void {
@@ -37,6 +47,8 @@ export default class DialogModelSelect extends Vue {
     // console.log("this.configs", this.configs)
 
     this.models = Object.entries(this.configs.model.structure.enums).map(item => this.optionName(item[0]))
+
+    console.log("this.configs", store.experimentConfigs)
 
   }
 

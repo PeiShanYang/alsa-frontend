@@ -49,6 +49,7 @@ export default class Experiments extends Vue {
   private dialogExperimentId = ''
   private dialogPreprocessPara: PreprocessPara = {}
   private dialogAugmentationPara: AugmentationPara ={}
+  private dialogModelSelectPara = {}
 
   private showSolutionKey = false
 
@@ -145,25 +146,32 @@ export default class Experiments extends Vue {
     return graph
   }
 
-  private listenOnNodeClick() {
+  private listenOnNodeClick():void {
+
     this.graph.graph?.on("node:click", (nodeInfo) => {
+      if(!this.graph.experiment) return
       const targetDialog: ProcessCellData = nodeInfo.node.data;
-      console.log(targetDialog.component)
+      // console.log(targetDialog.component)
       switch (targetDialog.component) {
         case "dataset-node":
           this.openDialogDataset = true
           break;
         case "preprocess-node":
           this.dialogExperimentId = this.graph.experimentId
-          this.dialogPreprocessPara = this.graph.experiment?.ConfigPreprocess.PreprocessPara ?? {}
+          this.dialogPreprocessPara = this.graph.experiment.ConfigPreprocess.PreprocessPara ?? {}
           this.openDialogPreprocess = true
           break;
         case "augmentation-node":
           this.dialogExperimentId = this.graph.experimentId
-          this.dialogAugmentationPara = this.graph.experiment?.ConfigAugmentation.AugmentationPara ?? {}
+          this.dialogAugmentationPara = this.graph.experiment.ConfigAugmentation.AugmentationPara ?? {}
           this.openDialogAugmentation = true
           break;
         case "model-select-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogModelSelectPara = {
+            ConfigModelService : this.graph.experiment.ConfigModelService,
+            ConfigPytorchModel : this.graph.experiment.ConfigPytorchModel
+          }
           this.openDialogModelSelect = true
           break;
         default:
