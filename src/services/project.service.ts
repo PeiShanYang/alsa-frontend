@@ -17,7 +17,7 @@ export default class ProjectSevice {
         return ["notUploaded","notLabeled", "notSplit"];
     }
 
-    static getModelNodeContent(model: { pretrained: number, structure: string } | undefined): string[] {
+    static getModelNodeContent(model: { pretrained: boolean, structure: string } | undefined): string[] {
         return [model ? model.structure : 'Model not set'];
     }
 

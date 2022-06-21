@@ -14,72 +14,17 @@ export class Experiment {
         AugmentationPara: AugmentationPara
     };
     ConfigEvaluation!: {
-        EvaluationPara: {
-            showAcc?: 1,
-            showClassAcc?: 1,
-            showNumOfClasses?: 0,
-            showRate?: {
-                switch: 0,
-                targetIndex: "OK",
-            },
-            showWrongFile?: 0,
-        }
+        EvaluationPara: EvaluationPara
     };
     ConfigModelService!: {
         LossFunctionPara: {
-            lossFunction?: "CrossEntropyLoss",
+            lossFunction?: string,
         },
         LearningRate: {
-            learningRate?: 0.001,
+            learningRate?: number,
         },
-        OptimizerPara: {
-            SGD?: {
-                switch: 0,
-                momentum: 0.9,
-                dampening: 0,
-                weightDecay: 5e-4,
-                nesterov: 0,
-            },
-            Adam?: {
-                switch: 1,
-                betas: [0.9, 0.999],
-                eps: 1e-8,
-                weightDecay: 5e-4,
-                amsgrad: 0,
-            },
-            Adadelta?: {
-                switch: 0,
-                rho: 0.9,
-                eps: 1e-6,
-                weightDecay: 0,
-            },
-            AdamW?: {
-                switch: 0,
-                betas: [0.9, 0.999],
-                eps: 1e-8,
-                weightDecay: 0.01,
-                amsgrad: 0,
-            },
-            NAdam?: {
-                switch: 0,
-                betas: [0.9, 0.999],
-                eps: 1e-8,
-                weightDecay: 0,
-                momentumDecay: 0.004,
-            },
-        }
-        SchedulerPara: {
-            stepLR?: {
-                switch: 1,
-                step_size: 10,
-                gamma: 0.1
-            },
-            cosineAnnealingLR?: {
-                switch: 0,
-                tMax: string,
-                etaMin: 0,
-            }
-        }
+        OptimizerPara: OptimizerPara
+        SchedulerPara: SchedulerPara
     };
     ConfigPostprocess!: {
         PostProcessPara: {
@@ -87,7 +32,7 @@ export class Experiment {
                 switch: 1,
                 threshold: 0.75,
                 selectLabel: "OK",
-                classList: ["NG","OK"]
+                classList: ["NG", "OK"]
             }
         }
     };
@@ -95,39 +40,21 @@ export class Experiment {
         PreprocessPara: PreprocessPara
     };
     ConfigPytorchModel!: {
-        SelectedModel: {
-            model?: {
-                structure: "auo_mmfa_model",
-                pretrained: 1,
-            }
-        },
-        ClsModelPara: {
+        SelectedModel: SelectedModel
+        ConfigResultStorage: {
+            ResultStorage: ResultStorage
+        };
+        ConfigPass: {
+            confidenceFilter?: false,
+            showRate?: false,
             cudaDevice?: 0,
-            batchSize?: 16,
-            epochs?: 2,
-        },
-        ClsPath:{
-            trainPath?:string,
-            validPath?:string,
-            testPath?:string,
-            inferencePath?:string,
-            pretrainedWeight?:string,
-            weigthPath?:string,
-            saveFinalWeight?:0,
+            saveAccJson?: true,
+            testAccJson?: true,
+            drawAccCurve?: false,
+            drawConfusionMatrix?: true,
         }
     };
-    ConfigResultStorage!: {
-        ResultStorage: {
-            saveFinalWeight?: 0,
-            saveCheckpoint?: {
-                switch: 0,
-                saveIter: 1,
-            },
-            saveAccTxt?: 0,
-            drawAccCurve?: 0,
-            drawConfusionMatrix?: 0,
-        }
-    };
+
 }
 
 export class PreprocessPara {
@@ -144,7 +71,7 @@ export class PreprocessPara {
         size: number[]
     };
     pad?: {
-        padding:  number[]
+        padding: number[]
         fill?: number[],
         paddingModel: string,
     };
@@ -168,53 +95,149 @@ export class PreprocessPara {
     [s: string]: any | ((s: string) => any);
 }
 
-export class AugmentationPara{
-    randomHorizontalFlip?:{
-        probability:number
+export class AugmentationPara {
+    randomHorizontalFlip?: {
+        probability: number
     };
-    randomVerticalFlip?:{
-        probability:number
+    randomVerticalFlip?: {
+        probability: number
     };
-    randomRotation?:{
-        degrees:number[]
+    randomRotation?: {
+        degrees: number[]
     };
-    randomTranslate?:{
-        translate:number[]
+    randomTranslate?: {
+        translate: number[]
     };
-    randomScale?:{
-        scale:number[]
+    randomScale?: {
+        scale: number[]
     };
-    randomShear?:{
-        shear:number[]
+    randomShear?: {
+        shear: number[]
     };
-    randomGrayscale?:{
-        probability:number
+    randomGrayscale?: {
+        probability: number
     };
-    randomBrightness?:{
-        brightness:number[]
+    randomBrightness?: {
+        brightness: number[]
     };
-    randomContrast?:{
-        contrast:number[]
+    randomContrast?: {
+        contrast: number[]
     };
-    randomSaturation?:{
-        saturation:number[]
+    randomSaturation?: {
+        saturation: number[]
     };
-    randomHue?:{
-        hue:number[]
+    randomHue?: {
+        hue: number[]
     };
-    randomErasing?:{
-        probability:number,
-        scale:number[],
-        ratio:number[],
-        value:number[],
+    randomErasing?: {
+        probability: number,
+        scale: number[],
+        ratio: number[],
+        value: number[],
     };
-    randomPerspective?:{
-        distortion:number,
-        probability:number,
-        interpolation:string,
-        fill:number[],
+    randomPerspective?: {
+        distortion: number,
+        probability: number,
+        interpolation: string,
+        fill: number[],
     }
 
     [s: string]: any | ((s: string) => any);
 
+}
+export class SelectedModel {
+    model?: {
+        structure: string,
+        pretrained: boolean,
+    };
+    ClsModelPara?: {
+        batchSize: number,
+        epochs: number,
+    }
+
+    [s: string]: any | ((s: string) => any);
+}
+
+export class ResultStorage {
+    saveFinalWeight?: {
+        switch: boolean
+    };
+    saveAccTxt?: {
+        switch: boolean
+    };
+    savePredictResult?: {
+        switch: boolean
+    };
+    unknownFilter?: {
+        switch: boolean,
+        filter: {
+            name: string,
+            threshold: number,
+        },
+        reverse: boolean,
+        saveCsv: number,
+    };
+
+    [s: string]: any | ((s: string) => any);
+}
+
+export class OptimizerPara {
+    SGD?: {
+        momentum: number,
+        dampening: number,
+        weightDecay: number,
+        nesterov: boolean,
+    };
+    Adam?: {
+        betas: number[],
+        eps: number,
+        weightDecay: number,
+        amsgrad: boolean,
+    };
+    Adadelta?: {
+        rho: number,
+        eps: number,
+        weightDecay: number,
+    };
+    AdamW?: {
+        betas: number[],
+        eps: number,
+        weightDecay: number,
+        amsgrad: boolean,
+    };
+    NAdam?: {
+        betas: number[],
+        eps: number,
+        weightDecay: number,
+        momentumDecay: number,
+    }
+    [s: string]: any | ((s: string) => any);
+}
+
+export class SchedulerPara {
+    stepLR?: {
+        stepSize: number,
+        gamma: number
+    };
+    cosineAnnealingLR?: {
+        tMax: number,
+        etaMin: number,
+    }
+    [s: string]: any | ((s: string) => any);
+}
+
+export class EvaluationPara {
+    showAcc?: {
+        switch: boolean
+    };
+    showClassAcc?: {
+        switch: boolean
+    };
+    showNumOfClasses?: {
+        switch: boolean
+    };
+    showWrongFile?: {
+        switch: boolean
+    }
+    [s: string]: any | ((s: string) => any);
 }

@@ -74,15 +74,23 @@
 .main-box{
   height: 30%;
   display: flex;
+  flex-direction: column;
+  font-size: $font-normal;
+  padding: 0 1em;
 }
 
 .model-name-box{
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: auto;
+  margin: auto 0;
   color: $secondary-color;
-  font-size: $font-normal;
+}
+
+.profile-box{
+  display: flex;
+  margin: auto;
+  font-size: $font-normal * 0.8;
+  color: #939393;
 }
 
 .action-btn-group {
