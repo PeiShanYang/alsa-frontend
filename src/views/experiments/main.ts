@@ -15,7 +15,7 @@ import ProcessCellData from '@/io/processCellData';
 import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
-import { AugmentationPara, Experiment, PreprocessPara } from '@/io/experiment';
+import { AugmentationPara, Experiment, ModelSelectPara, PreprocessPara } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
@@ -49,7 +49,7 @@ export default class Experiments extends Vue {
   private dialogExperimentId = ''
   private dialogPreprocessPara: PreprocessPara = {}
   private dialogAugmentationPara: AugmentationPara ={}
-  private dialogModelSelectPara = {}
+  private dialogModelSelectPara: ModelSelectPara = {}
 
   private showSolutionKey = false
 
@@ -168,10 +168,8 @@ export default class Experiments extends Vue {
           break;
         case "model-select-node":
           this.dialogExperimentId = this.graph.experimentId
-          this.dialogModelSelectPara = {
-            ConfigModelService : this.graph.experiment.ConfigModelService,
-            ConfigPytorchModel : this.graph.experiment.ConfigPytorchModel
-          }
+          this.dialogModelSelectPara.ConfigModelService = this.graph.experiment.ConfigModelService ?? {}
+          this.dialogModelSelectPara.ConfigPytorchModel = this.graph.experiment.ConfigPytorchModel ?? {}
           this.openDialogModelSelect = true
           break;
         default:

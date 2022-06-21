@@ -153,7 +153,7 @@ export class SelectedModel {
     ClsModelPara?: {
         batchSize: number,
         epochs: number,
-    }
+    };
 
     [s: string]: any | ((s: string) => any);
 }
@@ -210,7 +210,7 @@ export class OptimizerPara {
         eps: number,
         weightDecay: number,
         momentumDecay: number,
-    }
+    };
     [s: string]: any | ((s: string) => any);
 }
 
@@ -240,4 +240,100 @@ export class EvaluationPara {
         switch: boolean
     }
     [s: string]: any | ((s: string) => any);
+}
+
+export class ModelSelectPara {
+    ConfigModelService?: Experiment['ConfigModelService'];
+    ConfigPytorchModel?: Experiment['ConfigPytorchModel'];
+
+    // LossFunctionPara?: {
+    //     lossFunction: string,
+    // };
+
+    // LearningRate?: {
+    //     learningRate: number,
+    // };
+
+    // SGD?: {
+    //     momentum: number,
+    //     dampening: number,
+    //     weightDecay: number,
+    //     nesterov: boolean,
+    // };
+    // Adam?: {
+    //     betas: number[],
+    //     eps: number,
+    //     weightDecay: number,
+    //     amsgrad: boolean,
+    // };
+    // Adadelta?: {
+    //     rho: number,
+    //     eps: number,
+    //     weightDecay: number,
+    // };
+    // AdamW?: {
+    //     betas: number[],
+    //     eps: number,
+    //     weightDecay: number,
+    //     amsgrad: boolean,
+    // };
+    // NAdam?: {
+    //     betas: number[],
+    //     eps: number,
+    //     weightDecay: number,
+    //     momentumDecay: number,
+    // };
+
+    // stepLR?: {
+    //     stepSize: number,
+    //     gamma: number
+    // };
+    // cosineAnnealingLR?: {
+    //     tMax: number,
+    //     etaMin: number,
+    // }
+
+    // model?: {
+    //     structure: string,
+    //     pretrained: boolean,
+    // };
+    // ClsModelPara?: {
+    //     batchSize: number,
+    //     epochs: number,
+    // };
+
+    // saveFinalWeight?: {
+    //     switch: boolean
+    // };
+    // saveAccTxt?: {
+    //     switch: boolean
+    // };
+    // savePredictResult?: {
+    //     switch: boolean
+    // };
+    // unknownFilter?: {
+    //     switch: boolean,
+    //     filter: {
+    //         name: string,
+    //         threshold: number,
+    //     },
+    //     reverse: boolean,
+    //     saveCsv: number,
+    // };
+
+    // ConfigPass?: {
+    //     confidenceFilter?: false,
+    //     showRate?: false,
+    //     cudaDevice?: 0,
+    //     saveAccJson?: true,
+    //     testAccJson?: true,
+    //     drawAccCurve?: false,
+    //     drawConfusionMatrix?: true,
+    // }
+
+    // static allocatePara(experiment: Experiment){
+
+        
+    //     return
+    // }
 }
