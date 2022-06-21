@@ -28,40 +28,42 @@ export default class DialogModelSelect extends Vue {
 
 
   private models: string[] = [];
-  private pickedModel = '';
+  private pickedModel = ''
   private changeToSetting = false;
   private targetModel = ''
   private resizeCheck = []
 
-  private modelSetting = ['pretrained','batchSize','epochs','Optimizer','Scheduler']
+  private modelSetting = ['pretrained', 'batchSize', 'epochs', 'Optimizer', 'Scheduler']
 
   mounted(): void {
     this.waitConfigsSetting()
   }
 
-  updated():void{
+  updated(): void {
     this.newPara = this.default
-    console.log("default",this.newPara)
+    console.log("default", this.newPara)
   }
 
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
-    if(store.experimentConfigs){
-      
-      console.log("test", new Map<string, ConfigType>(Object.entries(store.experimentConfigs.ConfigPytorchModel.SelectedModel.model)))
-    }
 
-    // if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPytorchModel.SelectedModel
+    const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
+    this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    this.pickedModel = modelConfig.get('structure')?.default.toString() ?? ''
 
-    // if (!this.configs.model.structure.enums) return
-    // // console.log("this.configs", this.configs)
+    modelConfig.delete('structure')
+    this.configs.set('pretrained', modelConfig)
 
-    // this.models = Object.entries(this.configs.model.structure.enums).map(item => this.optionName(item[0]))
+    const clsModelParaConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.ClsModelPara ?? {}))
 
-    console.log("this.configs", store.experimentConfigs)
+    // this.configs.set
 
-    
+    // clsModelParaConfig.forEach((arg,name)=> console.log("t",arg,name))
+
+    console.log("this.configs", store.experimentConfigs,this.configs)
+
+
 
   }
 

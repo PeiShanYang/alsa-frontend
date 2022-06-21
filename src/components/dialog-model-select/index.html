@@ -18,7 +18,7 @@
             <div class="main-box">
               <div class="model-name-box">
                 <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
-                <span>{{item}}</span>
+                <span>{{optionName(item)}}</span>
               </div>
               <div class="profile-box">
                 簡介: 多尺度預測、二元損失函數、高效率
@@ -44,7 +44,7 @@
     <div class="setting-main-container">
       <el-row>
         <el-col class="model-container-title">
-          <span>{{targetModel}}</span>
+          <span>{{optionName(targetModel)}}</span>
         </el-col>
       </el-row>
       <el-row>
