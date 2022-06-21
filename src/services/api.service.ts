@@ -254,6 +254,24 @@ export default class Api {
     return res.message
   }
 
+  static async removeRun(projectName: string, runId: string): Promise<string> {
+    const reqData: DeleteRunReq = {
+      projectName, runId
+    }
+
+    const response: AxiosResponse<DeleteRunRes> = await axios.post(
+      host + 'remove-run',
+      reqData
+    )
+
+    if (response.status !== 200) return "fail"
+
+    const res: DeleteRunRes = response.data
+    if (res.code !== 0) console.log(res.message)
+
+    return res.message
+  }
+
   static async getModelInformation(projectName: string): Promise<GetModelInformationResData> {
 
     const reqData: GetModelInformationReq = {
