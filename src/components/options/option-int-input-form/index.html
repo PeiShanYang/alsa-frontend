@@ -1,4 +1,8 @@
-<div>
-  <el-input v-model.number="v" clearable></el-input>
-  <div v-if="unit !== undefined"> {{unit}}</div>
-</div>
+<el-row>
+  <el-col :span="18">
+    <el-input v-model.number="v" clearable></el-input>
+  </el-col>
+  <el-col :span="6" v-if="unit !== undefined">
+    {{ $i18n.t(unit).toString() }}
+  </el-col>
+</el-row>

@@ -18,6 +18,7 @@ import OptionEnumsForm from '@/components/options/option-enums-form/OptionEnumsF
 export default class OptionForm extends Vue {
   @Prop() private config!: Map<string, ConfigType>
   @Prop() private default!: Map<string, number | number[] | string | string[]>
+  @Prop() private case?: string
 
   private newPara = this.default
 
@@ -30,7 +31,8 @@ export default class OptionForm extends Vue {
     return this.newPara
   }
 
-  private tr(str: string): string {
+  private tr(str: string, arg: ConfigType): string {
+    if (arg.display !== undefined) return this.$i18n.t(arg.display).toString()
     return this.$i18n.t(str).toString()
   }
 
@@ -38,7 +40,24 @@ export default class OptionForm extends Vue {
     return arg.min !== undefined && arg.max != undefined
   }
 
+  private formTypeSpecialCase(arg: ConfigType): string {
+    if (this.case === 'normal') {
+      if (arg.enums !== undefined) {
+        return 'enums'
+      }
+      if (this.newPara.get('mode') == 4) {
+        return 'continue' // not rigorous, but there is only list
+      }
+    }
+    return ''
+  }
+
   private formType(arg: ConfigType): string {
+    if (this.case !== undefined) {
+      const formType = this.formTypeSpecialCase(arg)
+      if (formType !== 'continue') return formType
+    }
+
     if (arg.enums !== undefined) {
       return 'enums'
     }
