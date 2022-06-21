@@ -67,11 +67,13 @@
                     <div class="plot-content">
                       <template v-for="item in chart.data.barChartData">
                         <div class="progress-bar-container">
-                          <div class="progress-content" :style="'background-color:'+item.classColor">{{item.className}}</div>
-                          <el-progress :text-inside="true" :stroke-width="20" :percentage="item.classScore" :color="item.classColor"></el-progress>
+                          <div class="progress-content" :style="'background-color:'+item.classColor">{{item.className}}
+                          </div>
+                          <el-progress :text-inside="true" :stroke-width="20" :percentage="item.classScore"
+                            :color="item.classColor"></el-progress>
                           <div class="progress-end-extra">100%</div>
                         </div>
-                      </template> 
+                      </template>
                     </div>
                   </div>
                 </el-col>
@@ -80,11 +82,11 @@
                     <div class="plot-title">Confusion Matrix</div>
                     <div class="plot-content">
                       <template v-if="chart.data.confusionMatrixImagePath !== '' ">
-                        <img class="matirx-img"  :src="chart.data.confusionMatrixImagePath"/>
+                        <img class="matirx-img" :src="chart.data.confusionMatrixImagePath" />
                       </template>
-                     <template v-else>
-                      <el-empty description="準備中 ..."></el-empty>
-                     </template>
+                      <template v-else>
+                        <el-empty description="準備中 ..."></el-empty>
+                      </template>
                     </div>
                   </div>
                 </el-col>
@@ -93,7 +95,7 @@
           </el-row>
           <el-row type="flex" justify="end">
             <el-col :span="8" class="action-btn-group">
-              <el-button class="secondary-btn">刪除</el-button>
+              <el-button class="secondary-btn" @click="askDeleteRun(chart.runId)">刪除</el-button>
               <el-button class="primary-btn" @click="getDownloadInfo(chart.runId)">下載</el-button>
               <el-tooltip :disabled="chart.deployInfoMsg.length === 0" placement="top-end" effect="light">
                 <div slot="content">
@@ -123,12 +125,13 @@
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="downloadModel" />
 
-  
-
-    <dialog-tree-list :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
+  <dialog-tree-list :dialog-open="setDeployPathDialog" :message-data="setDeployPathDialogData"
     @cancel-action="setDeployPathDialog=false" @confrim-action="setDeployPath" />
 
   <dialog-message :dialog-open="deployDialog" :message-data="deployDialogData" @cancel-action="deployDialog=false"
     @confrim-action="deploy" />
+
+  <dialog-message :dialog-open="deleteDialog" :message-data="dialogMessageData" @cancel-action="deleteDialog=false"
+    @confrim-action="removeRun" />
 
 </div>
