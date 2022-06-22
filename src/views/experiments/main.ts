@@ -304,10 +304,11 @@ export default class Experiments extends Vue {
     this.drawGraph()
   }
 
-  private setAugmentationPara(newPara: AugmentationPara): void {
+  private async setAugmentationPara(newPara: AugmentationPara): Promise<void> {
 
     if (!this.graph.experiment) return
     this.graph.experiment.ConfigAugmentation.AugmentationPara = newPara
+    await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
     this.openDialogAugmentation = false
 
     this.drawGraph()
