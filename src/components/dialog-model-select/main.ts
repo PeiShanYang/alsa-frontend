@@ -55,7 +55,8 @@ export default class DialogModelSelect extends Vue {
     modelConfig.delete('structure')
     this.configs.set('pretrained', modelConfig)
 
-    const clsModelParaConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.ClsModelPara ?? {}))
+    const clsModelParaConfig = store.experimentConfigs?.ConfigPytorchModel.SelectedModel.ClsModelPara ?? {}
+    console.log("t",Object.entries(clsModelParaConfig))
 
     // this.configs.set
 
