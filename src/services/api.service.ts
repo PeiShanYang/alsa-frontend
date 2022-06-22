@@ -24,6 +24,7 @@ import { RemoveFolderReq, RemoveFolderRes } from "@/io/rest/removeFolder";
 import { RenameFolderReq, RenameFolderRes } from "@/io/rest/renameFolder";
 import { GetExperimentConfigsRes } from "@/io/rest/getExperimentConfig";
 import storeService from "@/services/store.service";
+import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
 
 
 const host = 'http://tw100104318:37510/';
@@ -91,6 +92,33 @@ export default class Api {
     if (response.status !== 200) return;
 
     const res: GetExperimentsRes = response.data;
+    if (res.code !== 0) {
+      console.log(res.message);
+      return;
+    }
+
+    const project = store.projectList.get(projectName);
+    if (project === undefined) return;
+
+    if (!res.data) return;
+    project.experiments = new Map<string, Experiment>(Object.entries(res.data));
+  }
+
+  static async setExperiments(projectName: string, experimentId: string, experiment: Experiment): Promise<void> {
+
+    console.log(experiment)
+
+    const reqData: SetExperimentsReq = {
+      projectName, experimentId, experiment
+    };
+    const response: AxiosResponse<SetExperimentsRes> = await axios.post(
+      host + 'set-experiments',
+      reqData,
+    );
+
+    if (response.status !== 200) return;
+
+    const res: SetExperimentsRes = response.data;
     if (res.code !== 0) {
       console.log(res.message);
       return;

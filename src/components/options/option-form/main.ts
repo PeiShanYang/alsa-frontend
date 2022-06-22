@@ -1,5 +1,5 @@
 import { ConfigType } from '@/io/experimentConfig';
-import { Component, Emit, Prop, Vue,Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 import OptionIntSliderForm from '@/components/options/option-int-slider-form/OptionIntSliderForm.vue';
 import OptionFloatSliderForm from '@/components/options/option-float-slider-form/OptionFloatSliderForm.vue';
 import OptionIntInputForm from '@/components/options/option-int-input-form/OptionIntInputForm.vue';
@@ -22,12 +22,13 @@ export default class OptionForm extends Vue {
 
   private newPara = this.default
 
-  updated(): void {    
+  updated(): void {
     this.returnPara()
   }
 
   @Emit("change")
   returnPara(): Map<string, number | number[] | string | string[]> {
+    console.log(this.newPara)
     return this.newPara
   }
 
@@ -92,19 +93,19 @@ export default class OptionForm extends Vue {
 
     const childPara = this.newPara.get(name)
 
-    if(Array.isArray(childPara)){
+    if (Array.isArray(childPara)) {
       childPara[index] = value
-      this.newPara.set(name,childPara)
+      this.newPara.set(name, childPara)
       this.$forceUpdate()
-    }else{
-      this.newPara.set(name,value)
+    } else {
+      this.newPara.set(name, value)
       this.$forceUpdate()
     }
 
   }
 
-  private updateNewPara(name:string,value:string|number):void{
-    this.newPara.set(name,value)
+  private updateNewPara(name: string, value: string | number): void {
+    this.newPara.set(name, value)
     this.$forceUpdate()
   }
 
