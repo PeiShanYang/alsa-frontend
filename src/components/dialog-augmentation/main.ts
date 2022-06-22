@@ -45,6 +45,8 @@ export default class DialogAugmentation extends Vue {
 
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigAugmentation.AugmentationPara
 
+    console.log("te", this.configs)
+
   }
 
 
@@ -85,7 +87,4 @@ export default class DialogAugmentation extends Vue {
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = event
   }
- 
-
-
 }

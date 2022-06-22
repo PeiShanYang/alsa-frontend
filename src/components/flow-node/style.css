@@ -23,7 +23,7 @@ ul {
   width: 100%;
   text-overflow:ellipsis;
   word-break: break-all;
-  overflow: hidden;
+  overflow:auto
 }
 
 li span {
@@ -31,4 +31,8 @@ li span {
   left: -2px;
   font-size: 0.8vw;
   /* word-break: break-all; */
+}
+
+::-webkit-scrollbar {
+  width: 5px;
 }
