@@ -243,6 +243,11 @@ export class EvaluationPara {
 }
 
 export class ModelSelectPara {
-    ConfigModelService?: Experiment['ConfigModelService'];
-    ConfigPytorchModel?: Experiment['ConfigPytorchModel'];
+    modelStructure!: string
+    modelPretrained!: boolean
+    batchSize!: number
+    epochs!: number
+    lossFunction!: string
+    optimizer!: string
+    scheduler!: string
 }

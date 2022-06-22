@@ -22,75 +22,43 @@ export default class DialogModelSelect extends Vue {
   private configs = new Map<string, Map<string, ConfigType>>()
 
   @Emit("dialog-close")
-  closeDialogModelSelect(): void {
-    return
+  closeDialogModelSelect(save: boolean): ModelSelectPara {
+    if (save) return this.newPara
+    return this.default
   }
 
+  private init = false
+
+  private modelStructure = 'auo_unrestricted_powerful_model'
+  private modelPretrained = false
+  private batchSize = 1
+  private epochs = 1
+  private lossFunction = 'CrossEntropyLoss'
+  private optimizer = 'SGD'
+  private scheduler = ''
 
   private models: string[] = [];
-  private pickedModel = ''
-  private changeToSetting = false;
-  private targetModel = ''
-  private resizeCheck = []
 
-  private modelSetting = ['pretrained', 'batchSize', 'epochs', 'Optimizer', 'Scheduler']
+  private modelSetting = ['pretrained', 'batchSize', 'epochs', 'lossFunction', 'Optimizer', 'Scheduler']
+  private changeToSetting = false
 
   mounted(): void {
     this.waitConfigsSetting()
   }
 
   updated(): void {
-    this.newPara = this.default
-    console.log("default", this.newPara)
+    if (!this.init) {
+      this.newPara = this.default
+      this.init = true
+    }
   }
 
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
-
     const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
     this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
-    this.pickedModel = modelConfig.get('structure')?.default.toString() ?? ''
-
-    modelConfig.delete('structure')
-    this.configs.set('pretrained', modelConfig)
-
-    const clsModelParaConfig = store.experimentConfigs?.ConfigPytorchModel.SelectedModel.ClsModelPara ?? {}
-    console.log("t",Object.entries(clsModelParaConfig))
-
-    // this.configs.set
-
-    // clsModelParaConfig.forEach((arg,name)=> console.log("t",arg,name))
-
-    console.log("this.configs", store.experimentConfigs,this.configs)
-
-
-
-  }
-
-  private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
-    if (defaultValue !== undefined) return defaultValue
-    config = new Map<string, ConfigType>(Object.entries(config))
-    const newPara = new Map<string, boolean | number | number[] | string | string[]>()
-    config.forEach((arg, name) => {
-      if (arg.type == 'list') {
-        if (arg.children !== undefined) {
-          const children = new Map<string, ConfigType>(Object.entries(arg.children))
-          if (Array.from(children.values())[0].type == 'string') {
-            const l: string[] = []
-            children.forEach((v) => l.push(v.default as string))
-            newPara.set(name, l)
-          } else {
-            const l: number[] = []
-            children.forEach((v) => l.push(v.default as number))
-            newPara.set(name, l)
-          }
-        }
-      } else {
-        newPara.set(name, arg.default)
-      }
-    })
-    return newPara
+    this.modelStructure = modelConfig.get('structure')?.default.toString() ?? ''
   }
 
   private optionName(name: string): string {
@@ -98,9 +66,19 @@ export default class DialogModelSelect extends Vue {
   }
 
   private handleSelectModel(modelName: string): void {
-    this.targetModel = modelName
+    this.modelStructure = modelName
     this.changeToSetting = true
   }
 
+  private saveChanges(): void {
+    this.newPara.modelStructure = this.modelStructure
+    this.newPara.modelPretrained = this.modelPretrained
+    this.newPara.batchSize = this.batchSize
+    this.newPara.epochs = this.epochs
+    this.newPara.lossFunction = this.lossFunction
+    this.newPara.optimizer = this.optimizer
+    this.newPara.scheduler = this.scheduler
 
+    this.changeToSetting = false
+  }
 }

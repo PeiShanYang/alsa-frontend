@@ -5,7 +5,7 @@ import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import OptionForm from '@/components/options/option-form/OptionForm.vue';
 import { PreprocessPara } from '@/io/experiment';
 
-type Dict = Map<string, number | number[] | string | string[]>
+type Dict = Map<string, number | number[] | string | string[] | boolean>
 
 @Component({
   components: {
@@ -49,7 +49,7 @@ export default class DialogPreprocess extends Vue {
   private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
     if (defaultValue !== undefined) return defaultValue
     config = new Map<string, ConfigType>(Object.entries(config))
-    const newPara = new Map<string, number | number[] | string | string[]>()
+    const newPara = new Map<string, number | number[] | string | string[] | boolean>()
     config.forEach((arg, name) => {
       if (arg.type == 'list') {
         if (arg.children !== undefined) {

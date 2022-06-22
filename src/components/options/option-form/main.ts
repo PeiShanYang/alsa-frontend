@@ -28,7 +28,6 @@ export default class OptionForm extends Vue {
 
   @Emit("change")
   returnPara(): Map<string, number | number[] | string | string[]> {
-    console.log(this.newPara)
     return this.newPara
   }
 

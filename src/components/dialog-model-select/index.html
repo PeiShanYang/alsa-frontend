@@ -18,7 +18,7 @@
             <div class="main-box">
               <div class="model-name-box">
                 <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
-                <span>{{optionName(item)}}</span>
+                <span>{{ optionName(item) }}</span>
               </div>
               <div class="profile-box">
                 簡介: 多尺度預測、二元損失函數、高效率
@@ -31,8 +31,8 @@
     </div>
     <el-row slot="footer">
       <el-col class="action-btn-group">
-        <el-button class="secondary-btn" @click="closeDialogModelSelect">取消</el-button>
-        <el-button class="primary-btn" @click="closeDialogModelSelect">確定</el-button>
+        <el-button class="secondary-btn" @click="closeDialogModelSelect(false)">取消</el-button>
+        <el-button class="primary-btn" @click="closeDialogModelSelect(true)">確定</el-button>
       </el-col>
     </el-row>
   </div>
@@ -44,12 +44,12 @@
     <div class="setting-main-container">
       <el-row>
         <el-col class="model-container-title">
-          <span>{{optionName(targetModel)}}</span>
+          <span>{{ optionName(modelStructure) }}</span>
         </el-col>
       </el-row>
       <el-row>
-        <el-col class="setting-box" :span="6" v-for="item in modelSetting" :key="item">
-          <el-collapse accordion>
+        <el-col class="setting-box" :span="8" v-for="item in modelSetting" :key="item">
+          <el-collapse accordion :value="['1']">
             <el-collapse-item name="1">
               <template slot="title">
                 <el-row style="width: 100%;">
@@ -58,36 +58,54 @@
                   </el-col>
                 </el-row>
               </template>
-              <template v-if="['batchSize','epochs'].includes(item)">
+              <template v-if="item === 'batchSize'">
                 <div class="input-box">
-                  <el-input clearable></el-input>
+                  <el-input clearable v-model="batchSize"></el-input>
+                  <div>/batch</div>
+                </div>
+              </template>
+              <template v-if="item === 'epochs'">
+                <div class="input-box">
+                  <el-input clearable v-model="epochs"></el-input>
+                  <div>epochs</div>
                 </div>
               </template>
               <template v-if="item === 'pretrained'">
                 <div class="check-box">
-                  <el-checkbox-group v-model='resizeCheck' :max="1">
-                    <el-checkbox label="yes" key="yes">是</el-checkbox>
-                    <el-checkbox label="no" key="no">否</el-checkbox>
-                  </el-checkbox-group>
+                  <el-radio-group v-model="modelPretrained">
+                    <el-radio :label="true">是</el-radio>
+                    <el-radio :label="false">否</el-radio>
+                  </el-radio-group>
+                </div>
+              </template>
+              <template v-if="item === 'lossFunction'">
+                <div class="check-box">
+                  <el-radio-group v-model="lossFunction">
+                    <el-radio label="CrossEntropyLoss">CrossEntropyLoss</el-radio>
+                    <el-radio label="MSELoss">MSELoss</el-radio>
+                    <el-radio label="L1Loss">L1Loss</el-radio>
+                    <el-radio label="SmoothL1Loss">SmoothL1Loss</el-radio>
+                    <el-radio label="BCELoss">BCELoss</el-radio>
+                  </el-radio-group>
                 </div>
               </template>
               <template v-if="item === 'Optimizer'">
                 <div class="check-box">
-                  <el-checkbox-group v-model='resizeCheck' :max="1">
-                    <el-checkbox label="SGD" key="SGD">SGD</el-checkbox>
-                    <el-checkbox label="Adam" key="Adam">Adam</el-checkbox>
-                    <el-checkbox label="Adadelta" key="Adadelta">Adadelta</el-checkbox>
-                    <el-checkbox label="AdamW" key="AdamW">AdamW</el-checkbox>
-                    <el-checkbox label="NAdam" key="NAdam">NAdam</el-checkbox>
-                  </el-checkbox-group>
+                  <el-radio-group v-model="optimizer">
+                    <el-radio label="SGD">SGD</el-radio>
+                    <el-radio label="Adam">Adam</el-radio>
+                    <el-radio label="Adadelta">Adadelta</el-radio>
+                    <el-radio label="AdamW">AdamW</el-radio>
+                  </el-radio-group>
                 </div>
               </template>
               <template v-if="item === 'Scheduler'">
                 <div class="check-box">
-                  <el-checkbox-group v-model='resizeCheck' :max="1">
-                    <el-checkbox label="stepLR" key="stepLR">stepLR</el-checkbox>
-                    <el-checkbox label="cosineAnnealingLR" key="cosineAnnealingLR">cosineAnnealingLR</el-checkbox>
-                  </el-checkbox-group>
+                  <el-radio-group v-model="scheduler">
+                    <el-radio label="">None</el-radio>
+                    <el-radio label="stepLR">stepLR</el-radio>
+                    <el-radio label="cosineAnnealingLR">cosineAnnealingLR</el-radio>
+                  </el-radio-group>
                 </div>
               </template>
             </el-collapse-item>
@@ -98,7 +116,7 @@
     <el-row slot="footer">
       <el-col class="action-btn-group">
         <el-button class="secondary-btn" @click="changeToSetting=false">取消</el-button>
-        <el-button class="primary-btn" @click="changeToSetting=false">儲存修改</el-button>
+        <el-button class="primary-btn" @click="saveChanges">儲存修改</el-button>
       </el-col>
     </el-row>
   </div>

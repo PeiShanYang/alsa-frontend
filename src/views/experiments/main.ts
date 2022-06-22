@@ -48,8 +48,8 @@ export default class Experiments extends Vue {
 
   private dialogExperimentId = ''
   private dialogPreprocessPara: PreprocessPara = {}
-  private dialogAugmentationPara: AugmentationPara ={}
-  private dialogModelSelectPara: ModelSelectPara = {}
+  private dialogAugmentationPara: AugmentationPara = {}
+  private dialogModelSelectPara: ModelSelectPara = new ModelSelectPara()
 
   private showSolutionKey = false
 
@@ -150,6 +150,7 @@ export default class Experiments extends Vue {
 
     this.graph.graph?.on("node:click", (nodeInfo) => {
       if (!this.graph.experiment) return
+      if (!store.experimentConfigs) return
       const targetDialog: ProcessCellData = nodeInfo.node.data;
       // console.log(targetDialog.component)
       switch (targetDialog.component) {
@@ -168,14 +169,35 @@ export default class Experiments extends Vue {
           break;
         case "model-select-node":
           this.dialogExperimentId = this.graph.experimentId
-          this.dialogModelSelectPara.ConfigModelService = this.graph.experiment.ConfigModelService ?? {}
-          this.dialogModelSelectPara.ConfigPytorchModel = this.graph.experiment.ConfigPytorchModel ?? {}
+          this.setDefaultSelectModelPara()
           this.openDialogModelSelect = true
           break;
         default:
           console.log("out of case")
       }
     });
+  }
+
+  private setDefaultSelectModelPara() {
+    if (!this.graph.experiment) return
+    if (!store.experimentConfigs) return
+    this.dialogModelSelectPara.modelStructure = 
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.structure ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.structure.default as string
+    this.dialogModelSelectPara.modelPretrained = 
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
+    this.dialogModelSelectPara.batchSize =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.ClsModelPara?.batchSize ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.batchSize.default as number
+    this.dialogModelSelectPara.epochs =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.ClsModelPara?.epochs ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.epochs.default as number
+    this.dialogModelSelectPara.lossFunction =
+      this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
+      store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
+    this.dialogModelSelectPara.optimizer = 'SGD'
+    this.dialogModelSelectPara.scheduler = ''
   }
 
   private async setDatasetContent(path: string): Promise<void> {
@@ -292,8 +314,6 @@ export default class Experiments extends Vue {
 
   private async setPreprocessPara(newPara: PreprocessPara): Promise<void> {
 
-    console.log(newPara)
-
     if (!this.graph.experiment) return
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
@@ -335,7 +355,6 @@ export default class Experiments extends Vue {
       if (experiment.Config !== undefined) experiment.Config.PrivateSetting.datasetPath = ""
     })
 
-    console.log(experiment)
     return StringUtil.encodeObject(experiment)
   }
 }
