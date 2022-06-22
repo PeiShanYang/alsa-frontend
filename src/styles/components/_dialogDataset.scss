@@ -40,8 +40,10 @@
       color: $primary-color;
       margin-left: 0.5em;
       overflow-x: auto;
+      overflow-y: hidden;
     }
   }
+
 
   .status-box {
     display: flex;
