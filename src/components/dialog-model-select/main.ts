@@ -47,25 +47,35 @@ export default class DialogModelSelect extends Vue {
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
+    this.initialConfigs()
 
-    const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
+  }
+
+  private initialConfigs(): void {
+
+    const storeConfig = store.experimentConfigs
+    if (! storeConfig) return
+    
+    const modelConfig = new Map<string, ConfigType>(Object.entries(storeConfig.ConfigPytorchModel.SelectedModel.model))
+
     this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
     this.pickedModel = modelConfig.get('structure')?.default.toString() ?? ''
 
     modelConfig.delete('structure')
     this.configs.set('pretrained', modelConfig)
 
-    const clsModelParaConfig = store.experimentConfigs?.ConfigPytorchModel.SelectedModel.ClsModelPara ?? {}
-    console.log("t",Object.entries(clsModelParaConfig))
+    const clsModelParaConfig = new Map<string,ConfigType>(Object.entries(storeConfig.ConfigPytorchModel.SelectedModel.ClsModelPara))
 
-    // this.configs.set
+    clsModelParaConfig.forEach((arg,name)=> this.configs.set(name,new Map<string,ConfigType>([[name,arg]])))
 
-    // clsModelParaConfig.forEach((arg,name)=> console.log("t",arg,name))
-
-    console.log("this.configs", store.experimentConfigs,this.configs)
-
+    this.configs.set("LossFunctionPara",storeConfig.ConfigModelService.LossFunctionPara)
+    this.configs.set("LearningRate",storeConfig.ConfigModelService.LearningRate)
+    
 
 
+
+
+    console.log("this.configs", store.experimentConfigs, this.configs)
   }
 
   private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
