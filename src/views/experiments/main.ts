@@ -24,7 +24,7 @@ import { StringUtil } from '@/utils/string.util';
   components: {
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
-    "dialog-augmentation":DialogAugmentation,
+    "dialog-augmentation": DialogAugmentation,
     "dialog-model-select": DialogModelSelect,
     "flow-node": FlowNode,
     "dialog-message": DialogMessage,
@@ -48,8 +48,8 @@ export default class Experiments extends Vue {
 
   private dialogExperimentId = ''
   private dialogPreprocessPara: PreprocessPara = {}
-  private dialogAugmentationPara: AugmentationPara ={}
-  private dialogModelSelectPara: ModelSelectPara = {}
+  private dialogAugmentationPara: AugmentationPara = {}
+  private dialogModelSelectPara = {}
 
   private showSolutionKey = false
 
@@ -146,10 +146,10 @@ export default class Experiments extends Vue {
     return graph
   }
 
-  private listenOnNodeClick():void {
+  private listenOnNodeClick(): void {
 
     this.graph.graph?.on("node:click", (nodeInfo) => {
-      if(!this.graph.experiment) return
+      if (!this.graph.experiment) return
       const targetDialog: ProcessCellData = nodeInfo.node.data;
       // console.log(targetDialog.component)
       switch (targetDialog.component) {
@@ -168,8 +168,10 @@ export default class Experiments extends Vue {
           break;
         case "model-select-node":
           this.dialogExperimentId = this.graph.experimentId
-          this.dialogModelSelectPara.ConfigModelService = this.graph.experiment.ConfigModelService ?? {}
-          this.dialogModelSelectPara.ConfigPytorchModel = this.graph.experiment.ConfigPytorchModel ?? {}
+          this.dialogModelSelectPara = {
+            ConfigModelService: this.graph.experiment.ConfigModelService,
+            ConfigPytorchModel: this.graph.experiment.ConfigPytorchModel
+          }
           this.openDialogModelSelect = true
           break;
         default:
@@ -242,24 +244,24 @@ export default class Experiments extends Vue {
   private async runExperimentTrain(): Promise<void> {
 
     const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
-    if (!datasetPath){
+    if (!datasetPath) {
       const h = this.$createElement;
       this.$message({
         type: 'warning',
         message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
       })
       return
-    } 
+    }
 
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
-    if (!datasetStatus){
+    if (!datasetStatus) {
       const h = this.$createElement;
       this.$message({
         type: 'warning',
         message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
       })
       return
-    } 
+    }
 
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
       const h = this.$createElement;
@@ -290,18 +292,21 @@ export default class Experiments extends Vue {
     this.$router.push('/')
   }
 
-  private setPreprocessPara(newPara:PreprocessPara):void{
+  private async setPreprocessPara(newPara: PreprocessPara): Promise<void> {
 
-    if(!this.graph.experiment) return
+    console.log(newPara)
+
+    if (!this.graph.experiment) return
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
+    await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
     this.openDialogPreprocess = false
 
     this.drawGraph()
   }
 
-  private setAugmentationPara(newPara:AugmentationPara):void{
+  private setAugmentationPara(newPara: AugmentationPara): void {
 
-    if(!this.graph.experiment) return
+    if (!this.graph.experiment) return
     this.graph.experiment.ConfigAugmentation.AugmentationPara = newPara
     this.openDialogAugmentation = false
 
@@ -328,7 +333,7 @@ export default class Experiments extends Vue {
 
     experiments.forEach((exp) => {
       experiment = exp
-      experiment.Config.PrivateSetting.datasetPath = ""
+      if (experiment.Config !== undefined) experiment.Config.PrivateSetting.datasetPath = ""
     })
 
     console.log(experiment)
