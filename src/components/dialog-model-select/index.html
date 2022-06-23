@@ -8,10 +8,15 @@
       </el-row>
       <el-row>
         <el-col class="option-box" :span="6" v-for="item in models" :key="item">
-          <div class="content-box">
-            <div class="icon-box">
-              <img class="large_img" />
-              <div class="edit-box" @click="handleSelectModel(item)">
+          <div class="content-box" @click="pickModelSetting(item,false)">
+            <div class="icon-box" :style="item === modelStructure ? {'background':'#4A9ABE'} :{'background':'#F5F5FD'}">
+              <template v-if="item === modelStructure">
+                <img class="large-img model-select" :src="require('@/assets/svg_icon/model_select/model_transparent.svg')" />
+              </template>
+              <template v-else>
+                <img class="large-img" :src="require('@/assets/svg_icon/model_select/model_purple.svg')" />
+              </template>
+              <div class="edit-box" @click="pickModelSetting(item,true)">
                 <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
               </div>
             </div>
@@ -31,8 +36,8 @@
     </div>
     <el-row slot="footer">
       <el-col class="action-btn-group">
-        <el-button class="secondary-btn" @click="closeDialogModelSelect(false)">取消</el-button>
-        <el-button class="primary-btn" @click="closeDialogModelSelect(true)">確定</el-button>
+        <el-button class="secondary-btn" @click="closeDialogModelSelect">取消</el-button>
+        <el-button class="primary-btn" @click="setPara">確定</el-button>
       </el-col>
     </el-row>
   </div>

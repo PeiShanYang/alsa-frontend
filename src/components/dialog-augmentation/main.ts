@@ -45,8 +45,6 @@ export default class DialogAugmentation extends Vue {
 
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigAugmentation.AugmentationPara
 
-    console.log("te", this.configs)
-
   }
 
 

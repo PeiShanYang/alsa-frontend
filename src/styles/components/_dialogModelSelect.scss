@@ -45,29 +45,20 @@
 
 
 .icon-box{
-  background: #F5F5FD;
   height: 70%;
   display: flex;
   justify-content: center;
   position: relative;
-  .large_img{
-    content: url('../../assets/svg_icon/model_select/model_purple.svg');
+  .large-img{
     height: 90%;
     margin: auto;
   }
+
   .edit-box{
     position:absolute;
     right: 0.8em;
     top: 0.5em;
   }
-}
-
-.icon-box:hover,.icon-box:focus,.icon-box:active{
-  background: $third-color;
-  .large_img{
-    content: url('../../assets/svg_icon/model_select/model_transparent.svg');
-  }
-  
 }
 
 

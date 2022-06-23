@@ -22,9 +22,13 @@ export default class DialogModelSelect extends Vue {
   private configs = new Map<string, Map<string, ConfigType>>()
 
   @Emit("dialog-close")
-  closeDialogModelSelect(save: boolean): ModelSelectPara {
-    if (save) return this.newPara
-    return this.default
+  closeDialogModelSelect(): void {
+    return
+  }
+
+  @Emit("set-para")
+  setPara(): ModelSelectPara {
+    return this.newPara
   }
 
   private init = false
@@ -51,6 +55,8 @@ export default class DialogModelSelect extends Vue {
       this.newPara = this.default
       this.init = true
     }
+    this.modelStructure = this.default.modelStructure
+
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -58,17 +64,18 @@ export default class DialogModelSelect extends Vue {
 
     const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
     this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
-    this.modelStructure = modelConfig.get('structure')?.default.toString() ?? ''
   }
 
   private optionName(name: string): string {
     return this.$i18n.t(name).toString();
   }
 
-  private handleSelectModel(modelName: string): void {
+  private pickModelSetting(modelName:string,advance:boolean):void{
     this.modelStructure = modelName
-    this.changeToSetting = true
+    this.newPara.modelStructure = modelName
+    if(advance) this.changeToSetting = true
   }
+
 
   private saveChanges(): void {
     this.newPara.modelStructure = this.modelStructure

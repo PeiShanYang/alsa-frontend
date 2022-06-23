@@ -15,10 +15,11 @@ import ProcessCellData from '@/io/processCellData';
 import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
-import { AugmentationPara, Experiment, ModelSelectPara, PreprocessPara } from '@/io/experiment';
+import { AugmentationPara, Experiment, ModelSelectPara, PreprocessPara, SchedulerPara, OptimizerPara } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
+import { ConfigType } from '@/io/experimentConfig';
 
 @Component({
   components: {
@@ -181,10 +182,10 @@ export default class Experiments extends Vue {
   private setDefaultSelectModelPara() {
     if (!this.graph.experiment) return
     if (!store.experimentConfigs) return
-    this.dialogModelSelectPara.modelStructure = 
+    this.dialogModelSelectPara.modelStructure =
       this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.structure ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.structure.default as string
-    this.dialogModelSelectPara.modelPretrained = 
+    this.dialogModelSelectPara.modelPretrained =
       this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
     this.dialogModelSelectPara.batchSize =
@@ -330,6 +331,66 @@ export default class Experiments extends Vue {
     this.openDialogAugmentation = false
 
     this.drawGraph()
+  }
+
+  private async setModelSelectPara(newPara: ModelSelectPara): Promise<void> {
+    if (!this.graph.experiment) return
+
+    this.graph.experiment.ConfigPytorchModel.SelectedModel = {
+      model: {
+        structure: newPara.modelStructure,
+        pretrained: newPara.modelPretrained,
+      },
+      ClsModelPara: {
+        batchSize: newPara.batchSize,
+        epochs: newPara.epochs,
+      },
+    }
+
+    this.graph.experiment.ConfigModelService = {
+      ...this.graph.experiment.ConfigModelService,
+      LossFunctionPara: { lossFunction: newPara.lossFunction },
+    }
+
+    const SchedulerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}))
+    const schedulerConfig = new Map<string, ConfigType>(Object.entries(SchedulerParaConfig.get(newPara.scheduler) ?? {}))
+
+    let schedulerBasic: { name: string, default: number | string | boolean }[] = []
+    schedulerConfig.forEach((arg, name) => { schedulerBasic = [...schedulerBasic, { name: name, default: arg.default }] })
+
+    const scheduler: SchedulerPara = store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}
+    schedulerBasic.forEach(item => scheduler[newPara.scheduler][item.name] = item.default ?? 0)
+
+    if(newPara.scheduler !== ''){
+      this.graph.experiment.ConfigModelService = {
+        ...this.graph.experiment.ConfigModelService,
+        SchedulerPara : scheduler[newPara.scheduler]
+      }
+    }else{
+      this.graph.experiment.ConfigModelService.SchedulerPara = {}
+    }
+
+
+    const OptimizerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {}))
+    const optimizerConfig = new Map<string, ConfigType>(Object.entries(OptimizerParaConfig.get(newPara.optimizer) ?? {}))
+
+    let optimizerBasic: { name: string, default: number | string | boolean }[] = []
+    optimizerConfig.forEach((arg, name) => { optimizerBasic = [...optimizerBasic, { name: name, default: arg.default }] })
+
+    const optimizer: OptimizerPara = store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {}
+    optimizerBasic.forEach(item => optimizer[newPara.optimizer][item.name] = item.default ?? 0)
+
+    this.graph.experiment.ConfigModelService = {
+      ...this.graph.experiment.ConfigModelService,
+      OptimizerPara : optimizer[newPara.optimizer]
+    }
+
+    await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
+
+    this.openDialogModelSelect = false
+
+    this.drawGraph()
+
   }
 
 
