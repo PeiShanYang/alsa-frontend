@@ -356,23 +356,25 @@ export default class Experiments extends Vue {
     const schedulerConfig = new Map<string, ConfigType>(Object.entries(SchedulerParaConfig.get(newPara.scheduler) ?? {}))
 
     let schedulerBasic: { name: string, default: number | string | boolean }[] = []
-    schedulerConfig.forEach((arg, name) => { 
-      if(name === 'tMax'){
-        schedulerBasic = [...schedulerBasic, { name: name, default: newPara.epochs }] 
-      }else{
-        schedulerBasic = [...schedulerBasic, { name: name, default: arg.default }] 
+    schedulerConfig.forEach((arg, name) => {
+      if (name === 'tMax') {
+        schedulerBasic = [...schedulerBasic, { name: name, default: newPara.epochs }]
+      } else {
+        schedulerBasic = [...schedulerBasic, { name: name, default: arg.default }]
       }
     })
 
     const scheduler: SchedulerPara = store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}
     schedulerBasic.forEach(item => scheduler[newPara.scheduler][item.name] = item.default ?? 0)
 
-    if(newPara.scheduler !== ''){
+    if (newPara.scheduler !== '') {
       this.graph.experiment.ConfigModelService = {
         ...this.graph.experiment.ConfigModelService,
-        SchedulerPara : scheduler[newPara.scheduler]
+        SchedulerPara: {
+          [newPara.scheduler]: scheduler[newPara.scheduler]
+        }
       }
-    }else{
+    } else {
       this.graph.experiment.ConfigModelService.SchedulerPara = {}
     }
 
@@ -388,7 +390,9 @@ export default class Experiments extends Vue {
 
     this.graph.experiment.ConfigModelService = {
       ...this.graph.experiment.ConfigModelService,
-      OptimizerPara : optimizer[newPara.optimizer]
+      OptimizerPara: {
+        [newPara.optimizer]: optimizer[newPara.optimizer]
+      }
     }
 
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
