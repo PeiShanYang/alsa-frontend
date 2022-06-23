@@ -356,7 +356,13 @@ export default class Experiments extends Vue {
     const schedulerConfig = new Map<string, ConfigType>(Object.entries(SchedulerParaConfig.get(newPara.scheduler) ?? {}))
 
     let schedulerBasic: { name: string, default: number | string | boolean }[] = []
-    schedulerConfig.forEach((arg, name) => { schedulerBasic = [...schedulerBasic, { name: name, default: arg.default }] })
+    schedulerConfig.forEach((arg, name) => { 
+      if(name === 'tMax'){
+        schedulerBasic = [...schedulerBasic, { name: name, default: newPara.epochs }] 
+      }else{
+        schedulerBasic = [...schedulerBasic, { name: name, default: arg.default }] 
+      }
+    })
 
     const scheduler: SchedulerPara = store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}
     schedulerBasic.forEach(item => scheduler[newPara.scheduler][item.name] = item.default ?? 0)
