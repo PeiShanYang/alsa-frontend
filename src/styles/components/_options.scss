@@ -1,54 +1,67 @@
-// ::v-deep .el-col {
-//     padding: 0px 8px;
-//     margin: auto;
-// }
+.content-box {
+    font-size: $font-normal;
+    box-sizing: border-box;
+    padding: 0 5px;
+    height: $font-normal * 6.75;
+    overflow-y: auto;
+    color: $secondary-color;
 
-// .slider-box{
-//     margin: 1em;
-//   }
+    .content-title {
+        font-size: $font-normal * 0.8;
+        font-weight: bold;
+        &::after {
+            content: ":";
+        }
+        margin:5px 0;
+        
+    }
+}
 
 .children-container {
-    margin-left: 1em;
-    .input-box,
-    .slider-box {
-      margin-left: 1em;
-    }
-  }
-  
+    font-size: $font-normal * 0.8;
+    margin: 0 0 1em 1em;
+    
+}
 
+.select-box {
+    
+    //  .el-select-dropdown__item{
+    //     font-size: $font-normal;
+    // }
+
+    ::v-deep .el-input__inner{
+        // font-size: $font-normal;
+        color: $secondary-color;
+    }
+}
 
 .input-box {
     display: flex;
     align-items: center;
-    margin: 1em 0;
-    .input-title {
-        width: 40%;
+    margin:1px 0;
+    .content-title{
+        width: 50%;
+        text-align: center;
+        & + div {
+            display: flex;
+            align-items: center;
+        }
     }
-}
-
-.select-box{
-    display: flex;
-    flex-direction: column;
-    margin: 1em 0;
-}
-::v-deep .el-dropdown{
-    width: 100%;
-    display: flex;
-    .el-button{
-        width: 85%;
-        margin: auto;
+    .el-input {
+        width: 65%;
     }
-}
-
-::v-deep .el-checkbox {
-    margin: 0.51em 2.2em;
-    &-group {
-        display: flex;
-        flex-direction: column;
-    }
-    &__label {
-        font-size: $font-normal !important;
-        color: $secondary-color;
+    .unit {
         margin-left: 10px;
     }
 }
+
+
+::v-deep .el-slider__input{
+    width: 50%;
+}
+::v-deep .el-slider__runway.show-input{
+    width: 45%;
+}
+
+
+

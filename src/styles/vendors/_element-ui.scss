@@ -55,17 +55,11 @@
     }
 }
 
- .el-select-dropdown__item{
-    font-size: $font-normal;
-}
-// ::v-deep .el-message{
+//  .el-select-dropdown__item{
 //     font-size: $font-normal;
-//     padding: 1em;
-//     &__icon,&__icon{
-//         font-size: $font-normal;
-//     }
 // }
-::v-deep .el-input__inner{
-    font-size: $font-normal;
-    color: $secondary-color;
-}
+
+// ::v-deep .el-input__inner{
+//     font-size: $font-normal;
+//     color: $secondary-color;
+// }

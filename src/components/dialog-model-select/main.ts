@@ -46,6 +46,10 @@ export default class DialogModelSelect extends Vue {
   private modelSetting = ['pretrained', 'batchSize', 'epochs', 'lossFunction', 'Optimizer', 'Scheduler']
   private changeToSetting = false
 
+  private currentPage = 1
+  private pageSize = 8
+  private modelCount = 0
+
   mounted(): void {
     this.waitConfigsSetting()
   }
@@ -62,18 +66,19 @@ export default class DialogModelSelect extends Vue {
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
-    const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
-    this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    // const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
+    // this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    this.handlePageChange()
   }
 
   private optionName(name: string): string {
     return this.$i18n.t(name).toString();
   }
 
-  private pickModelSetting(modelName:string,advance:boolean):void{
+  private pickModelSetting(modelName: string, advance: boolean): void {
     this.modelStructure = modelName
     this.newPara.modelStructure = modelName
-    if(advance) this.changeToSetting = true
+    if (advance) this.changeToSetting = true
   }
 
 
@@ -87,5 +92,12 @@ export default class DialogModelSelect extends Vue {
     this.newPara.scheduler = this.scheduler
 
     this.changeToSetting = false
+  }
+
+  private handlePageChange(): void {
+    const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
+    const allModels = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    this.modelCount = allModels.length
+    this.models = allModels.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
   }
 }

@@ -7,11 +7,12 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col class="option-box" :span="6" v-for="item in models" :key="item">
-          <div class="content-box" @click="pickModelSetting(item,false)">
+        <el-col class="model-option-box" :span="6" v-for="item in models" :key="item">
+          <div class="model-content-box" @click="pickModelSetting(item,false)">
             <div class="icon-box" :style="item === modelStructure ? {'background':'#4A9ABE'} :{'background':'#F5F5FD'}">
               <template v-if="item === modelStructure">
-                <img class="large-img model-select" :src="require('@/assets/svg_icon/model_select/model_transparent.svg')" />
+                <img class="large-img model-select"
+                  :src="require('@/assets/svg_icon/model_select/model_transparent.svg')" />
               </template>
               <template v-else>
                 <img class="large-img" :src="require('@/assets/svg_icon/model_select/model_purple.svg')" />
@@ -31,6 +32,13 @@
             </div>
           </div>
 
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col class="pagination-box">
+          <el-pagination @current-change="handlePageChange" background layout="prev, pager, next" :total="modelCount"
+            :current-page.sync="currentPage" :page-size.sync="pageSize" :hide-on-single-page="true">
+          </el-pagination>
         </el-col>
       </el-row>
     </div>
@@ -63,56 +71,58 @@
                   </el-col>
                 </el-row>
               </template>
-              <template v-if="item === 'batchSize'">
-                <div class="input-box">
-                  <el-input clearable v-model="batchSize"></el-input>
-                  <div>/batch</div>
-                </div>
-              </template>
-              <template v-if="item === 'epochs'">
-                <div class="input-box">
-                  <el-input clearable v-model="epochs"></el-input>
-                  <div>epochs</div>
-                </div>
-              </template>
-              <template v-if="item === 'pretrained'">
-                <div class="check-box">
-                  <el-radio-group v-model="modelPretrained">
-                    <el-radio :label="true">是</el-radio>
-                    <el-radio :label="false">否</el-radio>
-                  </el-radio-group>
-                </div>
-              </template>
-              <template v-if="item === 'lossFunction'">
-                <div class="check-box">
-                  <el-radio-group v-model="lossFunction">
-                    <el-radio label="CrossEntropyLoss">CrossEntropyLoss</el-radio>
-                    <el-radio label="MSELoss">MSELoss</el-radio>
-                    <el-radio label="L1Loss">L1Loss</el-radio>
-                    <el-radio label="SmoothL1Loss">SmoothL1Loss</el-radio>
-                    <el-radio label="BCELoss">BCELoss</el-radio>
-                  </el-radio-group>
-                </div>
-              </template>
-              <template v-if="item === 'Optimizer'">
-                <div class="check-box">
-                  <el-radio-group v-model="optimizer">
-                    <el-radio label="SGD">SGD</el-radio>
-                    <el-radio label="Adam">Adam</el-radio>
-                    <el-radio label="Adadelta">Adadelta</el-radio>
-                    <el-radio label="AdamW">AdamW</el-radio>
-                  </el-radio-group>
-                </div>
-              </template>
-              <template v-if="item === 'Scheduler'">
-                <div class="check-box">
-                  <el-radio-group v-model="scheduler">
-                    <el-radio label="">None</el-radio>
-                    <el-radio label="stepLR">stepLR</el-radio>
-                    <el-radio label="cosineAnnealingLR">cosineAnnealingLR</el-radio>
-                  </el-radio-group>
-                </div>
-              </template>
+              <div class="content-box">
+                <template v-if="item === 'batchSize'">
+                  <div class="input-box">
+                    <el-input clearable v-model="batchSize"></el-input>
+                    <div class="unit">/batch</div>
+                  </div>
+                </template>
+                <template v-if="item === 'epochs'">
+                  <div class="input-box">
+                    <el-input clearable v-model="epochs"></el-input>
+                    <div class="unit">epochs</div>
+                  </div>
+                </template>
+                <template v-if="item === 'pretrained'">
+                  <div class="select-box">
+                    <el-select v-model="modelPretrained" size="mini">
+                      <el-option :label="'是'" :key="true" :value="true"></el-option>
+                      <el-option :label="'否'" :key="false" :value="false"></el-option>
+                    </el-select>
+                  </div>
+                </template>
+                <template v-if="item === 'lossFunction'">
+                  <div class="select-box">
+                    <el-select v-model="lossFunction" size="mini">
+                      <el-option :label="'CrossEntropyLoss'" :key="'CrossEntropyLoss'" :value="'CrossEntropyLoss'"></el-option>
+                      <el-option :label="'MSELoss'" :key="'MSELoss'" :value="'MSELoss'"></el-option>
+                      <el-option :label="'L1Loss'" :key="'L1Loss'" :value="'L1Loss'"></el-option>
+                      <el-option :label="'SmoothL1Loss'" :key="'SmoothL1Loss'" :value="'SmoothL1Loss'"></el-option>
+                      <el-option :label="'BCELoss'" :key="'BCELoss'" :value="'BCELoss'"></el-option>
+                    </el-select>
+                  </div>
+                </template>
+                <template v-if="item === 'Optimizer'">
+                  <div class="select-box">
+                    <el-select v-model="optimizer" size="mini">
+                      <el-option :label="'SGD'" :key="'SGD'" :value="'SGD'"></el-option>
+                      <el-option :label="'Adam'" :key="'Adam'" :value="'Adam'"></el-option>
+                      <el-option :label="'Adadelta'" :key="'Adadelta'" :value="'Adadelta'"></el-option>
+                      <el-option :label="'AdamW'" :key="'AdamW'" :value="'AdamW'"></el-option>
+                    </el-select>
+                  </div>
+                </template>
+                <template v-if="item === 'Scheduler'">
+                  <div class="select-box">
+                    <el-select v-model="scheduler" size="mini">
+                      <el-option :label="'None'" :key="''" :value="''"></el-option>
+                      <el-option :label="'stepLR'" :key="'stepLR'" :value="'stepLR'"></el-option>
+                      <el-option :label="'cosineAnnealingLR'" :key="'cosineAnnealingLR'" :value="'cosineAnnealingLR'"></el-option>
+                    </el-select>
+                  </div>
+                </template>
+              </div>
             </el-collapse-item>
           </el-collapse>
         </el-col>

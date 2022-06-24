@@ -17,13 +17,13 @@
 }
 
 ul {
-  padding: 0px 25%;
+  padding: 0px 20%;
   margin: 0;
   height: 5vw;
-  width: 100%;
-  text-overflow:ellipsis;
+  width: 75%;
+  text-overflow: ellipsis;
   word-break: break-all;
-  overflow:auto
+  overflow: auto;
 }
 
 li span {
@@ -33,6 +33,4 @@ li span {
   /* word-break: break-all; */
 }
 
-::-webkit-scrollbar {
-  width: 5px;
-}
+

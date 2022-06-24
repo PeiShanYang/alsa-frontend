@@ -1,7 +1,9 @@
+@import "@/styles/components/_options.scss";
+
 ::v-deep .el-dialog {
   font-size: $font-normal;
-  margin-top: 7vh !important;
-  width: 85%;
+  margin-top: 5vh !important;
+  width: 60%;
   &__header {
     padding: 0.5em 0.5em 0;
   }
@@ -11,7 +13,7 @@
   }
 }
 
-.main-container{
+.main-container {
   @extend %box-shadow;
 }
 
@@ -27,97 +29,110 @@
 }
 
 ::v-deep .el-collapse-item__header {
+  font-size: $font-normal;
+  height: $font-normal * 1.5;
   background: $third-color !important;
+  padding: 0.5em !important;
+  .title-container div {
+    font-size: $font-normal !important;
+  }
+  .el-collapse-item__arrow {
+    font-size: $font-normal * 1.25;
+  }
 }
 
-.option-box {
+.model-option-box {
   font-size: $font-normal;
-  padding: 1em;
-  height: $font-normal * 18;
+  padding: 0.5em;
+  height: $font-normal * 13;
   cursor: pointer;
 }
 
-.content-box {
+.model-content-box {
   @extend %box-shadow;
   font-size: $font-normal;
-  height: $font-normal * 16;
+  height: $font-normal * 12;
 }
 
-
-.icon-box{
-  height: 70%;
+.icon-box {
+  height: 60%;
   display: flex;
   justify-content: center;
   position: relative;
-  .large-img{
+  .large-img {
     height: 90%;
     margin: auto;
   }
 
-  .edit-box{
-    position:absolute;
+  .edit-box {
+    position: absolute;
     right: 0.8em;
     top: 0.5em;
   }
 }
 
-
-.main-box{
-  height: 30%;
+.main-box {
+  height: 40%;
   display: flex;
   flex-direction: column;
   font-size: $font-normal;
-  padding: 0 1em;
+  padding: 0 0.5em;
 }
 
-.model-name-box{
+.model-name-box {
   display: flex;
   align-items: center;
   margin: auto 0;
   color: $secondary-color;
 }
 
-.profile-box{
+.profile-box {
   display: flex;
   margin: auto;
   font-size: $font-normal * 0.8;
   color: #939393;
 }
 
+.pagination-box {
+  display: flex;
+  justify-content: center;
+  font-size: $font-normal;
+  margin: 0.75em 0;
+}
+
 .action-btn-group {
   justify-content: center;
-  margin: 2em;
 }
 
 /// model setting related
 
-.go-back-box{
-  font-size: $font-normal *1.25;
+.go-back-box {
+  font-size: $font-normal * 1.25;
   cursor: pointer;
   margin: 1em;
   color: $secondary-color;
 }
 
-.setting-main-container{
+.setting-main-container {
   @extend %box-shadow;
-  margin: 2em 8em;
+  margin: 2em 4em;
 }
 
 .setting-box {
   font-size: $font-normal;
-  padding: 2em;
-  min-height: $font-normal * 12;
+  padding: 1.5em;
+  min-height: $font-normal * 8;
 }
 
-::v-deep .el-checkbox{
-  margin: 0.4em 1em;
-  &-group{
-    display: flex;
-    flex-direction: column;
-  }
-  &__label{
-    font-size: $font-normal !important;
-    color: $secondary-color;
-    margin-left: 5px;
-  }
+.content-box {
+  height: $font-normal * 2.5;
+}
+
+.input-box .unit {
+  width: 30%;
+  font-size: $font-normal *0.8;
+}
+
+.el-select{
+  width: 100%;
 }
