@@ -28,6 +28,9 @@
     //  .el-select-dropdown__item{
     //     font-size: $font-normal;
     // }
+    .el-select{
+        width: 100%;
+    }
 
     ::v-deep .el-input__inner{
         // font-size: $font-normal;
@@ -55,13 +58,17 @@
     }
 }
 
+::v-deep .el-slider{
+    padding: 0 1em;
+    &__input{
+        width: 50%;
+    }
+    &__runway.show-input{
+        width: 45%;
+    }
+}
 
-::v-deep .el-slider__input{
-    width: 50%;
-}
-::v-deep .el-slider__runway.show-input{
-    width: 45%;
-}
+
 
 
 

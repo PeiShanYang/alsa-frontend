@@ -2,7 +2,7 @@
   <div v-if="!changeToSetting">
     <div class="main-container">
       <el-row>
-        <el-col class="model-container-title">
+        <el-col class="container-title">
           <span>模型選擇</span>
         </el-col>
       </el-row>
@@ -13,15 +13,18 @@
               <template v-if="item === modelStructure">
                 <img class="large-img model-select"
                   :src="require('@/assets/svg_icon/model_select/model_transparent.svg')" />
+                <div class="edit-box" @click="pickModelSetting(item,true)">
+                  <img :src="require('@/assets/svg_icon/model_select/edit_transparent.svg')" class="edit_img " />
+                </div>
               </template>
               <template v-else>
                 <img class="large-img" :src="require('@/assets/svg_icon/model_select/model_purple.svg')" />
+                <div class="edit-box" @click="pickModelSetting(item,true)">
+                  <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
+                </div>
               </template>
-              <div class="edit-box" @click="pickModelSetting(item,true)">
-                <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
-              </div>
             </div>
-            <div class="main-box">
+            <div class="text-box">
               <div class="model-name-box">
                 <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
                 <span>{{ optionName(item) }}</span>
@@ -31,7 +34,6 @@
               </div>
             </div>
           </div>
-
         </el-col>
       </el-row>
       <el-row>
@@ -50,13 +52,9 @@
     </el-row>
   </div>
   <div v-else>
-    <div class="go-back-box" @click="changeToSetting=false">
-      <i class="el-icon-arrow-left"></i>
-      <span>返回</span>
-    </div>
-    <div class="setting-main-container">
+    <div class="main-container">
       <el-row>
-        <el-col class="model-container-title">
+        <el-col class="container-title">
           <span>{{ optionName(modelStructure) }}</span>
         </el-col>
       </el-row>
@@ -95,7 +93,8 @@
                 <template v-if="item === 'lossFunction'">
                   <div class="select-box">
                     <el-select v-model="lossFunction" size="mini">
-                      <el-option :label="'CrossEntropyLoss'" :key="'CrossEntropyLoss'" :value="'CrossEntropyLoss'"></el-option>
+                      <el-option :label="'CrossEntropyLoss'" :key="'CrossEntropyLoss'" :value="'CrossEntropyLoss'">
+                      </el-option>
                       <el-option :label="'MSELoss'" :key="'MSELoss'" :value="'MSELoss'"></el-option>
                       <el-option :label="'L1Loss'" :key="'L1Loss'" :value="'L1Loss'"></el-option>
                       <el-option :label="'SmoothL1Loss'" :key="'SmoothL1Loss'" :value="'SmoothL1Loss'"></el-option>
@@ -118,7 +117,8 @@
                     <el-select v-model="scheduler" size="mini">
                       <el-option :label="'None'" :key="''" :value="''"></el-option>
                       <el-option :label="'stepLR'" :key="'stepLR'" :value="'stepLR'"></el-option>
-                      <el-option :label="'cosineAnnealingLR'" :key="'cosineAnnealingLR'" :value="'cosineAnnealingLR'"></el-option>
+                      <el-option :label="'cosineAnnealingLR'" :key="'cosineAnnealingLR'" :value="'cosineAnnealingLR'">
+                      </el-option>
                     </el-select>
                   </div>
                 </template>

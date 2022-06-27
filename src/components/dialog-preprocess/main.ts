@@ -19,6 +19,8 @@ export default class DialogPreprocess extends Vue {
 
   private newPara: PreprocessPara = this.default
   private configs = new Map<string, Map<string, ConfigType>>()
+  private optionSelect: { [k: string]: any } = {};
+  private init = false;
 
 
   @Emit("dialog-close")
@@ -37,12 +39,24 @@ export default class DialogPreprocess extends Vue {
 
   updated(): void {
     this.newPara = this.default
+
+    if (Object.keys(this.default).length > 0 && this.init === false) {
+      Object.keys(this.optionSelect).forEach(item => {
+        if (Object.keys(this.default).includes(item)) {
+          this.optionSelect[item] = true
+        }
+      })
+      this.init = true
+    }
   }
 
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPreprocess.PreprocessPara
+
+    Object.keys(this.configs).forEach(item => this.optionSelect[item] = false)
+
 
   }
 
@@ -75,13 +89,25 @@ export default class DialogPreprocess extends Vue {
     return this.$i18n.t(name).toString();
   }
 
-  private activeOption(name: string): string[] {
-    if (this.newPara[name] !== undefined) return ["1"]
-    return []
+
+  private activeOption(enable: boolean, name: string): void {
+
+    this.optionSelect = {
+      ...this.optionSelect,
+      name: enable
+    }
+
+    const config = new Map<string, Map<string, ConfigType>>(Object.entries(this.configs))
+    const targetConfig = config.get(name) ?? new Map<string, ConfigType>()
+    const targetDefault = this.defaultFromConfig(targetConfig, this.newPara[name])
+
+    if (enable && Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
+
   }
 
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = Object.fromEntries(event)
+
   }
 
   private optionCase(name: string): string | undefined {

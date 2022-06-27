@@ -1,7 +1,7 @@
 ::v-deep .el-dialog {
   font-size: $font-normal;
   margin-top: 5vh !important;
-  width: 60%;
+  width: 50%;
   &__header {
     padding: 0.5em 0.5em 0;
   }
@@ -13,6 +13,7 @@
 
 .main-container {
   @extend %box-shadow;
+  height: 65vh;
 }
 
 .container-title {
@@ -26,27 +27,38 @@
   }
 }
 
-
-
 ::v-deep .el-collapse-item__header {
   font-size: $font-normal;
   height: $font-normal * 1.5;
   background: $third-color !important;
   padding: 0.5em !important;
-  .title-container div {
-    font-size: $font-normal !important;
+  .title-container {
+    div {
+      font-size: $font-normal !important;
+      height: auto !important;
+    }
+    align-items: center;
   }
   .el-collapse-item__arrow {
     font-size: $font-normal * 1.25;
   }
 }
 
-.option-box {
-  padding: 1em;
-  height: $font-normal * 11.5;
+::v-deep .el-tooltip__popper{
+  color:$third-color !important;
+  background: #D9DF90 !important;
 }
 
+::v-deep .el-collapse-item__wrap {
+  position: absolute;
+  z-index: 2;
+  width: calc(50% - 1.4em);
+}
 
+.option-box {
+  padding: 1em;
+  // height: $font-normal * 11.5;
+}
 
 .action-btn-group {
   justify-content: center;

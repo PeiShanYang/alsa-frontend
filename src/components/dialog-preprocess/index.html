@@ -6,16 +6,19 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col class="option-box" :span="6" v-for="(args, name) in configs" :key="name">
-        <el-collapse accordion :value="activeOption(name)">
+      <el-col class="option-box" :span="12" v-for="(args, name) in configs" :key="name">
+        <el-collapse>
           <el-collapse-item name="1">
             <template slot="title">
               <el-row style="width: 100%;">
-                <!-- <el-col :span="4">
-                  <el-checkbox :value="optionEnabled(name)" @click.stop="toggleOption(name)" />
-                </el-col> -->
-                <el-col :span="20" class="title-container">
+                <el-col class="title-container">
+                  <el-switch v-model="optionSelect[name]" @change="activeOption($event,name)" active-color="#BB86FC61"
+                  inactive-color="#47B2E4"></el-switch>
                   <div>{{ optionName(name) }}</div>
+                  <el-tooltip placement="bottom" effect="light">
+                    <div slot="content">{{ optionName(name) }}</div>
+                    <i class="el-icon-info"></i>
+                  </el-tooltip>
                 </el-col>
               </el-row>
             </template>
