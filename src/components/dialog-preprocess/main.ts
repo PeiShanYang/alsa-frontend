@@ -38,16 +38,17 @@ export default class DialogPreprocess extends Vue {
   }
 
   updated(): void {
-    this.newPara = this.default
 
-    if (Object.keys(this.default).length > 0 && this.init === false) {
-      Object.keys(this.optionSelect).forEach(item => {
-        if (Object.keys(this.default).includes(item)) {
-          this.optionSelect[item] = true
-        }
-      })
+    if (this.init === false) {
+      this.newPara = this.default
       this.init = true
     }
+
+    Object.keys(this.optionSelect).forEach(item => {
+      if (Object.keys(this.newPara).includes(item)) {
+        this.optionSelect[item] = true
+      }
+    })
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -60,8 +61,10 @@ export default class DialogPreprocess extends Vue {
 
   }
 
-  private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
-    if (defaultValue !== undefined) return defaultValue
+  private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
+    if (this.newPara[name] !== undefined) return this.newPara[name]
+    if (this.default[name] !== undefined) return this.default[name]
+
     config = new Map<string, ConfigType>(Object.entries(config))
     const newPara = new Map<string, number | number[] | string | string[] | boolean>()
     config.forEach((arg, name) => {

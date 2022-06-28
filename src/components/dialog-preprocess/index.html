@@ -22,7 +22,7 @@
                 </el-col>
               </el-row>
             </template>
-            <OptionForm :config="args" :default="defaultFromConfig(args, newPara[name])" @change="updateOption(name, $event)" :case="optionCase(name)" />
+            <OptionForm :config="args" :default="defaultFromConfig(args, name)" @change="updateOption(name, $event)" :case="optionCase(name)" />
           </el-collapse-item>
         </el-collapse>
       </el-col>
