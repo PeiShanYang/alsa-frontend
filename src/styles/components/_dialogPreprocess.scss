@@ -1,7 +1,7 @@
 ::v-deep .el-dialog {
   font-size: $font-normal;
   margin-top: 5vh !important;
-  width: 50%;
+  width: 90%;
   &__header {
     padding: 0.5em 0.5em 0;
   }
@@ -13,7 +13,7 @@
 
 .main-container {
   @extend %box-shadow;
-  height: 65vh;
+  height: fit-content;
 }
 
 .container-title {
@@ -42,21 +42,32 @@
   .el-collapse-item__arrow {
     font-size: $font-normal * 1.25;
   }
+  &.is-active  {
+    background: $secondary-color !important;
+  }
+
+  // &:not(.el-switch){
+  //   background-color: red !important;
+  // }
 }
 
-::v-deep .el-tooltip__popper{
-  color:$third-color !important;
-  background: #D9DF90 !important;
-}
 
-::v-deep .el-collapse-item__wrap {
-  position: absolute;
-  z-index: 2;
-  width: calc(50% - 1.4em);
+
+
+::v-deep .el-collapse-item {
+  position: relative;
+  &__wrap {
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+  }
 }
 
 .option-box {
-  padding: 1em;
+  padding: 6em 1em;
+  &:nth-child(1),&:nth-child(2),&:nth-child(3),&:nth-child(4){
+    padding: 1em 1em 6em;
+  }
   // height: $font-normal * 11.5;
 }
 

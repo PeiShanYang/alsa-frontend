@@ -47,8 +47,8 @@
 }
 
 .ring-container{
-    height: $font-normal *15;
-    width: $font-normal*15;
+    height: $font-normal *12;
+    width: $font-normal*12;
     display: flex;
     margin: auto;
 }
@@ -56,7 +56,7 @@
 .progress-bar-container {
     font-size: $font-normal;
     display: flex;
-    margin: 0.5em 0;
+    margin: 1em 0;
     .progress-content {
         width: $font-normal * 5;
         height: $font-normal * 2.5;
@@ -90,10 +90,10 @@
         border-radius: 0;
     }
     &-bar__innerText {
-        font-size: $font-normal * 1.5;
+        font-size: $font-normal *1.2;
         color: $primary-color;
         position: absolute;
-        top: -1em;
+        top: -1.2em;
         right: -1.5em;
     }
 }

@@ -232,12 +232,14 @@ export default class Experiments extends Vue {
     const nodes = graph.getNodes()
     const tipNode = nodes.find((node => node.id === nodeId))
 
+    const graphSetting = GraphService.getNodeSettings(window.innerWidth,0)
+
     if (contentFilter.length !== 0 && !tipNode) {
       graph.addNode({
         id: nodeId,
         shape: 'path',
-        x: 35,
-        y: 190,
+        x: graphSetting.x,
+        y: graphSetting.y * 3.5,
         width: 200,
         height: 60,
         path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',

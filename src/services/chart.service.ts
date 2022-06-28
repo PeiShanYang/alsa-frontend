@@ -43,8 +43,8 @@ export default class ChartService {
                     customHtml: () => {
                         return `
                                 <div>
-                                    <div style='font-size:50px;line-height: initial;padding:5px 0'>${showPrecent}%</div>
-                                    <div style='font-size:30px;'>${title}</div>    
+                                    <div style='font-size:35px;line-height: initial;padding:5px 0'>${showPrecent}%</div>
+                                    <div style='font-size:20px;'>${title}</div>    
                                 </div>
                                 `
                     }

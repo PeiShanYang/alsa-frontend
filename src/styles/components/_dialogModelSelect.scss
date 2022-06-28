@@ -122,17 +122,25 @@
 
 .setting-box {
   font-size: $font-normal;
-  padding: 1.5em;
-  min-height: $font-normal * 8;
+  padding: 1em;
+  height: $font-normal * 8;
 }
 
 .content-box {
-  height: $font-normal * 2.5;
+  height: $font-normal * 1.75;
 }
 
-.input-box .unit {
-  width: 30%;
-  font-size: $font-normal * 0.8;
+.input-box {
+  width: 100%;
+  .unit {
+    width: 30%;
+    font-size: $font-normal * 0.8;
+    text-align: center;
+  }
+  
+}
+::v-deep .el-input__inner{
+  height: $font-normal*1.5;
 }
 
 .el-select {

@@ -6,15 +6,15 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col class="option-box" :span="12" v-for="(args, name) in configs" :key="name">
-        <el-collapse>
+      <el-col class="option-box" :span="6" v-for="(args, name) in configs" :key="name">
+        <el-collapse accordion @change="test">
           <el-collapse-item name="1">
             <template slot="title">
               <el-row style="width: 100%;">
                 <el-col class="title-container">
-                  <el-switch v-model="optionSelect[name]" @change="activeOption($event,name)" active-color="#BB86FC61"
-                  inactive-color="#47B2E4"></el-switch>
-                  <div>{{ optionName(name) }}</div>
+                  <el-switch v-model="optionSelect[name]" @change="activeOption($event,name)" active-color="#3E8FB4"
+                  inactive-color="#96CAE2"></el-switch>
+                  <div>{{ optionName(name) }}</div>{{newPara[name]}}
                   <el-tooltip placement="bottom" effect="light">
                     <div slot="content">{{ optionName(name) }}</div>
                     <i class="el-icon-info"></i>
@@ -22,7 +22,7 @@
                 </el-col>
               </el-row>
             </template>
-            <OptionForm :config="args" :default="defaultFromConfig(args, newPara[name])" @change="updateOption(name, $event)" :case="optionCase(name)" />
+            <OptionForm :config="args" :default="defaultFromConfig(args, newPara[name])" @change="updateOption(name, $event)" :case="optionCase(name)"  />
           </el-collapse-item>
         </el-collapse>
       </el-col>
