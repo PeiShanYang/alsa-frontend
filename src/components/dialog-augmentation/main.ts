@@ -23,6 +23,11 @@ export default class DialogAugmentation extends Vue {
   private optionSelect: { [k: string]: any } = {};
   private init = false;
 
+  private currentPage = 1
+  private pageSize = 8
+  private configCount = 0
+  private configSlice: { [k: string]: any } = {};
+
 
   @Emit("dialog-close")
   closeDialogAugmentation(): void {
@@ -39,16 +44,17 @@ export default class DialogAugmentation extends Vue {
   }
 
   updated(): void {
-    this.newPara = this.default
 
-    if (Object.keys(this.default).length > 0 && this.init === false) {
-      Object.keys(this.optionSelect).forEach(item => {
-        if (Object.keys(this.default).includes(item)) {
-          this.optionSelect[item] = true
-        }
-      })
+    if (!this.init && Object.keys(this.default).length !== 0) {
+      this.newPara = this.default
       this.init = true
     }
+
+    Object.keys(this.optionSelect).forEach(item => {
+      if (Object.keys(this.newPara).includes(item)) {
+        this.optionSelect[item] = true
+      }
+    })
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -57,11 +63,20 @@ export default class DialogAugmentation extends Vue {
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigAugmentation.AugmentationPara
     Object.keys(this.configs).forEach(item => this.optionSelect[item] = false)
 
+    this.handlePageChange()
   }
 
 
-  private defaultFromConfig(config: Map<string, ConfigType>, defaultValue: Dict): Dict {
-    if (defaultValue !== undefined) return defaultValue
+  private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
+
+    if(this.newPara[name] !== undefined){
+      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.newPara[name]))
+    }
+
+    if(this.default[name] !== undefined){
+      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+    }
+
     config = new Map<string, ConfigType>(Object.entries(config))
     const newPara = new Map<string, number | number[] | string | string[] | boolean>()
     config.forEach((arg, name) => {
@@ -82,6 +97,7 @@ export default class DialogAugmentation extends Vue {
         newPara.set(name, arg.default)
       }
     })
+
     return newPara
   }
 
@@ -100,15 +116,25 @@ export default class DialogAugmentation extends Vue {
     const targetConfig = config.get(name) ?? new Map<string, ConfigType>()
     const targetDefault = this.defaultFromConfig(targetConfig, this.newPara[name])
 
-    if (enable && Object.prototype.toString.call( targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
+    if (enable && Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
+    if (!enable && this.newPara[name] !== undefined)  delete this.newPara[name]
 
   }
 
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
-    this.newPara[name] = event
+    this.newPara[name] = Object.fromEntries(event)
+
   }
 
   private optionCase(name: string): string | undefined {
     if (name == 'normalize') return 'normal'
+  }
+
+  private handlePageChange(): void {
+
+    this.configCount = Object.entries(this.configs).length
+    const getSlice = Object.entries(this.configs).slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+
+    this.configSlice = Object.fromEntries([...getSlice])
   }
 }

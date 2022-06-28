@@ -71,6 +71,15 @@
   // height: $font-normal * 11.5;
 }
 
+.pagination-box {
+  display: flex;
+  justify-content: center;
+  font-size: $font-normal;
+  margin: 0.75em 0;
+}
+
+
 .action-btn-group {
   justify-content: center;
 }
+

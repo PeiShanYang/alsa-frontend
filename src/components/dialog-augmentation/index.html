@@ -6,7 +6,7 @@
       </el-col>
     </el-row>
     <el-row>
-      <el-col class="option-box" :span="6" v-for="(args, name) in configs" :key="name">
+      <el-col class="option-box" :span="6" v-for="(args, name) in configSlice" :key="name">
         <el-collapse >
           <el-collapse-item name="1">
             <template slot="title">
@@ -14,7 +14,7 @@
                 <el-col class="title-container">
                   <el-switch v-model="optionSelect[name]" @change="activeOption($event,name)" active-color="#3E8FB4"
                   inactive-color="#96CAE2"></el-switch>
-                  <div>{{ optionName(name) }}</div>
+                  <div>{{ optionName(name) }}</div> 
                   <el-tooltip placement="bottom" effect="light">
                     <div slot="content">{{ optionName(name) }}</div>
                     <i class="el-icon-info"></i>
@@ -22,9 +22,16 @@
                 </el-col>
               </el-row>
             </template>
-            <OptionForm :config="args" :default="defaultFromConfig(args, newPara[name])" @change="updateOption(name, $event)" :case="optionCase(name)" />
+            <OptionForm :config="args" :default="defaultFromConfig(args, name)" @change="updateOption(name, $event)" :case="optionCase(name)" />
           </el-collapse-item>
         </el-collapse>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col class="pagination-box">
+        <el-pagination @current-change="handlePageChange" background layout="prev, pager, next" :total="configCount"
+          :current-page.sync="currentPage" :page-size.sync="pageSize" :hide-on-single-page="true">
+        </el-pagination>
       </el-col>
     </el-row>
   </div>

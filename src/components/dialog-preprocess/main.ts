@@ -1,7 +1,7 @@
 import { ConfigType } from '@/io/experimentConfig';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
-import { Component, Prop, Vue, Emit,Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import OptionForm from '@/components/options/option-form/OptionForm.vue';
 import { PreprocessPara } from '@/io/experiment';
 
@@ -17,13 +17,6 @@ export default class DialogPreprocess extends Vue {
   @Prop() private experimentId!: string
   @Prop() private default!: PreprocessPara
 
-  @Watch('newPara')
-  onChange(oldVal:any,newVal:any){
-    console.log("change",oldVal,newVal)
-    this.$forceUpdate()
-  }
-
-
 
   private newPara: PreprocessPara = this.default
   private configs = new Map<string, Map<string, ConfigType>>()
@@ -33,7 +26,7 @@ export default class DialogPreprocess extends Vue {
   private currentPage = 1
   private pageSize = 8
   private configCount = 0
-  private configSlice : { [k: string]: any } = {};
+  private configSlice: { [k: string]: any } = {};
 
   @Emit("dialog-close")
   closeDialogPreprocess(): void {
@@ -51,7 +44,7 @@ export default class DialogPreprocess extends Vue {
 
   updated(): void {
 
-    if (this.init === false) {
+    if (!this.init && Object.keys(this.default).length !== 0) {
       this.newPara = this.default
       this.init = true
     }
@@ -61,6 +54,7 @@ export default class DialogPreprocess extends Vue {
         this.optionSelect[item] = true
       }
     })
+
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -75,8 +69,14 @@ export default class DialogPreprocess extends Vue {
   }
 
   private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
-    if (this.newPara[name] !== undefined) return this.newPara[name]
-    if (this.default[name] !== undefined) return this.default[name]
+
+    if(this.newPara[name] !== undefined){
+      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.newPara[name]))
+    }
+
+    if(this.default[name] !== undefined){
+      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+    }
 
     config = new Map<string, ConfigType>(Object.entries(config))
     const newPara = new Map<string, number | number[] | string | string[] | boolean>()
@@ -98,6 +98,7 @@ export default class DialogPreprocess extends Vue {
         newPara.set(name, arg.default)
       }
     })
+
     return newPara
   }
 
@@ -118,7 +119,7 @@ export default class DialogPreprocess extends Vue {
     const targetDefault = this.defaultFromConfig(targetConfig, this.newPara[name])
 
     if (enable && Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
-    if (!enable) this.newPara[name] = {}
+    if (!enable && this.newPara[name] !== undefined)  delete this.newPara[name]
 
   }
 
@@ -132,19 +133,12 @@ export default class DialogPreprocess extends Vue {
   }
 
   private handlePageChange(): void {
-    // const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
-    // const allModels = Object.keys(modelConfig.get('structure')?.enums ?? {})
-    // this.modelCount = allModels.length
-    // this.models = allModels.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
 
+    this.configCount = Object.entries(this.configs).length
     const getSlice = Object.entries(this.configs).slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
 
     this.configSlice = Object.fromEntries([...getSlice])
   }
 
-  private test():void{
-    console.log("test")
-    this.$forceUpdate()
-  }
 
 }

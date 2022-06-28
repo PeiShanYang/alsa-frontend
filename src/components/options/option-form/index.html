@@ -13,7 +13,7 @@
       </template>
     </div>
     <div v-if="formType(arg)==='float-slider'" class="slider-box">
-      <div class="content-title">{{ tr(name, arg) }}</div>{{newPara.get(name)}}
+      <div class="content-title">{{ tr(name, arg) }}</div>
       <template v-if="newPara.get(name) !== undefined">
         <OptionFloatSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" :unit="arg.unit" />
       </template>

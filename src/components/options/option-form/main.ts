@@ -22,12 +22,6 @@ export default class OptionForm extends Vue {
 
   private newPara = this.default
 
-  
-  mounted():void{
-    console.log("test",this.newPara)
-    
-  }
-
   updated(): void {
     this.returnPara()
   }
