@@ -12,8 +12,14 @@
 }
 
 .main-container {
-  @extend %box-shadow;
-  height: fit-content;
+  // @extend %box-shadow;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  // justify-content: space-between;
+  .container-footer{
+    margin-top: auto;
+  }
 }
 
 .container-title {
@@ -42,7 +48,7 @@
   .el-collapse-item__arrow {
     font-size: $font-normal * 1.25;
   }
-  &.is-active  {
+  &.is-active {
     background: $secondary-color !important;
   }
 
@@ -50,9 +56,6 @@
   //   background-color: red !important;
   // }
 }
-
-
-
 
 ::v-deep .el-collapse-item {
   position: relative;
@@ -65,7 +68,10 @@
 
 .option-box {
   padding: 6em 1em;
-  &:nth-child(1),&:nth-child(2),&:nth-child(3),&:nth-child(4){
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3),
+  &:nth-child(4) {
     padding: 1em 1em 6em;
   }
   // height: $font-normal * 11.5;
@@ -78,8 +84,6 @@
   margin: 0.75em 0;
 }
 
-
 .action-btn-group {
   justify-content: center;
 }
-

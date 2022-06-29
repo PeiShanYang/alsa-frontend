@@ -27,7 +27,7 @@
         </el-collapse>
       </el-col>
     </el-row>
-    <el-row>
+    <el-row class="container-footer">
       <el-col class="pagination-box">
         <el-pagination @current-change="handlePageChange" background layout="prev, pager, next" :total="configCount"
           :current-page.sync="currentPage" :page-size.sync="pageSize" :hide-on-single-page="true">
