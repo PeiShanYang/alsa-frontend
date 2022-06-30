@@ -129,16 +129,16 @@ export default class DialogPreprocess extends Vue {
     if (enable) {
       if (Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
 
-      collapseBody.style.maxHeight = collapseBody.scrollHeight + 'px'
+      
+      collapseBody.style.height = 'fit-content'
       collapseHeader.style.background = '#0E5879'
       collapseArrow.classList.add('active')
 
     } else {
       if (this.newPara[name] !== undefined) delete this.newPara[name]
-
-      collapseBody.style.maxHeight = '0px'
-      collapseHeader.style.background = '#4A9ABE'
-      collapseArrow.classList.remove('active')
+      // collapseBody.style.height = '0px'
+      // collapseHeader.style.background = '#4A9ABE'
+      // collapseArrow.classList.remove('active')
     }
 
   }
@@ -146,7 +146,7 @@ export default class DialogPreprocess extends Vue {
   private toggleCollapse(name: string): void {
     const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
     const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
-    collapseBody.style.maxHeight = collapseArrow.classList.toggle('active') ? collapseBody.scrollHeight + 'px' : '0px'
+    collapseBody.style.height = collapseArrow.classList.toggle('active') ? 'fit-content' : '0px'
 
   }
 

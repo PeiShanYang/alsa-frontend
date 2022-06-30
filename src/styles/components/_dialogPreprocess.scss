@@ -33,38 +33,7 @@
   }
 }
 
-::v-deep .el-collapse-item__header {
-  font-size: $font-normal;
-  height: $font-normal * 1.5;
-  background: $third-color !important;
-  padding: 0.5em !important;
-  .title-container {
-    div {
-      font-size: $font-normal !important;
-      height: auto !important;
-    }
-    align-items: center;
-  }
-  .el-collapse-item__arrow {
-    font-size: $font-normal * 1.25;
-  }
-  &.is-active {
-    background: $secondary-color !important;
-  }
 
-  // &:not(.el-switch){
-  //   background-color: red !important;
-  // }
-}
-
-::v-deep .el-collapse-item {
-  position: relative;
-  &__wrap {
-    position: absolute;
-    z-index: 2;
-    width: 100%;
-  }
-}
 
 .option-box {
   padding: 6em 1em;
@@ -125,8 +94,8 @@
 
   .collapse-body {
     overflow: hidden;
-    max-height: 0;
-    transition: max-height 0.4s ease-out;
+    height: 0;
+    // transition: height 0.4s ease-out;
 
     position: absolute;
     z-index: 2;
