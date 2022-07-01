@@ -1,7 +1,7 @@
 .content-box {
     font-size: $font-normal;
     box-sizing: border-box;
-    padding: 0 5px;
+    padding: 15px 8px;
     color: $secondary-color;
 
     .content-title {
@@ -66,10 +66,10 @@
         width: 80%;
         // padding: 0 0.5em;
         &__input {
-            width: 40%;
+            width: 45%;
         }
         &__runway.show-input {
-            width: 55%;
+            width: 50%;
         }
     }
 }

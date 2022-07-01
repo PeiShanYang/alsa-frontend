@@ -52,9 +52,12 @@ export default class DialogPreprocess extends Vue {
     Object.keys(this.optionSelect).forEach(item => {
       if (Object.keys(this.newPara).includes(item)) {
         this.optionSelect[item] = true
+        if (document.querySelector<HTMLElement>(`#${item}_collapse .collapse-header`) !== null) {
+          const collapseHeader = document.querySelector<HTMLElement>(`#${item}_collapse .collapse-header`) ?? new HTMLDivElement()
+          collapseHeader.style.background = '#0E5879'
+        }
       }
     })
-
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -66,15 +69,17 @@ export default class DialogPreprocess extends Vue {
 
     this.handlePageChange()
 
+
+
   }
 
   private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
 
-    if(this.newPara[name] !== undefined){
+    if (this.newPara[name] !== undefined) {
       return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.newPara[name]))
     }
 
-    if(this.default[name] !== undefined){
+    if (this.default[name] !== undefined) {
       return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
     }
 
@@ -118,11 +123,34 @@ export default class DialogPreprocess extends Vue {
     const config = new Map<string, Map<string, ConfigType>>(Object.entries(this.configs))
     const targetConfig = config.get(name) ?? new Map<string, ConfigType>()
     const targetDefault = this.defaultFromConfig(targetConfig, this.newPara[name])
+    const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
+    const collapseHeader = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header`) ?? new HTMLDivElement()
+    const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
 
-    if (enable && Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
-    if (!enable && this.newPara[name] !== undefined)  delete this.newPara[name]
+    if (enable) {
+      if (Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
+
+      
+      collapseBody.style.height = 'fit-content'
+      collapseHeader.style.background = '#0E5879'
+      collapseArrow.classList.add('active')
+
+    } else {
+      if (this.newPara[name] !== undefined) delete this.newPara[name]
+      // collapseBody.style.height = '0px'
+      // collapseHeader.style.background = '#4A9ABE'
+      // collapseArrow.classList.remove('active')
+    }
 
   }
+
+  private toggleCollapse(name: string): void {
+    const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
+    const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
+    collapseBody.style.height = collapseArrow.classList.toggle('active') ? 'fit-content' : '0px'
+
+  }
+
 
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = Object.fromEntries(event)
