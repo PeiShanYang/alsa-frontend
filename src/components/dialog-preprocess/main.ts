@@ -17,7 +17,6 @@ export default class DialogPreprocess extends Vue {
   @Prop() private experimentId!: string
   @Prop() private default!: PreprocessPara
 
-
   private newPara: PreprocessPara = this.default
   private configs = new Map<string, Map<string, ConfigType>>()
   private optionSelect: { [k: string]: any } = {};
@@ -66,11 +65,7 @@ export default class DialogPreprocess extends Vue {
     if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigPreprocess.PreprocessPara
 
     Object.keys(this.configs).forEach(item => this.optionSelect[item] = false)
-
     this.handlePageChange()
-
-
-
   }
 
   private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
@@ -130,7 +125,6 @@ export default class DialogPreprocess extends Vue {
     if (enable) {
       if (Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
 
-      
       collapseBody.style.height = 'fit-content'
       collapseHeader.style.background = '#0E5879'
       collapseArrow.classList.add('active')
@@ -148,13 +142,10 @@ export default class DialogPreprocess extends Vue {
     const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
     const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
     collapseBody.style.height = collapseArrow.classList.toggle('active') ? 'fit-content' : '0px'
-
   }
-
 
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = Object.fromEntries(event)
-
   }
 
   private optionCase(name: string): string | undefined {
@@ -162,12 +153,9 @@ export default class DialogPreprocess extends Vue {
   }
 
   private handlePageChange(): void {
-
     this.configCount = Object.entries(this.configs).length
     const getSlice = Object.entries(this.configs).slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
 
     this.configSlice = Object.fromEntries([...getSlice])
   }
-
-
 }
