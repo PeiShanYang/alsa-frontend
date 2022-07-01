@@ -17,13 +17,13 @@
 }
 
 ul {
-  padding: 0px 25%;
+  padding: 0px 20%;
   margin: 0;
   height: 5vw;
-  width: 100%;
-  text-overflow:ellipsis;
+  width: 75%;
+  text-overflow: ellipsis;
   word-break: break-all;
-  overflow: hidden;
+  overflow: auto;
 }
 
 li span {
@@ -32,3 +32,5 @@ li span {
   font-size: 0.8vw;
   /* word-break: break-all; */
 }
+
+

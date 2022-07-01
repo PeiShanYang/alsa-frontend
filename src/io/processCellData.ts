@@ -16,8 +16,8 @@ export default class ProcessCellData {
                 component: 'preprocess-node',
                 content: Array.from(Object.keys(experiment.ConfigPreprocess.PreprocessPara)),
             }],
-            ['data-argument-node', {
-                component: 'data-argument-node',
+            ['augmentation-node', {
+                component: 'augmentation-node',
                 content: Array.from(Object.keys(experiment.ConfigAugmentation.AugmentationPara)),
             }],
             ['model-select-node', {

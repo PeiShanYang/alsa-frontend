@@ -1,65 +1,103 @@
+import { ConfigType } from '@/io/experimentConfig';
+import Api from '@/services/api.service';
+import store from '@/services/store.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
+import OptionForm from '@/components/options/option-form/OptionForm.vue';
+import { ModelSelectPara } from '@/io/experiment';
 
-@Component
+type Dict = Map<string, boolean | number | number[] | string | string[]>
+
+@Component({
+  components: {
+    OptionForm
+  }
+})
+
 export default class DialogModelSelect extends Vue {
   @Prop() private dialogOpen!: boolean;
+  @Prop() private experimentId!: string;
+  @Prop() private default!: ModelSelectPara;
 
-  get openDialogModelSelect() {
-    return this.dialogOpen
-  }
-  set openDialogModelSelect(value: boolean) {
-    this.closeDialogModelSelect()
-  }
+  private newPara: ModelSelectPara = this.default
+  private configs = new Map<string, Map<string, ConfigType>>()
+
   @Emit("dialog-close")
-  closeDialogModelSelect() {
-    return false;
+  closeDialogModelSelect(): void {
+    return
   }
 
-  private innerVisible  = false;
+  @Emit("set-para")
+  setPara(): ModelSelectPara {
+    return this.newPara
+  }
 
-  private modelSelectItem: Array<{ title: string, describe: string, contentSetting:boolean, content?: any }> = [
-    {
-      title: "雙金字塔架構之一階段偵測模型 (AUO)",
-      describe: "多尺度預測、二元損失函數、高效率",
-      contentSetting: false,
-    },
-    {
-      title: "三金字塔架構之一階段偵測模型 (AUO)",
-      describe: "多尺度採樣、特徵融合、tanh 函數改良",
-      contentSetting: false,
-    },
-    {
-      title: "使用聚焦損失函數於一階段偵測模型 (RetinaNet)",
-      describe: "多尺度預測、二元損失函數、高效率",
-      contentSetting: false,
-    },
-    {
-      title: "使用選擇性搜尋於雙階段偵測模型 (AUO)",
-      describe: "多尺度預測、二元損失函數、高效率",
-      contentSetting: false,
-    },
-    {
-      title: "ROI 池化架構之雙階段偵測模型 (Fast R-CNN)",
-      describe: "關注區域池化、標記區域回歸、類神經特徵提取",
-      contentSetting: false,
-    },
-    {
-      title: "候選區域網路連結雙階段偵測模型 (AUO)",
-      describe: "關注區域池化、高效率、候選框提取",
-      contentSetting: false,
-    },
-    {
-      title: "基於注意力機制之編碼解碼偵測模型 (AUO)",
-      describe: "注意力機制、編碼解碼架構、神經網路",
-      contentSetting: false,
-    },
-    {
-      title: "基於注意力機制之多尺度編碼解碼偵測模型 (AUO)",
-      describe: "注意力機制、編碼解碼架構、多尺度偵測",
-      contentSetting: false,
-    },
-  ]
+  private init = false
+
+  private modelStructure = 'auo_unrestricted_powerful_model'
+  private modelPretrained = false
+  private batchSize = 1
+  private epochs = 1
+  private lossFunction = 'CrossEntropyLoss'
+  private optimizer = 'SGD'
+  private scheduler = ''
+
+  private models: string[] = [];
+
+  private modelSetting = ['pretrained', 'batchSize', 'epochs', 'lossFunction', 'Optimizer', 'Scheduler']
+  private changeToSetting = false
+
+  private currentPage = 1
+  private pageSize = 8
+  private modelCount = 0
+
+  mounted(): void {
+    this.waitConfigsSetting()
+  }
+
+  updated(): void {
+    if (!this.init) {
+      this.newPara = this.default
+      this.init = true
+    }
+    this.modelStructure = this.default.modelStructure
+
+  }
+
+  private async waitConfigsSetting(): Promise<void> {
+    if (!store.experimentConfigs) await Api.getExperimentConfigs()
+
+    // const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
+    // this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    this.handlePageChange()
+  }
+
+  private optionName(name: string): string {
+    return this.$i18n.t(name).toString();
+  }
+
+  private pickModelSetting(modelName: string, advance: boolean): void {
+    this.modelStructure = modelName
+    this.newPara.modelStructure = modelName
+    if (advance) this.changeToSetting = true
+  }
 
 
+  private saveChanges(): void {
+    this.newPara.modelStructure = this.modelStructure
+    this.newPara.modelPretrained = this.modelPretrained
+    this.newPara.batchSize = this.batchSize
+    this.newPara.epochs = this.epochs
+    this.newPara.lossFunction = this.lossFunction
+    this.newPara.optimizer = this.optimizer
+    this.newPara.scheduler = this.scheduler
 
+    this.changeToSetting = false
+  }
+
+  private handlePageChange(): void {
+    const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
+    const allModels = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    this.modelCount = allModels.length
+    this.models = allModels.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+  }
 }

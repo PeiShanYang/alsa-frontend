@@ -1,0 +1,75 @@
+.content-box {
+    font-size: $font-normal;
+    box-sizing: border-box;
+    padding: 15px 8px;
+    color: $secondary-color;
+
+    .content-title {
+        font-size: $font-normal * 0.8;
+        font-weight: bold;
+        width: 35%;
+        &::after {
+            content: ":";
+        }
+        margin: 5px 0;
+    }
+}
+
+.children-container {
+    font-size: $font-normal * 0.8;
+    margin: 0 0 1em 1em;
+    display: flex;
+    flex-flow: wrap;
+}
+
+::v-deep .select-box {
+    display: flex;
+    align-items: center;
+    .el-select {
+        width: 100%;
+    }
+    .el-input__inner {
+        // font-size: $font-normal;
+        color: $secondary-color;
+    }
+}
+
+.input-box {
+    display: flex;
+    align-items: center;
+    margin: 1px 0;
+    width: 50%;
+    .content-title {
+        width: 70%;
+        text-align: center;
+        & + div {
+            display: flex;
+            align-items: center;
+        }
+    }
+    .el-input {
+        width: 60%;
+    }
+    .unit {
+        margin-left: 10px;
+    }
+}
+
+::v-deep .slider-box {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    .content-title {
+        text-align: center;
+    }
+    .el-slider {
+        width: 80%;
+        // padding: 0 0.5em;
+        &__input {
+            width: 45%;
+        }
+        &__runway.show-input {
+            width: 50%;
+        }
+    }
+}

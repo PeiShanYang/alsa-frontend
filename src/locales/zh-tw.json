@@ -23,7 +23,7 @@
     "degrees": "角度範圍",
     "min": "下限",
     "max": "上限",
-    "transtale": "平移",
+    "translate": "平移",
     "scale": "縮放",
     "horizontalRatio": "水平比例",
     "verticalRatio": "垂直比例",
@@ -36,18 +36,19 @@
     "contrast": "對比度",
     "saturation": "飽和度",
     "hue": "色調",
-    "ratio": "比例",
-    "value": "數值",
+    "lengthWidthRatio": "長寬比",
+    "erasingSizeRatio": "遮罩大小",
     "distortion": "失真比例",
     "interpolation": "插值方式",
     "fill": "填充色",
     "mean": "平均值",
     "std": "標準差",
-    "padding": "邊緣填充",
+    "padding": "填充方向及大小",
     "size": "尺寸",
     "imageSize": "影像尺寸",
     "paddingModel": "填充模式",
-    "pretrained": "有無預訓練模型",
+    "pretrained": "使用預訓練模型",
+    "pixels": "像素",
 
     "saveFinalWeight": "儲存最後訓練權重",
     "saveAccTxt": "輸出訓練accuracy txt",
@@ -62,6 +63,21 @@
     "unknownFilterNone": "不儲存",
     "unknownFilterFiltered": "僅被過濾",
     "unknownFilterAll": "全部",
+
+    "ImageNet": "ImageNet",
+    "CIFAR10": "CIFAR 10",
+    "MNIST": "MNIST",
+    "CalculateFromData": "由資料集計算",
+    "UserInput": "自行輸入",
+
+    "constant": "一致",
+    "edge": "依邊緣",
+    "reflect": "反射",
+    "symmetric": "對稱",
+
+    "BILINEAR": "雙線性插值",
+    "NEAREST": "鄰近插值",
+    "BICUBIC": "雙三次插值",
 
     "showAcc": "顯示準確率",
     "showClassAcc": "顯示各類別準確率",
@@ -102,5 +118,8 @@
     "bottom": "下",
 
     "width": "寬度",
-    "height": "長度"
+    "height": "長度",
+
+    "Optimizer": "優化器",
+    "Scheduler": "學習率調配"
 }

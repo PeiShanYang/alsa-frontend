@@ -2,11 +2,14 @@ type Args = Map<string, ConfigType>
 type FuncArgs = Map<string, Map<string, ConfigType>>
 
 export class ConfigType {
-    type!: string;
-    default!: any;
-    max?: number;
-    min?: number;
-    children?: Args;
+    type!: string
+    default!: number | string | boolean
+    max?: number
+    min?: number
+    enums?: Map<string, number | string>
+    unit?: string
+    children?: Args
+    display?: string
 }
 
 export class ExperimentConfigs {
@@ -15,7 +18,9 @@ export class ExperimentConfigs {
     ConfigAugmentation!: { AugmentationPara: FuncArgs }
     ConfigEvaluation!: { EvaluationPara: FuncArgs }
     ConfigModelService!: {
-        LossFunctionPara: Args,
+        LossFunctionPara: {
+            lossFunction: ConfigType
+        },
         LearningRate: Args,
         OptimizerPara: FuncArgs,
         SchedulerPara: FuncArgs,
@@ -28,7 +33,7 @@ export class ExperimentConfigs {
             },
             ClsModelPara: {
                 batchSize: ConfigType,
-                epoches: ConfigType,
+                epochs: ConfigType,
             },
         },
         ConfigResultStorage: { ResultStorage: FuncArgs }

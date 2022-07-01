@@ -3,6 +3,7 @@ import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
 import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
+import DialogAugmentation from '@/components/dialog-augmentation/DialogAugmentation.vue';
 import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
@@ -14,14 +15,17 @@ import ProcessCellData from '@/io/processCellData';
 import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
-import { Experiment } from '@/io/experiment';
+import { AugmentationPara, Experiment, ModelSelectPara, PreprocessPara, SchedulerPara, OptimizerPara } from '@/io/experiment';
 import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
+import { StringUtil } from '@/utils/string.util';
+import { ConfigType } from '@/io/experimentConfig';
 
 @Component({
   components: {
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
+    "dialog-augmentation": DialogAugmentation,
     "dialog-model-select": DialogModelSelect,
     "flow-node": FlowNode,
     "dialog-message": DialogMessage,
@@ -34,6 +38,7 @@ export default class Experiments extends Vue {
   private openDialogRunProject = false;
   private openDialogDataset = false;
   private openDialogPreprocess = false;
+  private openDialogAugmentation = false;
   private openDialogModelSelect = false;
 
   private dialogMessageData: DialogMessageData = new DialogMessageData()
@@ -41,6 +46,13 @@ export default class Experiments extends Vue {
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
   private graph = new graphData;
+
+  private dialogExperimentId = ''
+  private dialogPreprocessPara: PreprocessPara = {}
+  private dialogAugmentationPara: AugmentationPara = {}
+  private dialogModelSelectPara: ModelSelectPara = new ModelSelectPara()
+
+  private showSolutionKey = false
 
   created(): void {
     this.$i18n.locale = "zh-tw"
@@ -69,7 +81,6 @@ export default class Experiments extends Vue {
     await Api.getExperiments(store.currentProject)
     await Api.getDatasets(store.currentProject)
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
-    console.log(store.experimentConfigs)
 
     const project = store.projectList.get(store.currentProject)
     if (!project) return
@@ -136,23 +147,58 @@ export default class Experiments extends Vue {
     return graph
   }
 
-  private listenOnNodeClick() {
+  private listenOnNodeClick(): void {
+
     this.graph.graph?.on("node:click", (nodeInfo) => {
+      if (!this.graph.experiment) return
+      if (!store.experimentConfigs) return
       const targetDialog: ProcessCellData = nodeInfo.node.data;
+      // console.log(targetDialog.component)
       switch (targetDialog.component) {
         case "dataset-node":
-          this.openDialogDataset = true;
+          this.openDialogDataset = true
           break;
         case "preprocess-node":
-          this.openDialogPreprocess = true;
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogPreprocessPara = this.graph.experiment.ConfigPreprocess.PreprocessPara ?? {}
+          this.openDialogPreprocess = true
+          break;
+        case "augmentation-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogAugmentationPara = this.graph.experiment.ConfigAugmentation.AugmentationPara ?? {}
+          this.openDialogAugmentation = true
           break;
         case "model-select-node":
-          this.openDialogModelSelect = true;
+          this.dialogExperimentId = this.graph.experimentId
+          this.setDefaultSelectModelPara()
+          this.openDialogModelSelect = true
           break;
         default:
-          console.log("out of case");
+          console.log("out of case")
       }
     });
+  }
+
+  private setDefaultSelectModelPara() {
+    if (!this.graph.experiment) return
+    if (!store.experimentConfigs) return
+    this.dialogModelSelectPara.modelStructure =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.structure ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.structure.default as string
+    this.dialogModelSelectPara.modelPretrained =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
+    this.dialogModelSelectPara.batchSize =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.ClsModelPara?.batchSize ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.batchSize.default as number
+    this.dialogModelSelectPara.epochs =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.ClsModelPara?.epochs ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.epochs.default as number
+    this.dialogModelSelectPara.lossFunction =
+      this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
+      store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
+    this.dialogModelSelectPara.optimizer = 'SGD'
+    this.dialogModelSelectPara.scheduler = ''
   }
 
   private async setDatasetContent(path: string): Promise<void> {
@@ -186,12 +232,14 @@ export default class Experiments extends Vue {
     const nodes = graph.getNodes()
     const tipNode = nodes.find((node => node.id === nodeId))
 
+    const graphSetting = GraphService.getNodeSettings(window.innerWidth,0)
+
     if (contentFilter.length !== 0 && !tipNode) {
       graph.addNode({
         id: nodeId,
         shape: 'path',
-        x: 35,
-        y: 190,
+        x: graphSetting.x,
+        y: graphSetting.y * 3.5,
         width: 200,
         height: 60,
         path: 'M 0 0.5 L 0.5 1 L 11 1 L 11 3 L -1 3 L -1 1 L -0.5 1 Z',
@@ -219,24 +267,24 @@ export default class Experiments extends Vue {
   private async runExperimentTrain(): Promise<void> {
 
     const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
-    if (!datasetPath){
+    if (!datasetPath) {
       const h = this.$createElement;
       this.$message({
         type: 'warning',
         message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
       })
       return
-    } 
+    }
 
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
-    if (!datasetStatus){
+    if (!datasetStatus) {
       const h = this.$createElement;
       this.$message({
         type: 'warning',
         message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
       })
       return
-    } 
+    }
 
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
       const h = this.$createElement;
@@ -267,4 +315,119 @@ export default class Experiments extends Vue {
     this.$router.push('/')
   }
 
+  private async setPreprocessPara(newPara: PreprocessPara): Promise<void> {
+
+    if (!this.graph.experiment) return
+    this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
+    await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
+    this.openDialogPreprocess = false
+
+    this.drawGraph()
+  }
+
+  private async setAugmentationPara(newPara: AugmentationPara): Promise<void> {
+
+    if (!this.graph.experiment) return
+    this.graph.experiment.ConfigAugmentation.AugmentationPara = newPara
+    await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
+    this.openDialogAugmentation = false
+
+    this.drawGraph()
+  }
+
+  private async setModelSelectPara(newPara: ModelSelectPara): Promise<void> {
+    if (!this.graph.experiment) return
+
+    this.graph.experiment.ConfigPytorchModel.SelectedModel = {
+      model: {
+        structure: newPara.modelStructure,
+        pretrained: newPara.modelPretrained,
+      },
+      ClsModelPara: {
+        batchSize: newPara.batchSize,
+        epochs: newPara.epochs,
+      },
+    }
+
+    this.graph.experiment.ConfigModelService = {
+      ...this.graph.experiment.ConfigModelService,
+      LossFunctionPara: { lossFunction: newPara.lossFunction },
+    }
+
+    const SchedulerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}))
+    const schedulerConfig = new Map<string, ConfigType>(Object.entries(SchedulerParaConfig.get(newPara.scheduler) ?? {}))
+
+    let schedulerBasic: { name: string, default: number | string | boolean }[] = []
+    schedulerConfig.forEach((arg, name) => {
+      if (name === 'tMax') {
+        schedulerBasic = [...schedulerBasic, { name: name, default: newPara.epochs }]
+      } else {
+        schedulerBasic = [...schedulerBasic, { name: name, default: arg.default }]
+      }
+    })
+
+    const scheduler: SchedulerPara = store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}
+    schedulerBasic.forEach(item => scheduler[newPara.scheduler][item.name] = item.default ?? 0)
+
+    if (newPara.scheduler !== '') {
+      this.graph.experiment.ConfigModelService = {
+        ...this.graph.experiment.ConfigModelService,
+        SchedulerPara: {
+          [newPara.scheduler]: scheduler[newPara.scheduler]
+        }
+      }
+    } else {
+      this.graph.experiment.ConfigModelService.SchedulerPara = {}
+    }
+
+
+    const OptimizerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {}))
+    const optimizerConfig = new Map<string, ConfigType>(Object.entries(OptimizerParaConfig.get(newPara.optimizer) ?? {}))
+
+    let optimizerBasic: { name: string, default: number | string | boolean }[] = []
+    optimizerConfig.forEach((arg, name) => { optimizerBasic = [...optimizerBasic, { name: name, default: arg.default }] })
+
+    const optimizer: OptimizerPara = store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {}
+    optimizerBasic.forEach(item => optimizer[newPara.optimizer][item.name] = item.default ?? 0)
+
+    this.graph.experiment.ConfigModelService = {
+      ...this.graph.experiment.ConfigModelService,
+      OptimizerPara: {
+        [newPara.optimizer]: optimizer[newPara.optimizer]
+      }
+    }
+
+    await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
+
+    this.openDialogModelSelect = false
+
+    this.drawGraph()
+
+  }
+
+
+
+  private exportExperiment(): void {
+    this.showSolutionKey = true
+  }
+
+  private solutionKey(): string {
+    if (!store.currentProject) return ''
+
+    const project = store.projectList.get(store.currentProject)
+    if (!project) return ''
+    this.datasets = project.datasets
+
+    const experiments = project.experiments
+    if (!experiments) return ''
+
+    let experiment: Experiment = new Experiment()
+
+    experiments.forEach((exp) => {
+      experiment = exp
+      if (experiment.Config !== undefined) experiment.Config.PrivateSetting.datasetPath = ""
+    })
+
+    return StringUtil.encodeObject(experiment)
+  }
 }

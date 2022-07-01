@@ -1,5 +1,6 @@
 import { TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
-import { DeployInfo } from "../deployInfo";
+import { DeployInfo } from "@/io/deployInfo";
+import { Experiment } from "@/io/experiment";
 
 export class GetModelInformationReq {
     projectName!: string;
@@ -22,7 +23,7 @@ export class ModelInfo {
     runId = '';
     model = '';
     datasetPath = '';
-    // experiment!: Experiment;
+    experiment!: Experiment;
     Test!: TestProcess;
     Train!: Map<string, TrainingProcess>;
 }

@@ -6,16 +6,17 @@ import { TrainingProcess } from '@/io/rest/getQueueInformation';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
-import { ModelInfo } from '@/io/rest/getModelInformation';
+import { GetModelInformationResData, ModelInfo } from '@/io/rest/getModelInformation';
 import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
-import storeService from '@/services/store.service';
 import { DeployInfo } from '@/io/deployInfo';
 import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
+import { Experiment } from '@/io/experiment';
 
 class Chart {
     data!: chartData;
     runId!: string;
+    experiment!: Experiment;
     isCurrentVersion = false;
     deployBtnName = '部署此模型';
     deployInfoMsg: string[] = [];
@@ -49,6 +50,9 @@ export default class Models extends Vue {
     private deployDialog = false;
     private deployDialogData = new DialogMessageData()
 
+    private deleteDialog = false
+    private deleteGraphInfo = { projectName: '', runId: "" }
+
     mounted(): void {
         this.$i18n.locale = "zh-tw"
         this.waitGetAllProjectInfo()
@@ -60,7 +64,7 @@ export default class Models extends Vue {
 
         const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
-        const response = await Api.getModelInformation(store.currentProject)
+        const response: GetModelInformationResData = await Api.getModelInformation(store.currentProject)
 
         this.inputDeployPath = response.deployPath
         this.deployInfo = response.deployInfo
@@ -127,6 +131,7 @@ export default class Models extends Vue {
                 confusionMatrixImagePath,
             },
             runId: taskInfo.runId,
+            experiment: taskInfo.experiment,
             isCurrentVersion: this.isCurrentVersion(taskInfo.runId),
             deployInfoMsg: this.modelDeployInfoMsg(taskInfo.runId),
             deployBtnName: this.deployBtnName(taskInfo.runId),
@@ -176,8 +181,8 @@ export default class Models extends Vue {
         const filename = content.find(item => item.inputName === "請輸入下載的檔案名稱")?.inputContent
 
         if (!filename || filename === "") return
-        if (!storeService.currentProject) return;
-        await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
+        if (!store.currentProject) return;
+        await Api.downloadModel(store.currentProject, this.downloadInfo.runId, filename)
 
         this.openDialogMessage = false
     }
@@ -188,8 +193,8 @@ export default class Models extends Vue {
 
 
         if (!deployPath || deployPath === "") return
-        if (!storeService.currentProject) return;
-        const deployInfo = await Api.setDeployPath(storeService.currentProject, deployPath);
+        if (!store.currentProject) return;
+        const deployInfo = await Api.setDeployPath(store.currentProject, deployPath);
 
         if (deployInfo === null) {
             this.inputDeployPath = ""
@@ -228,8 +233,8 @@ export default class Models extends Vue {
         const filename = content.find(item => item.inputName === "請輸入部署檔名")?.inputContent
 
         if (!filename || filename === "") return
-        if (!storeService.currentProject) return;
-        const deployInfo = await Api.deploy(storeService.currentProject, this.downloadInfo.runId, filename);
+        if (!store.currentProject) return;
+        const deployInfo = await Api.deploy(store.currentProject, this.downloadInfo.runId, filename);
         console.log(`this: ${deployInfo}`)
 
         if (deployInfo !== null) {
@@ -283,4 +288,33 @@ export default class Models extends Vue {
         targetChart.displayResult = displayInfo
 
     }
+
+    private askDeleteRun(runId: string): void {
+        if (store.currentProject === undefined) return
+
+        this.deleteGraphInfo.projectName = store.currentProject
+        this.deleteGraphInfo.runId = runId
+    
+        this.dialogMessageData = {
+          ...this.dialogMessageData,
+          type: 'warning',
+          title: '確定刪除訓練結果?',
+        }
+    
+        this.deleteDialog = true
+      }
+    
+      private async removeRun(): Promise<void> {
+    
+        const response = await Api.removeRun(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
+    
+        if (response === 'success') {
+          const graphIndex = this.charts.findIndex(item => item.runId === this.deleteGraphInfo.runId)
+    
+          if (graphIndex > -1) this.charts.splice(graphIndex, 1)
+        }
+    
+        this.deleteDialog = false
+      }
+    
 }

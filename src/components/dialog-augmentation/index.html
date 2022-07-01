@@ -1,0 +1,46 @@
+<el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
+  <div class="main-container">
+    <el-row class="container-title">
+      <el-col>
+        <span>資料擴增</span>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col class="option-box" :span="6" v-for="(args, name) in configSlice" :key="name">
+        <div class="collapse-box" :id="name + '_collapse'" >
+          <div class="collapse-header">
+            <div class="collapse-header-content">
+              <el-switch v-model="optionSelect[name]" @change="activeOption($event,name)" active-color="#3E8FB4"
+                inactive-color="#96CAE2"></el-switch>
+              <div>{{ optionName(name) }}</div>
+              <el-tooltip placement="bottom" effect="light">
+                <div slot="content">{{ optionName(name) }}</div>
+                <i class="el-icon-info"></i>
+              </el-tooltip>
+            </div>
+            <div class="collapse-header-arrow" @click="toggleCollapse(name)">
+              <i class="el-icon-arrow-right"></i>
+            </div>
+          </div>
+          <div class="collapse-body">
+            <OptionForm :config="args" :default="defaultFromConfig(args, name)" @change="updateOption(name, $event)"
+              :case="optionCase(name)" />
+          </div>
+        </div>
+      </el-col>
+    </el-row>
+    <el-row class="container-footer">
+      <el-col class="pagination-box">
+        <el-pagination @current-change="handlePageChange" background layout="prev, pager, next" :total="configCount"
+          :current-page.sync="currentPage" :page-size.sync="pageSize" :hide-on-single-page="true">
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
+ <el-row slot="footer">
+    <el-col class="action-btn-group">
+      <el-button class="secondary-btn" @click="closeDialogAugmentation">取消</el-button>
+      <el-button class="primary-btn" @click="setPara">儲存設定</el-button>
+    </el-col>
+  </el-row>
+</el-dialog>

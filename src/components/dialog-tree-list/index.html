@@ -11,7 +11,7 @@
   </el-row>
   <el-row>
     <el-col class="dialog-list">
-      <vue-tree-list :model="treeData" v-bind:default-expanded="true">
+      <vue-tree-list :model="treeData" v-bind:default-expanded="false">
         <template v-slot:leafNameDisplay="slotProps">
           <div  @click="handlePickFolder(slotProps.model)">{{slotProps.model.name }}</div>
           <div class="icon-box">

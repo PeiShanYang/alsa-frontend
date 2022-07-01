@@ -15,7 +15,8 @@
         </el-col>
       </el-row>
       <el-row type="flex" justify="end">
-        <el-col :span="3" class="action-btn-group">
+        <el-col :span="6" class="action-btn-group">
+          <el-button class="primary-btn" @click="exportExperiment">匯出</el-button>
           <el-button class="primary-btn" @click="runExperimentTrain">執行</el-button>
         </el-col>
       </el-row>
@@ -24,10 +25,34 @@
 
   <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false"
     @set-dataset="setDatasetContent" />
-  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false" />
-  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false" />
+  <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false"
+    :experiment-id="dialogExperimentId" :default="dialogPreprocessPara" @set-para="setPreprocessPara" />
+
+  <dialog-augmentation :dialog-open="openDialogAugmentation" @dialog-close="openDialogAugmentation=false"
+    :experiment-id="dialogExperimentId" :default="dialogAugmentationPara" @set-para="setAugmentationPara" />
+
+  <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false"
+  :experiment-id="dialogExperimentId" :default="dialogModelSelectPara" @set-para="setModelSelectPara" />
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
-  @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
+    @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />
 
+  <el-dialog :visible.sync="showSolutionKey" :show-close=false append-to-body>
+    <el-row>
+      <el-col class="dialog-title">
+        <i class="el-icon-info" style="color:#DCE0EC"></i>
+        <div>請複製下方文字</div>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col class="dialog-content">
+        <div>{{ solutionKey() }}</div>
+      </el-col>
+    </el-row>
+    <el-row type="flex" justify="center" slot="footer">
+      <el-col class="action-btn-group">
+        <el-button class="secondary-btn" @click="showSolutionKey=false">完成</el-button>
+      </el-col>
+    </el-row>
+  </el-dialog>
 </div>
