@@ -80,6 +80,7 @@ export default class DialogPreprocess extends Vue {
 
     config = new Map<string, ConfigType>(Object.entries(config))
     const newPara = new Map<string, number | number[] | string | string[] | boolean>()
+    newPara.set('switch', 1)
     config.forEach((arg, name) => {
       if (arg.type == 'list') {
         if (arg.children !== undefined) {
