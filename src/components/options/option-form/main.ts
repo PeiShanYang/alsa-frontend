@@ -40,11 +40,6 @@ export default class OptionForm extends Vue {
     return arg.min !== undefined && arg.max != undefined
   }
 
-  private minMaxRange(arg:ConfigType):boolean{
-    const keys = Object.keys(arg.children ?? {})
-    return keys.includes('max') && keys.includes('min')
-  }
-
   private formTypeSpecialCase(arg: ConfigType): string {
     if (this.case === 'normal') {
       if (arg.enums !== undefined) {
@@ -79,7 +74,6 @@ export default class OptionForm extends Vue {
       return 'float-input'
     }
     else if (arg.type === 'list') {
-      console.log("arg list",arg.children, this.minMaxRange(arg))
       return 'list'
     }
     return ''
