@@ -6,7 +6,7 @@ export class Experiment {
             task?: "",
         },
         PrivateSetting: {
-            datasetPath?: "",
+            datasetPath?: string,
             outputPath?: string,
         }
     };

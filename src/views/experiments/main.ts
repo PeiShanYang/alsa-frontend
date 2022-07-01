@@ -82,6 +82,8 @@ export default class Experiments extends Vue {
     await Api.getDatasets(store.currentProject)
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
+    // console.log("store",store.projectList.get(store.currentProject))
+
     const project = store.projectList.get(store.currentProject)
     if (!project) return
     this.datasets = project.datasets
@@ -92,6 +94,8 @@ export default class Experiments extends Vue {
       this.graph.experimentId = experimentId
       this.graph.experiment = experiment
     })
+
+    // console.log("this.g",this.graph,project,store.projectList)
 
     this.drawGraph();
 
@@ -317,6 +321,8 @@ export default class Experiments extends Vue {
 
   private async setPreprocessPara(newPara: PreprocessPara): Promise<void> {
 
+    console.log("par",this.graph.experiment)
+
     if (!this.graph.experiment) return
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
@@ -373,7 +379,7 @@ export default class Experiments extends Vue {
       this.graph.experiment.ConfigModelService = {
         ...this.graph.experiment.ConfigModelService,
         SchedulerPara: {
-          [newPara.scheduler]: scheduler[newPara.scheduler]
+          [newPara.scheduler]: {...scheduler[newPara.scheduler],switch:1}
         }
       }
     } else {
@@ -393,9 +399,10 @@ export default class Experiments extends Vue {
     this.graph.experiment.ConfigModelService = {
       ...this.graph.experiment.ConfigModelService,
       OptimizerPara: {
-        [newPara.optimizer]: optimizer[newPara.optimizer]
+        [newPara.optimizer]: {...optimizer[newPara.optimizer],switch:1}
       }
     }
+
 
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
 
