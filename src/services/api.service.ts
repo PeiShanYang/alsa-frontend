@@ -91,25 +91,17 @@ export default class Api {
 
     if (response.status !== 200) return;
 
-    console.log("tee",await axios.post(
-      host + 'get-experiments',
-      reqData,
-    ) )
-    console.log("res",response.data)
-
     const res: GetExperimentsRes = response.data;
     if (res.code !== 0) {
       console.log(res.message);
       return;
     }
+    if (!res.data) return;
 
     const project = store.projectList.get(projectName);
     if (project === undefined) return;
-
-    if (!res.data) return;
     project.experiments = new Map<string, Experiment>(Object.entries(res.data));
 
-    
   }
 
   static async setExperiments(projectName: string, experimentId: string, experiment: Experiment): Promise<void> {
@@ -162,7 +154,7 @@ export default class Api {
     if (project === undefined) return;
 
     if (!res.data) return;
-    if(project.experiments) project.experiments.set(experimentId,res.data)
+    if (project.experiments) project.experiments.set(experimentId, res.data)
   }
 
   static async getDatasets(projectName: string): Promise<void> {
@@ -493,7 +485,7 @@ export default class Api {
 
   static async getExperimentConfigs(): Promise<void> {
 
-    if(store.experimentConfigs) return
+    if (store.experimentConfigs) return
 
     const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(host + 'get-experiment-configs')
 

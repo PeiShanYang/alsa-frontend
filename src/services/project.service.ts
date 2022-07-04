@@ -3,7 +3,6 @@ import store from '@/services/store.service';
 export default class ProjectSevice {
 
     static getDatasetNodeContent(datasetPath: string,projectName:string): string[] {
-
         const datasetStatus = store.projectList
             .get(projectName)
             ?.datasets

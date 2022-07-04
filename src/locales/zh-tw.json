@@ -17,7 +17,6 @@
     "pad": "邊緣填充",
     "centerCrop": "中心切割",
     "gaussianBlur": "高斯模糊",
-
     "probability": "機率",
     "mode": "模式",
     "degrees": "角度範圍",
@@ -49,7 +48,6 @@
     "paddingModel": "填充模式",
     "pretrained": "使用預訓練模型",
     "pixels": "像素",
-
     "saveFinalWeight": "儲存最後訓練權重",
     "saveAccTxt": "輸出訓練accuracy txt",
     "savePredictResult": "輸出預測結果csv",
@@ -63,22 +61,18 @@
     "unknownFilterNone": "不儲存",
     "unknownFilterFiltered": "僅被過濾",
     "unknownFilterAll": "全部",
-
     "ImageNet": "ImageNet",
     "CIFAR10": "CIFAR 10",
     "MNIST": "MNIST",
     "CalculateFromData": "由資料集計算",
     "UserInput": "自行輸入",
-
     "constant": "一致",
     "edge": "依邊緣",
     "reflect": "反射",
     "symmetric": "對稱",
-
     "BILINEAR": "雙線性插值",
     "NEAREST": "鄰近插值",
     "BICUBIC": "雙三次插值",
-
     "showAcc": "顯示準確率",
     "showClassAcc": "顯示各類別準確率",
     "showNumOfClasses": "顯示各類別總數及正確預測數",
@@ -111,15 +105,18 @@
     "notSplit": "未切分",
     "notTraining": "尚未訓練",
     "training": "訓練中",
-
     "top": "上",
     "left": "左",
     "right": "右",
     "bottom": "下",
-
     "width": "寬度",
     "height": "長度",
-
     "Optimizer": "優化器",
-    "Scheduler": "學習率調配"
+    "Scheduler": "學習率調配",
+    "dataNeeded:": "所需資料數量:",
+    "easeOfUsage:": "容易上手程度:",
+    "trainSpeed:": "模型訓練速度:",
+    "R":"R",
+    "G":"G",
+    "B":"B"
 }

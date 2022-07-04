@@ -8,7 +8,7 @@ export class Experiment {
         PrivateSetting: {
             datasetPath?: string,
             outputPath?: string,
-        }
+        },
     };
     ConfigAugmentation!: {
         AugmentationPara: AugmentationPara

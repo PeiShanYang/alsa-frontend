@@ -177,6 +177,12 @@ export default class Dashboard extends Vue {
     let percentage = 0
     let defaultNodes: FlowNodeSettings[] = []
 
+    // check if this run has benn delete
+    if(taskInfo.process === "This run has been deleted"){
+      console.log(taskInfo.process)
+      return
+    }
+
     if (typeof taskInfo.process !== "string") {
       percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
     }
@@ -184,18 +190,13 @@ export default class Dashboard extends Vue {
     defaultNodes = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
 
     if (percentage === 0) {
-      defaultNodes = defaultNodes
-        .filter(node => node.name !== "model-select-node")
-        .filter(node => node.name !== "trained-result-node")
-        .filter(node => node.name !== "test-result-node")
+      const nodes = ['dataset-node','preprocess-node','augmentation-node','model-select-node-processing','trained-result-node-processing','test-result-node-processing']
+      defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
     } else if (percentage < 100) {
-      defaultNodes = defaultNodes
-        .filter(node => node.name !== "model-select-node-processing")
-        .filter(node => node.name !== "trained-result-node")
-        .filter(node => node.name !== "test-result-node")
+      const nodes = ['dataset-node','preprocess-node','augmentation-node','model-select-node','trained-result-node-processing','test-result-node-processing']
+      defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
     } else {
-      defaultNodes = defaultNodes
-        .filter(node => !node.name.includes("processing"))
+      defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
     }
 
     return {
@@ -408,6 +409,7 @@ export default class Dashboard extends Vue {
   private handleTrainTask(trainTask: RunTask, targetGraphIndex: number): boolean {
 
 
+    if(this.graphs.length === 0) return false
     const originPercentage = this.graphs[targetGraphIndex].percentage
 
     const newGraphSetting = this.graphSetting(trainTask)

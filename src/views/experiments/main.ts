@@ -75,18 +75,15 @@ export default class Experiments extends Vue {
   private async waitGetExperiments(): Promise<void> {
 
     if (!store.currentProject) return
-
-    this.graph.projectName = store.currentProject
-
     await Api.getExperiments(store.currentProject)
     await Api.getDatasets(store.currentProject)
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
-    // console.log("store",store.projectList.get(store.currentProject))
-
     const project = store.projectList.get(store.currentProject)
     if (!project) return
-    this.datasets = project.datasets
+
+    // init this graph
+    this.graph.projectName = project.name
 
     const experiments = project.experiments
     if (!experiments) return
@@ -95,7 +92,7 @@ export default class Experiments extends Vue {
       this.graph.experiment = experiment
     })
 
-    // console.log("this.g",this.graph,project,store.projectList)
+    this.datasets = project.datasets
 
     this.drawGraph();
 
@@ -116,7 +113,6 @@ export default class Experiments extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string): Graph | null {
 
     if (!container) return null;
-
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
     const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
@@ -154,10 +150,11 @@ export default class Experiments extends Vue {
   private listenOnNodeClick(): void {
 
     this.graph.graph?.on("node:click", (nodeInfo) => {
+
       if (!this.graph.experiment) return
       if (!store.experimentConfigs) return
       const targetDialog: ProcessCellData = nodeInfo.node.data;
-      // console.log(targetDialog.component)
+
       switch (targetDialog.component) {
         case "dataset-node":
           this.openDialogDataset = true
@@ -236,7 +233,7 @@ export default class Experiments extends Vue {
     const nodes = graph.getNodes()
     const tipNode = nodes.find((node => node.id === nodeId))
 
-    const graphSetting = GraphService.getNodeSettings(window.innerWidth,0)
+    const graphSetting = GraphService.getNodeSettings(window.innerWidth, 0)
 
     if (contentFilter.length !== 0 && !tipNode) {
       graph.addNode({
@@ -280,6 +277,8 @@ export default class Experiments extends Vue {
       return
     }
 
+
+
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
     if (!datasetStatus) {
       const h = this.$createElement;
@@ -321,8 +320,6 @@ export default class Experiments extends Vue {
 
   private async setPreprocessPara(newPara: PreprocessPara): Promise<void> {
 
-    console.log("par",this.graph.experiment)
-
     if (!this.graph.experiment) return
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
@@ -342,6 +339,8 @@ export default class Experiments extends Vue {
   }
 
   private async setModelSelectPara(newPara: ModelSelectPara): Promise<void> {
+
+
     if (!this.graph.experiment) return
 
     this.graph.experiment.ConfigPytorchModel.SelectedModel = {
@@ -379,7 +378,7 @@ export default class Experiments extends Vue {
       this.graph.experiment.ConfigModelService = {
         ...this.graph.experiment.ConfigModelService,
         SchedulerPara: {
-          [newPara.scheduler]: {...scheduler[newPara.scheduler],switch:1}
+          [newPara.scheduler]: { ...scheduler[newPara.scheduler], switch: 1 }
         }
       }
     } else {
@@ -399,7 +398,7 @@ export default class Experiments extends Vue {
     this.graph.experiment.ConfigModelService = {
       ...this.graph.experiment.ConfigModelService,
       OptimizerPara: {
-        [newPara.optimizer]: {...optimizer[newPara.optimizer],switch:1}
+        [newPara.optimizer]: { ...optimizer[newPara.optimizer], switch: 1 }
       }
     }
 
@@ -407,34 +406,16 @@ export default class Experiments extends Vue {
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
 
     this.openDialogModelSelect = false
-
     this.drawGraph()
 
   }
-
-
 
   private exportExperiment(): void {
     this.showSolutionKey = true
   }
 
   private solutionKey(): string {
-    if (!store.currentProject) return ''
-
-    const project = store.projectList.get(store.currentProject)
-    if (!project) return ''
-    this.datasets = project.datasets
-
-    const experiments = project.experiments
-    if (!experiments) return ''
-
-    let experiment: Experiment = new Experiment()
-
-    experiments.forEach((exp) => {
-      experiment = exp
-      if (experiment.Config !== undefined) experiment.Config.PrivateSetting.datasetPath = ""
-    })
-
-    return StringUtil.encodeObject(experiment)
+    return StringUtil.encodeObject(this.graph.experiment ?? {})
   }
+
 }
