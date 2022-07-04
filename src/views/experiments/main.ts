@@ -415,7 +415,17 @@ export default class Experiments extends Vue {
   }
 
   private solutionKey(): string {
-    return StringUtil.encodeObject(this.graph.experiment ?? {})
+
+    if(!this.graph.experiment) return ''
+
+    let experiment: Experiment = new Experiment()
+
+    experiment = JSON.parse(JSON.stringify(this.graph.experiment))
+
+    experiment.Config.PrivateSetting.datasetPath = ""
+
+    return StringUtil.encodeObject(experiment)
+    
   }
 
 }

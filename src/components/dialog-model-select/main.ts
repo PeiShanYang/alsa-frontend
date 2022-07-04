@@ -69,6 +69,8 @@ export default class DialogModelSelect extends Vue {
     // const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
     // this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
     this.handlePageChange()
+
+    await Api.getModelDescription()
   }
 
   private optionName(name: string): string {

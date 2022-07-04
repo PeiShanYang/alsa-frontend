@@ -25,6 +25,7 @@ import { RenameFolderReq, RenameFolderRes } from "@/io/rest/renameFolder";
 import { GetExperimentConfigsRes } from "@/io/rest/getExperimentConfig";
 import storeService from "@/services/store.service";
 import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
+import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/getModelDescription";
 
 
 const host = 'http://tw100104318:37510/';
@@ -318,7 +319,6 @@ export default class Api {
 
     if (!res.data) return new GetModelInformationResData();
 
-    // console.log(res.data)
 
     return res.data
 
@@ -498,5 +498,23 @@ export default class Api {
     }
 
     storeService.experimentConfigs = res.data
+  }
+
+  static async getModelDescription():Promise<Map<string,GetModelDescriptionResData>>{
+
+    const response: AxiosResponse<GetModelDescriptionRes> = await axios.post(
+      host + 'get-model-description',
+    )
+
+    if (response.status !== 200) return new Map<string,GetModelDescriptionResData>();
+
+    const res: GetModelDescriptionRes = response.data;
+    if (res.code !== 0) {
+      console.log(res.message);
+      return new Map<string,GetModelDescriptionResData>();
+    }
+    if (!res.data) return new Map<string,GetModelDescriptionResData>();
+
+    return res.data;
   }
 }
