@@ -4,6 +4,7 @@ import store from '@/services/store.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import OptionForm from '@/components/options/option-form/OptionForm.vue';
 import { ModelSelectPara } from '@/io/experiment';
+import { GetModelDescriptionResData } from '@/io/rest/getModelDescription';
 
 type Dict = Map<string, boolean | number | number[] | string | string[]>
 
@@ -41,7 +42,9 @@ export default class DialogModelSelect extends Vue {
   private optimizer = 'SGD'
   private scheduler = ''
 
-  private models: string[] = [];
+
+  private modelsDescription: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
+  private models: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
 
   private modelSetting = ['pretrained', 'batchSize', 'epochs', 'lossFunction', 'Optimizer', 'Scheduler']
   private changeToSetting = false
@@ -66,11 +69,11 @@ export default class DialogModelSelect extends Vue {
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
-    // const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
-    // this.models = Object.keys(modelConfig.get('structure')?.enums ?? {})
+    this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
 
-    await Api.getModelDescription()
+
+
   }
 
   private optionName(name: string): string {
@@ -100,6 +103,13 @@ export default class DialogModelSelect extends Vue {
     const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
     const allModels = Object.keys(modelConfig.get('structure')?.enums ?? {})
     this.modelCount = allModels.length
-    this.models = allModels.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+
+    const currentModels = allModels.slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+    this.models = new Map<string, GetModelDescriptionResData>()
+
+    currentModels.forEach(modelName => {
+      const description = this.modelsDescription.get(modelName)
+      if (description) this.models.set(modelName, description)
+    })
   }
 }

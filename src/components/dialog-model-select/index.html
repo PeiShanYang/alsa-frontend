@@ -7,19 +7,19 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col class="model-option-box" :span="6" v-for="item in models" :key="item">
-          <div class="model-content-box" @click="pickModelSetting(item,false)">
-            <div class="icon-box" :style="item === modelStructure ? {'background':'#4A9ABE'} :{'background':'#F5F5FD'}">
-              <template v-if="item === modelStructure">
+        <el-col class="model-option-box" :span="6" v-for="[name,description] in models" :key="name">
+          <div class="model-content-box" @click="pickModelSetting(name,false)">
+            <div class="icon-box" :style="name === modelStructure ? {'background':'#4A9ABE'} :{'background':'#F5F5FD'}">
+              <template v-if="name === modelStructure">
                 <img class="large-img model-select"
                   :src="require('@/assets/svg_icon/model_select/model_transparent.svg')" />
-                <div class="edit-box" @click="pickModelSetting(item,true)">
+                <div class="edit-box" @click="pickModelSetting(name,true)">
                   <img :src="require('@/assets/svg_icon/model_select/edit_transparent.svg')" class="edit_img " />
                 </div>
               </template>
               <template v-else>
                 <img class="large-img" :src="require('@/assets/svg_icon/model_select/model_purple.svg')" />
-                <div class="edit-box" @click="pickModelSetting(item,true)">
+                <div class="edit-box" @click="pickModelSetting(name,true)">
                   <img :src="require('@/assets/svg_icon/model_select/edit_blue.svg')" class="edit_img " />
                 </div>
               </template>
@@ -27,10 +27,26 @@
             <div class="text-box">
               <div class="model-name-box">
                 <img :src="require('@/assets/svg_icon/model_select/model_blue.svg')" />
-                <span>{{ optionName(item) }}</span>
+                <span>{{ optionName(name) }}</span>
               </div>
               <div class="profile-box">
-                簡介: 多尺度預測、二元損失函數、高效率
+                <div class="introduction-box">
+                  {{description.introduction}}
+                </div>
+                <div class="wrap-rating-box">
+                  <div class="rating-box">
+                    <div class="rating-title">{{optionName('dataNeeded')}}</div>
+                    <div class="rating-content">{{description.dataNeeded}}</div>
+                  </div>
+                  <div class="rating-box">
+                    <div class="rating-title">{{optionName('easeOfUsage')}}</div>
+                    <div class="rating-content">{{description.easeOfUsage}}</div>
+                  </div>
+                  <div class="rating-box">
+                    <div class="rating-title">{{optionName('trainSpeed')}}</div>
+                    <div class="rating-content">{{description.trainSpeed}}</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

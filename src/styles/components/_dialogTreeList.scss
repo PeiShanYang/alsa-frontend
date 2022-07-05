@@ -44,10 +44,12 @@
         .vtl-node-content {
             display: flex;
             align-items: center;
+            cursor: pointer;
         }
         .icon-box {
             display: flex;
             opacity: 0;
+            margin-left: 10px
         }
         .icon-box:hover {
             opacity: 0.8;

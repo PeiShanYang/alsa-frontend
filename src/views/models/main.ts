@@ -251,6 +251,8 @@ export default class Models extends Vue {
     }
 
     private isCurrentVersion(runId: string): boolean {
+        if(this.deployInfo === undefined) return false
+
         return runId === this.deployInfo[this.deployInfo.length - 1]?.runId ?? '';
     }
 
