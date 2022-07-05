@@ -102,6 +102,14 @@ export default class GraphService {
       opacity:1,
     },
     {
+      name: "dataset-node-processing",
+      title: "資料集",
+      backgroundColor: "#FCEFFD",
+      borderColor: "#B811CE",
+      icon: ExperimentsIcons.dataset,
+      opacity:0.5,
+    },
+    {
       name: "preprocess-node",
       title: "前處理",
       backgroundColor: "#F8F8F0",
@@ -110,12 +118,28 @@ export default class GraphService {
       opacity:1,
     },
     {
+      name: "preprocess-node-processing",
+      title: "前處理",
+      backgroundColor: "#F8F8F0",
+      borderColor: "#BCC733",
+      icon: ExperimentsIcons.preprocess,
+      opacity:0.5,
+    },
+    {
       name: "augmentation-node",
       title: "資料擴增",
       backgroundColor: "#FFF0F0",
       borderColor: "#DD8282",
       icon: ExperimentsIcons.dataAugmentation,
       opacity:1,
+    },
+    {
+      name: "augmentation-node-processing",
+      title: "資料擴增",
+      backgroundColor: "#FFF0F0",
+      borderColor: "#DD8282",
+      icon: ExperimentsIcons.dataAugmentation,
+      opacity:0.5,
     },
     {
       name: "model-select-node",

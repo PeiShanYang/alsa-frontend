@@ -36,6 +36,18 @@ export default class ProcessCellData {
                 component: 'test-result-node',
                 content: ["notTraining"],
             }],
+            ['dataset-node-processing', {
+                component: 'dataset-node',
+                content: ["training"],
+            }],
+            ['preprocess-node-processing', {
+                component: 'preprocess-node',
+                content: ["training"],
+            }],
+            ['augmentation-node-processing', {
+                component: 'augmentation-node',
+                content: ["training"],
+            }],
             ['model-select-node-processing', {
                 component: 'model-select-node',
                 content: ["training"],
