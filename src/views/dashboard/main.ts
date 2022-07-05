@@ -174,29 +174,35 @@ export default class Dashboard extends Vue {
     if (!experiment) return
 
 
+    let taskRunning = false
     let percentage = 0
-    let defaultNodes: FlowNodeSettings[] = []
+    let defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
 
-    // check if this run has benn delete
-    if(taskInfo.process === "This run has been deleted"){
-      console.log(taskInfo.process)
-      return
-    }
+    if (typeof taskInfo.process === "string") {
 
-    if (typeof taskInfo.process !== "string") {
-      percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
-    }
+      // check if this run has benn delete
+      if (taskInfo.process === "This run has been deleted") return
 
-    defaultNodes = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
-
-    if (percentage === 0) {
-      const nodes = ['dataset-node','preprocess-node','augmentation-node','model-select-node-processing','trained-result-node-processing','test-result-node-processing']
-      defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
-    } else if (percentage < 100) {
-      const nodes = ['dataset-node','preprocess-node','augmentation-node','model-select-node','trained-result-node-processing','test-result-node-processing']
-      defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
+      // seting state when this run has not started
+      if (taskInfo.process === "Task has not started") {
+        defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
+      }
     } else {
-      defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
+
+      taskRunning = true
+      percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
+
+
+      if (percentage === 0) {
+        const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node-processing', 'trained-result-node-processing', 'test-result-node-processing']
+        defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
+      } else if (percentage < 100) {
+        const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node', 'trained-result-node-processing', 'test-result-node-processing']
+        defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
+      } else {
+        defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
+      }
+
     }
 
     return {
@@ -206,7 +212,8 @@ export default class Dashboard extends Vue {
         projectName: taskInfo.projectName,
         experimentId: taskInfo.experimentId,
         date: StringUtil.formatAddSlash(taskInfo.runId),
-        experiment: experiment
+        experiment: experiment,
+        taskRunning,
       },
       percentage: percentage,
       runId: taskInfo.runId
@@ -222,7 +229,7 @@ export default class Dashboard extends Vue {
       item.data.graph?.clearCells()
       item.data.graph = null
       if (!item.data.experiment) return
-      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item.data.flowInfo, item.data.experiment, item.data.projectName)
+      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item.data.flowInfo, item.data.experiment, item.data.projectName, item.data.taskRunning)
 
       if (!item.data.graph) return
       this.nodeContentSetting(item.data.graph, item.runId, this.trainingInfo)
@@ -231,7 +238,7 @@ export default class Dashboard extends Vue {
   }
 
 
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string): Graph | null {
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string, taskRunning: boolean): Graph | null {
 
     if (!container) return null;
 
@@ -257,7 +264,7 @@ export default class Dashboard extends Vue {
 
       if (index === 0) return
 
-      if (index > 0 && array[index].name.includes("processing")) {
+      if (index > 0 && array[index].name.includes("processing") && taskRunning) {
         graph?.addEdge({
           source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
           target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
@@ -290,7 +297,7 @@ export default class Dashboard extends Vue {
     const conditionA = flow.filter(item => item.name.includes("processing")).length
     const conditionB = flow.filter(item => item.name === "model-select-node").length
 
-    if (conditionA > 0 && conditionB > 0) {
+    if (conditionA > 0 && conditionB > 0 && taskRunning) {
       const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
       this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
     }
@@ -402,14 +409,16 @@ export default class Dashboard extends Vue {
     graphData.graph?.clearCells()
     graphData.graph = null
     if (!graphData.experiment) return
-    graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(graph.runId), graphData.flowInfo, graphData.experiment, graphData.projectName)
+    graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(graph.runId), graphData.flowInfo, graphData.experiment, graphData.projectName, graphData.taskRunning)
 
   }
 
   private handleTrainTask(trainTask: RunTask, targetGraphIndex: number): boolean {
 
 
-    if(this.graphs.length === 0) return false
+    if (this.graphs.length === 0) return false
+    // console.log(this.graphs[targetGraphIndex])
+    if(!this.graphs[targetGraphIndex]) return false
     const originPercentage = this.graphs[targetGraphIndex].percentage
 
     const newGraphSetting = this.graphSetting(trainTask)
