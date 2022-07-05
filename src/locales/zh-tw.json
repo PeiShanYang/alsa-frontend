@@ -12,6 +12,8 @@
     "randomHue": "隨機色調調整",
     "randomErasing": "隨機區域遮罩",
     "randomPerspective": "隨機視角轉換",
+    "kernelSize": "Kernel Size",
+    "sigma": "Sigma",
     "normalize": "正規化",
     "resize": "大小調整",
     "pad": "邊緣填充",
@@ -105,6 +107,7 @@
     "notSplit": "未切分",
     "notTraining": "尚未訓練",
     "training": "訓練中",
+    "waiting": "等待中",
     "top": "上",
     "left": "左",
     "right": "右",
@@ -116,7 +119,7 @@
     "dataNeeded": "所需資料數量",
     "easeOfUsage": "容易上手程度",
     "trainSpeed": "模型訓練速度",
-    "R":"R",
-    "G":"G",
-    "B":"B"
+    "R": "R",
+    "G": "G",
+    "B": "B"
 }

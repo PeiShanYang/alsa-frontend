@@ -132,7 +132,7 @@ export default class DialogPreprocess extends Vue {
     } else {
       if (this.newPara[name] !== undefined) delete this.newPara[name]
       // collapseBody.style.height = '0px'
-      // collapseHeader.style.background = '#4A9ABE'
+      collapseHeader.style.background = '#4A9ABE'
       // collapseArrow.classList.remove('active')
     }
 

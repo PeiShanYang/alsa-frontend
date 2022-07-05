@@ -9,4 +9,5 @@ export default class graphData{
     date = '';
     experiment? : Experiment;
     flowInfo!:FlowNodeSettings[];
+    taskRunning = false;
 }

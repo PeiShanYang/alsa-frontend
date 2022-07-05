@@ -38,19 +38,19 @@ export default class ProcessCellData {
             }],
             ['dataset-node-processing', {
                 component: 'dataset-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
             ['preprocess-node-processing', {
                 component: 'preprocess-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
             ['augmentation-node-processing', {
                 component: 'augmentation-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
             ['model-select-node-processing', {
                 component: 'model-select-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
             ['validation-select-node-processing', {
                 component: 'validation-select-node',
