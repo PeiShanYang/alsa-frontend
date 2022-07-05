@@ -5,7 +5,7 @@
   margin-top: 2vh !important;
   width: 70%;
   &__header {
-    padding: 0.5em 0.5em 0;
+    padding: 0.3em 0.5em 0;
   }
   &__body,
   &__footer {
@@ -64,6 +64,7 @@
     flex-direction: column;
     font-size: $font-normal * 0.8;
     padding: 0 0.5em;
+    position: relative;
   }
 
   .model-name-box {
@@ -71,6 +72,7 @@
     align-items: center;
     // margin: auto 0;
     color: $secondary-color;
+    font-weight: bold;
   }
 
   .profile-box {
@@ -80,10 +82,16 @@
     // margin: auto;
     padding: 0 5px;
     color: #939393;
+    
+    .wrap-rating-box{
+      position: absolute;
+      bottom: 10px;
+    }
 
     .rating-box {
       display: flex;
-      margin-left: 2.45em;
+      font-size: $font-normal * 0.6;
+      // margin-left: 2.45em;
       .rating-title {
         &::after {
           content: "：";
@@ -95,8 +103,8 @@
     }
 
     .introduction-box{
-      margin:7px 0;
-      font-weight: bold;
+      margin: 3px 0 12px;
+      color: $secondary-color;
     }
   }
 }
@@ -142,11 +150,11 @@
 .setting-box {
   font-size: $font-normal;
   padding: 1em;
-  height: $font-normal * 8;
+  height: $font-normal * 10;
 }
 
 .content-box {
-  height: $font-normal * 1.75;
+  height: $font-normal * 3;
 }
 
 .input-box {
