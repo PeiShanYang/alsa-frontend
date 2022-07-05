@@ -71,7 +71,7 @@ export default class DialogModelSelect extends Vue {
 
     this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
-    
+
 
 
   }
@@ -111,7 +111,5 @@ export default class DialogModelSelect extends Vue {
       const description = this.modelsDescription.get(modelName)
       if (description) this.models.set(modelName, description)
     })
-
-    console.log("t",this.models)
   }
 }
