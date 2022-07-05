@@ -41,6 +41,7 @@ export default class OptionForm extends Vue {
   }
 
   private formTypeSpecialCase(arg: ConfigType): string {
+    
     if (this.case === 'normal') {
       if (arg.enums !== undefined) {
         return 'enums'

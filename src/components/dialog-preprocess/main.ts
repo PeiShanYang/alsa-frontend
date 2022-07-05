@@ -75,7 +75,16 @@ export default class DialogPreprocess extends Vue {
     }
 
     if (this.default[name] !== undefined) {
-      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+
+      if (name === "normalize") {
+        const newCase = JSON.parse(JSON.stringify(this.default[name]))
+        newCase["mean"] = [0.5, 0.5, 0.5]
+        newCase["std"] = [0.5, 0.5, 0.5]
+        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(newCase))
+      } else {
+        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+      }
+
     }
 
     config = new Map<string, ConfigType>(Object.entries(config))
@@ -99,6 +108,7 @@ export default class DialogPreprocess extends Vue {
         newPara.set(name, arg.default)
       }
     })
+
 
     return newPara
   }
