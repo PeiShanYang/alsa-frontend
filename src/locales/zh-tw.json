@@ -113,9 +113,9 @@
     "height": "長度",
     "Optimizer": "優化器",
     "Scheduler": "學習率調配",
-    "dataNeeded:": "所需資料數量:",
-    "easeOfUsage:": "容易上手程度:",
-    "trainSpeed:": "模型訓練速度:",
+    "dataNeeded": "所需資料數量",
+    "easeOfUsage": "容易上手程度",
+    "trainSpeed": "模型訓練速度",
     "R":"R",
     "G":"G",
     "B":"B"

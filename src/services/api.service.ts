@@ -515,6 +515,6 @@ export default class Api {
     }
     if (!res.data) return new Map<string,GetModelDescriptionResData>();
 
-    return res.data;
+    return new Map<string,GetModelDescriptionResData>(Object.entries(res.data));
   }
 }
