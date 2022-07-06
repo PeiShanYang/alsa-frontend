@@ -35,13 +35,6 @@ export default class DialogModelSelect extends Vue {
   private init = false
 
   private modelStructure = 'auo_unrestricted_powerful_model'
-  private modelPretrained = false
-  private batchSize = 1
-  private epochs = 1
-  private lossFunction = 'CrossEntropyLoss'
-  private optimizer = 'SGD'
-  private scheduler = ''
-
 
   private modelsDescription: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
   private models: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
@@ -72,8 +65,6 @@ export default class DialogModelSelect extends Vue {
     this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
 
-
-
   }
 
   private optionName(name: string): string {
@@ -86,18 +77,6 @@ export default class DialogModelSelect extends Vue {
     if (advance) this.changeToSetting = true
   }
 
-
-  private saveChanges(): void {
-    this.newPara.modelStructure = this.modelStructure
-    this.newPara.modelPretrained = this.modelPretrained
-    this.newPara.batchSize = this.batchSize
-    this.newPara.epochs = this.epochs
-    this.newPara.lossFunction = this.lossFunction
-    this.newPara.optimizer = this.optimizer
-    this.newPara.scheduler = this.scheduler
-
-    this.changeToSetting = false
-  }
 
   private handlePageChange(): void {
     const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
@@ -112,4 +91,17 @@ export default class DialogModelSelect extends Vue {
       if (description) this.models.set(modelName, description)
     })
   }
+
+  private handleParaChange(para: string | number | boolean, name: string): void {
+    switch (name) {
+      case 'batchSize':
+      case 'epochs':
+        if (isNaN(Number(para)) === false) { this.newPara = { ...this.newPara, [name]: Number(para) } }
+        break;
+      default:
+        this.newPara = { ...this.newPara, [name]: para }
+    }
+
+  }
+
 }

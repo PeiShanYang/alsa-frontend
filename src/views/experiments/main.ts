@@ -200,6 +200,7 @@ export default class Experiments extends Vue {
       store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
     this.dialogModelSelectPara.optimizer = 'SGD'
     this.dialogModelSelectPara.scheduler = ''
+
   }
 
   private async setDatasetContent(path: string): Promise<void> {

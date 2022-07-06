@@ -418,7 +418,7 @@ export default class Dashboard extends Vue {
 
     if (this.graphs.length === 0) return false
     // console.log(this.graphs[targetGraphIndex])
-    if(!this.graphs[targetGraphIndex]) return false
+    if (!this.graphs[targetGraphIndex]) return false
     const originPercentage = this.graphs[targetGraphIndex].percentage
 
     const newGraphSetting = this.graphSetting(trainTask)

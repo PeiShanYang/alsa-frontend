@@ -71,7 +71,7 @@
     <div class="main-container">
       <el-row>
         <el-col class="container-title">
-          <span>{{ optionName(modelStructure) }}</span>
+          <span>{{ optionName(newPara.modelStructure) }}</span>
         </el-col>
       </el-row>
       <el-row>
@@ -88,19 +88,19 @@
               <div class="content-box">
                 <template v-if="item === 'batchSize'">
                   <div class="input-box">
-                    <el-input clearable v-model="batchSize"></el-input>
+                    <el-input :value="newPara.batchSize" @input="handleParaChange($event,'batchSize')"></el-input>
                     <div class="unit">/batch</div>
                   </div>
                 </template>
                 <template v-if="item === 'epochs'">
                   <div class="input-box">
-                    <el-input clearable v-model="epochs"></el-input>
+                    <el-input :value="newPara.epochs" @input="handleParaChange($event,'epochs')">></el-input>
                     <div class="unit">epochs</div>
                   </div>
                 </template>
                 <template v-if="item === 'pretrained'">
                   <div class="select-box">
-                    <el-select v-model="modelPretrained" size="mini">
+                    <el-select :value="newPara.modelPretrained" @change="handleParaChange($event,'modelPretrained')" size="mini">
                       <el-option :label="'是'" :key="true" :value="true"></el-option>
                       <el-option :label="'否'" :key="false" :value="false"></el-option>
                     </el-select>
@@ -108,7 +108,7 @@
                 </template>
                 <template v-if="item === 'lossFunction'">
                   <div class="select-box">
-                    <el-select v-model="lossFunction" size="mini">
+                    <el-select :value="newPara.lossFunction" @change="handleParaChange($event,'lossFunction')" size="mini">
                       <el-option :label="'CrossEntropyLoss'" :key="'CrossEntropyLoss'" :value="'CrossEntropyLoss'">
                       </el-option>
                       <el-option :label="'MSELoss'" :key="'MSELoss'" :value="'MSELoss'"></el-option>
@@ -120,7 +120,7 @@
                 </template>
                 <template v-if="item === 'Optimizer'">
                   <div class="select-box">
-                    <el-select v-model="optimizer" size="mini">
+                    <el-select :value="newPara.optimizer" @change="handleParaChange($event,'optimizer')" size="mini">
                       <el-option :label="'SGD'" :key="'SGD'" :value="'SGD'"></el-option>
                       <el-option :label="'Adam'" :key="'Adam'" :value="'Adam'"></el-option>
                       <el-option :label="'Adadelta'" :key="'Adadelta'" :value="'Adadelta'"></el-option>
@@ -130,7 +130,7 @@
                 </template>
                 <template v-if="item === 'Scheduler'">
                   <div class="select-box">
-                    <el-select v-model="scheduler" size="mini">
+                    <el-select :value="newPara.scheduler" @change="handleParaChange($event,'scheduler')" size="mini">
                       <el-option :label="'None'" :key="''" :value="''"></el-option>
                       <el-option :label="'stepLR'" :key="'stepLR'" :value="'stepLR'"></el-option>
                       <el-option :label="'cosineAnnealingLR'" :key="'cosineAnnealingLR'" :value="'cosineAnnealingLR'">
@@ -147,7 +147,7 @@
     <el-row slot="footer">
       <el-col class="action-btn-group">
         <el-button class="secondary-btn" @click="changeToSetting=false">取消</el-button>
-        <el-button class="primary-btn" @click="saveChanges">儲存修改</el-button>
+        <el-button class="primary-btn" @click="changeToSetting=false">儲存修改</el-button>
       </el-col>
     </el-row>
   </div>
