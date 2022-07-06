@@ -147,22 +147,42 @@ export default class Dashboard extends Vue {
 
           let gate = false
 
-
-
           if (workingIdTaskTrain) gate = this.handleTrainTask(workingIdTaskTrain, targetGraphIndex)
 
           if (workingIdTaskTest && gate === true) this.handleTestTask(workingIdTaskTest, targetGraphIndex)
 
-          // console.log("run", workingIdTaskTrain, workingIdTaskTest, gate)
-
         })
 
-        const stopCondition = allTask.filter(item => typeof item.process === "string")
+        const stopCondition = allTask
+          .map(item => item.process)
+          .filter(item => typeof item === "string")
+          .filter(item => item !== "This run has been deleted")
 
         if (stopCondition.length === 0) window.clearInterval(timeIntervalId)
 
       }), 5000)
 
+      // training error : not finished running all epochs
+      // complete all tasks
+
+      const errorGraph = this.graphs.filter(item => item.percentage !== 100)
+      errorGraph.forEach(item =>{
+
+        // item.percentage = 100
+        const itemData = item.data
+
+        itemData.flowInfo = GraphService.basicNodes
+        .filter(node => !node.name.includes("validation-select"))
+        .filter(node => !node.name.includes("processing"))
+
+        itemData.taskRunning = false
+        
+        if(!itemData.experiment) return
+        itemData.graph = this.drawFlowChart(window.innerWidth,document.getElementById(item.runId),itemData.flowInfo,itemData.experiment,itemData.projectName,itemData.taskRunning)
+        if(!itemData.graph) return
+        this.nodeContentSetting(itemData.graph, item.runId, this.trainingInfo)
+
+      })
 
 
     })
@@ -181,7 +201,8 @@ export default class Dashboard extends Vue {
     if (typeof taskInfo.process === "string") {
 
       // check if this run has benn delete
-      if (taskInfo.process === "This run has been deleted") return
+      // if (taskInfo.process === "This run has been deleted") return
+      defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
 
       // seting state when this run has not started
       if (taskInfo.process === "Task has not started") {
