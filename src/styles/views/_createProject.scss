@@ -1,7 +1,7 @@
 .el-card {
     font-size: $font-normal;
     width: 60vw;
-    margin: 8em auto 0;
+    margin: 5em auto ;
     padding: 0.5em 1em;
     .card-title {
         margin: 0.5em 0;
@@ -20,6 +20,7 @@
         }
 
         .content-wrap {
+            box-sizing: border-box;
             width: 20em;
             height: 20em;
             display: flex;

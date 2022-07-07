@@ -1,5 +1,5 @@
 import { ConfigType } from '@/io/experimentConfig';
-import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
 import OptionIntSliderForm from '@/components/options/option-int-slider-form/OptionIntSliderForm.vue';
 import OptionFloatSliderForm from '@/components/options/option-float-slider-form/OptionFloatSliderForm.vue';
 import OptionIntInputForm from '@/components/options/option-int-input-form/OptionIntInputForm.vue';

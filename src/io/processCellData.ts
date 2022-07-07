@@ -58,11 +58,11 @@ export default class ProcessCellData {
             }],
             ['trained-result-node-processing', {
                 component: 'trained-result-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
             ['test-result-node-processing', {
                 component: 'test-result-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
 
         ]);

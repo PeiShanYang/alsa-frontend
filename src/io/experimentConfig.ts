@@ -36,7 +36,7 @@ export class ExperimentConfigs {
                 epochs: ConfigType,
             },
         },
-        ConfigResultStorage: { ResultStorage: FuncArgs }
+        // ConfigResultStorage: { ResultStorage: FuncArgs }
         ConfigPass: Map<string, any>
     }
 }

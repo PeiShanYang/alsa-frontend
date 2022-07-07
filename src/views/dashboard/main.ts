@@ -165,7 +165,10 @@ export default class Dashboard extends Vue {
       // training error : not finished running all epochs
       // complete all tasks
 
-      const errorGraph = this.graphs.filter(item => item.percentage !== 100)
+      const errorGraph = this.graphs
+      .filter(item => item.percentage !== 100)
+      .filter(item=> item.percentage !== 0)
+
       errorGraph.forEach(item =>{
 
         // item.percentage = 100

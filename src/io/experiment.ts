@@ -41,9 +41,9 @@ export class Experiment {
     };
     ConfigPytorchModel!: {
         SelectedModel: SelectedModel
-        ConfigResultStorage: {
-            ResultStorage: ResultStorage
-        };
+        // ConfigResultStorage: {
+        //     ResultStorage: ResultStorage
+        // };
         ConfigPass: {
             confidenceFilter?: false,
             showRate?: false,
@@ -59,11 +59,13 @@ export class Experiment {
 
 export class PreprocessPara {
     normalize?: {
+        switch:number,
         mode: number,
         mean?: number[],
         std?: number[],
     };
     resize?: {
+        switch:number,
         imageSize: number[]
         interpolation: string
     };
@@ -98,6 +100,7 @@ export class PreprocessPara {
 export class AugmentationPara {
     randomHorizontalFlip?: {
         probability: number
+        switch:number
     };
     randomVerticalFlip?: {
         probability: number
@@ -183,6 +186,7 @@ export class ResultStorage {
 
 export class OptimizerPara {
     SGD?: {
+        switch:number,
         momentum: number,
         dampening: number,
         weightDecay: number,
@@ -216,6 +220,7 @@ export class OptimizerPara {
 
 export class SchedulerPara {
     stepLR?: {
+        switch:number,
         stepSize: number,
         gamma: number
     };

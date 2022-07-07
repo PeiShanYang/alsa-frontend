@@ -94,6 +94,8 @@ export default class Models extends Vue {
 
         const modelName = this.$i18n.t(taskInfo.model).toString()
 
+        if(!taskInfo.Train) return
+
         const process = new Map<string, TrainingProcess>(Object.entries(taskInfo.Train))
         const lineChartData: { epoch: string, accuracy: number }[] = []
 
