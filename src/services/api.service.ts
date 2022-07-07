@@ -28,7 +28,8 @@ import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
 import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/getModelDescription";
 
 
-const host = 'http://tw100104318:37510/';
+// const host = 'http://tw100104318:37510/';
+const host = 'http://tw100104318:65101/';
 
 export default class Api {
   static async getProjects(): Promise<void> {

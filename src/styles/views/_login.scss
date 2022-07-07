@@ -17,16 +17,19 @@
     letter-spacing: 10px;
 
     .icon-box {
-        margin: 4em 5em;
+        height: 25%;
+        box-sizing: border-box;
         display: flex;
         align-items: center;
-        img{
+        padding: 0 10%;
+        img {
             height: 80px;
         }
     }
 
     .promote-box {
-        margin: 11em 5em;
+        box-sizing: border-box;
+        padding: 8% 10%;
         .promote-title {
             font-size: $font-normal * 3.5;
             font-weight: bold;
@@ -59,22 +62,22 @@
         margin-bottom: 1em;
     }
 
-    .input-box{
+    .input-box {
         color: #968c8c;
     }
 
-    .wrap-input-box{
+    .wrap-input-box {
         margin-top: 2em;
         display: flex;
         justify-content: space-between;
-        .input-box{
+        .input-box {
             width: 45%;
         }
     }
 
-    .forget-box{
+    .forget-box {
         margin-top: 2em;
-        .text-btn{
+        .text-btn {
             margin: 0.5em 0;
         }
     }
@@ -93,18 +96,17 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        a{
+        a {
             color: $third-color;
         }
     }
-
 }
 
 .el-input {
     margin: 0.5em 0;
 }
 
-.text-btn{
+.text-btn {
     padding: 0;
     font-size: $font-normal;
     text-decoration: underline;
@@ -129,32 +131,31 @@
     }
 }
 
-.back-box{
+.back-box {
     position: absolute;
     z-index: 100;
-    top:0;
+    top: 0;
     width: 34%;
     display: flex;
     justify-content: flex-end;
     padding: 2.5em;
-    .text-btn{
-        font-size: $font-normal *1.25;
+    .text-btn {
+        font-size: $font-normal * 1.25;
         text-decoration: none;
     }
 }
 
-
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.5s;
+    transition: opacity 0.5s;
 }
 
 .fade-enter-from,
 .fade-leave-to {
-  opacity: 0;
+    opacity: 0;
 }
 
 .fade-enter-to,
 .fade-leave-from {
-  opacity: 1;
+    opacity: 1;
 }
