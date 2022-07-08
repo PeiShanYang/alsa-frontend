@@ -193,10 +193,10 @@ export default class Experiments extends Vue {
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
     this.dialogModelSelectPara.batchSize =
       this.graph.experiment.ConfigPytorchModel.ClsModelPara?.batchSize ??
-      store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.batchSize.default as number
+      store.experimentConfigs.ConfigPytorchModel.ClsModelPara.batchSize.default as number
     this.dialogModelSelectPara.epochs =
       this.graph.experiment.ConfigPytorchModel.ClsModelPara?.epochs ??
-      store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.epochs.default as number
+      store.experimentConfigs.ConfigPytorchModel.ClsModelPara.epochs.default as number
     this.dialogModelSelectPara.lossFunction =
       this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
       store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string

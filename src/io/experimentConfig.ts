@@ -14,29 +14,29 @@ export class ConfigType {
 
 export class ExperimentConfigs {
 
-    ConfigPreprocess!: { PreprocessPara: FuncArgs }
-    ConfigAugmentation!: { AugmentationPara: FuncArgs }
-    ConfigEvaluation!: { EvaluationPara: FuncArgs }
+    ConfigAugmentation!: { AugmentationPara: FuncArgs };
     ConfigModelService!: {
         LossFunctionPara: {
             lossFunction: ConfigType
         },
-        LearningRate: Args,
+        LearningRate: {
+            learningRate: ConfigType
+        },
         OptimizerPara: FuncArgs,
         SchedulerPara: FuncArgs,
-    }
+    };
+    ConfigPreprocess!: { PreprocessPara: FuncArgs }
     ConfigPytorchModel!: {
+        ClsModelPara: {
+            batchSize: ConfigType,
+            epochs: ConfigType,
+        },
         SelectedModel: {
             model: {
-                structure: ConfigType,
                 pretrained: ConfigType,
-            },
-            ClsModelPara: {
-                batchSize: ConfigType,
-                epochs: ConfigType,
+                structure: ConfigType,
             },
         },
-        // ConfigResultStorage: { ResultStorage: FuncArgs }
         ConfigPass: Map<string, any>
     }
 }
