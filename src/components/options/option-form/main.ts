@@ -46,7 +46,7 @@ export default class OptionForm extends Vue {
       if (arg.enums !== undefined) {
         return 'enums'
       }
-      if (this.newPara.get('mode') == 4) {
+      if (this.newPara.get('mode') == 'UserInput') {
         return 'continue' // not rigorous, but there is only list
       }
     }

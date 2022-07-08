@@ -1,4 +1,4 @@
-import { Experiment,EvaluationPara } from "@/io/experiment";
+import { Experiment, EvaluationPara, PreprocessPara } from "@/io/experiment";
 import ProjectSevice from "@/services/project.service";
 
 
@@ -7,6 +7,7 @@ export default class ProcessCellData {
     content!: string[];
 
     static cellDataContent(experiment: Experiment, projectName: string): Map<string, ProcessCellData> {
+
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
@@ -26,7 +27,7 @@ export default class ProcessCellData {
             }],
             ['validation-select-node', {
                 component: 'validation-select-node',
-                content: Object.getOwnPropertyNames( new EvaluationPara),
+                content: Object.getOwnPropertyNames(new EvaluationPara),
             }],
             ['trained-result-node', {
                 component: 'trained-result-node',

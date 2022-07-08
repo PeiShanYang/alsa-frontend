@@ -131,7 +131,6 @@
                 <template v-if="item === 'Scheduler'">
                   <div class="select-box">
                     <el-select :value="newPara.scheduler" @change="handleParaChange($event,'scheduler')" size="mini">
-                      <el-option :label="'None'" :key="''" :value="''"></el-option>
                       <el-option :label="'stepLR'" :key="'stepLR'" :value="'stepLR'"></el-option>
                       <el-option :label="'cosineAnnealingLR'" :key="'cosineAnnealingLR'" :value="'cosineAnnealingLR'">
                       </el-option>

@@ -395,14 +395,12 @@ export default class Dashboard extends Vue {
     const lastProcessInstance = [...process.values()].pop()
     if (!lastProcessInstance) return ''
 
-    return `準確率:${lastProcessInstance.valid.accuracy}`
+    return `準確率:${lastProcessInstance.Train.accuracy.toFixed(5)}`
   }
 
-  private getTestProcessData(testData: { test: { accuracy: number, classAccuracy: Map<string, number>, ConfusionMatrix: string } }): string {
-    const process = new TestProcess()
-    process.test = testData
+  private getTestProcessData(testData: TestProcess): string {
 
-    return `準確率:${process.test.test.accuracy}`
+    return `準確率:${testData.Test.Test.accuracy.toFixed(5)}`
   }
 
 
@@ -413,6 +411,7 @@ export default class Dashboard extends Vue {
     if (trainIndex === -1) return
 
     if (typeof trainTask[trainIndex].process === 'string') return
+
     const trainContent = this.getTrainProcessData(new Map<string, TrainingProcess>(Object.entries(trainTask[trainIndex].process)))
     if (trainContent === '') return
 
@@ -422,7 +421,7 @@ export default class Dashboard extends Vue {
     const testIndex = testTask.findIndex(item => item.runId === graphRunId)
     if (testIndex === -1) return
 
-    const testContent = this.getTestProcessData([...Object.values(testTask[testIndex].process)][0])
+    const testContent = this.getTestProcessData(testTask[testIndex].process as TestProcess)
 
     this.setNodeContent(graph, 'test-result-node', testContent)
 
@@ -492,7 +491,7 @@ export default class Dashboard extends Vue {
     }
 
     graph.removeCell("twinkle_node")
-    const testContent = this.getTestProcessData([...Object.values(testTask.process)][0])
+    const testContent = this.getTestProcessData(testTask.process as TestProcess)
     this.setNodeContent(graph, 'test-result-node', testContent)
 
   }

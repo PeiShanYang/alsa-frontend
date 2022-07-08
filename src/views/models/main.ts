@@ -102,24 +102,24 @@ export default class Models extends Vue {
         process.forEach(item => {
             lineChartData.push({
                 epoch: item.model.epoch.toString(),
-                accuracy: item.valid.accuracy,
+                accuracy: item.Train.accuracy,
             })
         })
 
 
         if (!taskInfo.Test) return
 
-        const ringProgressChartData = { scoreName: "Accuracy", score: taskInfo.Test.test.test.accuracy }
+        const ringProgressChartData = { scoreName: "Accuracy", score: taskInfo.Test.Test.Test.accuracy }
 
 
         const barChartData: { className: string, classScore: number, classColor: string }[] = []
         const customColor = ['#275776', '#8184D7', '#81D6E6', '#58C6E0']
         // for class accuracy
-        for (const [key, value] of Object.entries(taskInfo.Test.test.test.classAccuracy)) {
+        for (const [key, value] of Object.entries(taskInfo.Test.Test.Test.classAccuracy)) {
             barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length] })
         }
 
-        const confusionMatrixImagePath = await Api.sendReport(taskInfo.Test.test.test.ConfusionMatrix)
+        const confusionMatrixImagePath = await Api.sendReport('')
 
         return {
             data: {

@@ -66,24 +66,33 @@ export default class DialogPreprocess extends Vue {
 
     Object.keys(this.configs).forEach(item => this.optionSelect[item] = false)
     this.handlePageChange()
+
+
   }
 
   private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
 
+    // from this time operate
     if (this.newPara[name] !== undefined) {
+      // console.log("newPara",name,this.newPara[name])
+
       return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.newPara[name]))
     }
 
+    // from last time operate
     if (this.default[name] !== undefined) {
 
-      if (name === "normalize") {
-        const newCase = JSON.parse(JSON.stringify(this.default[name]))
-        newCase["mean"] = [0.5, 0.5, 0.5]
-        newCase["std"] = [0.5, 0.5, 0.5]
-        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(newCase))
-      } else {
-        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
-      }
+      // console.log("default",name,this.default[name])
+      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+
+      // if (name === "normalize") {
+      //   const newCase = JSON.parse(JSON.stringify(this.default[name]))
+      //   newCase["mean"] = [0.5, 0.5, 0.5]
+      //   newCase["std"] = [0.5, 0.5, 0.5]
+      //   return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(newCase))
+      // } else {
+      //   return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+      // }
 
     }
 

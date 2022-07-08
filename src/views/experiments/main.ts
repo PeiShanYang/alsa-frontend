@@ -49,7 +49,7 @@ export default class Experiments extends Vue {
   private graph = new graphData;
 
   private dialogExperimentId = ''
-  private dialogPreprocessPara: PreprocessPara = {}
+  private dialogPreprocessPara: PreprocessPara = new PreprocessPara()
   private dialogAugmentationPara: AugmentationPara = {}
   private dialogModelSelectPara: ModelSelectPara = new ModelSelectPara()
 
@@ -97,6 +97,10 @@ export default class Experiments extends Vue {
     this.datasets = project.datasets
 
     this.drawGraph();
+
+
+    console.log("store",store.experimentConfigs)
+    console.log("exp",store.projectList.get(store.currentProject!)?.experiments)
 
   }
 
@@ -325,6 +329,7 @@ export default class Experiments extends Vue {
 
     if (!this.graph.experiment) return
     this.graph.experiment.ConfigPreprocess.PreprocessPara = newPara
+
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
     this.openDialogPreprocess = false
 
