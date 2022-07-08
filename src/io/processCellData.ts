@@ -1,4 +1,4 @@
-import { Experiment } from "@/io/experiment";
+import { Experiment,EvaluationPara } from "@/io/experiment";
 import ProjectSevice from "@/services/project.service";
 
 
@@ -26,7 +26,7 @@ export default class ProcessCellData {
             }],
             ['validation-select-node', {
                 component: 'validation-select-node',
-                content: Array.from(Object.keys(experiment.ConfigEvaluation.EvaluationPara)),
+                content: Object.getOwnPropertyNames( new EvaluationPara),
             }],
             ['trained-result-node', {
                 component: 'trained-result-node',

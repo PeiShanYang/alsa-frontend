@@ -21,6 +21,7 @@ import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
 import { ConfigType } from '@/io/experimentConfig';
 
+
 @Component({
   components: {
     "dialog-dataset": DialogDataset,
@@ -73,6 +74,7 @@ export default class Experiments extends Vue {
   }
 
   private async waitGetExperiments(): Promise<void> {
+
 
     if (!store.currentProject) return
     await Api.getExperiments(store.currentProject)
@@ -190,10 +192,10 @@ export default class Experiments extends Vue {
       this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
     this.dialogModelSelectPara.batchSize =
-      this.graph.experiment.ConfigPytorchModel.SelectedModel.ClsModelPara?.batchSize ??
+      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.batchSize ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.batchSize.default as number
     this.dialogModelSelectPara.epochs =
-      this.graph.experiment.ConfigPytorchModel.SelectedModel.ClsModelPara?.epochs ??
+      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.epochs ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.ClsModelPara.epochs.default as number
     this.dialogModelSelectPara.lossFunction =
       this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
@@ -348,11 +350,12 @@ export default class Experiments extends Vue {
       model: {
         structure: newPara.modelStructure,
         pretrained: newPara.modelPretrained,
-      },
-      ClsModelPara: {
-        batchSize: newPara.batchSize,
-        epochs: newPara.epochs,
-      },
+      }
+    }
+
+    this.graph.experiment.ConfigPytorchModel.ClsModelPara = {
+      batchSize: newPara.batchSize,
+      epochs: newPara.epochs,
     }
 
     this.graph.experiment.ConfigModelService = {

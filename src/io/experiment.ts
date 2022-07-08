@@ -1,20 +1,11 @@
 export class Experiment {
     Config!: {
-        BasicSetting: {
-            projectName?: "",
-            experimentId?: "",
-            task?: "",
-        },
         PrivateSetting: {
             datasetPath?: string,
-            outputPath?: string,
         },
     };
     ConfigAugmentation!: {
         AugmentationPara: AugmentationPara
-    };
-    ConfigEvaluation!: {
-        EvaluationPara: EvaluationPara
     };
     ConfigModelService!: {
         LossFunctionPara: {
@@ -26,119 +17,81 @@ export class Experiment {
         OptimizerPara: OptimizerPara
         SchedulerPara: SchedulerPara
     };
-    ConfigPostprocess!: {
-        PostProcessPara: {
-            confidenceFilter?: {
-                switch: 1,
-                threshold: 0.75,
-                selectLabel: "OK",
-                classList: ["NG", "OK"]
-            }
-        }
-    };
     ConfigPreprocess!: {
         PreprocessPara: PreprocessPara
     };
     ConfigPytorchModel!: {
-        SelectedModel: SelectedModel
-        // ConfigResultStorage: {
-        //     ResultStorage: ResultStorage
-        // };
-        ConfigPass: {
-            confidenceFilter?: false,
-            showRate?: false,
-            cudaDevice?: 0,
-            saveAccJson?: true,
-            testAccJson?: true,
-            drawAccCurve?: false,
-            drawConfusionMatrix?: true,
+        ClsModelPara:{
+            batchSize:number,
+            epochs:number,
         }
+        SelectedModel: {
+            model:{
+                pretrained:boolean,
+                structure:string,
+            }
+        }  
     };
-
-}
-
-export class PreprocessPara {
-    normalize?: {
-        switch:number,
-        mode: number,
-        mean?: number[],
-        std?: number[],
-    };
-    resize?: {
-        switch:number,
-        imageSize: number[]
-        interpolation: string
-    };
-    centerCrop?: {
-        size: number[]
-    };
-    pad?: {
-        padding: number[]
-        fill?: number[],
-        paddingModel: string,
-    };
-    gaussianBlur?: {
-        kernelSize: number[],
-        sigma: number
-    };
-    brightness?: {
-        brightness: number,
-    };
-    contrast?: {
-        contrast: number
-    };
-    saturation?: {
-        saturation: number
-    };
-    hue?: {
-        hue: number
-    };
-
-    [s: string]: any | ((s: string) => any);
 }
 
 export class AugmentationPara {
     randomHorizontalFlip?: {
-        probability: number
-        switch:number
+        switch:boolean,
+        probability: number,
     };
     randomVerticalFlip?: {
-        probability: number
+        switch:boolean,
+        probability: number,
     };
     randomRotation?: {
-        degrees: number[]
+        switch:boolean,
+        degrees: number[],
+        fill:number[],
     };
     randomTranslate?: {
-        translate: number[]
+        switch:boolean,
+        translate: number[],
+        fill:number[],
     };
     randomScale?: {
-        scale: number[]
+        switch:boolean,
+        scale: number[],
+        fill:number[],
     };
     randomShear?: {
-        shear: number[]
+        switch:boolean,
+        shear: number[],
+        fill:number[],
     };
     randomGrayscale?: {
-        probability: number
+        switch:boolean,
+        probability: number,
     };
     randomBrightness?: {
-        brightness: number[]
+        switch:boolean,
+        brightness: number[],
     };
     randomContrast?: {
-        contrast: number[]
+        switch:boolean,
+        contrast: number[],
     };
     randomSaturation?: {
-        saturation: number[]
+        switch:boolean,
+        saturation: number[],
     };
     randomHue?: {
+        switch:boolean,
         hue: number[]
     };
     randomErasing?: {
+        switch:boolean,
         probability: number,
         scale: number[],
         ratio: number[],
         value: number[],
     };
     randomPerspective?: {
+        switch:boolean,
         distortion: number,
         probability: number,
         interpolation: string,
@@ -148,68 +101,37 @@ export class AugmentationPara {
     [s: string]: any | ((s: string) => any);
 
 }
-export class SelectedModel {
-    model?: {
-        structure: string,
-        pretrained: boolean,
-    };
-    ClsModelPara?: {
-        batchSize: number,
-        epochs: number,
-    };
-
-    [s: string]: any | ((s: string) => any);
-}
-
-export class ResultStorage {
-    saveFinalWeight?: {
-        switch: boolean
-    };
-    saveAccTxt?: {
-        switch: boolean
-    };
-    savePredictResult?: {
-        switch: boolean
-    };
-    unknownFilter?: {
-        switch: boolean,
-        filter: {
-            name: string,
-            threshold: number,
-        },
-        reverse: boolean,
-        saveCsv: number,
-    };
-
-    [s: string]: any | ((s: string) => any);
-}
 
 export class OptimizerPara {
     SGD?: {
-        switch:number,
+        switch:boolean,
         momentum: number,
         dampening: number,
         weightDecay: number,
         nesterov: boolean,
     };
     Adam?: {
+        switch:boolean,
         betas: number[],
         eps: number,
         weightDecay: number,
         amsgrad: boolean,
     };
     Adadelta?: {
+        switch:boolean,
         rho: number,
         eps: number,
         weightDecay: number,
     };
     AdamW?: {
+        switch:boolean,
         betas: number[],
         eps: number,
         weightDecay: number,
         amsgrad: boolean,
     };
     NAdam?: {
+        switch:boolean,
         betas: number[],
         eps: number,
         weightDecay: number,
@@ -220,29 +142,73 @@ export class OptimizerPara {
 
 export class SchedulerPara {
     stepLR?: {
-        switch:number,
+        switch:boolean,
         stepSize: number,
         gamma: number
     };
     cosineAnnealingLR?: {
+        switch:boolean,
         tMax: number,
         etaMin: number,
     }
     [s: string]: any | ((s: string) => any);
 }
 
+export class PreprocessPara {
+    normalize?: {
+        switch:boolean,
+        mode: string,
+        mean?: number[],
+        std?: number[],
+    };
+    resize?: {
+        switch:boolean,
+        imageSize: number[],
+        interpolation: string,
+    };
+    centerCrop?: {
+        switch:boolean,
+        size: number[],
+    };
+    pad?: {
+        switch:boolean,
+        padding: number[],
+        fill?: number[],
+        paddingMode: string,
+    };
+    gaussianBlur?: {
+        switch:boolean,
+        kernelSize: number[],
+        sigma: number,
+    };
+    brightness?: {
+        switch:boolean,
+        brightness: number,
+    };
+    contrast?: {
+        switch:boolean,
+        contrast: number,
+    };
+    saturation?: {
+        switch:boolean,
+        saturation: number,
+    };
+    hue?: {
+        switch:boolean,
+        hue: number,
+    };
+
+    [s: string]: any | ((s: string) => any);
+}
+
+
+
 export class EvaluationPara {
-    showAcc?: {
-        switch: boolean
-    };
-    showClassAcc?: {
-        switch: boolean
-    };
-    showNumOfClasses?: {
-        switch: boolean
-    };
-    showWrongFile?: {
-        switch: boolean
+    constructor(){
+        this.showAcc = false;
+        this.showClassAcc = false;
+        this.showNumOfClasses = false;
+        // this.showWrongFile = false;
     }
     [s: string]: any | ((s: string) => any);
 }
