@@ -24,36 +24,40 @@ import { ConfigType } from '@/io/experimentConfig';
 
 @Component({
   components: {
+    "flow-node": FlowNode,
+    "dialog-message": DialogMessage,
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
     "dialog-augmentation": DialogAugmentation,
     "dialog-model-select": DialogModelSelect,
-    "flow-node": FlowNode,
-    "dialog-message": DialogMessage,
   }
 })
 export default class Experiments extends Vue {
 
-  private acitveProjectCollapse: string[] = ["1"];
+  private graph = new graphData;
+
   private openDialogMessage = false;
-  private openDialogRunProject = false;
+  private dialogMessageData: DialogMessageData = new DialogMessageData()
+
+  private dialogExperimentId = ''
+
   private openDialogDataset = false;
   private openDialogPreprocess = false;
   private openDialogAugmentation = false;
   private openDialogModelSelect = false;
 
-  private dialogMessageData: DialogMessageData = new DialogMessageData()
-
-  private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
-
-  private graph = new graphData;
-
-  private dialogExperimentId = ''
+  private dialogDatasetPara = '';
   private dialogPreprocessPara: PreprocessPara = new PreprocessPara()
-  private dialogAugmentationPara: AugmentationPara = {}
+  private dialogAugmentationPara: AugmentationPara = new AugmentationPara()
   private dialogModelSelectPara: ModelSelectPara = new ModelSelectPara()
 
+  private openDialogRunProject = false;
+
   private showSolutionKey = false
+
+  get projectName(): string {
+    return this.$route.params.projectName
+  }
 
   created(): void {
     this.$i18n.locale = "zh-tw"
@@ -67,10 +71,6 @@ export default class Experiments extends Vue {
 
   destroy(): void {
     window.removeEventListener("resize", this.drawGraph)
-  }
-
-  get projectName(): string {
-    return this.$route.params.projectName
   }
 
   private async waitGetExperiments(): Promise<void> {
@@ -94,13 +94,8 @@ export default class Experiments extends Vue {
       this.graph.experiment = experiment
     })
 
-    this.datasets = project.datasets
 
     this.drawGraph();
-
-
-    console.log("store",store.experimentConfigs)
-    console.log("exp",store.projectList.get(store.currentProject!)?.experiments)
 
   }
 
@@ -153,86 +148,6 @@ export default class Experiments extends Vue {
     return graph
   }
 
-  private listenOnNodeClick(): void {
-
-    this.graph.graph?.on("node:click", (nodeInfo) => {
-
-      if (!this.graph.experiment) return
-      if (!store.experimentConfigs) return
-      const targetDialog: ProcessCellData = nodeInfo.node.data;
-
-      switch (targetDialog.component) {
-        case "dataset-node":
-          this.openDialogDataset = true
-          break;
-        case "preprocess-node":
-          this.dialogExperimentId = this.graph.experimentId
-          this.dialogPreprocessPara = this.graph.experiment.ConfigPreprocess.PreprocessPara ?? {}
-          this.openDialogPreprocess = true
-          break;
-        case "augmentation-node":
-          this.dialogExperimentId = this.graph.experimentId
-          this.dialogAugmentationPara = this.graph.experiment.ConfigAugmentation.AugmentationPara ?? {}
-          this.openDialogAugmentation = true
-          break;
-        case "model-select-node":
-          this.dialogExperimentId = this.graph.experimentId
-          this.setDefaultSelectModelPara()
-          this.openDialogModelSelect = true
-          break;
-        default:
-          console.log("out of case")
-      }
-    });
-  }
-
-  private setDefaultSelectModelPara() {
-    if (!this.graph.experiment) return
-    if (!store.experimentConfigs) return
-    this.dialogModelSelectPara.modelStructure =
-      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.structure ??
-      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.structure.default as string
-    this.dialogModelSelectPara.modelPretrained =
-      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
-      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
-    this.dialogModelSelectPara.batchSize =
-      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.batchSize ??
-      store.experimentConfigs.ConfigPytorchModel.ClsModelPara.batchSize.default as number
-    this.dialogModelSelectPara.epochs =
-      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.epochs ??
-      store.experimentConfigs.ConfigPytorchModel.ClsModelPara.epochs.default as number
-    this.dialogModelSelectPara.lossFunction =
-      this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
-      store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
-    this.dialogModelSelectPara.optimizer = 'SGD'
-    this.dialogModelSelectPara.scheduler = ''
-
-  }
-
-  private async setDatasetContent(path: string): Promise<void> {
-
-    this.openDialogDataset = false;
-    if (!this.graph.graph) return
-    const nodes = this.graph.graph.getNodes()
-    const datasetnode = nodes.find(node => node.id === `dataset-node_${this.graph.projectName}`)
-
-
-    await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
-    this.graph.experiment = store.projectList.get(this.graph.projectName)?.experiments?.get(this.graph.experimentId)
-
-    if (!this.graph.experiment) return
-    const sendDatasetStatus = ProcessCellData.cellDataContent(this.graph.experiment, this.graph.projectName).get("dataset-node")
-
-    if (!sendDatasetStatus) return
-    sendDatasetStatus.content = sendDatasetStatus?.content.map(item => this.$i18n.t(item).toString())
-
-    datasetnode?.setData(sendDatasetStatus, { overwrite: true })
-
-    this.displayDatasetToolTip(this.graph.graph, sendDatasetStatus.content)
-
-  }
-
-
   private displayDatasetToolTip(graph: Graph, content: string[]): void {
 
     const contentFilter = content.filter(item => item === '未上傳' || item === '未標記' || item === '未切分')
@@ -272,58 +187,64 @@ export default class Experiments extends Vue {
 
   }
 
-  private async runExperimentTrain(): Promise<void> {
+  private listenOnNodeClick(): void {
 
-    const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
-    if (!datasetPath) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'warning',
-        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
-      })
-      return
-    }
+    this.graph.graph?.on("node:click", (nodeInfo) => {
 
+      if (!this.graph.experiment) return
+      if (!store.experimentConfigs) return
+      const targetDialog: ProcessCellData = nodeInfo.node.data;
 
-
-    const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
-    if (!datasetStatus) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'warning',
-        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
-      })
-      return
-    }
-
-    if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'warning',
-        message: h('h3', { style: 'color:#E6A23C;' }, "請先完成資料集的 上傳、標註、切分的任務"),
-      })
-      return
-    }
-
-    const runTrainResponse = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
-    if (runTrainResponse.runId === '') return
-    const runTestResponse = await Api.runExperimentTest(this.graph.projectName, this.graph.experimentId, runTrainResponse.runId)
-    if (runTestResponse.runId === '') return
-
-    this.dialogMessageData = {
-      type: 'info',
-      title: '請至 Dashboard 查看執行進度為何',
-      cancelBtnName: '稍後再說',
-      confirmBtnName: '前往查看',
-    }
-    this.openDialogMessage = true
-
+      switch (targetDialog.component) {
+        case "dataset-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogDatasetPara = this.graph.experiment.Config.PrivateSetting.datasetPath ?? ''
+          this.openDialogDataset = true
+          break;
+        case "preprocess-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogPreprocessPara = this.graph.experiment.ConfigPreprocess.PreprocessPara ?? {}
+          this.openDialogPreprocess = true
+          break;
+        case "augmentation-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.dialogAugmentationPara = this.graph.experiment.ConfigAugmentation.AugmentationPara ?? {}
+          this.openDialogAugmentation = true
+          break;
+        case "model-select-node":
+          this.dialogExperimentId = this.graph.experimentId
+          this.setDefaultSelectModelPara()
+          this.openDialogModelSelect = true
+          break;
+        default:
+          console.log("out of case")
+      }
+    });
   }
 
-  private goDashBoard(): void {
-    this.openDialogMessage = false
-    this.$router.push('/')
+  private async setDatasetPara(path: string): Promise<void> {
+
+    if (!this.graph.graph) return
+    const nodes = this.graph.graph.getNodes()
+    const datasetnode = nodes.find(node => node.id === `dataset-node_${this.graph.projectName}`)
+
+
+    await Api.setExperimentDataset(this.graph.projectName, this.graph.experimentId, path)
+    this.graph.experiment = store.projectList.get(this.graph.projectName)?.experiments?.get(this.graph.experimentId)
+
+    if (!this.graph.experiment) return
+    const sendDatasetStatus = ProcessCellData.cellDataContent(this.graph.experiment, this.graph.projectName).get("dataset-node")
+
+    if (!sendDatasetStatus) return
+    sendDatasetStatus.content = sendDatasetStatus?.content.map(item => this.$i18n.t(item).toString())
+
+    datasetnode?.setData(sendDatasetStatus, { overwrite: true })
+
+    this.displayDatasetToolTip(this.graph.graph, sendDatasetStatus.content)
+
+    this.openDialogDataset = false;
   }
+
 
   private async setPreprocessPara(newPara: PreprocessPara): Promise<void> {
 
@@ -344,6 +265,29 @@ export default class Experiments extends Vue {
     this.openDialogAugmentation = false
 
     this.drawGraph()
+  }
+
+  private setDefaultSelectModelPara() {
+    if (!this.graph.experiment) return
+    if (!store.experimentConfigs) return
+    this.dialogModelSelectPara.modelStructure =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.structure ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.structure.default as string
+    this.dialogModelSelectPara.modelPretrained =
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
+      store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
+    this.dialogModelSelectPara.batchSize =
+      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.batchSize ??
+      store.experimentConfigs.ConfigPytorchModel.ClsModelPara.batchSize.default as number
+    this.dialogModelSelectPara.epochs =
+      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.epochs ??
+      store.experimentConfigs.ConfigPytorchModel.ClsModelPara.epochs.default as number
+    this.dialogModelSelectPara.lossFunction =
+      this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
+      store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
+    this.dialogModelSelectPara.optimizer = 'SGD'
+    this.dialogModelSelectPara.scheduler = ''
+
   }
 
   private async setModelSelectPara(newPara: ModelSelectPara): Promise<void> {
@@ -419,8 +363,58 @@ export default class Experiments extends Vue {
 
   }
 
-  private exportExperiment(): void {
-    this.showSolutionKey = true
+
+  private async runExperimentTrain(): Promise<void> {
+
+    const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
+    if (!datasetPath) {
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
+      })
+      return
+    }
+
+
+
+    const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
+    if (!datasetStatus) {
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
+      })
+      return
+    }
+
+    if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
+      const h = this.$createElement;
+      this.$message({
+        type: 'warning',
+        message: h('h3', { style: 'color:#E6A23C;' }, "請先完成資料集的 上傳、標註、切分的任務"),
+      })
+      return
+    }
+
+    const runTrainResponse = await Api.runExperimentTrain(this.graph.projectName, this.graph.experimentId)
+    if (runTrainResponse.runId === '') return
+    const runTestResponse = await Api.runExperimentTest(this.graph.projectName, this.graph.experimentId, runTrainResponse.runId)
+    if (runTestResponse.runId === '') return
+
+    this.dialogMessageData = {
+      type: 'info',
+      title: '請至 Dashboard 查看執行進度為何',
+      cancelBtnName: '稍後再說',
+      confirmBtnName: '前往查看',
+    }
+    this.openDialogMessage = true
+
+  }
+
+  private goDashBoard(): void {
+    this.openDialogMessage = false
+    this.$router.push('/')
   }
 
   private solutionKey(): string {

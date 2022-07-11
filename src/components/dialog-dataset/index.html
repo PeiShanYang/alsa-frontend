@@ -1,6 +1,6 @@
 <el-dialog :visible.sync="dialogOpen" :show-close="false" :close-on-click-modal="false">
 
-  <el-collapse v-model="activeDatasetCollapse" accordion id="datasetCollapse">
+  <el-collapse value="1" accordion id="datasetCollapse">
     <el-collapse-item name="1">
       <template slot="title">
         <el-row style="width: 100%;">
@@ -10,9 +10,9 @@
           </el-col>
         </el-row>
       </template>
-      <template v-if="datasetList">
-        <el-radio-group v-model="defaultPath" @change="handleCheckPath" style="width: 100%;">
-          <el-radio v-for="[path,status] in datasetList" :key="path" :label="path">
+      <template v-if="configs">
+        <el-radio-group v-model="newPara" @change="updateOption" style="width: 100%;">
+          <el-radio v-for="[path,status] in configs" :key="path" :label="path">
             <el-row>
               <el-col :span=12 class="path-box">
                 <div>資料集路徑 : </div>
@@ -57,7 +57,7 @@
   <el-row type="flex" justify="center" slot="footer">
     <el-col :span="8" class="action-btn-group">
       <el-button class="secondary-btn" @click="closeDialogDataset">取消</el-button>
-      <el-button class="primary-btn" @click="setExperimentDataset">匯入</el-button>
+      <el-button class="primary-btn" @click="setPara">匯入</el-button>
     </el-col>
   </el-row>
 </el-dialog>
