@@ -18,6 +18,13 @@ import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 
 
+class flowChart {
+  runId = '';
+  data: graphData = new graphData;
+  percentage = 0;
+  processingState = '';
+}
+
 @Component({
   components: {
     "flow-node": FlowNode,
@@ -41,7 +48,9 @@ export default class Dashboard extends Vue {
 
   private trainingInfo = new GetQueueInformationResData;
 
-  private graphs: { runId: string, data: graphData, percentage: number }[] = [];
+  private graphs: flowChart[] = [];
+
+  private runFailList: string[] = []
 
   // dialog for delete
 
@@ -49,10 +58,9 @@ export default class Dashboard extends Vue {
   private dialogMessageData: DialogMessageData = new DialogMessageData()
   private deleteGraphInfo = { projectName: '', runId: "" }
 
-  get graphList(): { runId: string, data: graphData, percentage: number }[] | undefined {
+  get graphList(): flowChart[] | undefined {
 
     if (this.searchProjectName === '') {
-      // this.drawGraph()
       return this.graphs
     }
 
@@ -166,23 +174,23 @@ export default class Dashboard extends Vue {
       // complete all tasks
 
       const errorGraph = this.graphs
-      .filter(item => item.percentage !== 100)
-      .filter(item=> item.percentage !== 0)
+        .filter(item => item.percentage !== 100)
+        .filter(item => item.percentage !== 0)
 
-      errorGraph.forEach(item =>{
+      errorGraph.forEach(item => {
 
         // item.percentage = 100
         const itemData = item.data
 
         itemData.flowInfo = GraphService.basicNodes
-        .filter(node => !node.name.includes("validation-select"))
-        .filter(node => !node.name.includes("processing"))
+          .filter(node => !node.name.includes("validation-select"))
+          .filter(node => !node.name.includes("processing"))
 
         itemData.taskRunning = false
-        
-        if(!itemData.experiment) return
-        itemData.graph = this.drawFlowChart(window.innerWidth,document.getElementById(item.runId),itemData.flowInfo,itemData.experiment,itemData.projectName,itemData.taskRunning)
-        if(!itemData.graph) return
+
+        if (!itemData.experiment) return
+        itemData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), itemData.flowInfo, itemData.experiment, itemData.projectName, itemData.taskRunning)
+        if (!itemData.graph) return
         this.nodeContentSetting(itemData.graph, item.runId, this.trainingInfo)
 
       })
@@ -191,12 +199,12 @@ export default class Dashboard extends Vue {
     })
 
   }
-  private graphSetting(taskInfo: RunTask): { data: graphData, percentage: number, runId: string } | undefined {
+  private graphSetting(taskInfo: RunTask): flowChart | undefined {
 
     const experiment = store.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
     if (!experiment) return
 
-
+    let processingState = ''
     let taskRunning = false
     let percentage = 0
     let defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
@@ -204,18 +212,19 @@ export default class Dashboard extends Vue {
     if (typeof taskInfo.process === "string") {
 
       // check if this run has benn delete
-      // if (taskInfo.process === "This run has been deleted") return
-      defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
+      // if (taskInfo.process === "This run has been deleted") processingState = "This run has been deleted"
 
       // seting state when this run has not started
-      if (taskInfo.process === "Task has not started") {
-        defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
-      }
+      // if (taskInfo.process === "Task has not started") processingState = "Task has not started"
+
+      processingState = taskInfo.process
+      defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
+
     } else {
 
+      processingState = "Task is running"
       taskRunning = true
       percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
-
 
       if (percentage === 0) {
         const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node-processing', 'trained-result-node-processing', 'test-result-node-processing']
@@ -225,6 +234,7 @@ export default class Dashboard extends Vue {
         defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
       } else {
         defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
+        processingState = "Task finished"
       }
 
     }
@@ -240,7 +250,8 @@ export default class Dashboard extends Vue {
         taskRunning,
       },
       percentage: percentage,
-      runId: taskInfo.runId
+      runId: taskInfo.runId,
+      processingState,
     }
 
   }
@@ -395,6 +406,7 @@ export default class Dashboard extends Vue {
     const lastProcessInstance = [...process.values()].pop()
     if (!lastProcessInstance) return ''
 
+    if (!lastProcessInstance.Train.accuracy) return ''
     return `準確率:${lastProcessInstance.Train.accuracy.toFixed(5)}`
   }
 
@@ -427,7 +439,7 @@ export default class Dashboard extends Vue {
 
   }
 
-  private updateSingleGraph(graph: { data: graphData, percentage: number, runId: string }): void {
+  private updateSingleGraph(graph: flowChart): void {
     const graphData = graph.data
     graphData.graph?.clearCells()
     graphData.graph = null
@@ -440,7 +452,7 @@ export default class Dashboard extends Vue {
 
 
     if (this.graphs.length === 0) return false
-    // console.log(this.graphs[targetGraphIndex])
+
     if (!this.graphs[targetGraphIndex]) return false
     const originPercentage = this.graphs[targetGraphIndex].percentage
 
@@ -451,6 +463,7 @@ export default class Dashboard extends Vue {
 
     // update graph percentage 
     this.graphs[targetGraphIndex].percentage = updatedPercentage
+    this.graphs[targetGraphIndex].processingState = newGraphSetting.processingState
 
 
     if ((originPercentage === 0 && updatedPercentage > 0) || originPercentage !== 100 && updatedPercentage === 100) {
@@ -485,11 +498,12 @@ export default class Dashboard extends Vue {
 
     if (typeof testTask.process === "string") {
 
+      this.graphs[targetGraphIndex].processingState = "Testing"
       if (!twinkleNode) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
-
       return
     }
 
+    this.graphs[targetGraphIndex].processingState = "Task finished"
     graph.removeCell("twinkle_node")
     const testContent = this.getTestProcessData(testTask.process as TestProcess)
     this.setNodeContent(graph, 'test-result-node', testContent)
@@ -525,13 +539,8 @@ export default class Dashboard extends Vue {
     this.deleteDialog = false
   }
 
-
   private async handleToModelsPage(graph: { data: graphData, percentage: number, runId: string }): Promise<void> {
-
     this.$router.push(`${graph.data.projectName}/models`)
-
   }
-
-
 
 }

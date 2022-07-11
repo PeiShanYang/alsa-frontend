@@ -31,11 +31,11 @@ export default class ProcessCellData {
             }],
             ['trained-result-node', {
                 component: 'trained-result-node',
-                content: ["notTraining"],
+                content: ["waiting"],
             }],
             ['test-result-node', {
                 component: 'test-result-node',
-                content: ["notTraining"],
+                content: ["waiting"],
             }],
             ['dataset-node-processing', {
                 component: 'dataset-node',

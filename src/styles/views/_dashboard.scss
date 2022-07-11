@@ -74,3 +74,16 @@
 .search-row{
     margin:1em 0.5em;
 }
+
+.processing-state-box{
+    &::before{
+        content: "任務狀態 ： ";
+    }
+    width: 25%;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-align: center;
+    background: aliceblue;
+    border-radius: 8px;
+    
+}

@@ -75,10 +75,8 @@ export default class Experiments extends Vue {
 
   private async waitGetExperiments(): Promise<void> {
 
-
     if (!store.currentProject) return
     await Api.getExperiments(store.currentProject)
-    await Api.getDatasets(store.currentProject)
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
     const project = store.projectList.get(store.currentProject)
@@ -93,7 +91,6 @@ export default class Experiments extends Vue {
       this.graph.experimentId = experimentId
       this.graph.experiment = experiment
     })
-
 
     this.drawGraph();
 
@@ -271,13 +268,16 @@ export default class Experiments extends Vue {
     if (!this.graph.experiment) return
     if (!store.experimentConfigs) return
     this.dialogModelSelectPara.modelStructure =
-      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.structure ??
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model.structure ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.structure.default as string
     this.dialogModelSelectPara.modelPretrained =
-      this.graph.experiment.ConfigPytorchModel.SelectedModel.model?.pretrained ??
+      this.graph.experiment.ConfigPytorchModel.SelectedModel.model.pretrained ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
+
+    if(this.dialogModelSelectPara.modelPretrained) this.dialogModelSelectPara.modelPretrained = true
+
     this.dialogModelSelectPara.batchSize =
-      this.graph.experiment.ConfigPytorchModel.ClsModelPara?.batchSize ??
+      this.graph.experiment.ConfigPytorchModel.ClsModelPara.batchSize ??
       store.experimentConfigs.ConfigPytorchModel.ClsModelPara.batchSize.default as number
     this.dialogModelSelectPara.epochs =
       this.graph.experiment.ConfigPytorchModel.ClsModelPara?.epochs ??
@@ -286,25 +286,25 @@ export default class Experiments extends Vue {
       this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
       store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
     this.dialogModelSelectPara.optimizer = 'SGD'
-    this.dialogModelSelectPara.scheduler = ''
+    this.dialogModelSelectPara.scheduler = 'stepLR'
 
   }
 
   private async setModelSelectPara(newPara: ModelSelectPara): Promise<void> {
 
-
     if (!this.graph.experiment) return
 
-    this.graph.experiment.ConfigPytorchModel.SelectedModel = {
-      model: {
-        structure: newPara.modelStructure,
-        pretrained: newPara.modelPretrained,
+    this.graph.experiment.ConfigPytorchModel = {
+      SelectedModel: {
+        model: {
+          structure: newPara.modelStructure,
+          pretrained: newPara.modelPretrained,
+        }
+      },
+      ClsModelPara: {
+        batchSize: newPara.batchSize,
+        epochs: newPara.epochs,
       }
-    }
-
-    this.graph.experiment.ConfigPytorchModel.ClsModelPara = {
-      batchSize: newPara.batchSize,
-      epochs: newPara.epochs,
     }
 
     this.graph.experiment.ConfigModelService = {
@@ -366,7 +366,9 @@ export default class Experiments extends Vue {
 
   private async runExperimentTrain(): Promise<void> {
 
-    const datasetPath = this.graph.experiment?.Config.PrivateSetting.datasetPath
+    if (!this.graph.experiment) return
+
+    const datasetPath = this.graph.experiment.Config.PrivateSetting.datasetPath
     if (!datasetPath) {
       const h = this.$createElement;
       this.$message({
@@ -376,18 +378,8 @@ export default class Experiments extends Vue {
       return
     }
 
-
-
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
-    if (!datasetStatus) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'warning',
-        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
-      })
-      return
-    }
-
+    if (!datasetStatus) return
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
       const h = this.$createElement;
       this.$message({
