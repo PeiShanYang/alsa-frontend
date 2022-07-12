@@ -47,7 +47,7 @@
     "padding": "填充方向及大小",
     "size": "尺寸",
     "imageSize": "影像尺寸",
-    "paddingModel": "填充模式",
+    "paddingMode": "填充模式",
     "pretrained": "使用預訓練模型",
     "pixels": "像素",
     "saveFinalWeight": "儲存最後訓練權重",
