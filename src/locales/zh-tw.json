@@ -122,5 +122,14 @@
     "trainSpeed": "模型訓練速度",
     "R": "R",
     "G": "G",
-    "B": "B"
+    "B": "B",
+    "stepLR": "Step LR",
+    "cosineAnnealingLR": "Cosine Annealing LR",
+    "CrossEntropyLoss": "Cross Entropy Loss",
+    "NLLLoss":"NLL Loss",
+    "MultiMarginLoss":"Multi Margin Loss",
+    "SGD":"SGD",
+    "Adam":"Adam",
+    "Adadelta":"Adadelta",
+    "AdamW":"AdamW"
 }

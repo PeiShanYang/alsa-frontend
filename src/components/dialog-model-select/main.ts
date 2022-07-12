@@ -19,9 +19,6 @@ export default class DialogModelSelect extends Vue {
   @Prop() private experimentId!: string;
   @Prop() private default!: ModelSelectPara;
 
-  private newPara: ModelSelectPara = this.default
-  private configs = new Map<string, Map<string, ConfigType>>()
-
   @Emit("dialog-close")
   closeDialogModelSelect(): void {
     return
@@ -32,7 +29,15 @@ export default class DialogModelSelect extends Vue {
     return this.newPara
   }
 
+  private newPara: ModelSelectPara = this.default
   private init = false
+
+  private configOptions = {
+    lossFunction: [] as string[],
+    optimizer: [] as string[],
+    scheduler: [] as string[],
+  }
+
 
   private modelStructure = 'auo_unrestricted_powerful_model'
 
@@ -61,6 +66,7 @@ export default class DialogModelSelect extends Vue {
 
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
+    this.getConfigOption()
 
     this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
@@ -70,6 +76,13 @@ export default class DialogModelSelect extends Vue {
   private optionName(name: string): string {
     return this.$i18n.t(name).toString();
   }
+
+  private getConfigOption(): void {
+    this.configOptions.lossFunction = Object.keys(store.experimentConfigs?.ConfigModelService.LossFunctionPara.lossFunction.enums ?? {})
+    this.configOptions.optimizer = Object.keys(store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {})
+    this.configOptions.scheduler = Object.keys(store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {})
+  }
+
 
   private pickModelSetting(modelName: string, advance: boolean): void {
     this.modelStructure = modelName

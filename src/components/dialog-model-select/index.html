@@ -109,31 +109,21 @@
                 <template v-if="item === 'lossFunction'">
                   <div class="select-box">
                     <el-select :value="newPara.lossFunction" @change="handleParaChange($event,'lossFunction')" size="mini">
-                      <el-option :label="'CrossEntropyLoss'" :key="'CrossEntropyLoss'" :value="'CrossEntropyLoss'">
-                      </el-option>
-                      <el-option :label="'MSELoss'" :key="'MSELoss'" :value="'MSELoss'"></el-option>
-                      <el-option :label="'L1Loss'" :key="'L1Loss'" :value="'L1Loss'"></el-option>
-                      <el-option :label="'SmoothL1Loss'" :key="'SmoothL1Loss'" :value="'SmoothL1Loss'"></el-option>
-                      <el-option :label="'BCELoss'" :key="'BCELoss'" :value="'BCELoss'"></el-option>
+                      <el-option v-for="opt in configOptions.lossFunction" :label=optionName(opt) :key=opt :value=opt></el-option>
                     </el-select>
                   </div>
                 </template>
                 <template v-if="item === 'Optimizer'">
                   <div class="select-box">
                     <el-select :value="newPara.optimizer" @change="handleParaChange($event,'optimizer')" size="mini">
-                      <el-option :label="'SGD'" :key="'SGD'" :value="'SGD'"></el-option>
-                      <el-option :label="'Adam'" :key="'Adam'" :value="'Adam'"></el-option>
-                      <el-option :label="'Adadelta'" :key="'Adadelta'" :value="'Adadelta'"></el-option>
-                      <el-option :label="'AdamW'" :key="'AdamW'" :value="'AdamW'"></el-option>
+                      <el-option v-for="opt in configOptions.optimizer" :label=optionName(opt) :key=opt :value=opt></el-option>
                     </el-select>
                   </div>
                 </template>
                 <template v-if="item === 'Scheduler'">
                   <div class="select-box">
                     <el-select :value="newPara.scheduler" @change="handleParaChange($event,'scheduler')" size="mini">
-                      <el-option :label="'stepLR'" :key="'stepLR'" :value="'stepLR'"></el-option>
-                      <el-option :label="'cosineAnnealingLR'" :key="'cosineAnnealingLR'" :value="'cosineAnnealingLR'">
-                      </el-option>
+                      <el-option v-for="opt in configOptions.scheduler" :label=optionName(opt) :key=opt :value=opt></el-option>
                     </el-select>
                   </div>
                 </template>
