@@ -119,7 +119,7 @@ export default class Models extends Vue {
             barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length] })
         }
 
-        const confusionMatrixImagePath = await Api.sendReport('')
+        const confusionMatrixImagePath = await Api.sendReport(taskInfo.Test.Test.Test.ConfusionMatrix ?? '')
 
         return {
             data: {

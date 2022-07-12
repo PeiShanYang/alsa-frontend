@@ -23,6 +23,7 @@ export class TrainingProcess {
 export class TestProcess {
     Test = {
         Test: {
+            ConfusionMatrix:'',
             accuracy: 0,
             classAccuracy: { NG: 0, OK: 0 },
             classCorrect: [],
