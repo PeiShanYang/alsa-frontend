@@ -173,27 +173,27 @@ export default class Dashboard extends Vue {
       // training error : not finished running all epochs
       // complete all tasks
 
-      const errorGraph = this.graphs
-        .filter(item => item.percentage !== 100)
-        .filter(item => item.percentage !== 0)
+      // const errorGraph = this.graphs
+      //   .filter(item => item.percentage !== 100)
+      //   .filter(item => item.percentage !== 0)
 
-      errorGraph.forEach(item => {
+      // errorGraph.forEach(item => {
 
-        // item.percentage = 100
-        const itemData = item.data
+      //   // item.percentage = 100
+      //   const itemData = item.data
 
-        itemData.flowInfo = GraphService.basicNodes
-          .filter(node => !node.name.includes("validation-select"))
-          .filter(node => !node.name.includes("processing"))
+      //   itemData.flowInfo = GraphService.basicNodes
+      //     .filter(node => !node.name.includes("validation-select"))
+      //     .filter(node => !node.name.includes("processing"))
 
-        itemData.taskRunning = false
+      //   itemData.taskRunning = false
 
-        if (!itemData.experiment) return
-        itemData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), itemData.flowInfo, itemData.experiment, itemData.projectName, itemData.taskRunning)
-        if (!itemData.graph) return
-        this.nodeContentSetting(itemData.graph, item.runId, this.trainingInfo)
+      //   if (!itemData.experiment) return
+      //   itemData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), itemData.flowInfo, itemData.experiment, itemData.projectName, itemData.taskRunning)
+      //   if (!itemData.graph) return
+      //   this.nodeContentSetting(itemData.graph, item.runId, this.trainingInfo)
 
-      })
+      // })
 
 
     })

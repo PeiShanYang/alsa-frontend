@@ -83,16 +83,16 @@ export default class DialogPreprocess extends Vue {
     if (this.default[name] !== undefined) {
 
       // console.log("default",name,this.default[name])
-      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+      // return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
 
-      // if (name === "normalize") {
-      //   const newCase = JSON.parse(JSON.stringify(this.default[name]))
-      //   newCase["mean"] = [0.5, 0.5, 0.5]
-      //   newCase["std"] = [0.5, 0.5, 0.5]
-      //   return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(newCase))
-      // } else {
-      //   return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
-      // }
+      if (name === "normalize") {
+        const newCase = JSON.parse(JSON.stringify(this.default[name]))
+        newCase["mean"] = [0.5, 0.5, 0.5]
+        newCase["std"] = [0.5, 0.5, 0.5]
+        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(newCase))
+      } else {
+        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
+      }
 
     }
 
