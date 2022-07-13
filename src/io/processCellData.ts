@@ -1,4 +1,4 @@
-import { Experiment, EvaluationPara, PreprocessPara } from "@/io/experiment";
+import { Experiment, EvaluationPara} from "@/io/experiment";
 import ProjectSevice from "@/services/project.service";
 
 

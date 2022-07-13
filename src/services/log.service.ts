@@ -1,7 +1,7 @@
-export default class Logger {
-    static debugMode = false
+import storeService from "@/services/store.service"
 
-    static log(...messages: Object[]) {
-        if (Logger.debugMode) console.log(...messages)
+export default class Logger {
+    static log(...messages: unknown[]): void {
+        if (storeService.debugMode) console.log(...messages)
     }
 }

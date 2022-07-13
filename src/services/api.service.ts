@@ -26,6 +26,7 @@ import { GetExperimentConfigsRes } from "@/io/rest/getExperimentConfig";
 import storeService from "@/services/store.service";
 import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
 import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/getModelDescription";
+import Logger from "@/services/log.service";
 
 
 const host = 'http://tw100104318:37510/';
@@ -108,7 +109,7 @@ export default class Api {
 
   static async setExperiments(projectName: string, experimentId: string, experiment: Experiment): Promise<void> {
 
-    console.log(experiment)
+    Logger.log(experiment)
 
     const reqData: SetExperimentsReq = {
       projectName, experimentId, experiment
@@ -357,7 +358,7 @@ export default class Api {
 
     if (!res.data) return null
 
-    console.log(res.data)
+    Logger.log(res.data)
 
     return res.data
 

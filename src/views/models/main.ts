@@ -12,6 +12,8 @@ import DialogMessageData from '@/io/dialogMessageData';
 import { DeployInfo } from '@/io/deployInfo';
 import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
 import { Experiment } from '@/io/experiment';
+import Logger from '@/services/log.service';
+
 
 class Chart {
     data!: chartData;
@@ -237,7 +239,7 @@ export default class Models extends Vue {
         if (!filename || filename === "") return
         if (!store.currentProject) return;
         const deployInfo = await Api.deploy(store.currentProject, this.downloadInfo.runId, filename);
-        console.log(`this: ${deployInfo}`)
+        Logger.log(`this: ${deployInfo}`)
 
         if (deployInfo !== null) {
             this.deployInfo = deployInfo

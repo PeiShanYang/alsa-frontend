@@ -6,7 +6,6 @@ import OptionForm from '@/components/options/option-form/OptionForm.vue';
 import { ModelSelectPara } from '@/io/experiment';
 import { GetModelDescriptionResData } from '@/io/rest/getModelDescription';
 
-type Dict = Map<string, boolean | number | number[] | string | string[]>
 
 @Component({
   components: {

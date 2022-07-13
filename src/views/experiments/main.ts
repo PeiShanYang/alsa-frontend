@@ -20,6 +20,7 @@ import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
 import { ConfigType } from '@/io/experimentConfig';
+import Logger from '@/services/log.service';
 
 
 @Component({
@@ -214,7 +215,7 @@ export default class Experiments extends Vue {
           this.openDialogModelSelect = true
           break;
         default:
-          console.log("out of case")
+          Logger.log("out of case")
       }
     });
   }
