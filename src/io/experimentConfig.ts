@@ -15,7 +15,7 @@ export class ConfigType {
 
 export class ExperimentConfigs {
 
-    ConfigAugmentation!: { AugmentationPara: FuncArgs };
+    ConfigAugmentation!: { AugmentationPara: DescribeArgs };
     ConfigModelService!: {
         LossFunctionPara: {
             lossFunction: ConfigType

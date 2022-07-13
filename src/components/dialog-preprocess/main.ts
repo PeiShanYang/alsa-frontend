@@ -7,6 +7,7 @@ import { PreprocessPara } from '@/io/experiment';
 
 type Dict = Map<string, number | number[] | string | string[] | boolean>
 
+
 @Component({
   components: {
     OptionForm
@@ -65,16 +66,15 @@ export default class DialogPreprocess extends Vue {
 
     if (store.experimentConfigs) {
       this.configs = new Map<string, Map<string, ConfigType | string>>(Object.entries(store.experimentConfigs.ConfigPreprocess.PreprocessPara))
-    } 
+    }
 
-    Object.keys(this.configs).forEach(item => this.optionSelect[item] = false)
+    this.configs.forEach((val, name) => this.optionSelect[name] = false)
+
     this.handlePageChange()
-
-    console.log("this",this.configs.get("brightness"))
 
   }
 
-  private defaultFromConfig(config: Map<string, ConfigType>, name: string): Dict {
+  private defaultFromConfig(config: Map<string, ConfigType | string>, name: string): Dict {
 
     // from this time operate
     if (this.newPara[name] !== undefined) {
@@ -104,6 +104,7 @@ export default class DialogPreprocess extends Vue {
     const newPara = new Map<string, number | number[] | string | string[] | boolean>()
     newPara.set('switch', 1)
     config.forEach((arg, name) => {
+      if (typeof arg === "string") return
       if (arg.type == 'list') {
         if (arg.children !== undefined) {
           const children = new Map<string, ConfigType>(Object.entries(arg.children))
@@ -138,12 +139,12 @@ export default class DialogPreprocess extends Vue {
       name: enable
     }
 
-    const config = new Map<string, Map<string, ConfigType>>(Object.entries(this.configs))
-    const targetConfig = config.get(name) ?? new Map<string, ConfigType>()
+    const targetConfig = this.configs.get(name) ?? new Map<string, ConfigType | string>()
     const targetDefault = this.defaultFromConfig(targetConfig, this.newPara[name])
     const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
     const collapseHeader = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header`) ?? new HTMLDivElement()
     const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
+
 
     if (enable) {
       if (Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
