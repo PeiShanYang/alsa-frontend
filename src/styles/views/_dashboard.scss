@@ -76,9 +76,7 @@
 }
 
 .processing-state-box{
-    &::before{
-        content: "任務狀態 ： ";
-    }
+
     width: 25%;
     font-size: 16px;
     box-sizing: border-box;

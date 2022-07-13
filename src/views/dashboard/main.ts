@@ -423,7 +423,6 @@ export default class Dashboard extends Vue {
     if (trainIndex === -1) return
 
     if (typeof trainTask[trainIndex].process === 'string') return
-
     const trainContent = this.getTrainProcessData(new Map<string, TrainingProcess>(Object.entries(trainTask[trainIndex].process)))
     if (trainContent === '') return
 
@@ -433,6 +432,7 @@ export default class Dashboard extends Vue {
     const testIndex = testTask.findIndex(item => item.runId === graphRunId)
     if (testIndex === -1) return
 
+    if (typeof testTask[testIndex].process === 'string') return
     const testContent = this.getTestProcessData(testTask[testIndex].process as TestProcess)
 
     this.setNodeContent(graph, 'test-result-node', testContent)

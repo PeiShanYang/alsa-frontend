@@ -18,6 +18,7 @@ export default class DialogExperimentArgs extends Vue {
   @Prop() private dialogOpen!: boolean
   @Prop() private experimentId!: string
   @Prop() private default!: AugmentationPara | PreprocessPara
+  @Prop() private argName!:string
 
   private newPara: AugmentationPara | PreprocessPara = this.default
   private configs = new Map<string, Map<string, ConfigType | string>>()
@@ -31,12 +32,12 @@ export default class DialogExperimentArgs extends Vue {
 
 
   @Emit("dialog-close")
-  closeDialogAugmentation(): void {
+  closeDialogExperimentArgs(): void {
     return
   }
 
   @Emit("set-para")
-  setPara(): AugmentationPara {
+  setPara(): AugmentationPara | PreprocessPara {
     return this.newPara
   }
 
