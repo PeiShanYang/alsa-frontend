@@ -27,6 +27,7 @@ import storeService from "@/services/store.service";
 import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
 import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/getModelDescription";
 import Logger from "@/services/log.service";
+import { RemoveDatasetReq, RemoveDatasetRes } from "@/io/rest/removeDataset";
 
 
 const host = 'http://tw100104318:37510/';
@@ -205,6 +206,28 @@ export default class Api {
     if (!res.data) return false
 
     return true
+  }
+
+  static async removeDataset(datasetPath: string): Promise<Map<string, DatasetStatus> | undefined> {
+    if (!store.currentProject) return ;
+
+    const reqData: RemoveDatasetReq = {
+      projectName: store.currentProject,
+      datasetPath,
+    }
+
+    const response: AxiosResponse<RemoveDatasetRes> = await axios.post(
+      host + 'remove-dataset',
+      reqData
+    )
+
+    if (response.status !== 200) return ;
+
+    const res: RemoveDatasetRes = response.data
+    if (res.code !== 0) console.log(res.message);
+
+    if (!res.data) return ;
+    return new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
   static async runExperimentTrain(projectName: string, experimentId: string): Promise<RunExperimentData> {
@@ -502,21 +525,21 @@ export default class Api {
     storeService.experimentConfigs = res.data
   }
 
-  static async getModelDescription():Promise<Map<string,GetModelDescriptionResData>>{
+  static async getModelDescription(): Promise<Map<string, GetModelDescriptionResData>> {
 
     const response: AxiosResponse<GetModelDescriptionRes> = await axios.post(
       host + 'get-model-description',
     )
 
-    if (response.status !== 200) return new Map<string,GetModelDescriptionResData>();
+    if (response.status !== 200) return new Map<string, GetModelDescriptionResData>();
 
     const res: GetModelDescriptionRes = response.data;
     if (res.code !== 0) {
       console.log(res.message);
-      return new Map<string,GetModelDescriptionResData>();
+      return new Map<string, GetModelDescriptionResData>();
     }
-    if (!res.data) return new Map<string,GetModelDescriptionResData>();
+    if (!res.data) return new Map<string, GetModelDescriptionResData>();
 
-    return new Map<string,GetModelDescriptionResData>(Object.entries(res.data));
+    return new Map<string, GetModelDescriptionResData>(Object.entries(res.data));
   }
 }

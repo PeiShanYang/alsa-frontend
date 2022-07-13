@@ -45,7 +45,7 @@
             </div>
           </el-col>
           <el-col :span=3 class="status-box">
-            <el-button class="secondary-btn">刪除</el-button>
+            <el-button class="secondary-btn" @click="askRemoveDataset(path)">刪除</el-button>
           </el-col>
         </el-row>
       </template>
@@ -54,5 +54,8 @@
 
   <dialog-tree-list :dialog-open="setDatasetPathDialog" :message-data="setDatasetPathDialogData"
     @cancel-action="setDatasetPathDialog=false" @confrim-action="checkDataset" />
+
+    <dialog-message :dialog-open="removeDatasetDialog" :message-data="removeMessageData" @cancel-action="removeDatasetDialog=false"
+    @confrim-action="removeDataset" />
 
 </div>

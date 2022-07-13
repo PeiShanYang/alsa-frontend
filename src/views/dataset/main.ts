@@ -3,10 +3,13 @@ import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { DatasetStatus } from '@/io/dataset';
+import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessageData from '@/io/dialogMessageData';
 
 @Component({
   components: {
     "dialog-tree-list": DialogTreeList,
+    "dialog-message": DialogMessage,
   }
 })
 export default class Dataset extends Vue {
@@ -17,7 +20,12 @@ export default class Dataset extends Vue {
   private datasets: Map<string, DatasetStatus> | undefined = new Map<string, DatasetStatus>();
 
   private setDatasetPathDialog = false;
-  private setDatasetPathDialogData = { rootPath:'datasets',title: '設定資料集位置', content: '' };
+  private setDatasetPathDialogData = { rootPath: 'datasets', title: '設定資料集位置', content: '' };
+
+  private removeDatasetDialog = false;
+  private removeMessageData: DialogMessageData = new DialogMessageData()
+  private removeDatasetPath = '';
+
 
   get projectName(): string {
     return this.$route.params.projectName
@@ -39,7 +47,7 @@ export default class Dataset extends Vue {
   }
 
   mounted(): void {
-    if (this.$route.params.settingPath) setTimeout(()=>{this.setDatasetPathDialog = true}, 500);
+    if (this.$route.params.settingPath) setTimeout(() => { this.setDatasetPathDialog = true }, 500);
     this.waitGetDatasets()
   }
 
@@ -56,7 +64,7 @@ export default class Dataset extends Vue {
 
   }
 
-  
+
   private async checkDataset(datasetPath: string): Promise<void> {
 
     if (datasetPath === "") return
@@ -71,11 +79,33 @@ export default class Dataset extends Vue {
     } else {
       this.setDatasetPathDialog = false
     }
-
     this.setDatasetPathDialogData.content = ''
-
   }
 
-  
+  private askRemoveDataset(datasetPath: string): void {
+
+    this.removeDatasetPath = datasetPath
+
+    this.removeMessageData = {
+      ...this.removeMessageData,
+      type: 'warning',
+      title: `確定刪除路徑 ${datasetPath} ?`,
+    }
+
+    this.removeDatasetDialog = true
+  }
+
+
+  private async removeDataset(): Promise<void> {
+
+    if (this.removeDatasetPath === '') return
+    const response = Api.removeDataset(this.removeDatasetPath)
+
+    response.then( content => this.datasets = content)
+
+    this.removeDatasetDialog = false
+  }
+
+
 
 }
