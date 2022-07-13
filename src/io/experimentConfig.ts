@@ -1,5 +1,6 @@
 type Args = Map<string, ConfigType>
 type FuncArgs = Map<string, Map<string, ConfigType>>
+type DescribeArgs = Map<string, Map<string, ConfigType | string>>
 
 export class ConfigType {
     type!: string
@@ -25,7 +26,7 @@ export class ExperimentConfigs {
         OptimizerPara: FuncArgs,
         SchedulerPara: FuncArgs,
     };
-    ConfigPreprocess!: { PreprocessPara: FuncArgs }
+    ConfigPreprocess!: { PreprocessPara: DescribeArgs }
     ConfigPytorchModel!: {
         ClsModelPara: {
             batchSize: ConfigType,

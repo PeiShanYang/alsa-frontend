@@ -19,7 +19,7 @@ export default class DialogAugmentation extends Vue {
   @Prop() private default!: AugmentationPara
 
   private newPara: AugmentationPara = this.default
-  private configs = new Map<string, Map<string, ConfigType>>()
+  private configs = new Map<string, Map<string, ConfigType | string>>()
   private optionSelect: { [k: string]: any } = {};
   private init = false;
 
@@ -64,7 +64,10 @@ export default class DialogAugmentation extends Vue {
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
-    if (store.experimentConfigs) this.configs = store.experimentConfigs.ConfigAugmentation.AugmentationPara
+    if (store.experimentConfigs) {
+      this.configs = new Map<string, Map<string, ConfigType | string>>(Object.entries(store.experimentConfigs.ConfigAugmentation.AugmentationPara))
+    } 
+
     Object.keys(this.configs).forEach(item => this.optionSelect[item] = false)
 
     this.handlePageChange()
@@ -158,11 +161,9 @@ export default class DialogAugmentation extends Vue {
   }
 
   private handlePageChange(): void {
-
-    this.configCount = Object.entries(this.configs).length
-    const getSlice = Object.entries(this.configs).slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
+    this.configCount = this.configs.size
+    const getSlice = [...this.configs].slice((this.currentPage - 1) * this.pageSize, this.currentPage * this.pageSize)
 
     this.configSlice = Object.fromEntries([...getSlice])
-    
   }
 }
