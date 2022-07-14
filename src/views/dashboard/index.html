@@ -24,9 +24,12 @@
               </el-col>
             </el-row>
           </template>
-          <el-row>
+          <el-row v-if="graph.processingState !== '' ">
             <el-col>
-              <div class="processing-state-box">任務狀態：{{graph.processingState}}</div>
+              <div class="processing-state-box">
+                <img :src="require('@/assets/svg_icon/dashboard/warning_sign.svg')" />
+                <div> 任務狀態：{{graph.processingState}}</div>
+              </div>
             </el-col>
           </el-row>
           <el-row type="flex" justify="center">

@@ -33,6 +33,20 @@
         <img :src="require('@/assets/svg_icon/sidebar/models.svg')" />
         <span>Models</span>
       </el-menu-item>
+      <el-submenu index="setting">
+        <template slot="title">
+          <i class="el-icon-setting"></i>
+          <span>Settings</span>
+        </template>
+        <el-menu-item index="edit">
+          <i class="el-icon-edit-outline"></i>
+          <span>Edit</span>
+        </el-menu-item>
+        <el-menu-item index="delete">
+          <i class="el-icon-delete"></i>
+          <span>Delete</span>
+        </el-menu-item>
+      </el-submenu>
     </el-submenu>
   </template>
 </el-menu>

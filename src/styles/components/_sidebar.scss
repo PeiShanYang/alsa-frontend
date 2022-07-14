@@ -1,6 +1,6 @@
 .el-menu {
     width: $sidebar-width;
-    &--collapse{
+    &--collapse {
         width: 60px;
     }
 }
@@ -15,9 +15,16 @@
             margin: 0.5em;
         }
     }
+    i {
+        font-size: $font-normal * 1.5;
+        color: #b5c4d5;
+        + span {
+            margin: 1em;
+        }
+    }
 }
 
-::v-deep .el-menu--inline{
+::v-deep .el-menu--inline {
     margin-left: 45px;
 }
 
@@ -27,7 +34,7 @@
 }
 
 .search-panel {
-    padding: 0.5em
+    padding: 0.5em;
 }
 
 .el-input {

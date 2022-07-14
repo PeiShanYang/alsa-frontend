@@ -52,6 +52,8 @@ export default class Dashboard extends Vue {
 
   private runFailList: string[] = []
 
+  
+
   // dialog for delete
 
   private deleteDialog = false;
@@ -222,7 +224,7 @@ export default class Dashboard extends Vue {
 
     } else {
 
-      processingState = "Task is running"
+      // processingState = "Task is running"
       taskRunning = true
       percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
 
@@ -234,7 +236,7 @@ export default class Dashboard extends Vue {
         defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
       } else {
         defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
-        processingState = "Task finished"
+        // processingState = "Task finished"
       }
 
     }
@@ -498,12 +500,12 @@ export default class Dashboard extends Vue {
 
     if (typeof testTask.process === "string") {
 
-      this.graphs[targetGraphIndex].processingState = "Testing"
+      // this.graphs[targetGraphIndex].processingState = "Testing"
       if (!twinkleNode) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
       return
     }
 
-    this.graphs[targetGraphIndex].processingState = "Task finished"
+    // this.graphs[targetGraphIndex].processingState = "Task finished"
     graph.removeCell("twinkle_node")
     const testContent = this.getTestProcessData(testTask.process as TestProcess)
     this.setNodeContent(graph, 'test-result-node', testContent)

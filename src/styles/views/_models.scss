@@ -103,3 +103,19 @@
     margin: auto;
     height: 100%;
 }
+
+.el-collapse {
+    border: 0px solid white;
+    font-size: 20px;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-type: y mandatory;
+    height: 75vh;
+    overflow: auto;
+}
+
+.el-collapse-item {
+    scroll-snap-align:start;
+    scroll-behavior: smooth;
+    scroll-snap-stop: always;
+}
