@@ -1,34 +1,48 @@
-import { Component, Prop, Vue, Emit} from 'vue-property-decorator';
+import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import { DatasetStatus } from '@/io/dataset';
+import Api from '@/services/api.service';
+import store from '@/services/store.service';
 
 @Component
 export default class DialogDataset extends Vue {
   @Prop() private dialogOpen!: boolean;
+  @Prop() private default!: string;
   @Prop() private experimentId!: string;
-  @Prop() private datasetList!:Map<string, DatasetStatus>;
 
-  private searchPattern = '';
-  private activeDatasetCollapse: string[] = ["1"];
-  private progressPercent = 0;
-  private inputDatasetPath = '';
+  private newPara = this.default
+  private configs = new Map<string, DatasetStatus>()
+  private init = false
+
 
   @Emit("dialog-close")
   closeDialogDataset(): void {
     return;
   }
 
-  @Emit("set-dataset")
-  async setExperimentDataset():Promise<string | undefined>{
-
-    if (this.checkedPath == "") return
-
-    return this.checkedPath
+  @Emit("set-para")
+  setPara(): string {
+    return this.newPara
   }
 
-  private defaultPath = "";
-  private checkedPath = "";
-  
-  private handleCheckPath(checkItem: string) {
-    if (checkItem) this.checkedPath = checkItem
+  mounted(): void {
+    this.waitConfigsSetting()
   }
+
+  updated(): void {
+    if (!this.init && this.default !== '') {
+      this.newPara = this.default
+      this.init = true
+    }
+  }
+
+  private async waitConfigsSetting(): Promise<void> {
+    if (!store.currentProject) return
+    await Api.getDatasets(store.currentProject)
+    this.configs = store.projectList.get(store.currentProject)?.datasets ?? new Map<string, DatasetStatus>()
+  }
+
+  private updateOption(pathName: string) {
+    this.newPara = pathName
+  }
+
 }

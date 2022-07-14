@@ -14,17 +14,21 @@ export class TrainingProcess {
         epoch: 0,
         total: 0,
     };
-    valid = {
+    Train = {
         accuracy: 0,
     }
+
 }
 
 export class TestProcess {
-    test = {
-        test: {
-            accuracy: 0,
-            classAccuracy: new Map<string, number>(),
+    Test = {
+        Test: {
             ConfusionMatrix:'',
+            accuracy: 0,
+            classAccuracy: { NG: 0, OK: 0 },
+            classCorrect: [],
+            className: [],
+            classNumbers: [],
         },
     }
 }

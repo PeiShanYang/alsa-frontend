@@ -24,6 +24,11 @@
               </el-col>
             </el-row>
           </template>
+          <el-row>
+            <el-col>
+              <div class="processing-state-box">任務狀態：{{graph.processingState}}</div>
+            </el-col>
+          </el-row>
           <el-row type="flex" justify="center">
             <el-col>
               <div :id=graph.runId style="flex: 1;"></div>

@@ -13,8 +13,10 @@
               <el-switch v-model="optionSelect[name]" @change="activeOption($event,name)" active-color="#3E8FB4"
                 inactive-color="#96CAE2"></el-switch>
               <div>{{ optionName(name) }}</div>
-              <el-tooltip placement="bottom" effect="light">
-                <div slot="content">{{ optionName(name) }}</div>
+              <el-tooltip placement="top" effect="light">
+                <div slot="content" class="tooltip-content">
+                  {{ args.description }}
+                </div>
                 <i class="el-icon-info"></i>
               </el-tooltip>
             </div>

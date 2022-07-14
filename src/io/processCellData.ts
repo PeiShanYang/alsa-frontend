@@ -1,4 +1,4 @@
-import { Experiment } from "@/io/experiment";
+import { Experiment, EvaluationPara} from "@/io/experiment";
 import ProjectSevice from "@/services/project.service";
 
 
@@ -7,6 +7,7 @@ export default class ProcessCellData {
     content!: string[];
 
     static cellDataContent(experiment: Experiment, projectName: string): Map<string, ProcessCellData> {
+
         return new Map([
             ['dataset-node', {
                 component: 'dataset-node',
@@ -26,15 +27,15 @@ export default class ProcessCellData {
             }],
             ['validation-select-node', {
                 component: 'validation-select-node',
-                content: Array.from(Object.keys(experiment.ConfigEvaluation.EvaluationPara)),
+                content: Object.getOwnPropertyNames(new EvaluationPara),
             }],
             ['trained-result-node', {
                 component: 'trained-result-node',
-                content: ["notTraining"],
+                content: ["waiting"],
             }],
             ['test-result-node', {
                 component: 'test-result-node',
-                content: ["notTraining"],
+                content: ["waiting"],
             }],
             ['dataset-node-processing', {
                 component: 'dataset-node',
@@ -58,11 +59,11 @@ export default class ProcessCellData {
             }],
             ['trained-result-node-processing', {
                 component: 'trained-result-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
             ['test-result-node-processing', {
                 component: 'test-result-node',
-                content: ["training"],
+                content: ["waiting"],
             }],
 
         ]);

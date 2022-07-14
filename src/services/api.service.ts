@@ -26,9 +26,12 @@ import { GetExperimentConfigsRes } from "@/io/rest/getExperimentConfig";
 import storeService from "@/services/store.service";
 import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
 import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/getModelDescription";
+import Logger from "@/services/log.service";
+import { RemoveDatasetReq, RemoveDatasetRes } from "@/io/rest/removeDataset";
 
 
 const host = 'http://tw100104318:37510/';
+// const host = 'http://tw100104318:65101/';
 
 export default class Api {
   static async getProjects(): Promise<void> {
@@ -56,7 +59,7 @@ export default class Api {
     }
   }
   static async createProjectByKey(name: string, key: string): Promise<boolean> {
-    if (key === '.') key = "eyJhbGciOiJIUzI1NiJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnRXZhbHVhdGlvbiI6eyJFdmFsdWF0aW9uUGFyYSI6eyJzaG93QWNjIjp7InN3aXRjaCI6MX0sInNob3dDbGFzc0FjYyI6eyJzd2l0Y2giOjF9fX0sIkNvbmZpZ01vZGVsU2VydmljZSI6eyJMb3NzRnVuY3Rpb25QYXJhIjp7Imxvc3NGdW5jdGlvbiI6IkNyb3NzRW50cm9weUxvc3MifSwiTGVhcm5pbmdSYXRlIjp7ImxlYXJuaW5nUmF0ZSI6MC4wMDF9LCJPcHRpbWl6ZXJQYXJhIjp7IkFkYW0iOnsic3dpdGNoIjoxLCJiZXRhcyI6WzAuOSwwLjk5OV0sImVwcyI6MWUtOCwid2VpZ2h0RGVjYXkiOjAuMDAwNSwiYW1zZ3JhZCI6MH19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC41fX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOjB9fX0sIkNvbmZpZ1B5dG9yY2hNb2RlbCI6eyJTZWxlY3RlZE1vZGVsIjp7Im1vZGVsIjp7InN0cnVjdHVyZSI6ImF1b191bnJlc3RyaWN0ZWRfcG93ZXJmdWxfbW9kZWwiLCJwcmV0cmFpbmVkIjoxfX0sIkNsc01vZGVsUGFyYSI6eyJiYXRjaFNpemUiOjE2LCJlcG9jaHMiOjJ9fSwiQ29uZmlnUmVzdWx0U3RvcmFnZSI6eyJ1bmtub3duRmlsdGVyIjp7InN3aXRjaCI6MCwiZmlsdGVyIjp7InVua25vd24iOjAuOX0sInJldmVyc2UiOjAsInNhdmVDc3YiOjJ9fX0.M_Xlw_Oeb3CedhN6cJEWDjrSEdu04u7vlVQWPjPYosg";
+    if (key === '.') key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiU0dEIjp7InN3aXRjaCI6MSwibW9tZW50dW0iOjAuOSwiZGFtcGVuaW5nIjowLCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJuZXN0ZXJvdiI6MH19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC41fX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOiJJbWFnZU5ldCJ9LCJyZXNpemUiOnsic3dpdGNoIjoxLCJpbWFnZVNpemUiOlsyMjQsMjI0XSwiaW50ZXJwb2xhdGlvbiI6IkJJTElORUFSIn19fSwiQ29uZmlnUHl0b3JjaE1vZGVsIjp7IlNlbGVjdGVkTW9kZWwiOnsibW9kZWwiOnsic3RydWN0dXJlIjoiYXVvX3VucmVzdHJpY3RlZF9wb3dlcmZ1bF9tb2RlbCIsInByZXRyYWluZWQiOjF9fSwiQ2xzTW9kZWxQYXJhIjp7ImJhdGNoU2l6ZSI6MTYsImVwb2NocyI6MTB9fX0.27ROd91Ailzl86kLppHCMpA2q0n_HUrJrqA6FALxqsw";
     const reqData: CreateProjectByKeyReq = { name, key };
     const response: AxiosResponse<GetProjectRes> = await axios.post(
       host + 'create-project-by-key',
@@ -107,7 +110,7 @@ export default class Api {
 
   static async setExperiments(projectName: string, experimentId: string, experiment: Experiment): Promise<void> {
 
-    console.log(experiment)
+    Logger.log(experiment)
 
     const reqData: SetExperimentsReq = {
       projectName, experimentId, experiment
@@ -203,6 +206,28 @@ export default class Api {
     if (!res.data) return false
 
     return true
+  }
+
+  static async removeDataset(datasetPath: string): Promise<Map<string, DatasetStatus> | undefined> {
+    if (!store.currentProject) return ;
+
+    const reqData: RemoveDatasetReq = {
+      projectName: store.currentProject,
+      datasetPath,
+    }
+
+    const response: AxiosResponse<RemoveDatasetRes> = await axios.post(
+      host + 'remove-dataset',
+      reqData
+    )
+
+    if (response.status !== 200) return ;
+
+    const res: RemoveDatasetRes = response.data
+    if (res.code !== 0) console.log(res.message);
+
+    if (!res.data) return ;
+    return new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
   static async runExperimentTrain(projectName: string, experimentId: string): Promise<RunExperimentData> {
@@ -356,7 +381,7 @@ export default class Api {
 
     if (!res.data) return null
 
-    console.log(res.data)
+    Logger.log(res.data)
 
     return res.data
 
@@ -500,21 +525,21 @@ export default class Api {
     storeService.experimentConfigs = res.data
   }
 
-  static async getModelDescription():Promise<Map<string,GetModelDescriptionResData>>{
+  static async getModelDescription(): Promise<Map<string, GetModelDescriptionResData>> {
 
     const response: AxiosResponse<GetModelDescriptionRes> = await axios.post(
       host + 'get-model-description',
     )
 
-    if (response.status !== 200) return new Map<string,GetModelDescriptionResData>();
+    if (response.status !== 200) return new Map<string, GetModelDescriptionResData>();
 
     const res: GetModelDescriptionRes = response.data;
     if (res.code !== 0) {
       console.log(res.message);
-      return new Map<string,GetModelDescriptionResData>();
+      return new Map<string, GetModelDescriptionResData>();
     }
-    if (!res.data) return new Map<string,GetModelDescriptionResData>();
+    if (!res.data) return new Map<string, GetModelDescriptionResData>();
 
-    return new Map<string,GetModelDescriptionResData>(Object.entries(res.data));
+    return new Map<string, GetModelDescriptionResData>(Object.entries(res.data));
   }
 }

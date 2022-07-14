@@ -1,4 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
+import Logger from '@/services/log.service';
 
 
 @Component
@@ -40,8 +41,7 @@ export default class Login extends Vue {
         rememberChecked: boolean
     }): void {
 
-        console.log("test", content)
-
+        Logger.log("test", content)
         this.$router.push('/')
     }
 
@@ -52,12 +52,12 @@ export default class Login extends Vue {
         password: string,
         agreeChecked: boolean
     }): void {
-        console.log("test", content)
+        Logger.log("test", content)
         this.$router.push('/')
     }
 
     private handleSendToEmail(email:string):void{
-        console.log("mail",email)
+        Logger.log("mail",email)
         this.rightBoxDisplay = 'resetPassword'
     }
 
@@ -67,7 +67,7 @@ export default class Login extends Vue {
         passwordAgain:string,
         rememberChecked:boolean
     }):void{
-        console.log("test", content)
+        Logger.log("test", content)
         this.$router.push('/')
     }
 

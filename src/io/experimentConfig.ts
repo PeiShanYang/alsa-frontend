@@ -1,5 +1,6 @@
 type Args = Map<string, ConfigType>
 type FuncArgs = Map<string, Map<string, ConfigType>>
+type DescribeArgs = Map<string, Map<string, ConfigType | string>>
 
 export class ConfigType {
     type!: string
@@ -14,29 +15,29 @@ export class ConfigType {
 
 export class ExperimentConfigs {
 
-    ConfigPreprocess!: { PreprocessPara: FuncArgs }
-    ConfigAugmentation!: { AugmentationPara: FuncArgs }
-    ConfigEvaluation!: { EvaluationPara: FuncArgs }
+    ConfigAugmentation!: { AugmentationPara: DescribeArgs };
     ConfigModelService!: {
         LossFunctionPara: {
             lossFunction: ConfigType
         },
-        LearningRate: Args,
+        LearningRate: {
+            learningRate: ConfigType
+        },
         OptimizerPara: FuncArgs,
         SchedulerPara: FuncArgs,
-    }
+    };
+    ConfigPreprocess!: { PreprocessPara: DescribeArgs }
     ConfigPytorchModel!: {
+        ClsModelPara: {
+            batchSize: ConfigType,
+            epochs: ConfigType,
+        },
         SelectedModel: {
             model: {
-                structure: ConfigType,
                 pretrained: ConfigType,
-            },
-            ClsModelPara: {
-                batchSize: ConfigType,
-                epochs: ConfigType,
+                structure: ConfigType,
             },
         },
-        ConfigResultStorage: { ResultStorage: FuncArgs }
         ConfigPass: Map<string, any>
     }
 }

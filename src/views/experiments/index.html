@@ -1,5 +1,5 @@
 <div style="margin: auto;width: 100%">
-  <el-collapse v-model="acitveProjectCollapse" accordion>
+  <el-collapse value="1" accordion>
     <el-collapse-item name="1">
       <template slot="title">
         <el-row style="width: 100%;">
@@ -16,15 +16,16 @@
       </el-row>
       <el-row type="flex" justify="end">
         <el-col :span="6" class="action-btn-group">
-          <el-button class="primary-btn" @click="exportExperiment">匯出</el-button>
+          <el-button class="primary-btn" @click="showSolutionKey = true">匯出</el-button>
           <el-button class="primary-btn" @click="runExperimentTrain">執行</el-button>
         </el-col>
       </el-row>
     </el-collapse-item>
   </el-collapse>
 
-  <dialog-dataset :dialog-open="openDialogDataset" :dataset-list="datasets" @dialog-close="openDialogDataset=false"
-    @set-dataset="setDatasetContent" />
+  <dialog-dataset :dialog-open="openDialogDataset" @dialog-close="openDialogDataset=false"
+    :experiment-id="dialogExperimentId" :default="dialogDatasetPara" @set-para="setDatasetPara" />
+
   <dialog-preprocess :dialog-open="openDialogPreprocess" @dialog-close="openDialogPreprocess=false"
     :experiment-id="dialogExperimentId" :default="dialogPreprocessPara" @set-para="setPreprocessPara" />
 
@@ -32,7 +33,7 @@
     :experiment-id="dialogExperimentId" :default="dialogAugmentationPara" @set-para="setAugmentationPara" />
 
   <dialog-model-select :dialog-open="openDialogModelSelect" @dialog-close="openDialogModelSelect=false"
-  :experiment-id="dialogExperimentId" :default="dialogModelSelectPara" @set-para="setModelSelectPara" />
+    :experiment-id="dialogExperimentId" :default="dialogModelSelectPara" @set-para="setModelSelectPara" />
 
   <dialog-message :dialog-open="openDialogMessage" :message-data="dialogMessageData"
     @cancel-action="openDialogMessage=false" @confrim-action="goDashBoard" />

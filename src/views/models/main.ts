@@ -12,6 +12,8 @@ import DialogMessageData from '@/io/dialogMessageData';
 import { DeployInfo } from '@/io/deployInfo';
 import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
 import { Experiment } from '@/io/experiment';
+import Logger from '@/services/log.service';
+
 
 class Chart {
     data!: chartData;
@@ -94,30 +96,32 @@ export default class Models extends Vue {
 
         const modelName = this.$i18n.t(taskInfo.model).toString()
 
+        if(!taskInfo.Train) return
+
         const process = new Map<string, TrainingProcess>(Object.entries(taskInfo.Train))
         const lineChartData: { epoch: string, accuracy: number }[] = []
 
         process.forEach(item => {
             lineChartData.push({
                 epoch: item.model.epoch.toString(),
-                accuracy: item.valid.accuracy,
+                accuracy: item.Train.accuracy,
             })
         })
 
 
         if (!taskInfo.Test) return
 
-        const ringProgressChartData = { scoreName: "Accuracy", score: taskInfo.Test.test.test.accuracy }
+        const ringProgressChartData = { scoreName: "Accuracy", score: taskInfo.Test.Test.Test.accuracy }
 
 
         const barChartData: { className: string, classScore: number, classColor: string }[] = []
         const customColor = ['#275776', '#8184D7', '#81D6E6', '#58C6E0']
         // for class accuracy
-        for (const [key, value] of Object.entries(taskInfo.Test.test.test.classAccuracy)) {
+        for (const [key, value] of Object.entries(taskInfo.Test.Test.Test.classAccuracy)) {
             barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length] })
         }
 
-        const confusionMatrixImagePath = await Api.sendReport(taskInfo.Test.test.test.ConfusionMatrix)
+        const confusionMatrixImagePath = await Api.sendReport(taskInfo.Test.Test.Test.ConfusionMatrix ?? '')
 
         return {
             data: {
@@ -235,7 +239,7 @@ export default class Models extends Vue {
         if (!filename || filename === "") return
         if (!store.currentProject) return;
         const deployInfo = await Api.deploy(store.currentProject, this.downloadInfo.runId, filename);
-        console.log(`this: ${deployInfo}`)
+        Logger.log(`this: ${deployInfo}`)
 
         if (deployInfo !== null) {
             this.deployInfo = deployInfo

@@ -1,7 +1,7 @@
 .el-card {
     font-size: $font-normal;
     width: 70vw;
-    margin: 8em auto 0;
+    margin: 5em auto;
     padding: 0.5em 1em;
     .card-title {
         margin: 0.5em 0;
@@ -73,4 +73,15 @@
 
 .search-row{
     margin:1em 0.5em;
+}
+
+.processing-state-box{
+
+    width: 25%;
+    font-size: 16px;
+    box-sizing: border-box;
+    text-align: center;
+    background: aliceblue;
+    border-radius: 8px;
+    
 }

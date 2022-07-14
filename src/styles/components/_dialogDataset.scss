@@ -35,12 +35,11 @@
 
   .path-box {
     display: flex;
+    box-sizing: border-box;
     padding: 0.5em 0;
     &-path {
       color: $primary-color;
       margin-left: 0.5em;
-      overflow-x: auto;
-      overflow-y: hidden;
     }
   }
 

@@ -3,22 +3,24 @@ import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import OptionForm from '@/components/options/option-form/OptionForm.vue';
-import { PreprocessPara } from '@/io/experiment';
+import { AugmentationPara, PreprocessPara } from '@/io/experiment';
 
 type Dict = Map<string, number | number[] | string | string[] | boolean>
-
+type DescribeArgs = Map<string, Map<string, ConfigType | string>>
 
 @Component({
   components: {
     OptionForm
   }
 })
-export default class DialogPreprocess extends Vue {
+
+export default class DialogExperimentArgs extends Vue {
   @Prop() private dialogOpen!: boolean
   @Prop() private experimentId!: string
-  @Prop() private default!: PreprocessPara
+  @Prop() private default!: AugmentationPara | PreprocessPara
+  @Prop() private argName!:string
 
-  private newPara: PreprocessPara = this.default
+  private newPara: AugmentationPara | PreprocessPara = this.default
   private configs = new Map<string, Map<string, ConfigType | string>>()
   private optionSelect: { [k: string]: any } = {};
   private init = false;
@@ -28,13 +30,14 @@ export default class DialogPreprocess extends Vue {
   private configCount = 0
   private configSlice: { [k: string]: any } = {};
 
+
   @Emit("dialog-close")
-  closeDialogPreprocess(): void {
+  closeDialogExperimentArgs(): void {
     return
   }
 
   @Emit("set-para")
-  setPara(): PreprocessPara {
+  setPara(): AugmentationPara | PreprocessPara {
     return this.newPara
   }
 
@@ -61,43 +64,26 @@ export default class DialogPreprocess extends Vue {
   }
 
   private async waitConfigsSetting(): Promise<void> {
-
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
 
     if (store.experimentConfigs) {
-      this.configs = new Map<string, Map<string, ConfigType | string>>(Object.entries(store.experimentConfigs.ConfigPreprocess.PreprocessPara))
+      this.configs = new Map<string, Map<string, ConfigType | string>>(Object.entries(store.experimentConfigs.ConfigAugmentation.AugmentationPara))
     }
 
     this.configs.forEach((val, name) => this.optionSelect[name] = false)
 
     this.handlePageChange()
-
   }
+
 
   private defaultFromConfig(config: Map<string, ConfigType | string>, name: string): Dict {
 
-    // from this time operate
     if (this.newPara[name] !== undefined) {
-      // console.log("newPara",name,this.newPara[name])
-
       return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.newPara[name]))
     }
 
-    // from last time operate
     if (this.default[name] !== undefined) {
-
-      // console.log("default",name,this.default[name])
-      // return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
-
-      if (name === "normalize") {
-        const newCase = JSON.parse(JSON.stringify(this.default[name]))
-        newCase["mean"] = [0.5, 0.5, 0.5]
-        newCase["std"] = [0.5, 0.5, 0.5]
-        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(newCase))
-      } else {
-        return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
-      }
-
+      return new Map<string, number | number[] | string | string[] | boolean>(Object.entries(this.default[name]))
     }
 
     config = new Map<string, ConfigType>(Object.entries(config))
@@ -123,14 +109,12 @@ export default class DialogPreprocess extends Vue {
       }
     })
 
-
     return newPara
   }
 
   private optionName(name: string): string {
     return this.$i18n.t(name).toString();
   }
-
 
   private activeOption(enable: boolean, name: string): void {
 
@@ -144,7 +128,6 @@ export default class DialogPreprocess extends Vue {
     const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
     const collapseHeader = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header`) ?? new HTMLDivElement()
     const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
-
 
     if (enable) {
       if (Object.prototype.toString.call(targetDefault) === '[object Map]') this.newPara[name] = Object.fromEntries(targetDefault) ?? {}
@@ -166,10 +149,12 @@ export default class DialogPreprocess extends Vue {
     const collapseArrow = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-header .collapse-header-arrow i`) ?? new HTMLDivElement()
     const collapseBody = document.querySelector<HTMLElement>(`#${name}_collapse .collapse-body`) ?? new HTMLDivElement()
     collapseBody.style.height = collapseArrow.classList.toggle('active') ? 'fit-content' : '0px'
+
   }
 
   private updateOption(name: string, event: Map<string, number | number[] | string | string[]>) {
     this.newPara[name] = Object.fromEntries(event)
+
   }
 
   private optionCase(name: string): string | undefined {
@@ -182,6 +167,4 @@ export default class DialogPreprocess extends Vue {
 
     this.configSlice = Object.fromEntries([...getSlice])
   }
-
-
 }

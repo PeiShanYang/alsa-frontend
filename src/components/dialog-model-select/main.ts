@@ -6,7 +6,6 @@ import OptionForm from '@/components/options/option-form/OptionForm.vue';
 import { ModelSelectPara } from '@/io/experiment';
 import { GetModelDescriptionResData } from '@/io/rest/getModelDescription';
 
-type Dict = Map<string, boolean | number | number[] | string | string[]>
 
 @Component({
   components: {
@@ -19,9 +18,6 @@ export default class DialogModelSelect extends Vue {
   @Prop() private experimentId!: string;
   @Prop() private default!: ModelSelectPara;
 
-  private newPara: ModelSelectPara = this.default
-  private configs = new Map<string, Map<string, ConfigType>>()
-
   @Emit("dialog-close")
   closeDialogModelSelect(): void {
     return
@@ -32,16 +28,17 @@ export default class DialogModelSelect extends Vue {
     return this.newPara
   }
 
+  private newPara: ModelSelectPara = this.default
   private init = false
 
-  private modelStructure = 'auo_unrestricted_powerful_model'
-  private modelPretrained = false
-  private batchSize = 1
-  private epochs = 1
-  private lossFunction = 'CrossEntropyLoss'
-  private optimizer = 'SGD'
-  private scheduler = ''
+  private configOptions = {
+    lossFunction: [] as string[],
+    optimizer: [] as string[],
+    scheduler: [] as string[],
+  }
 
+
+  private modelStructure = 'auo_unrestricted_powerful_model'
 
   private modelsDescription: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
   private models: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
@@ -68,11 +65,10 @@ export default class DialogModelSelect extends Vue {
 
   private async waitConfigsSetting(): Promise<void> {
     if (!store.experimentConfigs) await Api.getExperimentConfigs()
+    this.getConfigOption()
 
     this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
-
-
 
   }
 
@@ -80,24 +76,19 @@ export default class DialogModelSelect extends Vue {
     return this.$i18n.t(name).toString();
   }
 
+  private getConfigOption(): void {
+    this.configOptions.lossFunction = Object.keys(store.experimentConfigs?.ConfigModelService.LossFunctionPara.lossFunction.enums ?? {})
+    this.configOptions.optimizer = Object.keys(store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {})
+    this.configOptions.scheduler = Object.keys(store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {})
+  }
+
+
   private pickModelSetting(modelName: string, advance: boolean): void {
     this.modelStructure = modelName
     this.newPara.modelStructure = modelName
     if (advance) this.changeToSetting = true
   }
 
-
-  private saveChanges(): void {
-    this.newPara.modelStructure = this.modelStructure
-    this.newPara.modelPretrained = this.modelPretrained
-    this.newPara.batchSize = this.batchSize
-    this.newPara.epochs = this.epochs
-    this.newPara.lossFunction = this.lossFunction
-    this.newPara.optimizer = this.optimizer
-    this.newPara.scheduler = this.scheduler
-
-    this.changeToSetting = false
-  }
 
   private handlePageChange(): void {
     const modelConfig = new Map<string, ConfigType>(Object.entries(store.experimentConfigs?.ConfigPytorchModel.SelectedModel.model ?? {}))
@@ -112,4 +103,17 @@ export default class DialogModelSelect extends Vue {
       if (description) this.models.set(modelName, description)
     })
   }
+
+  private handleParaChange(para: string | number | boolean, name: string): void {
+    switch (name) {
+      case 'batchSize':
+      case 'epochs':
+        if (isNaN(Number(para)) === false) { this.newPara = { ...this.newPara, [name]: Number(para) } }
+        break;
+      default:
+        this.newPara = { ...this.newPara, [name]: para }
+    }
+
+  }
+
 }

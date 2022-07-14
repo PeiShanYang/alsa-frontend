@@ -1,4 +1,4 @@
 <div>
-  <el-input v-model.number="v" clearable></el-input>
+  <el-input :value="v" @input="onInputChange($event)"></el-input>
   <div v-if="unit !== undefined" class="unit"> {{ $i18n.t(unit).toString() }}</div>
 </div>
