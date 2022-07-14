@@ -17,7 +17,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        
+
         img {
             display: block;
             margin: auto;
@@ -71,17 +71,16 @@
     }
 }
 
-.search-row{
-    margin:1em 0.5em;
+.search-row {
+    margin: 1em 0.5em;
 }
 
-.processing-state-box{
-
+.processing-state-box {
     width: 25%;
-    font-size: 16px;
+    font-size: $font-normal * 0.9;
     box-sizing: border-box;
-    text-align: center;
-    background: aliceblue;
+    background: #f7f7fc;
+    color: #cb5c5d;
     border-radius: 8px;
-    
+    padding-left: $font-normal * 0.7;
 }

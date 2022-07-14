@@ -1,14 +1,17 @@
-<el-row class="node-row" :style="nodeBorderColor">
-  <el-col :span="6" :style="nodeBackgroundColor" style="display: flex;">
+<div class="node-box" :style="nodeBorderColor">
+  <div class="icon-box" :style="nodeBackgroundColor">
     <img :src="icon" />
-  </el-col>
-  <el-col :span="15" :style="nodeBorderColor">
-    <span style="font-size: 1vw; margin-left:0.5vw; font-weight: bold;">{{ title }}</span>
-    <br />
-    <ul>
+  </div>
+  <div class="info-box" :style="nodeBorderColor">
+    <div class="info-box-header">
+      <div class="header-item">
+        {{title}}
+      </div>
+    </div>
+    <div class="info-box-content">
       <template v-for="content in nodeContent">
-        <li><span>{{ content }}</span></li>
+        <div class="content-item">{{content}}</div>
       </template>
-    </ul>
-  </el-col>
-</el-row>
+    </div>
+  </div>
+</div>
