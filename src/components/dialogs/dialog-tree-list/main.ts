@@ -122,8 +122,6 @@ export default class DialogTreeList extends Vue {
 
   private wrapChildNode(childCollection: nodeAttr[]): nodeAttr[] {
 
-    const mainChidren: nodeAttr[] = []
-
     const pidCollection = [...new Set(childCollection.map(item => item.pid))]
 
     pidCollection.forEach(pid => {
