@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';

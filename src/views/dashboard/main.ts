@@ -14,7 +14,7 @@ import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 
 

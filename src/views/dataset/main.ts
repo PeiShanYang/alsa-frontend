@@ -1,9 +1,9 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
+import DialogTreeList from '@/components/dialogs/dialog-tree-list/DialogTreeList.vue';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { DatasetStatus } from '@/io/dataset';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 
 @Component({
