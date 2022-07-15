@@ -3,14 +3,13 @@ import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
 
-import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
 import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import graphData from '@/io/graphData';
 
-import store from '@/services/store.service';
+
 import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
@@ -25,9 +24,9 @@ class flowChart {
   processingState = '';
 }
 
+
 @Component({
   components: {
-    "flow-node": FlowNode,
     "dialog-message": DialogMessage,
   }
 })
@@ -52,7 +51,7 @@ export default class Dashboard extends Vue {
 
   private runFailList: string[] = []
 
-  
+
 
   // dialog for delete
 
@@ -109,7 +108,7 @@ export default class Dashboard extends Vue {
     //get all train task
     const allTrainTask = [...this.trainingInfo.work, ...this.trainingInfo.done]
       .filter(item => item.task !== "Test")
-      .sort((a,b)=> Number(b.runId) - Number(a.runId))
+      .sort((a, b) => Number(b.runId) - Number(a.runId))
 
     // get project info
     const projectNameList = [...new Set(allTrainTask.map(item => item.projectName))]
@@ -184,29 +183,26 @@ export default class Dashboard extends Vue {
     let processingState = ''
     let taskRunning = false
     let percentage = 0
-    let defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
+    const defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
 
     if (typeof taskInfo.process === "string") {
 
       processingState = taskInfo.process
-      defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
+
+      defaultNodes.forEach(node => node.opacity = 0.5)
 
     } else {
 
-      // processingState = "Task is running"
       taskRunning = true
       percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
+      const processingNode: string[] = []
 
       if (percentage === 0) {
-        const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node-processing', 'trained-result-node-processing', 'test-result-node-processing']
-        defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
+        processingNode.push('model-select-node', 'trained-result-node', 'test-result-node')
       } else if (percentage < 100) {
-        const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node', 'trained-result-node-processing', 'test-result-node-processing']
-        defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
-      } else {
-        defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
-        // processingState = "Task finished"
+        processingNode.push('trained-result-node', 'test-result-node')
       }
+      defaultNodes.forEach(node => { if (processingNode.includes(node.name)) node.opacity = 0.5 })
 
     }
 
@@ -235,7 +231,7 @@ export default class Dashboard extends Vue {
       item.data.graph?.clearCells()
       item.data.graph = null
       if (!item.data.experiment) return
-      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item.data.flowInfo, item.data.experiment, item.data.projectName, item.data.taskRunning)
+      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item)
 
       if (!item.data.graph) return
       this.nodeContentSetting(item.data.graph, item.runId, this.trainingInfo)
@@ -244,13 +240,20 @@ export default class Dashboard extends Vue {
   }
 
 
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string, taskRunning: boolean): Graph | null {
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flowChart: flowChart): Graph | null {
 
     if (!container) return null;
 
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
+    // flowChart.data.flowInfo
+
+    if (!flowChart.data.experiment) return null
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(flowChart.data.experiment, flowChart.data.projectName);
+
+    cellData.forEach((val,key)=>{
+      val.basic = flowChart.data.flowInfo.find(item => item.name === key) ?? new FlowNodeSettings()
+    })
 
     // add default node and edge
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {

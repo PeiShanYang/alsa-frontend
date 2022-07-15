@@ -7,7 +7,6 @@ import DialogPreprocess from '@/components/dialogs/dialog-preprocess/DialogPrepr
 import DialogAugmentation from '@/components/dialogs/dialog-augmentation/DialogAugmentation.vue';
 import DialogModelSelect from '@/components/dialogs/dialog-model-select/DialogModelSelect.vue';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
-import FlowNode from "@/components/flow-node/FlowNode.vue";
 
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
@@ -25,7 +24,6 @@ import Logger from '@/services/log.service';
 
 @Component({
   components: {
-    "flow-node": FlowNode,
     "dialog-message": DialogMessage,
     "dialog-dataset": DialogDataset,
     "dialog-preprocess": DialogPreprocess,
@@ -35,7 +33,7 @@ import Logger from '@/services/log.service';
 })
 export default class Experiments extends Vue {
 
-  private graph = new graphData;
+  private graph = new graphData();
 
   private openDialogMessage = false;
   private dialogMessageData: DialogMessageData = new DialogMessageData()
@@ -95,8 +93,6 @@ export default class Experiments extends Vue {
 
     this.drawGraph();
 
-    
-
   }
 
   private drawGraph(): void {
@@ -104,7 +100,6 @@ export default class Experiments extends Vue {
     this.graph.graph?.clearCells()
     if (!this.graph.experiment) return
     const graphFlow = GraphService.basicNodes
-      .filter(node => !node.name.includes("processing"))
       .filter(node => !node.name.includes("trained-result-node"))
       .filter(node => !node.name.includes("test-result-node"))
     this.graph.graph = this.drawFlowChart(window.innerWidth, document.getElementById("graph-container"), graphFlow, this.graph.experiment, this.graph.projectName)
