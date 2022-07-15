@@ -243,19 +243,21 @@ export default class Dashboard extends Vue {
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flowChart: flowChart): Graph | null {
 
     if (!container) return null;
-
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    // flowChart.data.flowInfo
+    const flow = flowChart.data.flowInfo
+    const experiment = flowChart.data.experiment
+    const projectName = flowChart.data.projectName
+    const taskRunning = flowChart.data.taskRunning
 
-    if (!flowChart.data.experiment) return null
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(flowChart.data.experiment, flowChart.data.projectName);
+    if (!experiment) return null
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
-    cellData.forEach((val,key)=>{
-      val.basic = flowChart.data.flowInfo.find(item => item.name === key) ?? new FlowNodeSettings()
+    cellData.forEach((val, key) => {
+      val.basic = flow.find(item => item.name === key) ?? new FlowNodeSettings()
     })
 
-    // add default node and edge
+    // add default node
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
 
       const nodeData = cellData.get(node.name);
@@ -271,9 +273,13 @@ export default class Dashboard extends Vue {
         data: nodeData,
       });
 
+
+      // add default edge
+
       if (index === 0) return
 
-      if (index > 0 && array[index].name.includes("processing") && taskRunning) {
+      if (index > 0 && taskRunning) {
+
         graph?.addEdge({
           source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
           target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
@@ -289,6 +295,12 @@ export default class Dashboard extends Vue {
             },
           },
         });
+
+        insertCss(`@keyframes ant-line {
+          to { stroke-dashoffset: -1000 }
+        }`)
+
+
       } else {
         graph?.addEdge({
           source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
@@ -298,25 +310,18 @@ export default class Dashboard extends Vue {
 
     });
 
-    insertCss(`@keyframes ant-line {
-      to { stroke-dashoffset: -1000 }
-    }`)
-
-
-    const conditionA = flow.filter(item => item.name.includes("processing")).length
-    const conditionB = flow.filter(item => item.name === "model-select-node").length
-
-    if (conditionA > 0 && conditionB > 0 && taskRunning) {
-      const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
-      this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
-    }
-
     return graph
   }
 
-  private addTwinkleAnimateNode(graph: Graph, screenWidth: number, nodeIndex: number): void {
+  private setProcesingNode(flowChart:flowChart): void {
 
-    const modelSelectNodeSetting = GraphService.getNodeSettings(screenWidth, nodeIndex)
+    // if(flowChart.percentage )
+    return
+  }
+
+  private addTwinkleAnimateNode(graph: Graph, nodeIndex: number): void {
+
+    const modelSelectNodeSetting = GraphService.getNodeSettings(window.innerWidth, nodeIndex)
     modelSelectNodeSetting.shape = 'rect'
 
     graph.addNode({
@@ -418,7 +423,7 @@ export default class Dashboard extends Vue {
     graphData.graph?.clearCells()
     graphData.graph = null
     if (!graphData.experiment) return
-    graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(graph.runId), graphData.flowInfo, graphData.experiment, graphData.projectName, graphData.taskRunning)
+    graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(graph.runId), graph)
 
   }
 
@@ -473,7 +478,7 @@ export default class Dashboard extends Vue {
     if (typeof testTask.process === "string") {
 
       // this.graphs[targetGraphIndex].processingState = "Testing"
-      if (!twinkleNode) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
+      if (!twinkleNode) this.addTwinkleAnimateNode(graph, testResultNodeIndex)
       return
     }
 
