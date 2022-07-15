@@ -109,7 +109,7 @@ export default class Dashboard extends Vue {
     //get all train task
     const allTrainTask = [...this.trainingInfo.work, ...this.trainingInfo.done]
       .filter(item => item.task !== "Test")
-
+      .sort((a,b)=> Number(b.runId) - Number(a.runId))
 
     // get project info
     const projectNameList = [...new Set(allTrainTask.map(item => item.projectName))]
@@ -172,32 +172,6 @@ export default class Dashboard extends Vue {
 
       }), 5000)
 
-      // training error : not finished running all epochs
-      // complete all tasks
-
-      // const errorGraph = this.graphs
-      //   .filter(item => item.percentage !== 100)
-      //   .filter(item => item.percentage !== 0)
-
-      // errorGraph.forEach(item => {
-
-      //   // item.percentage = 100
-      //   const itemData = item.data
-
-      //   itemData.flowInfo = GraphService.basicNodes
-      //     .filter(node => !node.name.includes("validation-select"))
-      //     .filter(node => !node.name.includes("processing"))
-
-      //   itemData.taskRunning = false
-
-      //   if (!itemData.experiment) return
-      //   itemData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), itemData.flowInfo, itemData.experiment, itemData.projectName, itemData.taskRunning)
-      //   if (!itemData.graph) return
-      //   this.nodeContentSetting(itemData.graph, item.runId, this.trainingInfo)
-
-      // })
-
-
     })
 
   }
@@ -213,11 +187,6 @@ export default class Dashboard extends Vue {
 
     if (typeof taskInfo.process === "string") {
 
-      // check if this run has benn delete
-      // if (taskInfo.process === "This run has been deleted") processingState = "This run has been deleted"
-
-      // seting state when this run has not started
-      // if (taskInfo.process === "Task has not started") processingState = "Task has not started"
 
       processingState = taskInfo.process
       defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
@@ -531,9 +500,8 @@ export default class Dashboard extends Vue {
     const response = await Api.removeRunInQueue(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
 
     if (response === 'success') {
-      const graphIndex = this.graphs.findIndex(item => item.runId === this.deleteGraphInfo.runId)
-
-      if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+      this.graphs = this.graphs.filter(item => item.runId !== this.deleteGraphInfo.runId)
+      this.drawGraph()
     }
 
     if (this.graphs.length === 0) this.projectExist = false

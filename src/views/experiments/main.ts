@@ -95,6 +95,7 @@ export default class Experiments extends Vue {
 
     this.drawGraph();
 
+    
 
   }
 
