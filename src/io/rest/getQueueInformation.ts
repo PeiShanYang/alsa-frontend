@@ -1,3 +1,6 @@
+import { Experiment } from "@/io/experiment";
+
+
 export class GetQueueInformationRes {
     code = 0;
     message = '';
@@ -39,4 +42,5 @@ export class RunTask {
     projectName = '';
     runId = '';
     task = '';
+    config = new Experiment()
 }

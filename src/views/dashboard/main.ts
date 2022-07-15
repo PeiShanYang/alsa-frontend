@@ -175,10 +175,11 @@ export default class Dashboard extends Vue {
     })
 
   }
+
+
   private graphSetting(taskInfo: RunTask): flowChart | undefined {
 
-    const experiment = store.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
-    if (!experiment) return
+    const experiment = taskInfo.config
 
     let processingState = ''
     let taskRunning = false
@@ -186,7 +187,6 @@ export default class Dashboard extends Vue {
     let defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
 
     if (typeof taskInfo.process === "string") {
-
 
       processingState = taskInfo.process
       defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
