@@ -60,17 +60,13 @@ export default class Sidebar extends Vue {
 
     const response = await Api.removeProject(this.remvoeProjectName)
 
-    if (response) {
+    if (response === "success") {
       Message.success('專案刪除成功')
+      if(this.$route.path !== '/') this.$router.push(`/`)
     } else {
-      Message.error('專案刪除失敗')
+      Message.error(response)
     }
-
-    this.$router.push(`/`)
-
     this.removeDialog = false
-
-    return
   }
 
 }

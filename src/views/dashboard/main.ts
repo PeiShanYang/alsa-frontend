@@ -2,6 +2,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
+import { Message } from 'element-ui';
 
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
@@ -500,8 +501,11 @@ export default class Dashboard extends Vue {
     const response = await Api.removeRunInQueue(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
 
     if (response === 'success') {
+      Message.success('訓練結果刪除成功')
       this.graphs = this.graphs.filter(item => item.runId !== this.deleteGraphInfo.runId)
       this.drawGraph()
+    }else{
+      Message.error(response)
     }
 
     if (this.graphs.length === 0) this.projectExist = false

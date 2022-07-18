@@ -84,7 +84,7 @@ export default class Api {
     return true
   }
 
-  static async removeProject(projectName: string): Promise<boolean> {
+  static async removeProject(projectName: string): Promise<string> {
 
     const reqData: RemoveProjectReq = { projectName }
     const response: AxiosResponse<RemoveProjectRes> = await axios.post(
@@ -92,21 +92,21 @@ export default class Api {
       reqData
     )
 
-    if (response.status != 200) return false
+    if (response.status != 200) return "request fail"
 
     const res: RemoveProjectRes = response.data;
     if (res.code !== 0) {
       console.log(res.message)
-      return false
+      return res.message
     }
 
-    if (!res.data) return false
+    if (!res.data) return "no project"
 
     store.projectList = new Map<string, Project>(
       res.data.projects.map((v) => [v, new Project()])
     );
 
-    return true
+    return res.message
   }
 
   static async getExperiments(projectName: string): Promise<void> {
@@ -326,7 +326,7 @@ export default class Api {
       reqData
     )
 
-    if (response.status !== 200) return "fail";
+    if (response.status !== 200) return "request fail";
 
     const res: DeleteRunRes = response.data
     if (res.code !== 0) console.log(res.message)
