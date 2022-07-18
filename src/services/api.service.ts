@@ -28,6 +28,7 @@ import { SetExperimentsReq, SetExperimentsRes } from "@/io/rest/setExperiments";
 import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/getModelDescription";
 import Logger from "@/services/log.service";
 import { RemoveDatasetReq, RemoveDatasetRes } from "@/io/rest/removeDataset";
+import { RemoveProjectReq, RemoveProjectRes } from "@/io/rest/removeProject";
 
 
 const host = 'http://tw100104318:37510/';
@@ -81,6 +82,31 @@ export default class Api {
     );
 
     return true
+  }
+
+  static async removeProject(projectName: string): Promise<string> {
+
+    const reqData: RemoveProjectReq = { projectName }
+    const response: AxiosResponse<RemoveProjectRes> = await axios.post(
+      host + 'remove-project',
+      reqData
+    )
+
+    if (response.status != 200) return "request fail"
+
+    const res: RemoveProjectRes = response.data;
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+
+    if (!res.data) return "no project"
+
+    store.projectList = new Map<string, Project>(
+      res.data.projects.map((v) => [v, new Project()])
+    );
+
+    return res.message
   }
 
   static async getExperiments(projectName: string): Promise<void> {
@@ -209,7 +235,7 @@ export default class Api {
   }
 
   static async removeDataset(datasetPath: string): Promise<Map<string, DatasetStatus> | undefined> {
-    if (!store.currentProject) return ;
+    if (!store.currentProject) return;
 
     const reqData: RemoveDatasetReq = {
       projectName: store.currentProject,
@@ -221,12 +247,12 @@ export default class Api {
       reqData
     )
 
-    if (response.status !== 200) return ;
+    if (response.status !== 200) return;
 
     const res: RemoveDatasetRes = response.data
     if (res.code !== 0) console.log(res.message);
 
-    if (!res.data) return ;
+    if (!res.data) return;
     return new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
@@ -300,7 +326,7 @@ export default class Api {
       reqData
     )
 
-    if (response.status !== 200) return "fail";
+    if (response.status !== 200) return "request fail";
 
     const res: DeleteRunRes = response.data
     if (res.code !== 0) console.log(res.message)

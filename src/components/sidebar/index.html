@@ -33,6 +33,22 @@
         <img :src="require('@/assets/svg_icon/sidebar/models.svg')" />
         <span>Models</span>
       </el-menu-item>
+      <el-submenu index="setting">
+        <template slot="title">
+          <i class="el-icon-setting"></i>
+          <span>Settings</span>
+        </template>
+        <!-- <el-menu-item>
+          <i class="el-icon-edit-outline"></i>
+          <span>Edit</span>
+        </el-menu-item> -->
+        <el-menu-item @click="askRemoveProject(name)">
+          <i class="el-icon-delete"></i>
+          <span>Delete</span>
+        </el-menu-item>
+      </el-submenu>
     </el-submenu>
   </template>
+  <dialog-message :dialog-open="removeDialog" :message-data="dialogMessageData" @cancel-action="removeDialog=false"
+    @confrim-action="handleReomveProject" />
 </el-menu>

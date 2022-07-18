@@ -1,12 +1,13 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
-import DialogDataset from '@/components/dialog-dataset/DialogDataset.vue';
-import DialogPreprocess from '@/components/dialog-preprocess/DialogPreprocess.vue';
-import DialogAugmentation from '@/components/dialog-augmentation/DialogAugmentation.vue';
-import DialogModelSelect from '@/components/dialog-model-select/DialogModelSelect.vue';
+
+import DialogDataset from '@/components/dialogs/dialog-dataset/DialogDataset.vue';
+import DialogPreprocess from '@/components/dialogs/dialog-preprocess/DialogPreprocess.vue';
+import DialogAugmentation from '@/components/dialogs/dialog-augmentation/DialogAugmentation.vue';
+import DialogModelSelect from '@/components/dialogs/dialog-model-select/DialogModelSelect.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import FlowNode from "@/components/flow-node/FlowNode.vue";
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
 
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
@@ -16,7 +17,6 @@ import DialogMessageData from '@/io/dialogMessageData';
 
 import store from '@/services/store.service';
 import { AugmentationPara, Experiment, ModelSelectPara, PreprocessPara, SchedulerPara, OptimizerPara } from '@/io/experiment';
-import { DatasetStatus } from '@/io/dataset';
 import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
 import { ConfigType } from '@/io/experimentConfig';
@@ -95,6 +95,7 @@ export default class Experiments extends Vue {
 
     this.drawGraph();
 
+    
 
   }
 

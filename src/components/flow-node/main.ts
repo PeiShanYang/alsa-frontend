@@ -14,8 +14,8 @@ export default class flowNode extends Vue {
 
   @Inject("getNode") private getNode!: () => VueShape;
 
-  private nodeBackgroundColor = `background: ${this.backgroundColor}`;
-  private nodeBorderColor = `border-color: ${this.borderColor}; border-left:2px solid ${this.borderColor};opacity: ${this.opacity};`;
+  private nodeBackgroundColor = `background: ${this.backgroundColor};border-color: ${this.borderColor};opacity: ${this.opacity};`;
+  private nodeBorderColor = `border-color: ${this.borderColor};opacity: ${this.opacity};`;
   private nodeContent = ["暫無資料"]
   
 
@@ -28,6 +28,7 @@ export default class flowNode extends Vue {
     node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>) => {
       
       if (info.current) this.nodeContent = info.current.content
+      
     });
 
   }

@@ -2,6 +2,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
+import { Message } from 'element-ui';
 
 import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
@@ -14,7 +15,7 @@ import store from '@/services/store.service';
 import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 
 
@@ -51,6 +52,8 @@ export default class Dashboard extends Vue {
   private graphs: flowChart[] = [];
 
   private runFailList: string[] = []
+
+  
 
   // dialog for delete
 
@@ -107,7 +110,7 @@ export default class Dashboard extends Vue {
     //get all train task
     const allTrainTask = [...this.trainingInfo.work, ...this.trainingInfo.done]
       .filter(item => item.task !== "Test")
-
+      .sort((a,b)=> Number(b.runId) - Number(a.runId))
 
     // get project info
     const projectNameList = [...new Set(allTrainTask.map(item => item.projectName))]
@@ -170,39 +173,14 @@ export default class Dashboard extends Vue {
 
       }), 5000)
 
-      // training error : not finished running all epochs
-      // complete all tasks
-
-      // const errorGraph = this.graphs
-      //   .filter(item => item.percentage !== 100)
-      //   .filter(item => item.percentage !== 0)
-
-      // errorGraph.forEach(item => {
-
-      //   // item.percentage = 100
-      //   const itemData = item.data
-
-      //   itemData.flowInfo = GraphService.basicNodes
-      //     .filter(node => !node.name.includes("validation-select"))
-      //     .filter(node => !node.name.includes("processing"))
-
-      //   itemData.taskRunning = false
-
-      //   if (!itemData.experiment) return
-      //   itemData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), itemData.flowInfo, itemData.experiment, itemData.projectName, itemData.taskRunning)
-      //   if (!itemData.graph) return
-      //   this.nodeContentSetting(itemData.graph, item.runId, this.trainingInfo)
-
-      // })
-
-
     })
 
   }
+
+
   private graphSetting(taskInfo: RunTask): flowChart | undefined {
 
-    const experiment = store.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
-    if (!experiment) return
+    const experiment = taskInfo.config
 
     let processingState = ''
     let taskRunning = false
@@ -211,18 +189,12 @@ export default class Dashboard extends Vue {
 
     if (typeof taskInfo.process === "string") {
 
-      // check if this run has benn delete
-      // if (taskInfo.process === "This run has been deleted") processingState = "This run has been deleted"
-
-      // seting state when this run has not started
-      // if (taskInfo.process === "Task has not started") processingState = "Task has not started"
-
       processingState = taskInfo.process
       defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
 
     } else {
 
-      processingState = "Task is running"
+      // processingState = "Task is running"
       taskRunning = true
       percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
 
@@ -234,7 +206,7 @@ export default class Dashboard extends Vue {
         defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
       } else {
         defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
-        processingState = "Task finished"
+        // processingState = "Task finished"
       }
 
     }
@@ -498,12 +470,12 @@ export default class Dashboard extends Vue {
 
     if (typeof testTask.process === "string") {
 
-      this.graphs[targetGraphIndex].processingState = "Testing"
+      // this.graphs[targetGraphIndex].processingState = "Testing"
       if (!twinkleNode) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
       return
     }
 
-    this.graphs[targetGraphIndex].processingState = "Task finished"
+    // this.graphs[targetGraphIndex].processingState = "Task finished"
     graph.removeCell("twinkle_node")
     const testContent = this.getTestProcessData(testTask.process as TestProcess)
     this.setNodeContent(graph, 'test-result-node', testContent)
@@ -529,9 +501,11 @@ export default class Dashboard extends Vue {
     const response = await Api.removeRunInQueue(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
 
     if (response === 'success') {
-      const graphIndex = this.graphs.findIndex(item => item.runId === this.deleteGraphInfo.runId)
-
-      if (graphIndex > -1) this.graphs.splice(graphIndex, 1)
+      Message.success('訓練結果刪除成功')
+      this.graphs = this.graphs.filter(item => item.runId !== this.deleteGraphInfo.runId)
+      this.drawGraph()
+    }else{
+      Message.error(response)
     }
 
     if (this.graphs.length === 0) this.projectExist = false

@@ -2,7 +2,7 @@ import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 import { VueTreeList, Tree, TreeNode } from 'vue-tree-list';
 import Api from '@/services/api.service';
 import { ListFolderResData } from '@/io/rest/listFolder';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 
 class nodeAttr {
@@ -121,8 +121,6 @@ export default class DialogTreeList extends Vue {
   }
 
   private wrapChildNode(childCollection: nodeAttr[]): nodeAttr[] {
-
-    const mainChidren: nodeAttr[] = []
 
     const pidCollection = [...new Set(childCollection.map(item => item.pid))]
 

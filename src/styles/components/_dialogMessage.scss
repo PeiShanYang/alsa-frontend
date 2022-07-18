@@ -21,9 +21,16 @@
         display: flex;
         justify-content: center;
         margin: 1em 0;
+        flex-direction: column;
         i {
             font-size: $font-normal * 1.75;
             margin-right: 0.5em;
+        }
+        .sub-title{
+            font-size: $font-normal;
+            margin-top: 10px;
+            color: rgb(222, 23, 67);
+
         }
     }
 

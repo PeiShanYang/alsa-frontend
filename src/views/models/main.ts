@@ -7,10 +7,10 @@ import Api from '@/services/api.service';
 import store from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
 import { GetModelInformationResData, ModelInfo } from '@/io/rest/getModelInformation';
-import DialogMessage from '@/components/dialog-message/DialogMessage.vue';
+import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 import { DeployInfo } from '@/io/deployInfo';
-import DialogTreeList from '@/components/dialog-tree-list/DialogTreeList.vue';
+import DialogTreeList from '@/components/dialogs/dialog-tree-list/DialogTreeList.vue';
 import { Experiment } from '@/io/experiment';
 import Logger from '@/services/log.service';
 
