@@ -42,26 +42,27 @@ export default class Sidebar extends Vue {
 
   private askRemoveProject(projectName: string): void {
 
-    if(projectName === '') return
+    if (projectName === '') return
     this.remvoeProjectName = projectName
 
     this.dialogMessageData = {
       ...this.dialogMessageData,
       type: 'warning',
-      title: `確定刪除專案 ${this.remvoeProjectName}?`,
+      title: `確定刪除專案 ${this.remvoeProjectName}`,
+      subtitle: '注意 : 此動作會一並刪除待執行的實驗',
     }
 
     this.removeDialog = true
     return
   }
 
-  private async handleReomveProject():Promise<void>{
+  private async handleReomveProject(): Promise<void> {
 
     const response = await Api.removeProject(this.remvoeProjectName)
 
-    if(response){
+    if (response) {
       Message.success('專案刪除成功')
-    }else{
+    } else {
       Message.error('專案刪除失敗')
     }
 
