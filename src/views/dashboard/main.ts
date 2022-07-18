@@ -15,6 +15,7 @@ import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } fro
 import { StringUtil } from '@/utils/string.util';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
+import storeService from '@/services/store.service';
 
 
 class flowChart {
@@ -178,12 +179,21 @@ export default class Dashboard extends Vue {
 
   private graphSetting(taskInfo: RunTask): flowChart | undefined {
 
-    const experiment = taskInfo.config
+    // const experiment = taskInfo.config 
+    const experiment = storeService.projectList.get(taskInfo.projectName)?.experiments?.get(taskInfo.experimentId)
+    if (!experiment) return
+
+
+    if(!experiment) return
+    console.log("te",experiment.Config)
 
     let processingState = ''
     let taskRunning = false
     let percentage = 0
     const defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, taskInfo.projectName);
+
+    console.log("te",cellData, new Map<string,ProcessCellData>([...cellData]))
 
     if (typeof taskInfo.process === "string") {
 
@@ -253,9 +263,9 @@ export default class Dashboard extends Vue {
     if (!experiment) return null
     const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
 
-    cellData.forEach((val, key) => {
-      val.basic = flow.find(item => item.name === key) ?? new FlowNodeSettings()
-    })
+    // cellData.forEach((val, key) => {
+    //   val.basic = flow.find(item => item.name === key) ?? new FlowNodeSettings()
+    // })
 
     // add default node
     flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
