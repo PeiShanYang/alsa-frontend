@@ -111,7 +111,6 @@ export default class Dashboard extends Vue {
 
 
     // init flowchart setting
-
     allTasks.forEach(item => {
       if (item.task === "Test") return
       const flowChart = this.initFlowChart(item)
@@ -227,8 +226,10 @@ export default class Dashboard extends Vue {
 
   private updateFlowChart(flowChart: flowChart, targetTask: RunTask[]): void {
 
-    const trainTask = targetTask.filter(task => task.task === "Train")[0]
-    const testTask = targetTask.filter(task => task.task === "Test")[0]
+    const trainTask = targetTask.find(task => task.task === "Train")
+    if (!trainTask) return
+    const testTask = targetTask.find(task => task.task === "Test")
+    if (!testTask) return
 
     const trainProcess = trainTask.process
     const testProcess = testTask.process
@@ -404,7 +405,6 @@ export default class Dashboard extends Vue {
     return parseInt(percentage)
 
   }
-
 
   private getTrainProcessData(process: Map<string, TrainingProcess>): string {
 
