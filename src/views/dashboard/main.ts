@@ -2,6 +2,7 @@ import { Component, Vue, Watch } from 'vue-property-decorator';
 import { Graph } from "@antv/x6";
 import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
+import { Message } from 'element-ui';
 
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
@@ -440,7 +441,10 @@ export default class Dashboard extends Vue {
 
     if (response === 'success') {
       this.flowCharts = this.flowCharts.filter(item => item.runId !== this.deleteGraphInfo.runId)
+      Message.success('訓練結果刪除成功')
       this.drawGraph()
+    }else{
+      Message.error(response)
     }
 
     if (this.flowCharts.length === 0) this.projectExist = false

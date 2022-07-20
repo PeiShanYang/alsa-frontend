@@ -2,8 +2,11 @@
   <template v-if="messageData.title !== ''">
     <el-row>
       <el-col class="dialog-title">
-        <i :class="typeIcon" :style="typeColor"></i>
-        <div>{{messageData.title}}</div>
+        <div class="main-title">
+          <i :class="typeIcon" :style="typeColor"></i>
+          {{messageData.title}}
+        </div>
+        <div class="sub-title">{{messageData.subtitle}}</div>
       </el-col>
     </el-row>
   </template>
@@ -12,7 +15,7 @@
       <el-row>
         <el-col class="dialog-input">
           <div>{{item.inputName}}</div>
-          <el-input v-model="item.inputContent" clearable/>
+          <el-input v-model="item.inputContent" clearable />
         </el-col>
       </el-row>
     </template>
