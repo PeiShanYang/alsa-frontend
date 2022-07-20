@@ -5,17 +5,13 @@ import { insertCss } from 'insert-css';
 
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
-import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import graphData from '@/io/graphData';
 
-
-import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
-import storeService from '@/services/store.service';
 
 
 class flowChart {
@@ -48,13 +44,7 @@ export default class Dashboard extends Vue {
 
   private trainingInfo = new GetQueueInformationResData;
 
-  private graphs: flowChart[] = [];
-
   private flowCharts: flowChart[] = [];
-
-  private runFailList: string[] = []
-
-
 
   // dialog for delete
 
@@ -133,11 +123,6 @@ export default class Dashboard extends Vue {
 
       this.drawGraph();
 
-      this.flowCharts.forEach(flowChart => {
-        const targetTask = allTasks.filter(task => task.runId === flowChart.runId)
-        this.updateFlowChart(flowChart,targetTask)
-      })
-
       loadingInstance.close()
 
       const workingIdList = this.trainingInfo.work.map(task => task.runId)
@@ -152,7 +137,7 @@ export default class Dashboard extends Vue {
           const flowChart = this.flowCharts.find(item => item.runId === workingId)
           if (!flowChart) return
           const targetTask = allTasks.filter(task => task.runId === flowChart.runId)
-          this.updateFlowChart(flowChart,targetTask)
+          this.updateFlowChart(flowChart, targetTask)
         })
 
         const stopCondition = allTasks
@@ -198,7 +183,12 @@ export default class Dashboard extends Vue {
       item.data.graph?.clearCells()
       item.data.graph = null
       item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item)
+
+      const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
+      const targetTask = allTasks.filter(task => task.runId === item.runId)
+      this.updateFlowChart(item, targetTask)
     })
+
   }
 
   private drawFlowChart(screenWidth: number, container: HTMLElement | null, flowChart: flowChart): Graph | null {
@@ -239,7 +229,7 @@ export default class Dashboard extends Vue {
 
     const trainTask = targetTask.filter(task => task.task === "Train")[0]
     const testTask = targetTask.filter(task => task.task === "Test")[0]
-  
+
     const trainProcess = trainTask.process
     const testProcess = testTask.process
 
