@@ -247,6 +247,7 @@ export default class Dashboard extends Vue {
       flowChart.percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(trainProcess)))
       const processingNode: string[] = []
 
+      console.log("percentage",flowChart.percentage)
       if (flowChart.percentage === 0) {
         flowChart.data.taskRunning = true
         processingNode.push('model-select-node', 'trained-result-node', 'test-result-node')
@@ -381,7 +382,7 @@ export default class Dashboard extends Vue {
           attributeName: 'opacity',
           from: 0.6,
           to: 0.1,
-          dur: '1.0s',
+          dur: '2s',
           repeatCount: 'indefinite',
         })
       }
