@@ -31,6 +31,7 @@ import { RemoveDatasetReq, RemoveDatasetRes } from "@/io/rest/removeDataset";
 import { RemoveProjectReq, RemoveProjectRes } from "@/io/rest/removeProject";
 import { LoginReq, LoginRes } from "@/io/rest/login";
 import { AxiosUtils } from "@/utils/axios.utils";
+import { ChangePasswordReq, ChangePasswordRes } from "@/io/rest/changePassword";
 
 
 const host = 'http://tw100104318:37510/';
@@ -630,6 +631,22 @@ export default class Api {
 
     return res.message
 
+  }
+
+  static async changePassword(password: string): Promise<string> {
+
+    const reqData: ChangePasswordReq = { password }
+    const response: AxiosResponse<ChangePasswordRes> = await axios.post(
+      host + 'change-password',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connect fail'
+
+    const res: ChangePasswordRes = response.data
+
+    return res.message
   }
 
 }
