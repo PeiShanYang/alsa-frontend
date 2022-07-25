@@ -1,0 +1,60 @@
+#main-section {
+    padding: 2%;
+}
+
+.title-box {
+    background: $third-color;
+    color: white;
+    font-size: $font-normal;
+    box-sizing: border-box;
+    padding: 0.5em;
+}
+
+.box-wrap{
+    @extend %box-shadow;
+}
+
+.content-box {
+    box-sizing: border-box;
+    font-size: $font-normal;
+    padding: 0.5em;
+    height: 2.5em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #EDEBEB;
+
+    .user-info-box {
+        color: #939393;
+    }
+
+    .edit-box {
+        width: 28%;
+        display: flex;
+        justify-content: space-around;
+    }
+}
+
+.edit-box{
+
+    .role-text{
+        color: $primary-color;
+    }
+
+    .switch-box{
+        width: 50%;
+        color: $primary-color;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        &-text{
+            width: 50%;
+            margin: 0 $font-normal;
+        }
+    }
+    .setting-box{
+        display: flex;
+        color: $third-color;
+        align-items: baseline;
+    }
+}

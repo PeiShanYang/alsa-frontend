@@ -1,11 +1,12 @@
 import Vue from 'vue'
-import VueRouter, {RouteConfig} from 'vue-router'
+import VueRouter, { RouteConfig } from 'vue-router'
 import Layout from './../components/layout/Layout.vue';
 import Dashboard from '@/views/dashboard/Dashboard.vue';
 import Dataset from '@/views/dataset/Dataset.vue';
 import Experiments from '@/views/experiments/Experiments.vue';
 import Models from '@/views/models/Models.vue';
 import CreateProject from '@/views/create-project/CreateProject.vue';
+import AuthMgmt from '@/views/authMgmt/AuthMgmt.vue';
 import Login from '@/views/login/Login.vue';
 import store from '@/services/store.service';
 
@@ -13,8 +14,8 @@ Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
     {
-        path:"/login",
-        component:Login,
+        path: "/login",
+        component: Login,
     },
     {
         path: '/',
@@ -27,12 +28,21 @@ const routes: Array<RouteConfig> = [
         }]
     },
     {
-        path:'/createProject',
+        path: '/createProject',
         component: Layout,
-        children:[{
+        children: [{
             name: 'createProject',
             path: '',
             component: CreateProject,
+        }]
+    },
+    {
+        path: '/authMgmt',
+        component: Layout,
+        children: [{
+            name: 'authMgmt',
+            path: '',
+            component: AuthMgmt,
         }]
     },
     {
@@ -49,7 +59,7 @@ const routes: Array<RouteConfig> = [
             component: Experiments,
         },
         {
-            name:"models",
+            name: "models",
             path: 'models',
             component: Models,
         },
@@ -58,7 +68,7 @@ const routes: Array<RouteConfig> = [
 ]
 
 const router = new VueRouter({
-    mode:'history',
+    mode: 'history',
     base: process.env.Base_URL,
     routes
 })

@@ -1,0 +1,49 @@
+<div id="main-section">
+  <el-row>
+    <el-col>
+      <div class="action-btn-group">
+        <template v-if="triggerEdit === false">
+          <el-button class="primary-btn" @click="triggerEdit = true">編輯</el-button>
+        </template>
+        <template v-else>
+          <el-button class="secondary-btn" @click="triggerEdit = false">預覽列表</el-button>
+          <el-button class="primary-btn">新增使用者</el-button>
+        </template>
+      </div>
+    </el-col>
+  </el-row>
+  <el-row>
+    <el-col>
+      <div class="title-box">
+        <div>使用者名稱</div>
+      </div>
+      <div class="box-wrap">
+        <div class="content-box" v-for="user in userList">
+          <div class="user-info-box">{{user.name}}</div>
+          <div class="edit-box">
+            <template v-if="triggerEdit === false">
+              <div class="role-text">{{user.role}}</div>
+            </template>
+            <template v-else>
+              <div class="switch-box">
+                <div class="switch-box-text">{{user.role}}</div>
+                <el-switch
+                :value="user.role"
+                active-color="#08648D"
+                inactive-color="#C495FF61"
+                active-value="admin"
+                inactive-value="NotAdmin"
+                @change="handleSwitch(user.id)"
+                ></el-switch>
+              </div>
+              <div class="setting-box">
+                <div class="setting-box-icon"><i class="el-icon-setting"></i></div>
+                <div class="setting-box-text">設定</div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </el-col>
+  </el-row>
+</div>

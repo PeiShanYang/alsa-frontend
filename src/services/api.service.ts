@@ -29,15 +29,21 @@ import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/ge
 import Logger from "@/services/log.service";
 import { RemoveDatasetReq, RemoveDatasetRes } from "@/io/rest/removeDataset";
 import { RemoveProjectReq, RemoveProjectRes } from "@/io/rest/removeProject";
+import { LoginReq, LoginRes } from "@/io/rest/login";
+import { AxiosUtils } from "@/utils/axios.utils";
 
 
 const host = 'http://tw100104318:37510/';
 // const host = 'http://tw100104318:65101/';
 
+
+
 export default class Api {
   static async getProjects(): Promise<void> {
     const response = await axios.post(
       host + 'get-projects',
+      {},
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return;
@@ -65,6 +71,7 @@ export default class Api {
     const response: AxiosResponse<GetProjectRes> = await axios.post(
       host + 'create-project-by-key',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return false;
@@ -89,7 +96,8 @@ export default class Api {
     const reqData: RemoveProjectReq = { projectName }
     const response: AxiosResponse<RemoveProjectRes> = await axios.post(
       host + 'remove-project',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status != 200) return "request fail"
@@ -117,6 +125,7 @@ export default class Api {
     const response: AxiosResponse<GetExperimentsRes> = await axios.post(
       host + 'get-experiments',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return;
@@ -144,6 +153,7 @@ export default class Api {
     const response: AxiosResponse<SetExperimentsRes> = await axios.post(
       host + 'set-experiments',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return;
@@ -171,6 +181,7 @@ export default class Api {
     const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
       host + 'set-experiment-dataset',
       reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return;
@@ -195,6 +206,7 @@ export default class Api {
     const response: AxiosResponse<GetDatasetsRes> = await axios.post(
       host + 'get-datasets',
       reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return;
@@ -222,6 +234,7 @@ export default class Api {
     const response: AxiosResponse<CheckDatasetRes> = await axios.post(
       host + 'check-dataset',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return false;
@@ -244,7 +257,8 @@ export default class Api {
 
     const response: AxiosResponse<RemoveDatasetRes> = await axios.post(
       host + 'remove-dataset',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return;
@@ -265,6 +279,7 @@ export default class Api {
     const response: AxiosResponse<RunExperimentRes> = await axios.post(
       host + 'run-experiment-train',
       reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return new RunExperimentData
@@ -286,6 +301,7 @@ export default class Api {
     const response: AxiosResponse<RunExperimentRes> = await axios.post(
       host + 'run-experiment-test',
       reqData,
+      AxiosUtils.bearearToken(),
     )
     if (response.status !== 200) return new RunExperimentData
 
@@ -302,6 +318,8 @@ export default class Api {
 
     const response: AxiosResponse<GetQueueInformationRes> = await axios.post(
       host + 'get-queue-information',
+      {},
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return new GetQueueInformationResData
@@ -323,7 +341,8 @@ export default class Api {
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
       host + 'remove-run-in-queue',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return "request fail";
@@ -341,7 +360,8 @@ export default class Api {
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
       host + 'remove-run',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return "fail"
@@ -360,7 +380,8 @@ export default class Api {
 
     const response: AxiosResponse<GetModelInformationRes> = await axios.post(
       host + 'get-model-information',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return new GetModelInformationResData();
@@ -397,7 +418,8 @@ export default class Api {
 
     const response: AxiosResponse<SetDeployPathRes> = await axios.post(
       host + 'set-deploy-path',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return null
@@ -418,7 +440,8 @@ export default class Api {
 
     const response: AxiosResponse<DeployRes> = await axios.post(
       host + 'deploy',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status != 200) return null
@@ -449,6 +472,8 @@ export default class Api {
 
     const response: AxiosResponse<ListFolderRes> = await axios.post(
       host + reqUrl,
+      {},
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return new ListFolderResData;
@@ -472,7 +497,8 @@ export default class Api {
 
     const response: AxiosResponse<CreateFolderRes> = await axios.post(
       host + reqUrl,
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return false
@@ -496,7 +522,8 @@ export default class Api {
 
     const response: AxiosResponse<RemoveFolderRes> = await axios.post(
       host + reqUrl,
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return false
@@ -520,7 +547,8 @@ export default class Api {
 
     const response: AxiosResponse<RenameFolderRes> = await axios.post(
       host + reqUrl,
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return false
@@ -538,7 +566,11 @@ export default class Api {
 
     if (store.experimentConfigs) return
 
-    const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(host + 'get-experiment-configs')
+    const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(
+      host + 'get-experiment-configs',
+      {},
+      AxiosUtils.bearearToken(),
+    )
 
     if (response.status !== 200) return
 
@@ -555,6 +587,8 @@ export default class Api {
 
     const response: AxiosResponse<GetModelDescriptionRes> = await axios.post(
       host + 'get-model-description',
+      {},
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return new Map<string, GetModelDescriptionResData>();
@@ -568,4 +602,34 @@ export default class Api {
 
     return new Map<string, GetModelDescriptionResData>(Object.entries(res.data));
   }
+
+  //login and auth system
+
+  static async login(username: string, password: string, remember: boolean): Promise<string> {
+
+    const reqData: LoginReq = {
+      username, password
+    }
+
+    const response: AxiosResponse<LoginRes> = await axios.post(
+      host + 'login',
+      reqData,
+    )
+
+    if (response.status !== 200) return 'connect fail'
+
+    const res: LoginRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    if (!res.data) return res.message
+
+    storeService.salaCookies = res.data
+    if (remember) document.cookie = `salaCookies=${res.data}`
+
+    return res.message
+
+  }
+
 }

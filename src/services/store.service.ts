@@ -9,11 +9,13 @@ class Store {
   experimentConfigs?: ExperimentConfigs;
 
   sidebarCollapse = false;
-  debugMode = false
+  debugMode = false;
+  salaCookies ='';
 }
 
 export default Vue.observable<Store>({
   projectList: new Map<string, Project>(),
   sidebarCollapse: false,
   debugMode: true,
+  salaCookies:""
 });
