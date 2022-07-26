@@ -47,7 +47,7 @@ export default class Navbar extends Vue {
       return
     }
 
-    const res = await Api.changePassword(newPassword01)
+    const res = await Api.changePassword(oldPassword,newPassword01)
     if (res === "success") {
       Message.success('密碼修改成功')
       this.openDialogChangePassword = false

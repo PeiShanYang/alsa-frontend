@@ -1,5 +1,6 @@
 
 export class ChangePasswordReq {
+    originPassword!:string;
     password!: string;
 }
 

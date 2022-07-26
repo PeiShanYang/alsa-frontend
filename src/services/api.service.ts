@@ -32,6 +32,11 @@ import { RemoveProjectReq, RemoveProjectRes } from "@/io/rest/removeProject";
 import { LoginReq, LoginRes } from "@/io/rest/login";
 import { AxiosUtils } from "@/utils/axios.utils";
 import { ChangePasswordReq, ChangePasswordRes } from "@/io/rest/changePassword";
+import { UsersAllRes } from "@/io/rest/usersAll";
+import { UsersGlobal } from "@/io/users";
+import { AddUserReq, AddUserRes } from "@/io/rest/addUser";
+import { RemoveUserReq, RemoveUserRes } from "@/io/rest/removeUser";
+import { ModifyUserReq, ModifyUserRes } from "@/io/rest/modifyUser";
 
 
 const host = 'http://tw100104318:37510/';
@@ -617,7 +622,7 @@ export default class Api {
       reqData,
     )
 
-    if (response.status !== 200) return 'connect fail'
+    if (response.status !== 200) return 'connection error'
 
     const res: LoginRes = response.data
     if (res.code !== 0) {
@@ -633,16 +638,105 @@ export default class Api {
 
   }
 
-  static async changePassword(password: string): Promise<string> {
+  static async usersAll(): Promise<UsersGlobal> {
 
-    const reqData: ChangePasswordReq = { password }
+    const response: AxiosResponse<UsersAllRes> = await axios.post(
+      host + 'users/all',
+      {},
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return new UsersGlobal
+    const res: UsersAllRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return new UsersGlobal
+    }
+
+    if (!res.data) return new UsersGlobal
+    return res.data
+  }
+
+  static async addUser(username: string, password: string, maintainer: boolean): Promise<string> {
+
+    const reqData: AddUserReq = { username, password, maintainer }
+
+    const response: AxiosResponse<AddUserRes> = await axios.post(
+      host + 'add-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+    const res: AddUserRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    return res.message
+  }
+
+  static async removeUser(username: string): Promise<string> {
+
+    const reqData: RemoveUserReq = { username }
+
+    const response: AxiosResponse<RemoveUserRes> = await axios.post(
+      host + 'remove-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+    const res: RemoveUserRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    return res.message
+  }
+
+  static async modifyUser(username: string, isMaintainer: boolean): Promise<string> {
+
+    const reqData: ModifyUserReq = { username, isMaintainer }
+
+    const response: AxiosResponse<ModifyUserRes> = await axios.post(
+      host + 'modify-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+    const res: ModifyUserRes = response.data
+
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    return res.message
+
+  }
+
+  static async usersProject(): Promise<any> {
+
+    const response: AxiosResponse<any> = await axios.post(
+      host + 'users/project',
+      {},
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+    console.log("tr",response.data)
+
+  }
+
+  static async changePassword(originPassword: string, password: string): Promise<string> {
+
+    const reqData: ChangePasswordReq = { originPassword, password }
     const response: AxiosResponse<ChangePasswordRes> = await axios.post(
       host + 'change-password',
       reqData,
       AxiosUtils.bearearToken(),
     )
 
-    if (response.status !== 200) return 'connect fail'
+    if (response.status !== 200) return 'connection error'
 
     const res: ChangePasswordRes = response.data
 

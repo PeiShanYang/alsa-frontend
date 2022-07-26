@@ -7,6 +7,7 @@ import Experiments from '@/views/experiments/Experiments.vue';
 import Models from '@/views/models/Models.vue';
 import CreateProject from '@/views/create-project/CreateProject.vue';
 import AuthMgmt from '@/views/authMgmt/AuthMgmt.vue';
+import ProjectAuth from '@/views/projectAuth/ProjectAuth.vue';
 import Login from '@/views/login/Login.vue';
 import store from '@/services/store.service';
 
@@ -62,6 +63,11 @@ const routes: Array<RouteConfig> = [
             name: "models",
             path: 'models',
             component: Models,
+        },
+        {
+            name: "management",
+            path: 'management',
+            component: ProjectAuth,
         },
         ]
     },

@@ -38,10 +38,10 @@
           <i class="el-icon-setting"></i>
           <span>Settings</span>
         </template>
-        <!-- <el-menu-item>
+        <el-menu-item :index="`/${name}/management`">
           <i class="el-icon-edit-outline"></i>
-          <span>Edit</span>
-        </el-menu-item> -->
+          <span>Management</span>
+        </el-menu-item>
         <el-menu-item @click="askRemoveProject(name)">
           <i class="el-icon-delete"></i>
           <span>Delete</span>

@@ -11,7 +11,7 @@ class userInfo {
 }
 
 @Component
-export default class AuthMgmt extends Vue {
+export default class ProjectAuth extends Vue {
 
     private triggerEdit = false;
 
