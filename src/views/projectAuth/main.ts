@@ -1,7 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Api from '@/services/api.service';
-import { AddUserReq } from '@/io/rest/addUser';
 import { Message } from 'element-ui';
+import storeService from '@/services/store.service';
+import { SetProjectUserReq } from '@/io/rest/setProjectUser';
 
 
 
@@ -15,15 +16,17 @@ export default class ProjectAuth extends Vue {
 
     private triggerEdit = false;
 
+    private globalUsers: string[] = [];
+
     private userList: userInfo[] = [];
 
     private openAddUserDialog = false
 
-    private addUserData: AddUserReq = new AddUserReq
-    private addUserCheckPassword = ''
+    private addUserData: SetProjectUserReq = new SetProjectUserReq
+
 
     private openRemoveUserDialog = false
-    private removeUsername = ''
+    private removeUserData: SetProjectUserReq = new SetProjectUserReq
 
     private mounted(): void {
         this.$i18n.locale = "zh-tw"
@@ -32,17 +35,15 @@ export default class ProjectAuth extends Vue {
 
     private async waitGetUsers(): Promise<void> {
 
-        const res = await Api.usersAll()
-        const { users, maintainers } = res
+        if (!storeService.currentProject) return
 
-        if (users.length === 0) return
+        const res = await Api.usersProject(storeService.currentProject)
+        this.globalUsers = res.users
+        if (this.globalUsers.length === 0) return
+
+        const members = new Map<string, string>(Object.entries(res.members))
         this.userList = []
-        users.forEach(user => {
-            this.userList.push({
-                name: user,
-                role: maintainers.includes(user) ? "maintainer" : "notMaintainer"
-            })
-        })
+        members.forEach((role, name) => this.userList.push({ name, role }))
     }
 
     private roleName(name: string): string {
@@ -51,21 +52,16 @@ export default class ProjectAuth extends Vue {
 
 
     private addUserSetting(): void {
-        this.addUserData = new AddUserReq
-        this.addUserCheckPassword = ''
+        this.addUserData = new SetProjectUserReq
+        this.addUserData.projectName = storeService.currentProject ?? ''
         this.openAddUserDialog = true
     }
 
     private async handleAddUser(): Promise<void> {
 
-        if (this.addUserCheckPassword !== this.addUserData.password) {
-            Message.error("密碼輸入不一致")
-            return
-        }
-
-        const res = await Api.addUser(this.addUserData.username, this.addUserData.password, this.addUserData.maintainer)
+        const res = await Api.addProjectUser(this.addUserData.projectName, this.addUserData.username, this.addUserData.auth)
         if (res === "success") {
-            Message.success("使用者新增成功")
+            Message.success('新增成功')
             await this.waitGetUsers()
             this.openAddUserDialog = false
         } else {
@@ -74,16 +70,20 @@ export default class ProjectAuth extends Vue {
         }
     }
 
-    private removeUserSetting(username: string): void {
-        this.removeUsername = username
+    private removeUserSetting(username: string, role: string): void {
+        this.removeUserData = {
+            username,
+            auth: role,
+            projectName: storeService.currentProject ?? ''
+        }
         this.openRemoveUserDialog = true
     }
 
     private async handleRemoveUser(): Promise<void> {
 
-        const res = await Api.removeUser(this.removeUsername)
+        const res = await Api.removeProjectUser(this.removeUserData.projectName, this.removeUserData.username, this.removeUserData.auth)
         if (res === "success") {
-            Message.success("使用者刪除成功")
+            Message.success("刪除成功")
             await this.waitGetUsers()
             this.openRemoveUserDialog = false
         } else {
@@ -97,12 +97,14 @@ export default class ProjectAuth extends Vue {
         const user = this.userList.find(item => item.name === username)
         if (!user) return
 
-        const isMantainer = user.role === "maintainer" ? true : false
-        // const modifyUserRes = awi
-        const switchRoleRes = await Api.modifyUser(user.name, !isMantainer)
+        const roleChange = user.role === "owner" ? 'user' : 'owner'
+
+        if (!storeService.currentProject) return
+
+        const switchRoleRes = await Api.modifyProjectUser(storeService.currentProject, user.name, roleChange)
         if (switchRoleRes === "success") {
-            Message.success("權限並更成功")
-            user.role === "maintainer" ? user.role = "notMaintainer" : user.role = "maintainer"
+            Message.success("權限變更成功")
+            user.role = roleChange
         } else {
             Message.error(switchRoleRes)
             return

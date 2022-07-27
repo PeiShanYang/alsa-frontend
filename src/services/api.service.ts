@@ -33,10 +33,13 @@ import { LoginReq, LoginRes } from "@/io/rest/login";
 import { AxiosUtils } from "@/utils/axios.utils";
 import { ChangePasswordReq, ChangePasswordRes } from "@/io/rest/changePassword";
 import { UsersAllRes } from "@/io/rest/usersAll";
-import { UsersGlobal } from "@/io/users";
+import { UserInfo, UsersGlobal, UsersProject } from "@/io/users";
 import { AddUserReq, AddUserRes } from "@/io/rest/addUser";
 import { RemoveUserReq, RemoveUserRes } from "@/io/rest/removeUser";
 import { ModifyUserReq, ModifyUserRes } from "@/io/rest/modifyUser";
+import { UsersProjectReq, UsersProjectRes } from "@/io/rest/usersProject";
+import { SetProjectUserReq, SetProjectUserRes } from "@/io/rest/setProjectUser";
+import { RefreshTokenRes } from "@/io/rest/refreshToken";
 
 
 const host = 'http://tw100104318:37510/';
@@ -60,16 +63,20 @@ export default class Api {
       return;
     }
 
-    if (res.data) {
-      store.projectList = new Map<string, Project>(
-        res.data.projects.map((v) => [v, new Project()])
-      );
+    if (!res.data) return
 
-      store.projectList.forEach((project, name) => {
-        project.name = name
-      })
+    const resProjects = new Map<string, string>(Object.entries(res.data.projects))
 
-    }
+    const projectList: [string, Project][] = []
+    resProjects.forEach((auth, name) => {
+      const project = new Project()
+      project.name = name
+      project.auth = auth
+      projectList.push([name, project])
+    })
+
+    storeService.projectList = new Map<string, Project>(projectList)
+
   }
   static async createProjectByKey(name: string, key: string): Promise<boolean> {
     if (key === '.') key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiU0dEIjp7InN3aXRjaCI6MSwibW9tZW50dW0iOjAuOSwiZGFtcGVuaW5nIjowLCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJuZXN0ZXJvdiI6MH19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC41fX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOiJJbWFnZU5ldCJ9LCJyZXNpemUiOnsic3dpdGNoIjoxLCJpbWFnZVNpemUiOlsyMjQsMjI0XSwiaW50ZXJwb2xhdGlvbiI6IkJJTElORUFSIn19fSwiQ29uZmlnUHl0b3JjaE1vZGVsIjp7IlNlbGVjdGVkTW9kZWwiOnsibW9kZWwiOnsic3RydWN0dXJlIjoiYXVvX3VucmVzdHJpY3RlZF9wb3dlcmZ1bF9tb2RlbCIsInByZXRyYWluZWQiOjF9fSwiQ2xzTW9kZWxQYXJhIjp7ImJhdGNoU2l6ZSI6MTYsImVwb2NocyI6MTB9fX0.27ROd91Ailzl86kLppHCMpA2q0n_HUrJrqA6FALxqsw";
@@ -87,13 +94,6 @@ export default class Api {
       console.log(res.message);
       return false;
     }
-
-    if (!res.data) return false
-
-    store.projectList = new Map<string, Project>(
-      res.data.projects.map((v) => [v, new Project()])
-    );
-
     return true
   }
 
@@ -109,16 +109,6 @@ export default class Api {
     if (response.status != 200) return "request fail"
 
     const res: RemoveProjectRes = response.data;
-    if (res.code !== 0) {
-      console.log(res.message)
-      return res.message
-    }
-
-    if (!res.data) return "no project"
-
-    store.projectList = new Map<string, Project>(
-      res.data.projects.map((v) => [v, new Project()])
-    );
 
     return res.message
   }
@@ -631,12 +621,36 @@ export default class Api {
     }
     if (!res.data) return res.message
 
-    storeService.salaCookies = res.data
+    storeService.userInfo.token = res.data
+
     if (remember) document.cookie = `salaCookies=${res.data}`
+    return res.message
+  }
+
+  static async refreshToken(): Promise<string> {
+
+    const response: AxiosResponse<RefreshTokenRes> = await axios.post(
+      host + 'refresh-token',
+      {},
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+
+    const res: RefreshTokenRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+
+    if (!res.data) return "There is no data."
+
+    storeService.userInfo = res.data
 
     return res.message
 
   }
+
 
   static async usersAll(): Promise<UsersGlobal> {
 
@@ -715,16 +729,64 @@ export default class Api {
 
   }
 
-  static async usersProject(): Promise<any> {
+  static async usersProject(projectName: string): Promise<UsersProject> {
 
-    const response: AxiosResponse<any> = await axios.post(
+    const reqData: UsersProjectReq = { projectName }
+    const response: AxiosResponse<UsersProjectRes> = await axios.post(
       host + 'users/project',
-      {},
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return new UsersProject
+    const res: UsersProjectRes = response.data
+
+    if (res.code !== 0) {
+      console.log(res.message)
+      return new UsersProject
+    }
+    if (!res.data) return new UsersProject
+    return res.data
+
+  }
+
+  static async addProjectUser(projectName: string, username: string, auth: string): Promise<string> {
+
+    const reqData: SetProjectUserReq = { projectName, username, auth }
+    const response: AxiosResponse<SetProjectUserRes> = await axios.post(
+      host + 'add-project-user',
+      reqData,
       AxiosUtils.bearearToken(),
     )
     if (response.status !== 200) return 'connection error'
-    console.log("tr",response.data)
 
+    const res: SetProjectUserRes = response.data
+    return res.message
+  }
+
+  static async removeProjectUser(projectName: string, username: string, auth: string): Promise<string> {
+    const reqData: SetProjectUserReq = { projectName, username, auth }
+    const response: AxiosResponse<SetProjectUserRes> = await axios.post(
+      host + 'remove-project-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+
+    const res: SetProjectUserRes = response.data
+    return res.message
+  }
+
+  static async modifyProjectUser(projectName: string, username: string, auth: string): Promise<string> {
+    const reqData: SetProjectUserReq = { projectName, username, auth }
+    const response: AxiosResponse<SetProjectUserRes> = await axios.post(
+      host + 'modify-project-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+
+    const res: SetProjectUserRes = response.data
+    return res.message
   }
 
   static async changePassword(originPassword: string, password: string): Promise<string> {

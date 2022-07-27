@@ -2,11 +2,14 @@
   <el-row>
     <el-col>
       <div class="action-btn-group">
-        <template v-if="triggerEdit === false">
+        <template v-if="userInfo.auth === 'admin' && triggerEdit === false">
           <el-button class="primary-btn" @click="triggerEdit = true">編輯</el-button>
         </template>
-        <template v-else>
+        <template v-else-if="userInfo.auth === 'admin' && triggerEdit === true">
           <el-button class="secondary-btn" @click="triggerEdit = false">預覽列表<i class="el-icon-view"></i></el-button>
+          <el-button class="primary-btn" @click="addUserSetting">新增使用者<i class="el-icon-plus"></i></el-button>
+        </template>
+        <template v-else>
           <el-button class="primary-btn" @click="addUserSetting">新增使用者<i class="el-icon-plus"></i></el-button>
         </template>
       </div>
@@ -58,7 +61,9 @@
       <div class="input-box-title">使用者角色</div>
       <el-select v-model="addUserData.maintainer" clearable>
         <el-option key=false :value=false :label="roleName('notMaintainer')"></el-option>
-        <el-option key=true :value=true :label="roleName('maintainer')"></el-option>
+        <template v-if="userInfo.auth === 'admin'">
+          <el-option key=true :value=true :label="roleName('maintainer')"></el-option>
+        </template>
       </el-select>
     </div>
     <div class="btn-group">

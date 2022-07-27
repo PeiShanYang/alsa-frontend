@@ -5,5 +5,11 @@ export class UsersGlobal {
 
 export class UsersProject {
     users: string[] = [];
-    members: string[] = [];
+    members:Map<string,string> = new Map<string,string>()
+}
+
+export class UserInfo{
+    token = '';
+    username = '';
+    auth = '';
 }

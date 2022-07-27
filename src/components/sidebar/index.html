@@ -33,7 +33,7 @@
         <img :src="require('@/assets/svg_icon/sidebar/models.svg')" />
         <span>Models</span>
       </el-menu-item>
-      <el-submenu index="setting">
+      <el-submenu index="setting" v-if="project.auth === 'owner' || userInfo.auth === 'admin'">
         <template slot="title">
           <i class="el-icon-setting"></i>
           <span>Settings</span>

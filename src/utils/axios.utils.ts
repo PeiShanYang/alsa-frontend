@@ -4,13 +4,18 @@ import { StringUtil } from "@/utils/string.util"
 
 export class AxiosUtils {
 
+    static getToken(): string {
+        return StringUtil.getCookie('salaCookies') !== '' ? StringUtil.getCookie('salaCookies') : storeService.userInfo.token
+    }
+
     static bearearToken(): { headers: { Authorization: string } } {
 
-        const token = StringUtil.getCookie('salaCookies') !== '' ? StringUtil.getCookie('salaCookies') : storeService.salaCookies
+        const token = AxiosUtils.getToken()
 
         return {
             headers: { Authorization: `Bearer ${token}` }
         }
     }
+
 
 }

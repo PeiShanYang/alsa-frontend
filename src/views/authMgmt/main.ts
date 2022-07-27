@@ -2,20 +2,20 @@ import { Component, Vue } from 'vue-property-decorator';
 import Api from '@/services/api.service';
 import { AddUserReq } from '@/io/rest/addUser';
 import { Message } from 'element-ui';
+import { UserInfo } from '@/io/users';
+import storeService from '@/services/store.service';
 
-
-
-class userInfo {
-    name = '';
-    role = '';
-}
 
 @Component
 export default class AuthMgmt extends Vue {
 
+    get userInfo(): UserInfo {
+        return storeService.userInfo
+    }
+
     private triggerEdit = false;
 
-    private userList: userInfo[] = [];
+    private userList: { name: string, role: string }[] = [];
 
     private openAddUserDialog = false
 
@@ -65,7 +65,7 @@ export default class AuthMgmt extends Vue {
 
         const res = await Api.addUser(this.addUserData.username, this.addUserData.password, this.addUserData.maintainer)
         if (res === "success") {
-            Message.success("使用者新增成功")
+            Message.success("新增成功")
             await this.waitGetUsers()
             this.openAddUserDialog = false
         } else {
@@ -83,7 +83,7 @@ export default class AuthMgmt extends Vue {
 
         const res = await Api.removeUser(this.removeUsername)
         if (res === "success") {
-            Message.success("使用者刪除成功")
+            Message.success("刪除成功")
             await this.waitGetUsers()
             this.openRemoveUserDialog = false
         } else {
@@ -101,7 +101,7 @@ export default class AuthMgmt extends Vue {
         // const modifyUserRes = awi
         const switchRoleRes = await Api.modifyUser(user.name, !isMantainer)
         if (switchRoleRes === "success") {
-            Message.success("權限並更成功")
+            Message.success("權限變更成功")
             user.role === "maintainer" ? user.role = "notMaintainer" : user.role = "maintainer"
         } else {
             Message.error(switchRoleRes)

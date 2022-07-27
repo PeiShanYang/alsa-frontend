@@ -28,10 +28,10 @@
               <div class="switch-box">
                 <div class="switch-box-text">{{roleName(user.role)}}</div>
                 <el-switch :value="user.role" active-color="#08648D" inactive-color="#C495FF61"
-                  active-value="maintainer" inactive-value="notMaintainer" @change="handleModifyUser(user.name)">
+                  active-value="owner" inactive-value="user" @change="handleModifyUser(user.name)">
                 </el-switch>
               </div>
-              <div class="setting-box" @click="removeUserSetting(user.name)">
+              <div class="setting-box" @click="removeUserSetting(user.name,user.role)">
                 <div class="setting-box-icon"><i class="el-icon-delete"></i></div>
                 <div class="setting-box-text">刪除</div>
               </div>
@@ -44,21 +44,17 @@
   <el-dialog :visible.sync="openAddUserDialog" :show-close=false :close-on-click-modal="false" append-to-body>
     <div class="input-box">
       <div class="input-box-title">使用者名稱</div>
-      <el-input v-model="addUserData.username" clearable></el-input>
-    </div>
-    <div class="input-box">
-      <div class="input-box-title">使用者密碼</div>
-      <el-input v-model="addUserData.password" show-password clearable></el-input>
-    </div>
-    <div class="input-box">
-      <div class="input-box-title">確認使用者密碼</div>
-      <el-input v-model="addUserCheckPassword" show-password clearable></el-input>
+      <el-select v-model="addUserData.username" clearable>
+        <template v-for="user in globalUsers">
+          <el-option :key='user' :value='user' :label='user'></el-option>
+        </template>
+      </el-select>
     </div>
     <div class="input-box">
       <div class="input-box-title">使用者角色</div>
-      <el-select v-model="addUserData.maintainer" clearable>
-        <el-option key=false :value=false :label="roleName('notMaintainer')"></el-option>
-        <el-option key=true :value=true :label="roleName('maintainer')"></el-option>
+      <el-select v-model="addUserData.auth" clearable>
+        <el-option key='user' value='user' :label="roleName('user')"></el-option>
+        <el-option key='owner' value='owner' :label="roleName('owner')"></el-option>
       </el-select>
     </div>
     <div class="btn-group">
@@ -68,7 +64,7 @@
   </el-dialog>
   <el-dialog :visible.sync="openRemoveUserDialog" :show-close=false :close-on-click-modal="false" append-to-body>
     <div class="delete-box">
-      <div class="delete-box-title"><i class="el-icon-warning"></i> 確定刪除使用者 {{removeUsername}} ?</div>
+      <div class="delete-box-title"><i class="el-icon-warning"></i> 確定刪除 {{roleName(removeUserData.auth)}} ： {{removeUserData.username}} ?</div>
     </div>
     <div class="btn-group">
       <el-button class="secondary-btn" @click="openRemoveUserDialog=false">取消</el-button>

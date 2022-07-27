@@ -4,6 +4,9 @@ import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue
 import DialogMessageData from '@/io/dialogMessageData';
 import { Message } from 'element-ui';
 import Api from '@/services/api.service';
+import { UserInfo } from '@/io/users';
+import storeService from '@/services/store.service';
+import { StringUtil } from '@/utils/string.util';
 
 @Component({
   components: {
@@ -19,8 +22,17 @@ export default class Navbar extends Vue {
     return this.$route.name ?? '';
   }
 
+  get userInfo(): UserInfo {
+    return storeService.userInfo
+  }
+
   private openDialogChangePassword = false;
   private dialogPasswordData: DialogMessageData = new DialogMessageData
+
+
+  private mounted(): void {
+    return
+  }
 
   private handleCollapse(): void {
     store.sidebarCollapse = !store.sidebarCollapse
@@ -47,7 +59,7 @@ export default class Navbar extends Vue {
       return
     }
 
-    const res = await Api.changePassword(oldPassword,newPassword01)
+    const res = await Api.changePassword(oldPassword, newPassword01)
     if (res === "success") {
       Message.success('密碼修改成功')
       this.openDialogChangePassword = false
@@ -59,7 +71,7 @@ export default class Navbar extends Vue {
   private handleLogout(): void {
 
     document.cookie = 'salaCookies=; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
-    store.salaCookies = ''
+    storeService.userInfo = new UserInfo()
     this.$router.push('/login')
   }
 

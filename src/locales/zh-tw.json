@@ -126,12 +126,14 @@
     "stepLR": "Step LR",
     "cosineAnnealingLR": "Cosine Annealing LR",
     "CrossEntropyLoss": "Cross Entropy Loss",
-    "NLLLoss":"NLL Loss",
-    "MultiMarginLoss":"Multi Margin Loss",
-    "SGD":"SGD",
-    "Adam":"Adam",
-    "Adadelta":"Adadelta",
-    "AdamW":"AdamW",
-    "maintainer":"管理者",
-    "notMaintainer":"非管理者"
+    "NLLLoss": "NLL Loss",
+    "MultiMarginLoss": "Multi Margin Loss",
+    "SGD": "SGD",
+    "Adam": "Adam",
+    "Adadelta": "Adadelta",
+    "AdamW": "AdamW",
+    "maintainer": "管理者",
+    "notMaintainer": "非管理者",
+    "owner": "管理者",
+    "user": "使用者"
 }

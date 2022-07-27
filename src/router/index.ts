@@ -10,6 +10,10 @@ import AuthMgmt from '@/views/authMgmt/AuthMgmt.vue';
 import ProjectAuth from '@/views/projectAuth/ProjectAuth.vue';
 import Login from '@/views/login/Login.vue';
 import store from '@/services/store.service';
+import { StringUtil } from '@/utils/string.util';
+import storeService from '@/services/store.service';
+import { AxiosUtils } from '@/utils/axios.utils';
+import Api from '@/services/api.service';
 
 Vue.use(VueRouter)
 
@@ -17,6 +21,7 @@ const routes: Array<RouteConfig> = [
     {
         path: "/login",
         component: Login,
+        name: 'login',
     },
     {
         path: '/',
@@ -79,12 +84,21 @@ const router = new VueRouter({
     routes
 })
 
-router.beforeEach((to, from, next) => {
-    if (['dataset', 'experiments', 'models'].includes(to.name ?? '')) {
+router.beforeEach(async (to, from, next) => {
+
+    if (AxiosUtils.getToken() === '' && to.name !== "login") next({ name: 'login' })
+
+    if (storeService.userInfo.token === '' || storeService.userInfo.username === '' || storeService.userInfo.auth === '') {
+        const res = await Api.refreshToken()
+        if (res !== "success" && to.name !== "login") next({ name: 'login' })
+    }
+
+    if (['dataset', 'experiments', 'models', 'management'].includes(to.name ?? '')) {
         if (to.params.projectName) store.currentProject = to.params.projectName;
         next();
     }
     else next();
+
 })
 
 export default router

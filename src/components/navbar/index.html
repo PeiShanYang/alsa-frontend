@@ -12,6 +12,8 @@
             <el-breadcrumb v-if="currentComponent === 'dashboard'" separator="/"><span>Dashboard</span></el-breadcrumb>
             <el-breadcrumb v-else-if="currentComponent === 'createProject'" separator="/"><span>Create Project</span>
             </el-breadcrumb>
+            <el-breadcrumb v-else-if="currentComponent === 'authMgmt'" separator="/"><span>Global Auth Management</span>
+            </el-breadcrumb>
             <el-breadcrumb v-else separator="/">
                 <el-breadcrumb-item>
                     <span>{{ projectName }}</span>
@@ -23,14 +25,16 @@
         </div>
         <div class="user-info-box">
             <el-menu mode="horizontal" router menu-trigger="click">
-                <el-submenu index="1">
+                <el-submenu index="info">
                     <template slot="title">
                         <i class="el-icon-s-custom"></i>
                     </template>
-                    <el-menu-item index="/">User</el-menu-item>
+                    <el-menu-item index="/">{{userInfo.username}}</el-menu-item>
                     <el-divider></el-divider>
-                    <el-menu-item index="/authMgmt">權限管理</el-menu-item>
-                    <el-divider></el-divider>
+                    <template v-if="['admin','maintainer'].includes(userInfo.auth)">
+                        <el-menu-item index="/authMgmt">權限管理</el-menu-item>
+                        <el-divider></el-divider>
+                    </template>
                     <el-menu-item @click="sendPasswordData">修改密碼</el-menu-item>
                     <el-divider></el-divider>
                     <el-menu-item @click="handleLogout">登出</el-menu-item>
