@@ -35,13 +35,30 @@
                         <el-menu-item index="/authMgmt">權限管理</el-menu-item>
                         <el-divider></el-divider>
                     </template>
-                    <el-menu-item @click="sendPasswordData">修改密碼</el-menu-item>
+                    <el-menu-item @click="changePasswordSetting">修改密碼</el-menu-item>
                     <el-divider></el-divider>
                     <el-menu-item @click="handleLogout">登出</el-menu-item>
                 </el-submenu>
             </el-menu>
         </div>
     </div>
-    <dialog-message :dialog-open="openDialogChangePassword" :message-data="dialogPasswordData"
-        @cancel-action="openDialogChangePassword=false" @confrim-action="handleChangePassword" />
+    <el-dialog :visible.sync="openChangePasswordDialog" :show-close=false :close-on-click-modal="false" append-to-body>
+        <div class="input-box">
+            <div class="input-box-title">舊密碼</div>
+            <el-input v-model="changePasswordData.oldPassword" show-password clearable @keydown.enter.native="handleChangePassword"></el-input>
+        </div>
+        <div class="input-box">
+            <div class="input-box-title">新密碼</div>
+            <el-input v-model="changePasswordData.newPassword" show-password clearable @keydown.enter.native="handleChangePassword"></el-input>
+        </div>
+        <div class="input-box">
+            <div class="input-box-title">確認新密碼</div>
+            <el-input v-model="changePasswordData.newPasswordCheck" show-password clearable @keydown.enter.native="handleChangePassword"
+            ></el-input>
+        </div>
+        <div class="btn-group">
+            <el-button class="secondary-btn" @click="openChangePasswordDialog=false">取消</el-button>
+            <el-button class="primary-btn" @click="handleChangePassword">確定</el-button>
+          </div>
+    </el-dialog>
 </div>

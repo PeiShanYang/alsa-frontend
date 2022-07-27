@@ -1,18 +1,16 @@
 import { Component, Vue } from 'vue-property-decorator';
-import store from "@/services/store.service";
-import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
-import DialogMessageData from '@/io/dialogMessageData';
 import { Message } from 'element-ui';
 import Api from '@/services/api.service';
 import { UserInfo } from '@/io/users';
 import storeService from '@/services/store.service';
-import { StringUtil } from '@/utils/string.util';
 
-@Component({
-  components: {
-    "dialog-message": DialogMessage,
-  }
-})
+class changePasswordData {
+  oldPassword = '';
+  newPassword = '';
+  newPasswordCheck = ''
+}
+
+@Component
 export default class Navbar extends Vue {
   get projectName(): string {
     return this.$route.params.projectName;
@@ -26,8 +24,8 @@ export default class Navbar extends Vue {
     return storeService.userInfo
   }
 
-  private openDialogChangePassword = false;
-  private dialogPasswordData: DialogMessageData = new DialogMessageData
+  private openChangePasswordDialog = false;
+  private changePasswordData: changePasswordData = new changePasswordData()
 
 
   private mounted(): void {
@@ -35,34 +33,31 @@ export default class Navbar extends Vue {
   }
 
   private handleCollapse(): void {
-    store.sidebarCollapse = !store.sidebarCollapse
+    storeService.sidebarCollapse = !storeService.sidebarCollapse
+  }
+  private changePasswordSetting(): void {
+    this.changePasswordData = new changePasswordData()
+    this.openChangePasswordDialog = true
   }
 
-  private sendPasswordData(): void {
-    this.dialogPasswordData = {
-      ...this.dialogPasswordData,
-      content: [{ inputName: "舊密碼", inputContent: "" }, { inputName: "新密碼", inputContent: "" }, { inputName: "確認新密碼", inputContent: "" }]
+  private async handleChangePassword(): Promise<void> {
+
+    const { oldPassword, newPassword, newPasswordCheck } = this.changePasswordData
+
+    if (oldPassword === '' || newPassword === '' || newPasswordCheck === '') {
+      Message.error("輸入欄位不可為空")
+      return
     }
-    this.openDialogChangePassword = true
-  }
 
-  private async handleChangePassword(content: { inputName: string, inputContent: string }[]): Promise<void> {
-
-    const oldPassword = content.find(item => item.inputName === "舊密碼")?.inputContent ?? ''
-    const newPassword01 = content.find(item => item.inputName === "新密碼")?.inputContent ?? ''
-    const newPassword02 = content.find(item => item.inputName === "確認新密碼")?.inputContent ?? ''
-
-    if (oldPassword === '' || newPassword01 === '' || newPassword02 === '') return
-
-    if (newPassword01 !== newPassword02) {
+    if (newPassword !== newPasswordCheck) {
       Message.error('密碼輸入錯誤')
       return
     }
 
-    const res = await Api.changePassword(oldPassword, newPassword01)
+    const res = await Api.changePassword(oldPassword, newPassword)
     if (res === "success") {
       Message.success('密碼修改成功')
-      this.openDialogChangePassword = false
+      this.openChangePasswordDialog = false
     } else {
       Message.error(res)
     }
