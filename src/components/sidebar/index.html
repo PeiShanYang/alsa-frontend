@@ -4,7 +4,7 @@
     <img :src="require('@/assets/svg_icon/sidebar/dashboard.svg')" />
     <span>Dashboard</span>
   </el-menu-item>
-  <el-menu-item index="/createProject">
+  <el-menu-item index="/createProject" v-if="['admin','maintainer'].includes(userInfo.auth)">
     <img :src="require('@/assets/svg_icon/sidebar/create_project.svg')" />
     <span>Create Project</span>
   </el-menu-item>
@@ -42,7 +42,7 @@
           <i class="el-icon-edit-outline"></i>
           <span>Management</span>
         </el-menu-item>
-        <el-menu-item @click="askRemoveProject(name)">
+        <el-menu-item @click="askRemoveProject(name)" v-if="userInfo.auth === 'admin'">
           <i class="el-icon-delete"></i>
           <span>Delete</span>
         </el-menu-item>

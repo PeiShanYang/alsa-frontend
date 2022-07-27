@@ -30,11 +30,13 @@
             <template v-else>
               <div class="switch-box">
                 <div class="switch-box-text">{{roleName(user.role)}}</div>
-                <el-switch :value="user.role" active-color="#08648D" inactive-color="#C495FF61"
+                <template v-if="user.name !== 'admin'">
+                  <el-switch :value="user.role" active-color="#08648D" inactive-color="#C495FF61"
                   active-value="maintainer" inactive-value="notMaintainer" @change="handleModifyUser(user.name)">
                 </el-switch>
+                </template>
               </div>
-              <div class="setting-box" @click="removeUserSetting(user.name)">
+              <div class="setting-box" @click="removeUserSetting(user.name)"  v-if="user.name !== 'admin'">
                 <div class="setting-box-icon"><i class="el-icon-delete"></i></div>
                 <div class="setting-box-text">刪除</div>
               </div>
