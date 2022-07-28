@@ -503,6 +503,7 @@ export default class Dashboard extends Vue {
     if (response === 'success') {
       Message.success('訓練結果刪除成功')
       this.graphs = this.graphs.filter(item => item.runId !== this.deleteGraphInfo.runId)
+      this.trainingInfo = await Api.getQueueInformation()
       this.drawGraph()
     }else{
       Message.error(response)
