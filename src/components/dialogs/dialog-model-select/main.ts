@@ -38,7 +38,7 @@ export default class DialogModelSelect extends Vue {
   }
 
 
-  private modelStructure = 'auo_unrestricted_powerful_model'
+  private modelStructure = ''
 
   private modelsDescription: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
   private models: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
@@ -60,7 +60,7 @@ export default class DialogModelSelect extends Vue {
       this.init = true
     }
     this.modelStructure = this.default.modelStructure
-
+    
   }
 
   private async waitConfigsSetting(): Promise<void> {
@@ -69,6 +69,7 @@ export default class DialogModelSelect extends Vue {
 
     this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
+    
 
   }
 

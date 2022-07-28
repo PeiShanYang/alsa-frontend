@@ -1,5 +1,5 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Graph } from "@antv/x6";
+import { Graph, Scheduler } from "@antv/x6";
 import "@antv/x6-vue-shape";
 
 import DialogDataset from '@/components/dialogs/dialog-dataset/DialogDataset.vue';
@@ -94,9 +94,6 @@ export default class Experiments extends Vue {
     })
 
     this.drawGraph();
-
-    
-
   }
 
   private drawGraph(): void {
@@ -277,7 +274,7 @@ export default class Experiments extends Vue {
       this.graph.experiment.ConfigPytorchModel.SelectedModel.model.pretrained ??
       store.experimentConfigs.ConfigPytorchModel.SelectedModel.model.pretrained.default as boolean
 
-    if(this.dialogModelSelectPara.modelPretrained) this.dialogModelSelectPara.modelPretrained = true
+    if (this.dialogModelSelectPara.modelPretrained) this.dialogModelSelectPara.modelPretrained = true
 
     this.dialogModelSelectPara.batchSize =
       this.graph.experiment.ConfigPytorchModel.ClsModelPara.batchSize ??
@@ -288,9 +285,14 @@ export default class Experiments extends Vue {
     this.dialogModelSelectPara.lossFunction =
       this.graph.experiment.ConfigModelService.LossFunctionPara.lossFunction ??
       store.experimentConfigs.ConfigModelService.LossFunctionPara.lossFunction.default as string
-    this.dialogModelSelectPara.optimizer = 'SGD'
-    this.dialogModelSelectPara.scheduler = 'stepLR'
 
+    this.dialogModelSelectPara.optimizer =
+      Object.keys(this.graph.experiment.ConfigModelService.OptimizerPara)[0] ??
+      Object.keys(store.experimentConfigs.ConfigModelService.OptimizerPara)[0]
+
+    this.dialogModelSelectPara.scheduler =
+      Object.keys(this.graph.experiment.ConfigModelService.SchedulerPara)[0] ??
+      Object.keys(store.experimentConfigs.ConfigModelService.SchedulerPara)[0]
   }
 
   private async setModelSelectPara(newPara: ModelSelectPara): Promise<void> {
@@ -315,8 +317,11 @@ export default class Experiments extends Vue {
       LossFunctionPara: { lossFunction: newPara.lossFunction },
     }
 
-    const SchedulerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}))
+    if (!store.experimentConfigs) return
+
+    const SchedulerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs.ConfigModelService.SchedulerPara))
     const schedulerConfig = new Map<string, ConfigType>(Object.entries(SchedulerParaConfig.get(newPara.scheduler) ?? {}))
+
 
     let schedulerBasic: { name: string, default: number | string | boolean }[] = []
     schedulerConfig.forEach((arg, name) => {
@@ -327,37 +332,33 @@ export default class Experiments extends Vue {
       }
     })
 
-    const scheduler: SchedulerPara = store.experimentConfigs?.ConfigModelService.SchedulerPara ?? {}
-    schedulerBasic.forEach(item => scheduler[newPara.scheduler][item.name] = item.default ?? 0)
+    const scheduler: SchedulerPara = JSON.parse(JSON.stringify(store.experimentConfigs.ConfigModelService.SchedulerPara))[newPara.scheduler]
 
-    if (newPara.scheduler !== '') {
-      this.graph.experiment.ConfigModelService = {
-        ...this.graph.experiment.ConfigModelService,
-        SchedulerPara: {
-          [newPara.scheduler]: { ...scheduler[newPara.scheduler], switch: 1 }
-        }
+    schedulerBasic.forEach(item => scheduler[item.name] = item.default)
+
+    this.graph.experiment.ConfigModelService = {
+      ...this.graph.experiment.ConfigModelService,
+      SchedulerPara: {
+        [newPara.scheduler]: { ...scheduler, switch: 1 }
       }
-    } else {
-      this.graph.experiment.ConfigModelService.SchedulerPara = {}
     }
 
 
-    const OptimizerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {}))
+    const OptimizerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs.ConfigModelService.OptimizerPara))
     const optimizerConfig = new Map<string, ConfigType>(Object.entries(OptimizerParaConfig.get(newPara.optimizer) ?? {}))
 
     let optimizerBasic: { name: string, default: number | string | boolean }[] = []
     optimizerConfig.forEach((arg, name) => { optimizerBasic = [...optimizerBasic, { name: name, default: arg.default }] })
 
-    const optimizer: OptimizerPara = store.experimentConfigs?.ConfigModelService.OptimizerPara ?? {}
-    optimizerBasic.forEach(item => optimizer[newPara.optimizer][item.name] = item.default ?? 0)
+    const optimizer: OptimizerPara = JSON.parse(JSON.stringify(store.experimentConfigs.ConfigModelService.OptimizerPara))[newPara.optimizer]
+    optimizerBasic.forEach(item => optimizer[item.name] = item.default)
 
     this.graph.experiment.ConfigModelService = {
       ...this.graph.experiment.ConfigModelService,
       OptimizerPara: {
-        [newPara.optimizer]: { ...optimizer[newPara.optimizer], switch: 1 }
+        [newPara.optimizer]: { ...optimizer, switch: 1 }
       }
     }
-
 
     await Api.setExperiments(this.graph.projectName, this.graph.experimentId, this.graph.experiment)
 

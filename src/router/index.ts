@@ -10,7 +10,6 @@ import AuthMgmt from '@/views/authMgmt/AuthMgmt.vue';
 import ProjectAuth from '@/views/projectAuth/ProjectAuth.vue';
 import Login from '@/views/login/Login.vue';
 import store from '@/services/store.service';
-import { StringUtil } from '@/utils/string.util';
 import storeService from '@/services/store.service';
 import { AxiosUtils } from '@/utils/axios.utils';
 import Api from '@/services/api.service';

@@ -33,7 +33,7 @@ import { LoginReq, LoginRes } from "@/io/rest/login";
 import { AxiosUtils } from "@/utils/axios.utils";
 import { ChangePasswordReq, ChangePasswordRes } from "@/io/rest/changePassword";
 import { UsersAllRes } from "@/io/rest/usersAll";
-import { UserInfo, UsersGlobal, UsersProject } from "@/io/users";
+import { UsersGlobal, UsersProject } from "@/io/users";
 import { AddUserReq, AddUserRes } from "@/io/rest/addUser";
 import { RemoveUserReq, RemoveUserRes } from "@/io/rest/removeUser";
 import { ModifyUserReq, ModifyUserRes } from "@/io/rest/modifyUser";
