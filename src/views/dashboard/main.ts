@@ -141,6 +141,7 @@ export default class Dashboard extends Vue {
         })
 
         const stopCondition = allTasks
+          .filter(item => item.task === "Test")
           .map(item => item.process)
           .filter(item => typeof item === "string")
           .filter(item => item !== "This run has been deleted")
@@ -247,7 +248,7 @@ export default class Dashboard extends Vue {
       flowChart.percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(trainProcess)))
       const processingNode: string[] = []
 
-      console.log("percentage",flowChart.percentage)
+
       if (flowChart.percentage === 0) {
         flowChart.data.taskRunning = true
         processingNode.push('model-select-node', 'trained-result-node', 'test-result-node')
@@ -258,6 +259,7 @@ export default class Dashboard extends Vue {
             node.basic = { ...node.basic, opacity: 1 }
           }
         })
+        console.log("flowchart",flowChart)
         this.updateNodes(flowChart)
 
 
@@ -442,8 +444,10 @@ export default class Dashboard extends Vue {
 
     if (response === 'success') {
       this.flowCharts = this.flowCharts.filter(item => item.runId !== this.deleteGraphInfo.runId)
-      Message.success('訓練結果刪除成功')
+      
+      this.trainingInfo = await Api.getQueueInformation()
       this.drawGraph()
+      Message.success('訓練結果刪除成功')
     }else{
       Message.error(response)
     }
