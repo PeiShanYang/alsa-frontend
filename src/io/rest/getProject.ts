@@ -5,5 +5,5 @@ export class GetProjectRes {
 }
 
 export class GetProjectResData {
-  projects: string[] = [];
+  projects: Map<string, string> = new Map<string, string>()
 }

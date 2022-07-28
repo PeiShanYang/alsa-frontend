@@ -62,6 +62,11 @@
         margin-bottom: 1em;
     }
 
+    .error-msg-box{
+        color: rgb(222, 23, 67);
+        font-size: $font-normal*0.8;
+    }
+
     .input-box {
         color: #968c8c;
     }
@@ -124,6 +129,10 @@
     &__inner {
         width: 1em;
         height: 1em;
+        &::after {
+            height: 12px;
+            left: 7px;
+        }
     }
     &__label {
         font-size: $font-normal * 0.9;

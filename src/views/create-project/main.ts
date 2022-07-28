@@ -62,6 +62,7 @@ export default class CreateProject extends Vue {
         if (checkStrictName === true && this.inputProjectName !== "" && this.inputSolutionKey !== "") {
 
             response = await Api.createProjectByKey(this.inputProjectName, this.inputSolutionKey);
+            await Api.getProjects()
 
             Array.from(
                 store.projectList.entries()

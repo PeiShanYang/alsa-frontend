@@ -29,15 +29,31 @@ import { GetModelDescriptionRes, GetModelDescriptionResData } from "@/io/rest/ge
 import Logger from "@/services/log.service";
 import { RemoveDatasetReq, RemoveDatasetRes } from "@/io/rest/removeDataset";
 import { RemoveProjectReq, RemoveProjectRes } from "@/io/rest/removeProject";
+import { LoginReq, LoginRes } from "@/io/rest/login";
+import { AxiosUtils } from "@/utils/axios.utils";
+import { ChangePasswordReq, ChangePasswordRes } from "@/io/rest/changePassword";
+import { UsersAllRes } from "@/io/rest/usersAll";
+import { UsersGlobal, UsersProject } from "@/io/users";
+import { AddUserReq, AddUserRes } from "@/io/rest/addUser";
+import { RemoveUserReq, RemoveUserRes } from "@/io/rest/removeUser";
+import { ModifyUserReq, ModifyUserRes } from "@/io/rest/modifyUser";
+import { UsersProjectReq, UsersProjectRes } from "@/io/rest/usersProject";
+import { SetProjectUserReq, SetProjectUserRes } from "@/io/rest/setProjectUser";
+import { RefreshTokenRes } from "@/io/rest/refreshToken";
+import { GetModelPreTrainedWeightReq, GetModelPreTrainedWeightRes } from "@/io/rest/getModelPreTrainedWeight";
 
 
-// const host = 'http://tw100104318:37510/';
-const host = 'http://tw100104318:65101/';
+const host = 'http://tw100104318:37510/';
+// const host = 'http://tw100104318:65101/';
+
+
 
 export default class Api {
   static async getProjects(): Promise<void> {
     const response = await axios.post(
       host + 'get-projects',
+      {},
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return;
@@ -48,16 +64,20 @@ export default class Api {
       return;
     }
 
-    if (res.data) {
-      store.projectList = new Map<string, Project>(
-        res.data.projects.map((v) => [v, new Project()])
-      );
+    if (!res.data) return
 
-      store.projectList.forEach((project, name) => {
-        project.name = name
-      })
+    const resProjects = new Map<string, string>(Object.entries(res.data.projects))
 
-    }
+    const projectList: [string, Project][] = []
+    resProjects.forEach((auth, name) => {
+      const project = new Project()
+      project.name = name
+      project.auth = auth
+      projectList.push([name, project])
+    })
+
+    storeService.projectList = new Map<string, Project>(projectList)
+
   }
   static async createProjectByKey(name: string, key: string): Promise<boolean> {
     if (key === '.') key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiU0dEIjp7InN3aXRjaCI6MSwibW9tZW50dW0iOjAuOSwiZGFtcGVuaW5nIjowLCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJuZXN0ZXJvdiI6MH19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC41fX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOiJJbWFnZU5ldCJ9LCJyZXNpemUiOnsic3dpdGNoIjoxLCJpbWFnZVNpemUiOlsyMjQsMjI0XSwiaW50ZXJwb2xhdGlvbiI6IkJJTElORUFSIn19fSwiQ29uZmlnUHl0b3JjaE1vZGVsIjp7IlNlbGVjdGVkTW9kZWwiOnsibW9kZWwiOnsic3RydWN0dXJlIjoiYXVvX3VucmVzdHJpY3RlZF9wb3dlcmZ1bF9tb2RlbCIsInByZXRyYWluZWQiOjF9fSwiQ2xzTW9kZWxQYXJhIjp7ImJhdGNoU2l6ZSI6MTYsImVwb2NocyI6MTB9fX0.27ROd91Ailzl86kLppHCMpA2q0n_HUrJrqA6FALxqsw";
@@ -65,6 +85,7 @@ export default class Api {
     const response: AxiosResponse<GetProjectRes> = await axios.post(
       host + 'create-project-by-key',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return false;
@@ -74,13 +95,6 @@ export default class Api {
       console.log(res.message);
       return false;
     }
-
-    if (!res.data) return false
-
-    store.projectList = new Map<string, Project>(
-      res.data.projects.map((v) => [v, new Project()])
-    );
-
     return true
   }
 
@@ -89,22 +103,13 @@ export default class Api {
     const reqData: RemoveProjectReq = { projectName }
     const response: AxiosResponse<RemoveProjectRes> = await axios.post(
       host + 'remove-project',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status != 200) return "request fail"
 
     const res: RemoveProjectRes = response.data;
-    if (res.code !== 0) {
-      console.log(res.message)
-      return res.message
-    }
-
-    if (!res.data) return "no project"
-
-    store.projectList = new Map<string, Project>(
-      res.data.projects.map((v) => [v, new Project()])
-    );
 
     return res.message
   }
@@ -117,6 +122,7 @@ export default class Api {
     const response: AxiosResponse<GetExperimentsRes> = await axios.post(
       host + 'get-experiments',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return;
@@ -144,6 +150,7 @@ export default class Api {
     const response: AxiosResponse<SetExperimentsRes> = await axios.post(
       host + 'set-experiments',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return;
@@ -171,6 +178,7 @@ export default class Api {
     const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
       host + 'set-experiment-dataset',
       reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return;
@@ -195,6 +203,7 @@ export default class Api {
     const response: AxiosResponse<GetDatasetsRes> = await axios.post(
       host + 'get-datasets',
       reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return;
@@ -222,6 +231,7 @@ export default class Api {
     const response: AxiosResponse<CheckDatasetRes> = await axios.post(
       host + 'check-dataset',
       reqData,
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return false;
@@ -244,7 +254,8 @@ export default class Api {
 
     const response: AxiosResponse<RemoveDatasetRes> = await axios.post(
       host + 'remove-dataset',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return;
@@ -265,6 +276,7 @@ export default class Api {
     const response: AxiosResponse<RunExperimentRes> = await axios.post(
       host + 'run-experiment-train',
       reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return new RunExperimentData
@@ -286,6 +298,7 @@ export default class Api {
     const response: AxiosResponse<RunExperimentRes> = await axios.post(
       host + 'run-experiment-test',
       reqData,
+      AxiosUtils.bearearToken(),
     )
     if (response.status !== 200) return new RunExperimentData
 
@@ -302,6 +315,8 @@ export default class Api {
 
     const response: AxiosResponse<GetQueueInformationRes> = await axios.post(
       host + 'get-queue-information',
+      {},
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return new GetQueueInformationResData
@@ -323,7 +338,8 @@ export default class Api {
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
       host + 'remove-run-in-queue',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return "request fail";
@@ -341,7 +357,8 @@ export default class Api {
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
       host + 'remove-run',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return "fail"
@@ -360,7 +377,8 @@ export default class Api {
 
     const response: AxiosResponse<GetModelInformationRes> = await axios.post(
       host + 'get-model-information',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return new GetModelInformationResData();
@@ -397,7 +415,8 @@ export default class Api {
 
     const response: AxiosResponse<SetDeployPathRes> = await axios.post(
       host + 'set-deploy-path',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return null
@@ -418,7 +437,8 @@ export default class Api {
 
     const response: AxiosResponse<DeployRes> = await axios.post(
       host + 'deploy',
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status != 200) return null
@@ -449,6 +469,8 @@ export default class Api {
 
     const response: AxiosResponse<ListFolderRes> = await axios.post(
       host + reqUrl,
+      {},
+      AxiosUtils.bearearToken(),
     );
 
     if (response.status !== 200) return new ListFolderResData;
@@ -472,7 +494,8 @@ export default class Api {
 
     const response: AxiosResponse<CreateFolderRes> = await axios.post(
       host + reqUrl,
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return false
@@ -496,7 +519,8 @@ export default class Api {
 
     const response: AxiosResponse<RemoveFolderRes> = await axios.post(
       host + reqUrl,
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return false
@@ -520,7 +544,8 @@ export default class Api {
 
     const response: AxiosResponse<RenameFolderRes> = await axios.post(
       host + reqUrl,
-      reqData
+      reqData,
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return false
@@ -538,7 +563,11 @@ export default class Api {
 
     if (store.experimentConfigs) return
 
-    const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(host + 'get-experiment-configs')
+    const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(
+      host + 'get-experiment-configs',
+      {},
+      AxiosUtils.bearearToken(),
+    )
 
     if (response.status !== 200) return
 
@@ -551,10 +580,35 @@ export default class Api {
     storeService.experimentConfigs = res.data
   }
 
+  static async getModelPreTrainedWeight(model: string): Promise<boolean> {
+
+    const reqData: GetModelPreTrainedWeightReq = { model }
+
+    const response:AxiosResponse<GetModelPreTrainedWeightRes> =await axios.post(
+      host + 'get-model-pretrained-weight',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return false
+
+    const res:GetModelPreTrainedWeightRes = response.data
+
+    if(res.code !== 0){
+      console.log(res.message)
+      return false
+    }
+
+    if(!res.data) return false
+    return res.data
+
+  }
+
   static async getModelDescription(): Promise<Map<string, GetModelDescriptionResData>> {
 
     const response: AxiosResponse<GetModelDescriptionRes> = await axios.post(
       host + 'get-model-description',
+      {},
+      AxiosUtils.bearearToken(),
     )
 
     if (response.status !== 200) return new Map<string, GetModelDescriptionResData>();
@@ -568,4 +622,211 @@ export default class Api {
 
     return new Map<string, GetModelDescriptionResData>(Object.entries(res.data));
   }
+
+  //login and auth system
+
+  static async login(username: string, password: string, remember: boolean): Promise<string> {
+
+    const reqData: LoginReq = {
+      username, password
+    }
+
+    const response: AxiosResponse<LoginRes> = await axios.post(
+      host + 'login',
+      reqData,
+    )
+
+    if (response.status !== 200) return 'connection error'
+
+    const res: LoginRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    if (!res.data) return res.message
+
+    storeService.userInfo.token = res.data
+
+    if (remember) document.cookie = `salaCookies=${res.data}`
+    return res.message
+  }
+
+  static async refreshToken(): Promise<string> {
+
+    const response: AxiosResponse<RefreshTokenRes> = await axios.post(
+      host + 'refresh-token',
+      {},
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+
+    const res: RefreshTokenRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+
+    if (!res.data) return "There is no data."
+
+    storeService.userInfo = res.data
+
+    return res.message
+
+  }
+
+
+  static async usersAll(): Promise<UsersGlobal> {
+
+    const response: AxiosResponse<UsersAllRes> = await axios.post(
+      host + 'users/all',
+      {},
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return new UsersGlobal
+    const res: UsersAllRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return new UsersGlobal
+    }
+
+    if (!res.data) return new UsersGlobal
+    return res.data
+  }
+
+  static async addUser(username: string, password: string, maintainer: boolean): Promise<string> {
+
+    const reqData: AddUserReq = { username, password, maintainer }
+
+    const response: AxiosResponse<AddUserRes> = await axios.post(
+      host + 'add-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+    const res: AddUserRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    return res.message
+  }
+
+  static async removeUser(username: string): Promise<string> {
+
+    const reqData: RemoveUserReq = { username }
+
+    const response: AxiosResponse<RemoveUserRes> = await axios.post(
+      host + 'remove-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+    const res: RemoveUserRes = response.data
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    return res.message
+  }
+
+  static async modifyUser(username: string, isMaintainer: boolean): Promise<string> {
+
+    const reqData: ModifyUserReq = { username, isMaintainer }
+
+    const response: AxiosResponse<ModifyUserRes> = await axios.post(
+      host + 'modify-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+    const res: ModifyUserRes = response.data
+
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
+    return res.message
+
+  }
+
+  static async usersProject(projectName: string): Promise<UsersProject> {
+
+    const reqData: UsersProjectReq = { projectName }
+    const response: AxiosResponse<UsersProjectRes> = await axios.post(
+      host + 'users/project',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return new UsersProject
+    const res: UsersProjectRes = response.data
+
+    if (res.code !== 0) {
+      console.log(res.message)
+      return new UsersProject
+    }
+    if (!res.data) return new UsersProject
+    return res.data
+
+  }
+
+  static async addProjectUser(projectName: string, username: string, auth: string): Promise<string> {
+
+    const reqData: SetProjectUserReq = { projectName, username, auth }
+    const response: AxiosResponse<SetProjectUserRes> = await axios.post(
+      host + 'add-project-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+
+    const res: SetProjectUserRes = response.data
+    return res.message
+  }
+
+  static async removeProjectUser(projectName: string, username: string, auth: string): Promise<string> {
+    const reqData: SetProjectUserReq = { projectName, username, auth }
+    const response: AxiosResponse<SetProjectUserRes> = await axios.post(
+      host + 'remove-project-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+
+    const res: SetProjectUserRes = response.data
+    return res.message
+  }
+
+  static async modifyProjectUser(projectName: string, username: string, auth: string): Promise<string> {
+    const reqData: SetProjectUserReq = { projectName, username, auth }
+    const response: AxiosResponse<SetProjectUserRes> = await axios.post(
+      host + 'modify-project-user',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return 'connection error'
+
+    const res: SetProjectUserRes = response.data
+    return res.message
+  }
+
+  static async changePassword(originPassword: string, password: string): Promise<string> {
+
+    const reqData: ChangePasswordReq = { originPassword, password }
+    const response: AxiosResponse<ChangePasswordRes> = await axios.post(
+      host + 'change-password',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+
+    if (response.status !== 200) return 'connection error'
+
+    const res: ChangePasswordRes = response.data
+
+    return res.message
+  }
+
 }
