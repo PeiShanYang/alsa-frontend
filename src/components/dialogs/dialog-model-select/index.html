@@ -101,7 +101,9 @@
                 <template v-if="item === 'pretrained'">
                   <div class="select-box">
                     <el-select :value="newPara.modelPretrained" placeholder @change="handleParaChange($event,'modelPretrained')" size="mini">
-                      <el-option :label="'是'" :key="true" :value="true"></el-option>
+                      <template v-if="isPretrainedWeight === true">
+                        <el-option :label="'是'" :key="true" :value="true"></el-option>
+                      </template>
                       <el-option :label="'否'" :key="false" :value="false"></el-option>
                     </el-select>
                   </div>

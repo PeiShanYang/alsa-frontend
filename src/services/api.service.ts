@@ -40,6 +40,7 @@ import { ModifyUserReq, ModifyUserRes } from "@/io/rest/modifyUser";
 import { UsersProjectReq, UsersProjectRes } from "@/io/rest/usersProject";
 import { SetProjectUserReq, SetProjectUserRes } from "@/io/rest/setProjectUser";
 import { RefreshTokenRes } from "@/io/rest/refreshToken";
+import { GetModelPreTrainedWeightReq, GetModelPreTrainedWeightRes } from "@/io/rest/getModelPreTrainedWeight";
 
 
 const host = 'http://tw100104318:37510/';
@@ -577,6 +578,29 @@ export default class Api {
     }
 
     storeService.experimentConfigs = res.data
+  }
+
+  static async getModelPreTrainedWeight(model: string): Promise<boolean> {
+
+    const reqData: GetModelPreTrainedWeightReq = { model }
+
+    const response:AxiosResponse<GetModelPreTrainedWeightRes> =await axios.post(
+      host + 'get-model-pretrained-weight',
+      reqData,
+      AxiosUtils.bearearToken(),
+    )
+    if (response.status !== 200) return false
+
+    const res:GetModelPreTrainedWeightRes = response.data
+
+    if(res.code !== 0){
+      console.log(res.message)
+      return false
+    }
+
+    if(!res.data) return false
+    return res.data
+
   }
 
   static async getModelDescription(): Promise<Map<string, GetModelDescriptionResData>> {
