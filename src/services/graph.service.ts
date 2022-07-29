@@ -102,28 +102,12 @@ export default class GraphService {
       opacity:1,
     },
     {
-      name: "dataset-node-processing",
-      title: "資料集",
-      backgroundColor: "#FCEFFD",
-      borderColor: "#B811CE",
-      icon: ExperimentsIcons.dataset,
-      opacity:0.5,
-    },
-    {
       name: "preprocess-node",
       title: "前處理",
       backgroundColor: "#F8F8F0",
       borderColor: "#BCC733",
       icon: ExperimentsIcons.preprocess,
       opacity:1,
-    },
-    {
-      name: "preprocess-node-processing",
-      title: "前處理",
-      backgroundColor: "#F8F8F0",
-      borderColor: "#BCC733",
-      icon: ExperimentsIcons.preprocess,
-      opacity:0.5,
     },
     {
       name: "augmentation-node",
@@ -134,28 +118,12 @@ export default class GraphService {
       opacity:1,
     },
     {
-      name: "augmentation-node-processing",
-      title: "資料擴增",
-      backgroundColor: "#FFF0F0",
-      borderColor: "#DD8282",
-      icon: ExperimentsIcons.dataAugmentation,
-      opacity:0.5,
-    },
-    {
       name: "model-select-node",
       title: "模型訓練",
       backgroundColor: "#F5F5FD",
       borderColor: "#8282DD",
       icon: ExperimentsIcons.modelSelect,
       opacity:1,
-    },
-    {
-      name: "model-select-node-processing",
-      title: "模型訓練",
-      backgroundColor: "#F5F5FD",
-      borderColor: "#8282DD",
-      icon: ExperimentsIcons.modelSelect,
-      opacity:0.5,
     },
     {
       name: "validation-select-node",
@@ -166,14 +134,6 @@ export default class GraphService {
       opacity:1,
     },
     {
-      name: "validation-select-node-processing",
-      title: "驗證方法",
-      backgroundColor: "#FCFCDF",
-      borderColor: "#DE9988",
-      icon: ExperimentsIcons.validationSelect,
-      opacity:0.5,
-    },
-    {
       name: "trained-result-node",
       title: "訓練結果",
       backgroundColor: "#FAECEC",
@@ -182,28 +142,12 @@ export default class GraphService {
       opacity:1,
     },
     {
-      name: "trained-result-node-processing",
-      title: "訓練結果",
-      backgroundColor: "#FAECEC",
-      borderColor: "#BC6161",
-      icon: ExperimentsIcons.trainedResult,
-      opacity:0.5,
-    },
-    {
       name: "test-result-node",
       title: "測試結果",
       backgroundColor: "#FAECEC",
       borderColor: "#C69D16",
       icon: ExperimentsIcons.testedResult,
       opacity:1,
-    },
-    {
-      name: "test-result-node-processing",
-      title: "測試結果",
-      backgroundColor: "#FAECEC",
-      borderColor: "#C69D16",
-      icon: ExperimentsIcons.testedResult,
-      opacity:0.5,
     },
   ]
 
@@ -251,13 +195,7 @@ export default class GraphService {
       Graph.registerVueComponent(
         node.name,
         {
-          template: `<flow-node
-            icon= ${node.icon}
-            title=${node.title}
-            background-color = ${node.backgroundColor}
-            border-color = ${node.borderColor}
-            opacity = ${node.opacity}
-          />`,
+          template: `<flow-node />`,
           components: { FlowNode },
         },
         true

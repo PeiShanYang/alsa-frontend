@@ -4,15 +4,11 @@ import "@antv/x6-vue-shape";
 import { insertCss } from 'insert-css';
 import { Message } from 'element-ui';
 
-import FlowNode from "@/components/flow-node/FlowNode.vue";
 import Api from '@/services/api.service';
 import GraphService from "@/services/graph.service";
-import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import graphData from '@/io/graphData';
 
-import store from '@/services/store.service';
-import { Experiment } from '@/io/experiment';
 import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } from "@/io/rest/getQueueInformation";
 import { StringUtil } from '@/utils/string.util';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
@@ -26,9 +22,9 @@ class flowChart {
   processingState = '';
 }
 
+
 @Component({
   components: {
-    "flow-node": FlowNode,
     "dialog-message": DialogMessage,
   }
 })
@@ -49,11 +45,7 @@ export default class Dashboard extends Vue {
 
   private trainingInfo = new GetQueueInformationResData;
 
-  private graphs: flowChart[] = [];
-
-  private runFailList: string[] = []
-
-  
+  private flowCharts: flowChart[] = [];
 
   // dialog for delete
 
@@ -61,13 +53,13 @@ export default class Dashboard extends Vue {
   private dialogMessageData: DialogMessageData = new DialogMessageData()
   private deleteGraphInfo = { projectName: '', runId: "" }
 
-  get graphList(): flowChart[] | undefined {
+  get flowChartList(): flowChart[] | undefined {
 
     if (this.searchProjectName === '') {
-      return this.graphs
+      return this.flowCharts
     }
 
-    return this.graphs.filter(item =>
+    return this.flowCharts.filter(item =>
       item.data.projectName.toUpperCase().includes(this.searchProjectName.toUpperCase())
     )
   }
@@ -101,35 +93,31 @@ export default class Dashboard extends Vue {
 
     this.trainingInfo = await Api.getQueueInformation()
 
-    if (this.trainingInfo.work.length === 0 && this.trainingInfo.done.length === 0) {
+    const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
+      .sort((a, b) => Number(b.runId) - Number(a.runId))
+
+    if (allTasks.length === 0) {
       loadingInstance.close()
       this.projectExist = false
       return
     }
 
-    //get all train task
-    const allTrainTask = [...this.trainingInfo.work, ...this.trainingInfo.done]
-      .filter(item => item.task !== "Test")
-      .sort((a,b)=> Number(b.runId) - Number(a.runId))
-
     // get project info
-    const projectNameList = [...new Set(allTrainTask.map(item => item.projectName))]
+    const projectNameList = [...new Set(allTasks.map(item => item.projectName))]
 
     for (let i = 0; i < projectNameList.length; i++) {
       await Api.getExperiments(projectNameList[i])
       await Api.getDatasets(projectNameList[i])
     }
 
-    // initial graphs setting
 
-    allTrainTask.forEach(task => {
-      const setting = this.graphSetting(task)
-      if (setting) this.graphs.push(setting)
+    // init flowchart setting
+    allTasks.forEach(item => {
+      if (item.task === "Test") return
+      const flowChart = this.initFlowChart(item)
+      this.flowCharts.push(flowChart)
+      this.acitveProjectCollapse.push(item.runId)
     })
-
-
-    this.acitveProjectCollapse = this.graphs.map(item => item.runId)
-
 
     this.$nextTick(() => {
 
@@ -143,28 +131,17 @@ export default class Dashboard extends Vue {
 
         this.trainingInfo = await Api.getQueueInformation()
 
-        const allTask = [...this.trainingInfo.work, ...this.trainingInfo.done]
+        const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
 
         workingIdList.forEach(workingId => {
-
-          const targetGraphIndex = this.graphs.findIndex(item => item.runId === workingId)
-
-          const workingIdTask = allTask.filter(task => task.runId === workingId)
-
-          // train task
-          const workingIdTaskTrain = workingIdTask.find(task => task.task === "Train")
-          // test task
-          const workingIdTaskTest = workingIdTask.find(task => task.task === "Test")
-
-          let gate = false
-
-          if (workingIdTaskTrain) gate = this.handleTrainTask(workingIdTaskTrain, targetGraphIndex)
-
-          if (workingIdTaskTest && gate === true) this.handleTestTask(workingIdTaskTest, targetGraphIndex)
-
+          const flowChart = this.flowCharts.find(item => item.runId === workingId)
+          if (!flowChart) return
+          const targetTask = allTasks.filter(task => task.runId === flowChart.runId)
+          this.updateFlowChart(flowChart, targetTask)
         })
 
-        const stopCondition = allTask
+        const stopCondition = allTasks
+          .filter(item => item.task === "Test")
           .map(item => item.process)
           .filter(item => typeof item === "string")
           .filter(item => item !== "This run has been deleted")
@@ -178,167 +155,245 @@ export default class Dashboard extends Vue {
   }
 
 
-  private graphSetting(taskInfo: RunTask): flowChart | undefined {
+  private initFlowChart(taskInfo: RunTask): flowChart {
 
     const experiment = taskInfo.config
-
-    let processingState = ''
-    let taskRunning = false
-    let percentage = 0
-    let defaultNodes: FlowNodeSettings[] = GraphService.basicNodes.filter(node => !node.name.includes("validation-select"))
-
-    if (typeof taskInfo.process === "string") {
-
-      processingState = taskInfo.process
-      defaultNodes = defaultNodes.filter(node => node.name.includes("processing"))
-
-    } else {
-
-      // processingState = "Task is running"
-      taskRunning = true
-      percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(taskInfo.process))) ?? 0
-
-      if (percentage === 0) {
-        const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node-processing', 'trained-result-node-processing', 'test-result-node-processing']
-        defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
-      } else if (percentage < 100) {
-        const nodes = ['dataset-node', 'preprocess-node', 'augmentation-node', 'model-select-node', 'trained-result-node-processing', 'test-result-node-processing']
-        defaultNodes = defaultNodes.filter(node => nodes.includes(node.name))
-      } else {
-        defaultNodes = defaultNodes.filter(node => !node.name.includes("processing"))
-        // processingState = "Task finished"
-      }
-
-    }
+    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, taskInfo.projectName)
+    cellData.delete("validation-select-node")
 
     return {
+      runId: taskInfo.runId,
+      processingState: '',
+      percentage: 0,
       data: {
         graph: null,
-        flowInfo: defaultNodes,
         projectName: taskInfo.projectName,
         experimentId: taskInfo.experimentId,
         date: StringUtil.formatAddSlash(taskInfo.runId),
-        experiment: experiment,
-        taskRunning,
-      },
-      percentage: percentage,
-      runId: taskInfo.runId,
-      processingState,
+        taskRunning: false,
+        experiment,
+        cellData,
+      }
     }
-
   }
 
   private drawGraph(): void {
 
-    if (this.graphs.length === 0) return
-
-    this.graphs.forEach((item) => {
+    if (this.flowCharts.length === 0) return
+    this.flowCharts.forEach((item) => {
       item.data.graph?.clearCells()
       item.data.graph = null
-      if (!item.data.experiment) return
-      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item.data.flowInfo, item.data.experiment, item.data.projectName, item.data.taskRunning)
+      item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item)
 
-      if (!item.data.graph) return
-      this.nodeContentSetting(item.data.graph, item.runId, this.trainingInfo)
+      const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
+      const targetTask = allTasks.filter(task => task.runId === item.runId)
+      this.updateFlowChart(item, targetTask)
     })
 
   }
 
-
-  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flow: FlowNodeSettings[], experiment: Experiment, projectName: string, taskRunning: boolean): Graph | null {
+  private drawFlowChart(screenWidth: number, container: HTMLElement | null, flowChart: flowChart): Graph | null {
 
     if (!container) return null;
-
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    const cellData: Map<string, ProcessCellData> = ProcessCellData.cellDataContent(experiment, projectName);
+    const { cellData, projectName, taskRunning } = flowChart.data
 
-    // add default node and edge
-    flow.forEach((node: FlowNodeSettings, index: number, array: FlowNodeSettings[]) => {
+    const flow = [...cellData.values()]
 
-      const nodeData = cellData.get(node.name);
+    flow.forEach((node: ProcessCellData, index: number, array: ProcessCellData[]) => {
 
-      if (!nodeData?.content) return
+      node.content.forEach((item, index, array) => array[index] = this.$i18n.t(item).toString())
 
-      nodeData.content.forEach((item, index, array) => array[index] = this.$i18n.t(item).toString())
-
-      graph?.addNode({
+      // add default node
+      graph.addNode({
         ...GraphService.getNodeSettings(screenWidth, index),
-        id: `${node.name}_${projectName}`,
-        component: node.name,
-        data: nodeData,
-      });
+        id: `${projectName}_${node.component}`,
+        component: node.component,
+        data: node
+      })
 
+      // add default edge
       if (index === 0) return
+      graph?.addEdge({
+        id: `${projectName}_${array[index - 1].component}_edge`,
+        source: { cell: `${projectName}_${array[index - 1].component}`, port: "portRight" },
+        target: { cell: `${projectName}_${array[index].component}`, port: "portLeft" },
+      });
+    })
 
-      if (index > 0 && array[index].name.includes("processing") && taskRunning) {
-        graph?.addEdge({
-          source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
-          target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
-          attrs: {
-            line: {
-              stroke: '#4a9abe',
-              strokeDasharray: 5,
-              targetMarker: 'classic',
-              className: 'ant-line',
-              style: {
-                animation: 'ant-line 30s infinite linear',
-              },
-            },
-          },
-        });
+    return graph
+  }
+
+
+  private updateFlowChart(flowChart: flowChart, targetTask: RunTask[]): void {
+
+    const trainTask = targetTask.find(task => task.task === "Train")
+    if (!trainTask) return
+    const testTask = targetTask.find(task => task.task === "Test")
+    if (!testTask) return
+
+    const trainProcess = trainTask.process
+    const testProcess = testTask.process
+
+    if (typeof trainProcess === "string") {
+      flowChart.percentage = 0
+      flowChart.processingState = trainProcess
+      flowChart.data.cellData.forEach(val => val.basic = { ...val.basic, opacity: 0.5 })
+      this.updateNodes(flowChart)
+    }
+
+    if (typeof trainProcess !== "string") {
+      flowChart.percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(trainProcess)))
+      flowChart.processingState = ''
+      const processingNode: string[] = []
+
+
+      if (flowChart.percentage === 0) {
+        flowChart.data.taskRunning = true
+        processingNode.push('model-select-node', 'trained-result-node', 'test-result-node')
+        flowChart.data.cellData.forEach(node => {
+          if (processingNode.includes(node.component)) {
+            node.basic = { ...node.basic, opacity: 0.5 }
+          } else {
+            node.basic = { ...node.basic, opacity: 1 }
+          }
+        })
+
+        this.updateNodes(flowChart)
+
+
+      } else if (flowChart.percentage < 100) {
+        flowChart.data.taskRunning = true
+        processingNode.push('trained-result-node', 'test-result-node')
+        flowChart.data.cellData.forEach(node => {
+          if (processingNode.includes(node.component)) {
+            node.basic = { ...node.basic, opacity: 0.5 }
+          } else {
+            node.basic = { ...node.basic, opacity: 1 }
+          }
+        })
+
+        this.updateNodes(flowChart)
+        this.twinkleNode(flowChart.data.graph, `${flowChart.data.projectName}_model-select-node`, true)
+
+        const animateEdgeList = [`${flowChart.data.projectName}_model-select-node_edge`, `${flowChart.data.projectName}_trained-result-node_edge`]
+        animateEdgeList.forEach(edge => this.animateEdge(flowChart.data.graph, edge, true))
+
       } else {
-        graph?.addEdge({
-          source: { cell: `${array[index - 1].name}_${projectName}`, port: "portRight" },
-          target: { cell: `${array[index].name}_${projectName}`, port: "portLeft" },
-        });
-      }
+        flowChart.data.taskRunning = false
+        const trainResult = this.getTrainProcessData(new Map<string, TrainingProcess>(Object.entries(trainProcess)))
+        const trainResultNode = flowChart.data.cellData.get('trained-result-node')
+        if (trainResultNode) trainResultNode.content = [trainResult]
+        flowChart.data.cellData.forEach(val => val.basic = { ...val.basic, opacity: 1 })
+        this.updateNodes(flowChart)
+        this.twinkleNode(flowChart.data.graph, `${flowChart.data.projectName}_model-select-node`, false)
+        this.twinkleNode(flowChart.data.graph, `${flowChart.data.projectName}_test-result-node`, true)
 
-    });
+        const animateEdgeList = [`${flowChart.data.projectName}_model-select-node_edge`, `${flowChart.data.projectName}_trained-result-node_edge`]
+        animateEdgeList.forEach(edge => this.animateEdge(flowChart.data.graph, edge, false))
+      }
+    }
+
+    if (typeof testProcess !== "string") {
+      const testResult = this.getTestProcessData(testProcess as TestProcess)
+      const testResultNode = flowChart.data.cellData.get('test-result-node')
+      if (testResultNode) testResultNode.content = [testResult]
+      this.updateNodes(flowChart)
+      this.twinkleNode(flowChart.data.graph, `${flowChart.data.projectName}_test-result-node`, false)
+    }
+
+  }
+
+  private updateNodes(flowChart: flowChart): void {
+
+    const graph = flowChart.data.graph
+    if (graph === null) return
+
+    const nodes = graph.getNodes()
+    flowChart.data.cellData.forEach((data, name) => {
+      const nodeName = `${flowChart.data.projectName}_${name}`
+      const targetNode = nodes.find(node => node.id === nodeName)
+      if (!targetNode) return
+      targetNode.setData({ ...data }, { overwrite: true })
+    })
+
+  }
+
+  private animateEdge(graph: Graph | null, edgeId: string, animate: boolean): void {
+
+    if (graph === null) return
+    const edge = graph.getCellById(edgeId)
 
     insertCss(`@keyframes ant-line {
       to { stroke-dashoffset: -1000 }
     }`)
 
-
-    const conditionA = flow.filter(item => item.name.includes("processing")).length
-    const conditionB = flow.filter(item => item.name === "model-select-node").length
-
-    if (conditionA > 0 && conditionB > 0 && taskRunning) {
-      const modelSelectNodeIndex = flow.findIndex(item => item.name.includes("model-select-node"))
-      this.addTwinkleAnimateNode(graph, screenWidth, modelSelectNodeIndex)
+    if (animate) {
+      edge.setAttrs(
+        {
+          line: {
+            stroke: '#4a9abe',
+            strokeDasharray: 5,
+            style: {
+              animation: 'ant-line 30s infinite linear',
+            },
+          },
+        }
+      )
+    } else {
+      edge.setAttrs(
+        {
+          line: {
+            stroke: '#333',
+            strokeDasharray: 0,
+            style: {
+              animation: ''
+            }
+          },
+        }
+      )
     }
 
-    return graph
   }
 
-  private addTwinkleAnimateNode(graph: Graph, screenWidth: number, nodeIndex: number): void {
+  private twinkleNode(graph: Graph | null, nodeId: string, animate: boolean): void {
 
-    const modelSelectNodeSetting = GraphService.getNodeSettings(screenWidth, nodeIndex)
-    modelSelectNodeSetting.shape = 'rect'
+    if (graph === null) return
+    const nodes = graph.getNodes()
+    const targetNodeIndex = nodes.findIndex(item => item.id === nodeId)
+    if (targetNodeIndex === -1) return
 
-    graph.addNode({
-      ...modelSelectNodeSetting,
-      id: "twinkle_node",
-      attrs: {
-        body: {
-          stroke: '#fff',
+    const twinkleNodeName = `${nodeId}_twinkle`
+
+    if (animate) {
+      const modelSelectNodeSetting = GraphService.getNodeSettings(window.innerWidth, targetNodeIndex)
+      modelSelectNodeSetting.shape = 'rect'
+      graph.addNode({
+        ...modelSelectNodeSetting,
+        id: twinkleNodeName,
+        attrs: {
+          body: {
+            stroke: '#fff',
+          },
         },
-      },
-    })
-
-    const view = graph.findViewByCell("twinkle_node")
-
-    if (view) {
-      view.animate('rect', {
-        attributeType: 'XML',
-        attributeName: 'opacity',
-        from: 0.6,
-        to: 0.1,
-        dur: '1.0s',
-        repeatCount: 'indefinite',
       })
+      const view = graph.findViewByCell(twinkleNodeName)
+      if (view) {
+        view.animate('rect', {
+          attributeType: 'XML',
+          attributeName: 'opacity',
+          from: 0.6,
+          to: 0.1,
+          dur: '2s',
+          repeatCount: 'indefinite',
+        })
+      }
+    } else {
+      graph.removeCell(twinkleNodeName)
     }
+
+
   }
 
   private progressFormat(percentage: number): string {
@@ -347,29 +402,12 @@ export default class Dashboard extends Vue {
 
   private calculateProgress(process: Map<string, TrainingProcess>): number {
 
-    // const latestKey = [...process.keys()].pop()
-    // if (!latestKey) return 0
-
     const latestInstance = [...process.values()].pop()
     if (!latestInstance) return 0
 
     const percentage = ((latestInstance.model.epoch / latestInstance.model.total) * 100).toFixed(0)
 
     return parseInt(percentage)
-
-  }
-
-
-  private setNodeContent(graph: Graph, nodeName: string, nodeContent: string): void {
-
-    const nodes = graph.getNodes()
-    const targetNode = nodes.find(node => node.id.includes(nodeName))
-    const sendContent = {
-      component: nodeName,
-      content: [nodeContent],
-    }
-    if (!targetNode) return
-    targetNode.setData(sendContent, { overwrite: true })
 
   }
 
@@ -385,101 +423,6 @@ export default class Dashboard extends Vue {
   private getTestProcessData(testData: TestProcess): string {
 
     return `準確率:${testData.Test.Test.accuracy.toFixed(5)}`
-  }
-
-
-  private nodeContentSetting(graph: Graph, graphRunId: string, taskInfo: GetQueueInformationResData): void {
-
-    const trainTask = taskInfo.done.filter(item => item.task === "Train")
-    const trainIndex = trainTask.findIndex(item => item.runId === graphRunId)
-    if (trainIndex === -1) return
-
-    if (typeof trainTask[trainIndex].process === 'string') return
-    const trainContent = this.getTrainProcessData(new Map<string, TrainingProcess>(Object.entries(trainTask[trainIndex].process)))
-    if (trainContent === '') return
-
-    this.setNodeContent(graph, 'trained-result-node', trainContent)
-
-    const testTask = taskInfo.done.filter(item => item.task === "Test")
-    const testIndex = testTask.findIndex(item => item.runId === graphRunId)
-    if (testIndex === -1) return
-
-    if (typeof testTask[testIndex].process === 'string') return
-    const testContent = this.getTestProcessData(testTask[testIndex].process as TestProcess)
-
-    this.setNodeContent(graph, 'test-result-node', testContent)
-
-  }
-
-  private updateSingleGraph(graph: flowChart): void {
-    const graphData = graph.data
-    graphData.graph?.clearCells()
-    graphData.graph = null
-    if (!graphData.experiment) return
-    graphData.graph = this.drawFlowChart(window.innerWidth, document.getElementById(graph.runId), graphData.flowInfo, graphData.experiment, graphData.projectName, graphData.taskRunning)
-
-  }
-
-  private handleTrainTask(trainTask: RunTask, targetGraphIndex: number): boolean {
-
-
-    if (this.graphs.length === 0) return false
-
-    if (!this.graphs[targetGraphIndex]) return false
-    const originPercentage = this.graphs[targetGraphIndex].percentage
-
-    const newGraphSetting = this.graphSetting(trainTask)
-    if (!newGraphSetting) return false
-
-    const updatedPercentage = newGraphSetting.percentage
-
-    // update graph percentage 
-    this.graphs[targetGraphIndex].percentage = updatedPercentage
-    this.graphs[targetGraphIndex].processingState = newGraphSetting.processingState
-
-
-    if ((originPercentage === 0 && updatedPercentage > 0) || originPercentage !== 100 && updatedPercentage === 100) {
-
-      this.updateSingleGraph(newGraphSetting)
-
-      this.graphs.splice(targetGraphIndex, 1, newGraphSetting)
-
-    }
-
-    if (updatedPercentage !== 100) return false
-
-    const nodeContent = this.getTrainProcessData(new Map<string, TrainingProcess>(Object.entries(trainTask.process)))
-    if (nodeContent === '') return false
-
-    const graph = this.graphs[targetGraphIndex].data.graph
-    if (graph === null) return false
-
-    this.setNodeContent(graph, 'trained-result-node', nodeContent)
-
-    return true
-  }
-
-  private handleTestTask(testTask: RunTask, targetGraphIndex: number): void {
-
-    const graph = this.graphs[targetGraphIndex].data.graph
-    if (graph === null) return
-
-    const nodes = graph.getNodes()
-    const testResultNodeIndex = nodes.findIndex(node => node.id.includes("test-result-node"))
-    const twinkleNode = nodes.find(node => node.id.includes("twinkle_node"))
-
-    if (typeof testTask.process === "string") {
-
-      // this.graphs[targetGraphIndex].processingState = "Testing"
-      if (!twinkleNode) this.addTwinkleAnimateNode(graph, window.innerWidth, testResultNodeIndex)
-      return
-    }
-
-    // this.graphs[targetGraphIndex].processingState = "Task finished"
-    graph.removeCell("twinkle_node")
-    const testContent = this.getTestProcessData(testTask.process as TestProcess)
-    this.setNodeContent(graph, 'test-result-node', testContent)
-
   }
 
   private askDeleteRun(projectName: string, runId: string): void {
@@ -501,15 +444,16 @@ export default class Dashboard extends Vue {
     const response = await Api.removeRunInQueue(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
 
     if (response === 'success') {
-      Message.success('訓練結果刪除成功')
-      this.graphs = this.graphs.filter(item => item.runId !== this.deleteGraphInfo.runId)
+      this.flowCharts = this.flowCharts.filter(item => item.runId !== this.deleteGraphInfo.runId)
+
       this.trainingInfo = await Api.getQueueInformation()
       this.drawGraph()
-    }else{
+      Message.success('訓練結果刪除成功')
+    } else {
       Message.error(response)
     }
 
-    if (this.graphs.length === 0) this.projectExist = false
+    if (this.flowCharts.length === 0) this.projectExist = false
 
     this.deleteDialog = false
   }

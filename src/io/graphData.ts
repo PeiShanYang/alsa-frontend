@@ -1,6 +1,6 @@
 import { Graph } from "@antv/x6";
 import { Experiment } from '@/io/experiment';
-import FlowNodeSettings from "./flowNodeSettings";
+import ProcessCellData from "./processCellData";
 
 export default class graphData{
     graph! : Graph | null;
@@ -8,6 +8,6 @@ export default class graphData{
     experimentId = '';
     date = '';
     experiment? : Experiment;
-    flowInfo!:FlowNodeSettings[];
+    cellData!:Map<string, ProcessCellData>;
     taskRunning = false;
 }

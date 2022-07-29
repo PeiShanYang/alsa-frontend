@@ -1,34 +1,40 @@
+import FlowNodeSettings from '@/io/flowNodeSettings';
 import ProcessCellData from '@/io/processCellData';
 import { VueShape } from '@antv/x6-vue-shape';
 import { Cell } from '@antv/x6/lib/model/cell';
-import { Component, Prop, Inject, Vue } from 'vue-property-decorator';
+import { Component, Inject, Vue } from 'vue-property-decorator';
 
 @Component
-export default class flowNode extends Vue {
-
-  @Prop(String) private icon!: string;
-  @Prop(String) private title!: string;
-  @Prop(String) private backgroundColor!: string;
-  @Prop(String) private borderColor!: string;
-  @Prop(String) private opacity!: number;
+export default class FlowNode extends Vue {
 
   @Inject("getNode") private getNode!: () => VueShape;
 
-  private nodeBackgroundColor = `background: ${this.backgroundColor};border-color: ${this.borderColor};opacity: ${this.opacity};`;
-  private nodeBorderColor = `border-color: ${this.borderColor};opacity: ${this.opacity};`;
-  private nodeContent = ["暫無資料"]
-  
+  private basic = new FlowNodeSettings()
+
+  get nodeBackgroundColor(): string {
+    return `background: ${this.basic.backgroundColor};border-color: ${this.basic.borderColor};opacity: ${this.basic.opacity};`
+  }
+
+  get nodeBorderColor(): string {
+    return `border-color: ${this.basic.borderColor};opacity: ${this.basic.opacity};`;
+  }
+
+  private nodeContent: string[] = []
 
 
   mounted(): void {
     const node = this.getNode();
 
+    this.basic = node.getData().basic
+
     this.nodeContent = node.getData().content
 
     node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>) => {
-      
-      if (info.current) this.nodeContent = info.current.content
-      
+
+      if (info.current) {
+        this.nodeContent = [...info.current.content]
+        this.basic = { ...info.current.basic }
+      }
     });
 
   }
