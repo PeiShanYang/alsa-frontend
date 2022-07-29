@@ -13,6 +13,8 @@ import { GetQueueInformationResData, RunTask, TestProcess, TrainingProcess } fro
 import { StringUtil } from '@/utils/string.util';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
+import { UserInfo } from '@/io/users';
+import storeService from '@/services/store.service';
 
 
 class flowChart {
@@ -30,6 +32,10 @@ class flowChart {
 })
 
 export default class Dashboard extends Vue {
+
+  get userInfo(): UserInfo {
+    return storeService.userInfo
+  }
 
   private projectExist = true;
 

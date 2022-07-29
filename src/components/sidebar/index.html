@@ -19,7 +19,9 @@
     <el-submenu :index="name" :hide-timeout="5000">
       <template slot="title">
         <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
-        <span>{{ name }}</span>
+        <el-tooltip :content="name" placement="top-end" effect="light">
+          <span>{{ name }}</span>
+        </el-tooltip>
       </template>
       <el-menu-item :index="`/${name}/dataset`">
         <img :src="require('@/assets/svg_icon/sidebar/dataset.svg')" />

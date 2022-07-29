@@ -65,7 +65,7 @@ export default class Navbar extends Vue {
 
   private handleLogout(): void {
 
-    document.cookie = 'salaCookies=; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+    document.cookie = 'salaCookies=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
     storeService.userInfo = new UserInfo()
     this.$router.push('/login')
   }

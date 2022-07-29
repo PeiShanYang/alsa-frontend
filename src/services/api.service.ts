@@ -405,12 +405,20 @@ export default class Api {
     //   { responseType: 'blob' }
     // );
 
+    // const response = await axios.get(
+    //   `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+    //   AxiosUtils.bearearToken(),
+    // )
+    // console.log('re',response)
+
+    // return
+
     const dom = document.createElement('a');
     dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
     dom.click();
   }
 
-  static async setDeployPath(projectName: string, deployPath: string): Promise<SetDeployPathData | null> {
+  static async setDeployPath(projectName: string, deployPath: string): Promise<SetDeployPathData | string> {
     const reqData: SetDeployPathReq = { projectName, deployPath }
 
     const response: AxiosResponse<SetDeployPathRes> = await axios.post(
@@ -419,12 +427,15 @@ export default class Api {
       AxiosUtils.bearearToken(),
     )
 
-    if (response.status !== 200) return null
+    if (response.status !== 200) return 'connection error'
 
     const res: SetDeployPathRes = response.data
-    if (res.code !== 0) console.log(res.message)
+    if (res.code !== 0) {
+      console.log(res.message)
+      return res.message
+    }
 
-    if (!res.data) return null
+    if (!res.data) return res.message
 
     Logger.log(res.data)
 

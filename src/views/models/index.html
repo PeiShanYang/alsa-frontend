@@ -1,6 +1,6 @@
 <div id="mainSection">
   <div v-show="resultExit">
-    <el-row type="flex" justify="center" class="search-row">
+    <el-row type="flex" justify="center" class="search-row" v-if="projectAuth === 'owner'">
       <el-col :span="6">
         <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="setDeployPathDialog=true" />
       </el-col>
@@ -95,7 +95,9 @@
           </el-row>
           <el-row type="flex" justify="end">
             <el-col :span="8" class="action-btn-group">
-              <el-button class="secondary-btn" @click="askDeleteRun(chart.runId)">刪除</el-button>
+              <template v-if="userInfo.auth === 'admin'">
+                <el-button class="secondary-btn" @click="askDeleteRun(chart.runId)">刪除</el-button>
+              </template>
               <el-button class="primary-btn" @click="getDownloadInfo(chart.runId)">下載</el-button>
               <el-tooltip :disabled="chart.deployInfoMsg.length === 0" placement="top-end" effect="light">
                 <div slot="content">

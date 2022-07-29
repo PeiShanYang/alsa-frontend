@@ -1,10 +1,10 @@
 import { Component, Vue } from 'vue-property-decorator';
-import { Line, RingProgress} from '@antv/g2plot';
+import { Line, RingProgress } from '@antv/g2plot';
 import ChartService from "@/services/chart.service";
 import chartData from '@/io/chartData';
 import { TrainingProcess } from '@/io/rest/getQueueInformation';
 import Api from '@/services/api.service';
-import store from '@/services/store.service';
+import storeService from '@/services/store.service';
 import { StringUtil } from '@/utils/string.util';
 import { GetModelInformationResData, ModelInfo } from '@/io/rest/getModelInformation';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
@@ -13,6 +13,9 @@ import { DeployInfo } from '@/io/deployInfo';
 import DialogTreeList from '@/components/dialogs/dialog-tree-list/DialogTreeList.vue';
 import { Experiment } from '@/io/experiment';
 import Logger from '@/services/log.service';
+import { Message } from 'element-ui';
+import { UserInfo } from '@/io/users';
+
 
 
 class Chart {
@@ -33,6 +36,14 @@ class Chart {
 })
 export default class Models extends Vue {
 
+    get userInfo(): UserInfo {
+        return storeService.userInfo
+    }
+
+    get projectAuth(): string {
+        return storeService.projectList.get(storeService.currentProject ?? '')?.auth ?? ''
+    }
+
     private resultExit = true;
     private inputDeployPath = '';
 
@@ -47,7 +58,7 @@ export default class Models extends Vue {
     private downloadInfo = { runId: '' }
 
     private setDeployPathDialog = false;
-    private setDeployPathDialogData = { rootPath:'deploy',title: '設定部署路徑', content: '' };
+    private setDeployPathDialogData = { rootPath: 'deploy', title: '設定部署路徑', content: '' };
 
     private deployDialog = false;
     private deployDialogData = new DialogMessageData()
@@ -62,11 +73,11 @@ export default class Models extends Vue {
 
     private async waitGetAllProjectInfo(): Promise<void> {
 
-        if (!store.currentProject) return
+        if (!storeService.currentProject) return
 
         const loadingInstance = this.$loading({ target: document.getElementById("mainSection") ?? "" })
 
-        const response: GetModelInformationResData = await Api.getModelInformation(store.currentProject)
+        const response: GetModelInformationResData = await Api.getModelInformation(storeService.currentProject)
 
         this.inputDeployPath = response.deployPath
         this.deployInfo = response.deployInfo
@@ -77,9 +88,9 @@ export default class Models extends Vue {
             return
         }
 
-        for (let i = 0; i < response.modelList.length; i++){
+        for (let i = 0; i < response.modelList.length; i++) {
             const setting = await this.chartSetting(response.modelList[i])
-            if (setting)  this.charts.push(setting)
+            if (setting) this.charts.push(setting)
             this.acitveResultCollapse.push(response.modelList[i].runId)
         }
 
@@ -96,7 +107,7 @@ export default class Models extends Vue {
 
         const modelName = this.$i18n.t(taskInfo.model).toString()
 
-        if(!taskInfo.Train) return
+        if (!taskInfo.Train) return
 
         const process = new Map<string, TrainingProcess>(Object.entries(taskInfo.Train))
         const lineChartData: { epoch: string, accuracy: number }[] = []
@@ -185,8 +196,8 @@ export default class Models extends Vue {
         const filename = content.find(item => item.inputName === "請輸入下載的檔案名稱")?.inputContent
 
         if (!filename || filename === "") return
-        if (!store.currentProject) return;
-        await Api.downloadModel(store.currentProject, this.downloadInfo.runId, filename)
+        if (!storeService.currentProject) return;
+        await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
 
         this.openDialogMessage = false
     }
@@ -197,26 +208,24 @@ export default class Models extends Vue {
 
 
         if (!deployPath || deployPath === "") return
-        if (!store.currentProject) return;
-        const deployInfo = await Api.setDeployPath(store.currentProject, deployPath);
+        if (!storeService.currentProject) return;
+        const deployInfo = await Api.setDeployPath(storeService.currentProject, deployPath);
 
-        if (deployInfo === null) {
+        if (typeof deployInfo === 'string') {
             this.inputDeployPath = ""
+            Message.error(deployInfo)
         } else {
             this.inputDeployPath = deployInfo.deployPath
             this.deployInfo = deployInfo.infoList
+            Message.error('設定部署路徑成功')
         }
         this.setDeployPathDialog = false
     }
 
     private setDeployFilename(runId: string): void {
 
-        if(this.inputDeployPath === ''){
-            const h = this.$createElement;
-            this.$message({
-                type: 'warning',
-                message: h('h3', { style: 'color:#e6a23c;' }, "請先設定部署路徑"),
-            })
+        if (this.inputDeployPath === '') {
+            Message.warning('請先設定部署路徑')
             return
         }
 
@@ -237,8 +246,8 @@ export default class Models extends Vue {
         const filename = content.find(item => item.inputName === "請輸入部署檔名")?.inputContent
 
         if (!filename || filename === "") return
-        if (!store.currentProject) return;
-        const deployInfo = await Api.deploy(store.currentProject, this.downloadInfo.runId, filename);
+        if (!storeService.currentProject) return;
+        const deployInfo = await Api.deploy(storeService.currentProject, this.downloadInfo.runId, filename);
         Logger.log(`this: ${deployInfo}`)
 
         if (deployInfo !== null) {
@@ -255,7 +264,7 @@ export default class Models extends Vue {
     }
 
     private isCurrentVersion(runId: string): boolean {
-        if(this.deployInfo === undefined) return false
+        if (this.deployInfo === undefined) return false
 
         return runId === this.deployInfo[this.deployInfo.length - 1]?.runId ?? '';
     }
@@ -296,31 +305,31 @@ export default class Models extends Vue {
     }
 
     private askDeleteRun(runId: string): void {
-        if (store.currentProject === undefined) return
+        if (storeService.currentProject === undefined) return
 
-        this.deleteGraphInfo.projectName = store.currentProject
+        this.deleteGraphInfo.projectName = storeService.currentProject
         this.deleteGraphInfo.runId = runId
-    
+
         this.dialogMessageData = {
-          ...this.dialogMessageData,
-          type: 'warning',
-          title: '確定刪除訓練結果?',
+            ...this.dialogMessageData,
+            type: 'warning',
+            title: '確定刪除訓練結果?',
         }
-    
+
         this.deleteDialog = true
-      }
-    
-      private async removeRun(): Promise<void> {
-    
+    }
+
+    private async removeRun(): Promise<void> {
+
         const response = await Api.removeRun(this.deleteGraphInfo.projectName, this.deleteGraphInfo.runId)
-    
+
         if (response === 'success') {
-          const graphIndex = this.charts.findIndex(item => item.runId === this.deleteGraphInfo.runId)
-    
-          if (graphIndex > -1) this.charts.splice(graphIndex, 1)
+            const graphIndex = this.charts.findIndex(item => item.runId === this.deleteGraphInfo.runId)
+
+            if (graphIndex > -1) this.charts.splice(graphIndex, 1)
         }
-    
+
         this.deleteDialog = false
-      }
-    
+    }
+
 }

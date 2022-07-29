@@ -39,7 +39,9 @@
           </el-row>
           <el-row type="flex" justify="end">
             <el-col :span="6" class="action-btn-group">
-              <el-button class="secondary-btn" @click="askDeleteRun(flowChart.data.projectName,flowChart.runId)">刪除</el-button>
+              <template v-if="userInfo.auth === 'admin'">
+                <el-button class="secondary-btn" @click="askDeleteRun(flowChart.data.projectName,flowChart.runId)">刪除</el-button>
+              </template>
               <el-button class="primary-btn" @click="handleToModelsPage(flowChart)">查看模型</el-button>
             </el-col>
           </el-row>
