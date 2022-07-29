@@ -6,18 +6,6 @@
           <OptionEnumsForm :enums="arg.enums" :value="newPara.get(name)" @input="updateNewPara(name, $event)" />
         </template>
     </div>
-    <div v-if="formType(arg)==='int-slider'" class="slider-box">
-      <div class="content-title">{{ tr(name, arg) }}</div>
-      <template v-if="newPara.get(name) !== undefined">
-        <OptionIntSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" :unit="arg.unit" />
-      </template>
-    </div>
-    <div v-if="formType(arg)==='float-slider'" class="slider-box">
-      <div class="content-title">{{ tr(name, arg) }}</div>
-      <template v-if="newPara.get(name) !== undefined">
-        <OptionFloatSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" :unit="arg.unit" />
-      </template>
-    </div>
     <div v-if="formType(arg)==='int-input'" class="input-box">
       <div class="content-title">{{ tr(name, arg) }}</div>
       <template v-if="newPara.get(name) !== undefined">
@@ -30,6 +18,19 @@
         <OptionFloatInputForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" :unit="arg.unit" />
       </template>
     </div>
+    <div v-if="formType(arg)==='int-slider'" class="slider-box">
+      <div class="content-title">{{ tr(name, arg) }}</div>
+      <template v-if="newPara.get(name) !== undefined">
+        <OptionIntSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" :unit="arg.unit" />
+      </template>
+    </div>
+    <div v-if="formType(arg)==='float-slider'" class="slider-box">
+      <div class="content-title">{{ tr(name, arg) }}</div>
+      <template v-if="newPara.get(name) !== undefined">
+        <OptionFloatSliderForm :max="arg.max" :min="arg.min" :value="newPara.get(name)" @input="updateNewPara(name, $event)" :unit="arg.unit" />
+      </template>
+    </div>
+
     <div v-if="formType(arg)==='list'">
       <div class="content-title">{{ tr(name, arg) }}</div>
       <div class="children-container">
@@ -38,18 +39,6 @@
             <div class="content-title">{{ tr(nameChild, argChild) }}</div>
             <template v-if="childValue(name,index) !== undefined">
               <OptionEnumsForm :enums="argChild.enums" :value="childValue(name,index)" @input="setChildValue(name,index, $event)" />
-            </template>
-          </div>
-          <div v-if="formType(argChild)==='int-slider'" class="slider-box">
-            <div class="content-title">{{ tr(nameChild, argChild) }}</div>
-            <template v-if="childValue(name,index) !== undefined">
-              <OptionIntSliderForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event)" :unit="argChild.unit" />
-            </template>
-          </div>
-          <div v-if="formType(argChild)==='float-slider'" class="slider-box">
-            <div class="content-title">{{ tr(nameChild, argChild) }}</div>
-            <template v-if="childValue(name,index) !== undefined">
-              <OptionFloatSliderForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event)" :unit="argChild.unit" />
             </template>
           </div>
           <div v-if="formType(argChild)==='int-input'" class="input-box">
@@ -64,6 +53,38 @@
               <OptionFloatInputForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event)" :unit="argChild.unit" />
             </template>
           </div>
+          <template v-if="Object.keys(arg.children).includes('min') && Object.keys(arg.children).includes('max')">
+            <template v-if="nameChild === 'min'">
+              <div v-if="formType(argChild)==='float-slider'" class="slider-box">
+                <div class="content-title-bound">
+                  <div class="content-title"> {{ tr('min', argChild) }}</div>
+                  <div class="content-title"> {{ tr('max', argChild) }}</div>
+                </div>
+                <OptionFloatSliderRangeForm :max="argChild.max" :min="argChild.min" :boundValue="[childValue(name,index),childValue(name,index+1)]" @input="setChildValue(name,index, $event)" :unit="argChild.unit"/>
+              </div>
+              <div v-if="formType(argChild)==='int-slider'" class="slider-box">
+                <div class="content-title-bound">
+                  <div class="content-title"> {{ tr('min', argChild) }}</div>
+                  <div class="content-title"> {{ tr('max', argChild) }}</div>
+                </div>
+                <OptionIntSliderRangeForm :max="argChild.max" :min="argChild.min" :boundValue="[childValue(name,index),childValue(name,index+1)]" @input="setChildValue(name,index, $event)" :unit="argChild.unit"/>
+              </div>
+            </template>
+          </template>
+          <template v-else>
+            <div v-if="formType(argChild)==='int-slider'" class="slider-box">
+              <div class="content-title">{{ tr(nameChild, argChild) }}</div>
+              <template v-if="childValue(name,index) !== undefined">
+                <OptionIntSliderForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event)" :unit="argChild.unit" />
+              </template>
+            </div>
+            <div v-if="formType(argChild)==='float-slider'" class="slider-box">
+              <div class="content-title">{{ tr(nameChild, argChild) }}</div>
+              <template v-if="childValue(name,index) !== undefined">
+                <OptionFloatSliderForm :max="argChild.max" :min="argChild.min" :value="childValue(name,index)" @input="setChildValue(name,index, $event)" :unit="argChild.unit" />
+              </template>
+            </div>
+          </template>
         </template>
       </div>
     </div>
