@@ -244,8 +244,8 @@ export default class Dashboard extends Vue {
     }
 
     if (typeof trainProcess !== "string") {
-
       flowChart.percentage = this.calculateProgress(new Map<string, TrainingProcess>(Object.entries(trainProcess)))
+      flowChart.processingState = ''
       const processingNode: string[] = []
 
 
@@ -259,7 +259,7 @@ export default class Dashboard extends Vue {
             node.basic = { ...node.basic, opacity: 1 }
           }
         })
-        console.log("flowchart",flowChart)
+
         this.updateNodes(flowChart)
 
 
@@ -273,6 +273,7 @@ export default class Dashboard extends Vue {
             node.basic = { ...node.basic, opacity: 1 }
           }
         })
+
         this.updateNodes(flowChart)
         this.twinkleNode(flowChart.data.graph, `${flowChart.data.projectName}_model-select-node`, true)
 
@@ -314,7 +315,7 @@ export default class Dashboard extends Vue {
       const nodeName = `${flowChart.data.projectName}_${name}`
       const targetNode = nodes.find(node => node.id === nodeName)
       if (!targetNode) return
-      targetNode.setData(data, { overwrite: true })
+      targetNode.setData({ ...data }, { overwrite: true })
     })
 
   }
@@ -444,11 +445,11 @@ export default class Dashboard extends Vue {
 
     if (response === 'success') {
       this.flowCharts = this.flowCharts.filter(item => item.runId !== this.deleteGraphInfo.runId)
-      
+
       this.trainingInfo = await Api.getQueueInformation()
       this.drawGraph()
       Message.success('訓練結果刪除成功')
-    }else{
+    } else {
       Message.error(response)
     }
 

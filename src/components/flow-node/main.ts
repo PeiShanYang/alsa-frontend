@@ -32,7 +32,7 @@ export default class FlowNode extends Vue {
     node.on("change:data", (info: Cell.ChangeArgs<ProcessCellData>) => {
 
       if (info.current) {
-        this.nodeContent = info.current.content
+        this.nodeContent = [...info.current.content]
         this.basic = { ...info.current.basic }
       }
     });
