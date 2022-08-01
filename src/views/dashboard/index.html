@@ -11,36 +11,38 @@
       </el-col>
     </el-row>
     <el-collapse v-model="acitveProjectCollapse">
-      <template v-for="graph in graphList">
-        <el-collapse-item :name=graph.runId>
+      <template v-for="flowChart in flowChartList">
+        <el-collapse-item :name=flowChart.runId>
           <template slot="title">
             <el-row style="width: 100%;">
               <el-col :span="15" class="title-container">
                 <img :src="require('@/assets/svg_icon/sidebar/project_star.svg')" />
-                <div>{{ graph.data.projectName }} - {{ graph.data.date }}</div>
+                <div>{{ flowChart.data.projectName }} - {{ flowChart.data.date }}</div>
               </el-col>
               <el-col :span="9" class="progress-container">
-                <el-progress :percentage=graph.percentage :format="progressFormat" :color="progressColor"></el-progress>
+                <el-progress :percentage=flowChart.percentage :format="progressFormat" :color="progressColor"></el-progress>
               </el-col>
             </el-row>
           </template>
-          <el-row v-if="graph.processingState !== '' ">
+          <el-row v-if="flowChart.processingState !== '' ">
             <el-col>
               <div class="processing-state-box">
                 <img :src="require('@/assets/svg_icon/dashboard/warning_sign.svg')" />
-                <div> 任務狀態：{{graph.processingState}}</div>
+                <div> 任務狀態：{{flowChart.processingState}}</div>
               </div>
             </el-col>
           </el-row>
           <el-row type="flex" justify="center">
             <el-col>
-              <div :id=graph.runId style="flex: 1;"></div>
+              <div :id=flowChart.runId style="flex: 1;"></div>
             </el-col>
           </el-row>
           <el-row type="flex" justify="end">
             <el-col :span="6" class="action-btn-group">
-              <el-button class="secondary-btn" @click="askDeleteRun(graph.data.projectName,graph.runId)">刪除</el-button>
-              <el-button class="primary-btn" @click="handleToModelsPage(graph)">查看模型</el-button>
+              <template v-if="userInfo.auth === 'admin'">
+                <el-button class="secondary-btn" @click="askDeleteRun(flowChart.data.projectName,flowChart.runId)">刪除</el-button>
+              </template>
+              <el-button class="primary-btn" @click="handleToModelsPage(flowChart)">查看模型</el-button>
             </el-col>
           </el-row>
         </el-collapse-item>

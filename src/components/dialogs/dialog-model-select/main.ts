@@ -38,13 +38,14 @@ export default class DialogModelSelect extends Vue {
   }
 
 
-  private modelStructure = 'auo_unrestricted_powerful_model'
+  private modelStructure = ''
 
   private modelsDescription: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
   private models: Map<string, GetModelDescriptionResData> = new Map<string, GetModelDescriptionResData>()
 
   private modelSetting = ['pretrained', 'batchSize', 'epochs', 'lossFunction', 'Optimizer', 'Scheduler']
   private changeToSetting = false
+  private isPretrainedWeight = false
 
   private currentPage = 1
   private pageSize = 8
@@ -70,6 +71,8 @@ export default class DialogModelSelect extends Vue {
     this.modelsDescription = await Api.getModelDescription()
     this.handlePageChange()
 
+    await Api.getModelPreTrainedWeight('auo_unrestricted_powerful_model')
+
   }
 
   private optionName(name: string): string {
@@ -83,10 +86,14 @@ export default class DialogModelSelect extends Vue {
   }
 
 
-  private pickModelSetting(modelName: string, advance: boolean): void {
+  private async pickModelSetting(modelName: string, advance: boolean): Promise<void> {
     this.modelStructure = modelName
     this.newPara.modelStructure = modelName
-    if (advance) this.changeToSetting = true
+    if (advance) {
+      this.changeToSetting = true
+      this.isPretrainedWeight = await Api.getModelPreTrainedWeight(modelName)
+      if(this.isPretrainedWeight === false) this.newPara = { ...this.newPara, ['modelPretrained']: false }
+    }
   }
 
 

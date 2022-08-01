@@ -1,10 +1,11 @@
 import { Project } from '@/io/project';
 import Api from '@/services/api.service';
-import store from "@/services/store.service";
+import storeService from '@/services/store.service';
 import { Component, Vue } from 'vue-property-decorator';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
 import { Message } from 'element-ui';
+import { UserInfo } from '@/io/users';
 
 @Component({
   components: {
@@ -12,22 +13,17 @@ import { Message } from 'element-ui';
   }
 })
 export default class Sidebar extends Vue {
-  private searchProject = '';
-  private removeDialog = false;
-  private dialogMessageData: DialogMessageData = new DialogMessageData()
-  private remvoeProjectName = '';
 
-
-  created(): void {
-    Api.getProjects();
-  }
+  get userInfo(): UserInfo {
+    return storeService.userInfo
+}
 
   get projectList(): Map<string, Project> {
-    if (this.searchProject === '') return store.projectList;
+    if (this.searchProject === '') return storeService.projectList;
 
     return new Map<string, Project>(
       Array.from(
-        store.projectList.entries()
+        storeService.projectList.entries()
       ).filter(
         (value) => value[0].toUpperCase().includes(
           this.searchProject.toUpperCase()
@@ -37,7 +33,17 @@ export default class Sidebar extends Vue {
   }
 
   get isCollapse(): boolean {
-    return store.sidebarCollapse
+    return storeService.sidebarCollapse
+  }
+
+  private searchProject = '';
+  private removeDialog = false;
+  private dialogMessageData: DialogMessageData = new DialogMessageData()
+  private remvoeProjectName = '';
+
+
+  private created(): void {
+    Api.getProjects();
   }
 
   private askRemoveProject(projectName: string): void {
@@ -61,8 +67,9 @@ export default class Sidebar extends Vue {
     const response = await Api.removeProject(this.remvoeProjectName)
 
     if (response === "success") {
+      await Api.getProjects()
       Message.success('專案刪除成功')
-      if(this.$route.path !== '/') this.$router.push(`/`)
+      if (this.$route.path !== '/') this.$router.push(`/`)
     } else {
       Message.error(response)
     }

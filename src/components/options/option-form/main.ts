@@ -5,6 +5,8 @@ import OptionFloatSliderForm from '@/components/options/option-float-slider-form
 import OptionIntInputForm from '@/components/options/option-int-input-form/OptionIntInputForm.vue';
 import OptionFloatInputForm from '@/components/options/option-float-input-form/OptionFloatInputForm.vue';
 import OptionEnumsForm from '@/components/options/option-enums-form/OptionEnumsForm.vue';
+import OptionFloatSliderRangeForm from '@/components/options/option-float-slider-range-form/OptionFloatSliderRangeForm.vue';
+import OptionIntSliderRangeForm from '@/components/options/option-int-slider-range-form/OptionIntSliderRangeForm.vue';
 
 @Component({
   components: {
@@ -13,6 +15,8 @@ import OptionEnumsForm from '@/components/options/option-enums-form/OptionEnumsF
     OptionIntInputForm,
     OptionFloatInputForm,
     OptionEnumsForm,
+    OptionFloatSliderRangeForm,
+    OptionIntSliderRangeForm,
   }
 })
 export default class OptionForm extends Vue {
@@ -41,7 +45,7 @@ export default class OptionForm extends Vue {
   }
 
   private formTypeSpecialCase(arg: ConfigType): string {
-    
+
     if (this.case === 'normal') {
       if (arg.enums !== undefined) {
         return 'enums'
@@ -89,12 +93,18 @@ export default class OptionForm extends Vue {
     return childPara
   }
 
-  private setChildValue(name: string, index: number, value: number | string): void {
+  private setChildValue(name: string, index: number, value: number | string | number[]): void {
 
     const childPara = this.newPara.get(name)
 
     if (Array.isArray(childPara)) {
-      childPara[index] = value
+
+      if (Array.isArray(value)) {
+        childPara[index] = value[0]
+        childPara[index + 1] = value[1]
+      } else {
+        childPara[index] = value
+      }
       this.newPara.set(name, childPara)
       this.$forceUpdate()
     } else {

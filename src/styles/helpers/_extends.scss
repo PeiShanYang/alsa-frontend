@@ -5,4 +5,10 @@
     font-size: $font-normal;
     width: 7.5em;
     height: 2.4em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i {
+        margin-left: 5px;
+    }
 }

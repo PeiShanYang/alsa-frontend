@@ -65,3 +65,10 @@
 //     font-size: $font-normal;
 //     color: $secondary-color;
 // }
+
+// ::v-deep .el-button{
+//     &:hover,&:focus{
+//         color: $primary-color;
+//         background-color:white
+//     }
+// }

@@ -14,6 +14,14 @@
         + span {
             margin: 0.5em;
         }
+        + span.projcet-name{
+            margin: 0.5em;
+            width: 9em;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
     }
     i {
         font-size: $font-normal * 1.5;
