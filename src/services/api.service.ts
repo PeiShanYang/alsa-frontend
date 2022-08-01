@@ -405,21 +405,21 @@ export default class Api {
     //   { responseType: 'blob' }
     // );
 
-    const response = await axios.get(
-      `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
-      { ...AxiosUtils.bearearToken(), responseType: 'blob' },
-    )
+    // const response = await axios.get(
+    //   `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+    //   { ...AxiosUtils.bearearToken(),responseType:'blob'},
+    // )
 
-    const url = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
+    // const url = window.URL.createObjectURL(new Blob([response.data],{type:'application/octet-stream'}))
+    // const link = document.createElement('a')
 
-    link.href = url
-    link.setAttribute('download', `${filename}.onnx`)
-    link.click()
+    // link.href = url
+    // link.setAttribute('download', `${filename}.onnx`)
+    // link.click()
  
-    // const dom = document.createElement('a');
-    // dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
-    // dom.click();
+    const dom = document.createElement('a');
+    dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
+    dom.click();
   }
 
   static async setDeployPath(projectName: string, deployPath: string): Promise<SetDeployPathData | string> {
