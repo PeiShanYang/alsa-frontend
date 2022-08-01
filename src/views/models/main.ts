@@ -197,9 +197,9 @@ export default class Models extends Vue {
 
         if (!filename || filename === "") return
         if (!storeService.currentProject) return;
-        await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
-
         this.openDialogMessage = false
+        await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
+        
     }
 
 

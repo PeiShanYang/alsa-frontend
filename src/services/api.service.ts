@@ -405,17 +405,21 @@ export default class Api {
     //   { responseType: 'blob' }
     // );
 
-    // const response = await axios.get(
-    //   `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
-    //   AxiosUtils.bearearToken(),
-    // )
-    // console.log('re',response)
+    const response = await axios.get(
+      `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+      { ...AxiosUtils.bearearToken(), responseType: 'blob' },
+    )
 
-    // return
+    const url = window.URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
 
-    const dom = document.createElement('a');
-    dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
-    dom.click();
+    link.href = url
+    link.setAttribute('download', `${filename}.onnx`)
+    link.click()
+ 
+    // const dom = document.createElement('a');
+    // dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
+    // dom.click();
   }
 
   static async setDeployPath(projectName: string, deployPath: string): Promise<SetDeployPathData | string> {
@@ -595,21 +599,21 @@ export default class Api {
 
     const reqData: GetModelPreTrainedWeightReq = { model }
 
-    const response:AxiosResponse<GetModelPreTrainedWeightRes> =await axios.post(
+    const response: AxiosResponse<GetModelPreTrainedWeightRes> = await axios.post(
       host + 'get-model-pretrained-weight',
       reqData,
       AxiosUtils.bearearToken(),
     )
     if (response.status !== 200) return false
 
-    const res:GetModelPreTrainedWeightRes = response.data
+    const res: GetModelPreTrainedWeightRes = response.data
 
-    if(res.code !== 0){
+    if (res.code !== 0) {
       console.log(res.message)
       return false
     }
 
-    if(!res.data) return false
+    if (!res.data) return false
     return res.data
 
   }
