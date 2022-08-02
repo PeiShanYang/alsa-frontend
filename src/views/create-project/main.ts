@@ -3,6 +3,7 @@ import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue
 import DialogMessageData from '@/io/dialogMessageData';
 import Api from '@/services/api.service';
 import store from '@/services/store.service';
+import { Message } from 'element-ui';
 
 
 @Component({
@@ -46,11 +47,7 @@ export default class CreateProject extends Vue {
 
         if(this.inputProjectName.match(re) === null){
 
-            const h = this.$createElement;
-            this.$message({
-                type: 'error',
-                message: h('h3', { style: 'color:#F56C6C;' }, "1.專案名稱開頭須為大小英文字母 2.專案名稱不得包含特殊字元"),
-            })
+            Message.error("1.專案名稱開頭須為大小英文字母 2.專案名稱不得包含特殊字元")
 
             checkStrictName = false
             return
@@ -75,11 +72,7 @@ export default class CreateProject extends Vue {
         }
 
         if (response === false) {
-            const h = this.$createElement;
-            this.$message({
-                type: 'error',
-                message: h('h3', { style: 'color:#F56C6C;' }, "專案建立失敗"),
-            })
+            Message.error("專案建立失敗")
             return
         } else {
             this.inputProjectName = '';

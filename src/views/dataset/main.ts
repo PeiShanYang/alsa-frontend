@@ -5,6 +5,7 @@ import store from '@/services/store.service';
 import { DatasetStatus } from '@/io/dataset';
 import DialogMessage from '@/components/dialogs/dialog-message/DialogMessage.vue';
 import DialogMessageData from '@/io/dialogMessageData';
+import { Message } from 'element-ui';
 
 @Component({
   components: {
@@ -68,17 +69,16 @@ export default class Dataset extends Vue {
   private async checkDataset(datasetPath: string): Promise<void> {
 
     if (datasetPath === "") return
+  
     const response = await Api.checkDataset(datasetPath)
 
-    if (response === false) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'error',
-        message: h('h3', { style: 'color:#F56C6C;' }, "資料集位置設置錯誤"),
-      })
-    } else {
+    if (response === "success") {
       this.setDatasetPathDialog = false
+      Message.success(response)
+    } else {
+      Message.error(response)
     }
+
     this.setDatasetPathDialogData.content = ''
   }
 
@@ -101,7 +101,7 @@ export default class Dataset extends Vue {
     if (this.removeDatasetPath === '') return
     const response = Api.removeDataset(this.removeDatasetPath)
 
-    response.then( content => this.datasets = content)
+    response.then(content => this.datasets = content)
 
     this.removeDatasetDialog = false
   }

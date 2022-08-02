@@ -20,6 +20,7 @@ import graphData from '@/io/graphData';
 import { StringUtil } from '@/utils/string.util';
 import { ConfigType } from '@/io/experimentConfig';
 import Logger from '@/services/log.service';
+import { Message } from 'element-ui';
 
 
 @Component({
@@ -371,22 +372,14 @@ export default class Experiments extends Vue {
 
     const datasetPath = this.graph.experiment.Config.PrivateSetting.datasetPath
     if (!datasetPath) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'warning',
-        message: h('h3', { style: 'color:#E6A23C;' }, "請先設定資料夾路徑"),
-      })
+      Message.warning("請先設定資料夾路徑")
       return
     }
 
     const datasetStatus = store.projectList.get(this.graph.projectName)?.datasets?.get(datasetPath)
     if (!datasetStatus) return
     if (!datasetStatus.labeled || !datasetStatus.split || !datasetStatus.uploaded) {
-      const h = this.$createElement;
-      this.$message({
-        type: 'warning',
-        message: h('h3', { style: 'color:#E6A23C;' }, "請先完成資料集的 上傳、標註、切分的任務"),
-      })
+      Message.warning("請先完成資料集的 上傳、標註、切分的任務")
       return
     }
 
