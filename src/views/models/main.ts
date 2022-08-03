@@ -207,11 +207,11 @@ export default class Models extends Vue {
         } else {
             Message.success('檔案下載中,請稍後')
 
-            const url = window.URL.createObjectURL(new Blob([response], { type: 'application/octet-stream' }))
+            const url = window.URL.createObjectURL(new Blob([response], { type: 'application/zip' }))
             const link = document.createElement('a')
 
             link.href = url
-            link.setAttribute('download', `${filename}.onnx`)
+            link.setAttribute('download', `${filename}.zip`)
             link.click()
         }
 

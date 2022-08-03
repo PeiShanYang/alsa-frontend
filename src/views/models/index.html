@@ -1,6 +1,6 @@
 <div id="mainSection">
   <div v-show="resultExit">
-    <el-row type="flex" justify="center" class="search-row" v-if="projectAuth === 'owner'">
+    <el-row type="flex" justify="center" class="search-row" v-if="projectAuth === 'owner' || userInfo.auth === 'admin'">
       <el-col :span="6">
         <el-input placeholder="請輸入部署路徑" v-model="inputDeployPath" readonly @focus="setDeployPathDialog=true" />
       </el-col>
