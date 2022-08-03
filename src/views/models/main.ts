@@ -126,7 +126,7 @@ export default class Models extends Vue {
 
 
         const barChartData: { className: string, classScore: number, classColor: string }[] = []
-        const customColor = ['#275776', '#8184D7', '#81D6E6', '#58C6E0']
+        const customColor = ['#275776', '#8184D7', '#81D6E6', '#58C6E0', '#6594B4', '#6E71D6', '#43799B', '#8C83F4', '#4282C3', '#08508D']
         // for class accuracy
         for (const [key, value] of Object.entries(taskInfo.Test.Test.Test.classAccuracy)) {
             barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length] })
@@ -197,9 +197,24 @@ export default class Models extends Vue {
 
         if (!filename || filename === "") return
         if (!storeService.currentProject) return;
+
         this.openDialogMessage = false
-        await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
-        
+
+        const response = await Api.downloadModel(storeService.currentProject, this.downloadInfo.runId, filename)
+
+        if (typeof response === 'string') {
+            Message.error(response)
+        } else {
+            Message.success('檔案下載中,請稍後')
+
+            const url = window.URL.createObjectURL(new Blob([response], { type: 'application/octet-stream' }))
+            const link = document.createElement('a')
+
+            link.href = url
+            link.setAttribute('download', `${filename}.onnx`)
+            link.click()
+        }
+
     }
 
 

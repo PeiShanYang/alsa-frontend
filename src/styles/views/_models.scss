@@ -47,10 +47,8 @@
 }
 
 .ring-container{
-    height: $font-normal *12;
-    width: $font-normal*12;
-    display: flex;
-    margin: auto;
+    height: 100%;
+    width: 100%;
 }
 
 .progress-bar-container {
@@ -102,6 +100,7 @@
     display: flex;
     margin: auto;
     height: 100%;
+    width: 100%;
 }
 
 .el-collapse {

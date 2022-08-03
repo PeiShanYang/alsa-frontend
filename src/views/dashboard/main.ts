@@ -203,7 +203,7 @@ export default class Dashboard extends Vue {
     if (!container) return null;
     const graph = new Graph(GraphService.getGraphOption(screenWidth, container));
 
-    const { cellData, projectName, taskRunning } = flowChart.data
+    const { cellData, projectName } = flowChart.data
 
     const flow = [...cellData.values()]
 

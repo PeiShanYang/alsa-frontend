@@ -221,8 +221,8 @@ export default class Api {
     project.datasets = new Map<string, DatasetStatus>(Object.entries(res.data))
   }
 
-  static async checkDataset(datasetPath: string): Promise<boolean> {
-    if (!store.currentProject) return false;
+  static async checkDataset(datasetPath: string): Promise<string> {
+    if (!store.currentProject) return 'Current project does not exist';
 
     const reqData: CheckDatasetReq = {
       projectName: store.currentProject,
@@ -234,14 +234,11 @@ export default class Api {
       AxiosUtils.bearearToken(),
     );
 
-    if (response.status !== 200) return false;
+    if (response.status !== 200) return "connection error";
 
     const res: CheckDatasetRes = response.data;
-    if (res.code !== 0) console.log(res.message);
 
-    if (!res.data) return false
-
-    return true
+    return res.message
   }
 
   static async removeDataset(datasetPath: string): Promise<Map<string, DatasetStatus> | undefined> {
@@ -395,28 +392,20 @@ export default class Api {
   }
 
 
-  static async downloadModel(projectName: string, runId: string, filename: string): Promise<void> {
+  static async downloadModel(projectName: string, runId: string, filename: string): Promise<Blob | string> {
     const reqData: DownloadModelReq = { projectName, runId, filename };
     const jwtStr: string = StringUtil.encodeObject(reqData);
     const jwtStrParts = jwtStr.split('.');
 
-    // const response: AxiosResponse = await axios.get(
-    //   `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
-    //   { responseType: 'blob' }
-    // );
-
-    const response = await axios.get(
+    const response: AxiosResponse = await axios.get(
       `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
       { ...AxiosUtils.bearearToken(), responseType: 'blob' },
     )
 
-    const url = window.URL.createObjectURL(new Blob([response.data]))
-    const link = document.createElement('a')
+    if (response.status !== 200) return 'connection error'
 
-    link.href = url
-    link.setAttribute('download', `${filename}.onnx`)
-    link.click()
- 
+    return response.data
+
     // const dom = document.createElement('a');
     // dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
     // dom.click();
@@ -662,7 +651,15 @@ export default class Api {
 
     storeService.userInfo.token = res.data
 
-    if (remember) document.cookie = `salaCookies=${res.data}`
+    if (remember) {
+      document.cookie = `salaCookies=${res.data}; path=/;`
+    } else {
+      const date = new Date()
+      const oneDayExpire = date.getTime() + 1000 * 60 * 60 * 24
+      date.setTime(oneDayExpire)
+      const expires = `expires=${date.toUTCString()};`
+      document.cookie = `salaCookies=${res.data}; path=/; ${expires}`
+    }
     return res.message
   }
 
