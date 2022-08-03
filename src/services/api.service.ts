@@ -651,7 +651,13 @@ export default class Api {
 
     storeService.userInfo.token = res.data
 
-    if (remember) document.cookie = `salaCookies=${res.data}`
+    if (remember) {
+      document.cookie = `salaCookies=${res.data};path=/;`
+    } else {
+      const currentTime = new Date().getTime()
+      const oneDayExpire = currentTime + 1000 * 60 * 60 * 24
+      document.cookie = `salaCookies=${res.data};path=/;expires=${oneDayExpire};`
+    }
     return res.message
   }
 
