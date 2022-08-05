@@ -57,15 +57,15 @@
             <template v-if="nameChild === 'min'">
               <div v-if="formType(argChild)==='float-slider'" class="slider-box">
                 <div class="content-title-bound">
-                  <div class="content-title"> {{ tr('min', argChild) }}</div>
                   <div class="content-title"> {{ tr('max', argChild) }}</div>
+                  <div class="content-title"> {{ tr('min', argChild) }}</div>
                 </div>
                 <OptionFloatSliderRangeForm :max="argChild.max" :min="argChild.min" :boundValue="[childValue(name,index),childValue(name,index+1)]" @input="setChildValue(name,index, $event)" :unit="argChild.unit"/>
               </div>
               <div v-if="formType(argChild)==='int-slider'" class="slider-box">
                 <div class="content-title-bound">
-                  <div class="content-title"> {{ tr('min', argChild) }}</div>
                   <div class="content-title"> {{ tr('max', argChild) }}</div>
+                  <div class="content-title"> {{ tr('min', argChild) }}</div>
                 </div>
                 <OptionIntSliderRangeForm :max="argChild.max" :min="argChild.min" :boundValue="[childValue(name,index),childValue(name,index+1)]" @input="setChildValue(name,index, $event)" :unit="argChild.unit"/>
               </div>

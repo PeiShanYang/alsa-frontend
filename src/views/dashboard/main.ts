@@ -101,6 +101,7 @@ export default class Dashboard extends Vue {
 
     const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
       .sort((a, b) => Number(b.runId) - Number(a.runId))
+      .filter(item => [...storeService.projectList.keys()].includes(item.projectName))
 
     if (allTasks.length === 0) {
       loadingInstance.close()
@@ -109,6 +110,8 @@ export default class Dashboard extends Vue {
     }
 
     // get project info
+
+
     const projectNameList = [...new Set(allTasks.map(item => item.projectName))]
 
     for (let i = 0; i < projectNameList.length; i++) {
@@ -138,6 +141,7 @@ export default class Dashboard extends Vue {
         this.trainingInfo = await Api.getQueueInformation()
 
         const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
+        .filter(item => [...storeService.projectList.keys()].includes(item.projectName))
 
         workingIdList.forEach(workingId => {
           const flowChart = this.flowCharts.find(item => item.runId === workingId)
@@ -192,6 +196,7 @@ export default class Dashboard extends Vue {
       item.data.graph = this.drawFlowChart(window.innerWidth, document.getElementById(item.runId), item)
 
       const allTasks = [...this.trainingInfo.work, ...this.trainingInfo.done]
+      .filter(item => [...storeService.projectList.keys()].includes(item.projectName))
       const targetTask = allTasks.filter(task => task.runId === item.runId)
       this.updateFlowChart(item, targetTask)
     })

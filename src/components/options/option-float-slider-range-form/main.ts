@@ -1,4 +1,4 @@
-import { Component, Emit, Prop, Vue } from 'vue-property-decorator';
+import { Component, Emit, Prop, Vue, Watch } from 'vue-property-decorator';
 
 @Component
 export default class OptionFloatSliderRangeForm extends Vue {
@@ -6,17 +6,20 @@ export default class OptionFloatSliderRangeForm extends Vue {
   @Prop() private min!: number
   @Prop() private boundValue!: number[]
 
-  private v = this.boundValue
+  private lowerbound = this.boundValue[0]
+  private upperbound = this.boundValue[1]
+
+  @Watch('lowerbound')
+  handleLowerboundChange() {
+    if (this.lowerbound > this.upperbound) this.upperbound = this.lowerbound
+  }
 
   updated(): void {
-
-    if (this.v[0] > this.v[1]) this.v = [this.v[0], this.v[0]]
-
     this.onInputChange()
   }
 
   @Emit("input")
   private onInputChange(): number[] {
-    return this.v
+    return [this.lowerbound, this.upperbound]
   }
 }
