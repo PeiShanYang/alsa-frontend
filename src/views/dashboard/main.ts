@@ -433,6 +433,9 @@ export default class Dashboard extends Vue {
 
   private getTestProcessData(testData: TestProcess): string {
 
+    console.log(testData)
+
+    if (!testData.Test.Test.accuracy) return ''
     return `準確率:${testData.Test.Test.accuracy.toFixed(5)}`
   }
 
