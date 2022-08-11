@@ -345,8 +345,18 @@ export default class Experiments extends Vue {
     const OptimizerParaConfig = new Map<string, Map<string, ConfigType>>(Object.entries(store.experimentConfigs.ConfigModelService.OptimizerPara))
     const optimizerConfig = new Map<string, ConfigType>(Object.entries(OptimizerParaConfig.get(newPara.optimizer) ?? {}))
 
-    let optimizerBasic: { name: string, default: number | string | boolean }[] = []
-    optimizerConfig.forEach((arg, name) => { optimizerBasic = [...optimizerBasic, { name: name, default: arg.default }] })
+    let optimizerBasic: { name: string, default: number | string | boolean | number[] }[] = []
+    optimizerConfig.forEach((arg, name) => {
+
+      if (arg.type === 'list' && arg.children) {
+        const defaultList: any[] = []
+        const childrenMap = new Map<string, ConfigType>(Object.entries(arg.children))
+        childrenMap.forEach(item => defaultList.push(item.default))
+        optimizerBasic = [...optimizerBasic, { name: name, default: defaultList }]
+      } else {
+        optimizerBasic = [...optimizerBasic, { name: name, default: arg.default }]
+      }
+    })
 
     const optimizer: OptimizerPara = JSON.parse(JSON.stringify(store.experimentConfigs.ConfigModelService.OptimizerPara))[newPara.optimizer]
     optimizerBasic.forEach(item => optimizer[item.name] = item.default)
