@@ -14,6 +14,11 @@ export default class OptionFloatSliderRangeForm extends Vue {
     if (this.lowerbound > this.upperbound) this.upperbound = this.lowerbound
   }
 
+  @Watch('upperbound')
+  handleUpperboundChange() {
+    if (this.lowerbound > this.upperbound) this.lowerbound = this.upperbound
+  }
+
   updated(): void {
     this.onInputChange()
   }
