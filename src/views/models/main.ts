@@ -129,7 +129,7 @@ export default class Models extends Vue {
         const customColor = ['#275776', '#8184D7', '#81D6E6', '#58C6E0', '#6594B4', '#6E71D6', '#43799B', '#8C83F4', '#4282C3', '#08508D']
         // for class accuracy
         for (const [key, value] of Object.entries(taskInfo.Test.Test.Test.classAccuracy)) {
-            barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length] })
+            barChartData.push({ className: key, classScore: Math.round(value * 1000) / 10, classColor: customColor[barChartData.length % customColor.length] })
         }
 
         const confusionMatrixImagePath = await Api.sendReport(taskInfo.Test.Test.Test.ConfusionMatrix ?? '')
