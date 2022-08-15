@@ -44,8 +44,8 @@ import { GetModelPreTrainedWeightReq, GetModelPreTrainedWeightRes } from "@/io/r
 
 
 // const host = 'http://tw100104318:37510/';
-const host = 'http://tw100104318:65101/';
-
+// const host = 'http://tw100104318:65101/';
+const host = 'https://adt-sala.azurewebsites.net:5000/'
 
 
 export default class Api {
