@@ -1,6 +1,5 @@
 module.exports = {
   devServer: {
-    proxy: "http://joejhhaung:Auo20222@auhqwsg.corpnet.auo.com:8080",
     disableHostCheck: true,
     port:8080,
   },
