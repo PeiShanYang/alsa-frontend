@@ -43,10 +43,12 @@ import { RefreshTokenRes } from "@/io/rest/refreshToken";
 import { GetModelPreTrainedWeightReq, GetModelPreTrainedWeightRes } from "@/io/rest/getModelPreTrainedWeight";
 
 
+
 // const host = 'http://tw100104318:37510/';
-const host = 'http://tw100104318:65101/';
+// const host = 'http://tw100104318:65101/';
 // const host = 'https://adt-sala.azurewebsites.net:5000/'
 // const host = 'http://localhost:5000/'
+const host = process.env.VUE_APP_ROOT_API
 
 
 export default class Api {
