@@ -13,6 +13,7 @@ import store from '@/services/store.service';
 import storeService from '@/services/store.service';
 import { AxiosUtils } from '@/utils/axios.utils';
 import Api from '@/services/api.service';
+import config,{Config} from '@/config'
 
 Vue.use(VueRouter)
 
@@ -88,7 +89,11 @@ router.beforeEach(async (to, from, next) => {
     if (AxiosUtils.getToken() === '' && to.name !== "login") next({ name: 'login' })
 
     if (storeService.userInfo.token === '' || storeService.userInfo.username === '' || storeService.userInfo.auth === '') {
+
+
+        await Config.init()
         const res = await Api.refreshToken()
+
         if (res !== "success" && to.name !== "login") next({ name: 'login' })
     }
 

@@ -41,20 +41,20 @@ import { UsersProjectReq, UsersProjectRes } from "@/io/rest/usersProject";
 import { SetProjectUserReq, SetProjectUserRes } from "@/io/rest/setProjectUser";
 import { RefreshTokenRes } from "@/io/rest/refreshToken";
 import { GetModelPreTrainedWeightReq, GetModelPreTrainedWeightRes } from "@/io/rest/getModelPreTrainedWeight";
-
+import config from '@/config';
 
 
 // const host = 'http://tw100104318:37510/';
 // const host = 'http://tw100104318:65101/';
 // const host = 'https://adt-sala.azurewebsites.net:5000/'
 // const host = 'http://localhost:5000/'
-const host = process.env.VUE_APP_ROOT_API
+
 
 
 export default class Api {
   static async getProjects(): Promise<void> {
     const response = await axios.post(
-      host + 'get-projects',
+      config.apiUrl + 'get-projects',
       {},
       AxiosUtils.bearearToken(),
     );
@@ -86,7 +86,7 @@ export default class Api {
     if (key === '.') key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJDb25maWciOnsiUHJpdmF0ZVNldHRpbmciOnsiZGF0YXNldFBhdGgiOiIifX0sIkNvbmZpZ0F1Z21lbnRhdGlvbiI6eyJBdWdtZW50YXRpb25QYXJhIjp7InJhbmRvbUhvcml6b250YWxGbGlwIjp7InN3aXRjaCI6MSwicHJvYmFiaWxpdHkiOjAuNX19fSwiQ29uZmlnTW9kZWxTZXJ2aWNlIjp7Ikxvc3NGdW5jdGlvblBhcmEiOnsibG9zc0Z1bmN0aW9uIjoiQ3Jvc3NFbnRyb3B5TG9zcyJ9LCJMZWFybmluZ1JhdGUiOnsibGVhcm5pbmdSYXRlIjowLjAwMX0sIk9wdGltaXplclBhcmEiOnsiU0dEIjp7InN3aXRjaCI6MSwibW9tZW50dW0iOjAuOSwiZGFtcGVuaW5nIjowLCJ3ZWlnaHREZWNheSI6MC4wMDA1LCJuZXN0ZXJvdiI6MH19LCJTY2hlZHVsZXJQYXJhIjp7InN0ZXBMUiI6eyJzd2l0Y2giOjEsInN0ZXBTaXplIjoxLCJnYW1tYSI6MC41fX19LCJDb25maWdQcmVwcm9jZXNzIjp7IlByZXByb2Nlc3NQYXJhIjp7Im5vcm1hbGl6ZSI6eyJzd2l0Y2giOjEsIm1vZGUiOiJJbWFnZU5ldCJ9LCJyZXNpemUiOnsic3dpdGNoIjoxLCJpbWFnZVNpemUiOlsyMjQsMjI0XSwiaW50ZXJwb2xhdGlvbiI6IkJJTElORUFSIn19fSwiQ29uZmlnUHl0b3JjaE1vZGVsIjp7IlNlbGVjdGVkTW9kZWwiOnsibW9kZWwiOnsic3RydWN0dXJlIjoiYXVvX3VucmVzdHJpY3RlZF9wb3dlcmZ1bF9tb2RlbCIsInByZXRyYWluZWQiOjF9fSwiQ2xzTW9kZWxQYXJhIjp7ImJhdGNoU2l6ZSI6MTYsImVwb2NocyI6MTB9fX0.27ROd91Ailzl86kLppHCMpA2q0n_HUrJrqA6FALxqsw";
     const reqData: CreateProjectByKeyReq = { name, key };
     const response: AxiosResponse<GetProjectRes> = await axios.post(
-      host + 'create-project-by-key',
+      config.apiUrl + 'create-project-by-key',
       reqData,
       AxiosUtils.bearearToken(),
     );
@@ -105,7 +105,7 @@ export default class Api {
 
     const reqData: RemoveProjectReq = { projectName }
     const response: AxiosResponse<RemoveProjectRes> = await axios.post(
-      host + 'remove-project',
+      config.apiUrl + 'remove-project',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -123,7 +123,7 @@ export default class Api {
       projectName,
     };
     const response: AxiosResponse<GetExperimentsRes> = await axios.post(
-      host + 'get-experiments',
+      config.apiUrl + 'get-experiments',
       reqData,
       AxiosUtils.bearearToken(),
     );
@@ -151,7 +151,7 @@ export default class Api {
       projectName, experimentId, experiment
     };
     const response: AxiosResponse<SetExperimentsRes> = await axios.post(
-      host + 'set-experiments',
+      config.apiUrl + 'set-experiments',
       reqData,
       AxiosUtils.bearearToken(),
     );
@@ -179,7 +179,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<SetExprimentDatasetRes> = await axios.post(
-      host + 'set-experiment-dataset',
+      config.apiUrl + 'set-experiment-dataset',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -204,7 +204,7 @@ export default class Api {
       projectName,
     }
     const response: AxiosResponse<GetDatasetsRes> = await axios.post(
-      host + 'get-datasets',
+      config.apiUrl + 'get-datasets',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -232,7 +232,7 @@ export default class Api {
       datasetPath,
     }
     const response: AxiosResponse<CheckDatasetRes> = await axios.post(
-      host + 'check-dataset',
+      config.apiUrl + 'check-dataset',
       reqData,
       AxiosUtils.bearearToken(),
     );
@@ -253,7 +253,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<RemoveDatasetRes> = await axios.post(
-      host + 'remove-dataset',
+      config.apiUrl + 'remove-dataset',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -274,7 +274,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<RunExperimentRes> = await axios.post(
-      host + 'run-experiment-train',
+      config.apiUrl + 'run-experiment-train',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -296,7 +296,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<RunExperimentRes> = await axios.post(
-      host + 'run-experiment-test',
+      config.apiUrl + 'run-experiment-test',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -314,7 +314,7 @@ export default class Api {
   static async getQueueInformation(): Promise<GetQueueInformationResData> {
 
     const response: AxiosResponse<GetQueueInformationRes> = await axios.post(
-      host + 'get-queue-information',
+      config.apiUrl + 'get-queue-information',
       {},
       AxiosUtils.bearearToken(),
     );
@@ -337,7 +337,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
-      host + 'remove-run-in-queue',
+      config.apiUrl + 'remove-run-in-queue',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -356,7 +356,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<DeleteRunRes> = await axios.post(
-      host + 'remove-run',
+      config.apiUrl + 'remove-run',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -376,7 +376,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<GetModelInformationRes> = await axios.post(
-      host + 'get-model-information',
+      config.apiUrl + 'get-model-information',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -401,7 +401,7 @@ export default class Api {
     const jwtStrParts = jwtStr.split('.');
 
     const response: AxiosResponse = await axios.get(
-      `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
+      `${config.apiUrl}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`,
       { ...AxiosUtils.bearearToken(), responseType: 'blob' },
     )
 
@@ -410,7 +410,7 @@ export default class Api {
     return response.data
 
     // const dom = document.createElement('a');
-    // dom.href = `${host}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
+    // dom.href = `${config.apiUrl}download-model/${jwtStrParts[0]}/${jwtStrParts[1]}/${jwtStrParts[2]}`;
     // dom.click();
   }
 
@@ -418,7 +418,7 @@ export default class Api {
     const reqData: SetDeployPathReq = { projectName, deployPath }
 
     const response: AxiosResponse<SetDeployPathRes> = await axios.post(
-      host + 'set-deploy-path',
+      config.apiUrl + 'set-deploy-path',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -443,7 +443,7 @@ export default class Api {
     const reqData: DeployReq = { projectName, runId, filename }
 
     const response: AxiosResponse<DeployRes> = await axios.post(
-      host + 'deploy',
+      config.apiUrl + 'deploy',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -463,7 +463,7 @@ export default class Api {
     if (!path) return ''
     const pathToAppend = path.split('./')[1]
 
-    return `${host}images/${pathToAppend}`;
+    return `${config.apiUrl}images/${pathToAppend}`;
   }
 
   // folder select and edit
@@ -475,7 +475,7 @@ export default class Api {
     if (rootPath === 'deploy') reqUrl = 'list-deploy-folder'
 
     const response: AxiosResponse<ListFolderRes> = await axios.post(
-      host + reqUrl,
+      config.apiUrl + reqUrl,
       {},
       AxiosUtils.bearearToken(),
     );
@@ -500,7 +500,7 @@ export default class Api {
     if (rootPath === 'deploy') reqUrl = 'create-deploy-folder'
 
     const response: AxiosResponse<CreateFolderRes> = await axios.post(
-      host + reqUrl,
+      config.apiUrl + reqUrl,
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -525,7 +525,7 @@ export default class Api {
     if (rootPath === 'deploy') reqUrl = 'remove-deploy-folder'
 
     const response: AxiosResponse<RemoveFolderRes> = await axios.post(
-      host + reqUrl,
+      config.apiUrl + reqUrl,
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -550,7 +550,7 @@ export default class Api {
     if (rootPath === 'deploy') reqUrl = 'rename-deploy-folder'
 
     const response: AxiosResponse<RenameFolderRes> = await axios.post(
-      host + reqUrl,
+      config.apiUrl + reqUrl,
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -571,7 +571,7 @@ export default class Api {
     if (store.experimentConfigs) return
 
     const response: AxiosResponse<GetExperimentConfigsRes> = await axios.post(
-      host + 'get-experiment-configs',
+      config.apiUrl + 'get-experiment-configs',
       {},
       AxiosUtils.bearearToken(),
     )
@@ -592,7 +592,7 @@ export default class Api {
     const reqData: GetModelPreTrainedWeightReq = { model }
 
     const response: AxiosResponse<GetModelPreTrainedWeightRes> = await axios.post(
-      host + 'get-model-pretrained-weight',
+      config.apiUrl + 'get-model-pretrained-weight',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -613,7 +613,7 @@ export default class Api {
   static async getModelDescription(): Promise<Map<string, GetModelDescriptionResData>> {
 
     const response: AxiosResponse<GetModelDescriptionRes> = await axios.post(
-      host + 'get-model-description',
+      config.apiUrl + 'get-model-description',
       {},
       AxiosUtils.bearearToken(),
     )
@@ -639,7 +639,7 @@ export default class Api {
     }
 
     const response: AxiosResponse<LoginRes> = await axios.post(
-      host + 'login',
+      config.apiUrl + 'login',
       reqData,
     )
 
@@ -669,7 +669,7 @@ export default class Api {
   static async refreshToken(): Promise<string> {
 
     const response: AxiosResponse<RefreshTokenRes> = await axios.post(
-      host + 'refresh-token',
+      config.apiUrl + 'refresh-token',
       {},
       AxiosUtils.bearearToken(),
     )
@@ -694,7 +694,7 @@ export default class Api {
   static async usersAll(): Promise<UsersGlobal> {
 
     const response: AxiosResponse<UsersAllRes> = await axios.post(
-      host + 'users/all',
+      config.apiUrl + 'users/all',
       {},
       AxiosUtils.bearearToken(),
     )
@@ -715,7 +715,7 @@ export default class Api {
     const reqData: AddUserReq = { username, password, maintainer }
 
     const response: AxiosResponse<AddUserRes> = await axios.post(
-      host + 'add-user',
+      config.apiUrl + 'add-user',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -734,7 +734,7 @@ export default class Api {
     const reqData: RemoveUserReq = { username }
 
     const response: AxiosResponse<RemoveUserRes> = await axios.post(
-      host + 'remove-user',
+      config.apiUrl + 'remove-user',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -753,7 +753,7 @@ export default class Api {
     const reqData: ModifyUserReq = { username, isMaintainer }
 
     const response: AxiosResponse<ModifyUserRes> = await axios.post(
-      host + 'modify-user',
+      config.apiUrl + 'modify-user',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -772,7 +772,7 @@ export default class Api {
 
     const reqData: UsersProjectReq = { projectName }
     const response: AxiosResponse<UsersProjectRes> = await axios.post(
-      host + 'users/project',
+      config.apiUrl + 'users/project',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -792,7 +792,7 @@ export default class Api {
 
     const reqData: SetProjectUserReq = { projectName, username, auth }
     const response: AxiosResponse<SetProjectUserRes> = await axios.post(
-      host + 'add-project-user',
+      config.apiUrl + 'add-project-user',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -805,7 +805,7 @@ export default class Api {
   static async removeProjectUser(projectName: string, username: string, auth: string): Promise<string> {
     const reqData: SetProjectUserReq = { projectName, username, auth }
     const response: AxiosResponse<SetProjectUserRes> = await axios.post(
-      host + 'remove-project-user',
+      config.apiUrl + 'remove-project-user',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -818,7 +818,7 @@ export default class Api {
   static async modifyProjectUser(projectName: string, username: string, auth: string): Promise<string> {
     const reqData: SetProjectUserReq = { projectName, username, auth }
     const response: AxiosResponse<SetProjectUserRes> = await axios.post(
-      host + 'modify-project-user',
+      config.apiUrl + 'modify-project-user',
       reqData,
       AxiosUtils.bearearToken(),
     )
@@ -832,7 +832,7 @@ export default class Api {
 
     const reqData: ChangePasswordReq = { originPassword, password }
     const response: AxiosResponse<ChangePasswordRes> = await axios.post(
-      host + 'change-password',
+      config.apiUrl + 'change-password',
       reqData,
       AxiosUtils.bearearToken(),
     )
